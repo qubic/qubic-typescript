@@ -15,6 +15,134 @@
         "typescript": "^5.7.0",
       },
     },
+    "apps/registry-cli": {
+      "name": "@qubic.ts/registry-cli",
+      "version": "0.0.0",
+      "dependencies": {
+        "@qubic.ts/contract-registry": "workspace:^",
+      },
+      "devDependencies": {
+        "typescript": "*",
+      },
+    },
+    "packages/bob": {
+      "name": "@qubic.ts/bob",
+      "version": "0.0.0",
+      "dependencies": {
+        "@qubic.ts/types": "workspace:^",
+      },
+      "devDependencies": {
+        "typescript": "*",
+      },
+    },
+    "packages/contract-registry": {
+      "name": "@qubic.ts/contract-registry",
+      "version": "0.0.0",
+      "devDependencies": {
+        "typescript": "*",
+      },
+    },
+    "packages/contracts": {
+      "name": "@qubic.ts/contracts",
+      "version": "0.0.0",
+      "dependencies": {
+        "@qubic.ts/contract-registry": "workspace:^",
+        "@qubic.ts/rpc": "workspace:^",
+        "@qubic.ts/tx": "workspace:^",
+      },
+      "devDependencies": {
+        "typescript": "*",
+      },
+    },
+    "packages/crypto": {
+      "name": "@qubic.ts/crypto",
+      "version": "0.0.0",
+      "dependencies": {
+        "@noble/hashes": "^1.7.2",
+      },
+      "devDependencies": {
+        "typescript": "*",
+      },
+    },
+    "packages/events": {
+      "name": "@qubic.ts/events",
+      "version": "0.0.0",
+      "dependencies": {
+        "@qubic.ts/rpc": "workspace:^",
+        "@qubic.ts/types": "workspace:^",
+      },
+      "devDependencies": {
+        "typescript": "*",
+      },
+    },
+    "packages/react": {
+      "name": "@qubic.ts/react",
+      "version": "0.0.0",
+      "dependencies": {
+        "@qubic.ts/events": "workspace:^",
+        "@qubic.ts/rpc": "workspace:^",
+        "@qubic.ts/wallet": "workspace:^",
+      },
+      "devDependencies": {
+        "@types/react": "^19.0.0",
+        "react": "^19.0.0",
+        "typescript": "*",
+      },
+      "peerDependencies": {
+        "react": ">=18",
+      },
+    },
+    "packages/rpc": {
+      "name": "@qubic.ts/rpc",
+      "version": "0.0.0",
+      "dependencies": {
+        "@qubic.ts/types": "workspace:^",
+      },
+      "devDependencies": {
+        "typescript": "*",
+      },
+    },
+    "packages/tcp": {
+      "name": "@qubic.ts/tcp",
+      "version": "0.0.0",
+      "dependencies": {
+        "@qubic.ts/events": "workspace:^",
+        "@qubic.ts/rpc": "workspace:^",
+      },
+      "devDependencies": {
+        "typescript": "*",
+      },
+    },
+    "packages/tx": {
+      "name": "@qubic.ts/tx",
+      "version": "0.0.0",
+      "dependencies": {
+        "@qubic.ts/crypto": "workspace:^",
+        "@qubic.ts/types": "workspace:^",
+      },
+      "devDependencies": {
+        "typescript": "*",
+      },
+    },
+    "packages/types": {
+      "name": "@qubic.ts/types",
+      "version": "0.0.0",
+      "devDependencies": {
+        "typescript": "*",
+      },
+    },
+    "packages/wallet": {
+      "name": "@qubic.ts/wallet",
+      "version": "0.0.0",
+      "dependencies": {
+        "@qubic.ts/crypto": "workspace:^",
+        "@qubic.ts/tx": "workspace:^",
+        "@qubic.ts/types": "workspace:^",
+      },
+      "devDependencies": {
+        "typescript": "*",
+      },
+    },
   },
   "packages": {
     "@babel/code-frame": ["@babel/code-frame@7.29.0", "", { "dependencies": { "@babel/helper-validator-identifier": "^7.28.5", "js-tokens": "^4.0.0", "picocolors": "^1.1.1" } }, "sha512-9NhCeYjq9+3uxgdtp20LSiJXJvN0FeCtNGpJxuMFZ1Kv3cWUNb6DOhJwUvcVCzKGR66cw4njwM6hrJLqgOwbcw=="],
@@ -121,11 +249,37 @@
 
     "@manypkg/get-packages": ["@manypkg/get-packages@1.1.3", "", { "dependencies": { "@babel/runtime": "^7.5.5", "@changesets/types": "^4.0.1", "@manypkg/find-root": "^1.1.0", "fs-extra": "^8.1.0", "globby": "^11.0.0", "read-yaml-file": "^1.1.0" } }, "sha512-fo+QhuU3qE/2TQMQmbVMqaQ6EWbMhi4ABWP+O4AM1NqPBuy0OrApV5LO6BrrgnhtAHS2NH6RrVk9OL181tTi8A=="],
 
+    "@noble/hashes": ["@noble/hashes@1.8.0", "", {}, "sha512-jCs9ldd7NwzpgXDIf6P3+NrHh9/sD6CQdxHyjQI+h/6rDNo88ypBxxz45UDuZHz9r3tNz7N/VInSVoVdtXEI4A=="],
+
     "@nodelib/fs.scandir": ["@nodelib/fs.scandir@2.1.5", "", { "dependencies": { "@nodelib/fs.stat": "2.0.5", "run-parallel": "^1.1.9" } }, "sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g=="],
 
     "@nodelib/fs.stat": ["@nodelib/fs.stat@2.0.5", "", {}, "sha512-RkhPPp2zrqDAQA/2jNhnztcPAlv64XdhIp7a7454A5ovI7Bukxgt7MX7udwAu3zg1DcpPU0rz3VV1SeaqvY4+A=="],
 
     "@nodelib/fs.walk": ["@nodelib/fs.walk@1.2.8", "", { "dependencies": { "@nodelib/fs.scandir": "2.1.5", "fastq": "^1.6.0" } }, "sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg=="],
+
+    "@qubic.ts/bob": ["@qubic.ts/bob@workspace:packages/bob"],
+
+    "@qubic.ts/contract-registry": ["@qubic.ts/contract-registry@workspace:packages/contract-registry"],
+
+    "@qubic.ts/contracts": ["@qubic.ts/contracts@workspace:packages/contracts"],
+
+    "@qubic.ts/crypto": ["@qubic.ts/crypto@workspace:packages/crypto"],
+
+    "@qubic.ts/events": ["@qubic.ts/events@workspace:packages/events"],
+
+    "@qubic.ts/react": ["@qubic.ts/react@workspace:packages/react"],
+
+    "@qubic.ts/registry-cli": ["@qubic.ts/registry-cli@workspace:apps/registry-cli"],
+
+    "@qubic.ts/rpc": ["@qubic.ts/rpc@workspace:packages/rpc"],
+
+    "@qubic.ts/tcp": ["@qubic.ts/tcp@workspace:packages/tcp"],
+
+    "@qubic.ts/tx": ["@qubic.ts/tx@workspace:packages/tx"],
+
+    "@qubic.ts/types": ["@qubic.ts/types@workspace:packages/types"],
+
+    "@qubic.ts/wallet": ["@qubic.ts/wallet@workspace:packages/wallet"],
 
     "@shikijs/engine-oniguruma": ["@shikijs/engine-oniguruma@3.23.0", "", { "dependencies": { "@shikijs/types": "3.23.0", "@shikijs/vscode-textmate": "^10.0.2" } }, "sha512-1nWINwKXxKKLqPibT5f4pAFLej9oZzQTsby8942OTlsJzOBZ0MWKiwzMsd+jhzu8YPCHAswGnnN1YtQfirL35g=="],
 
@@ -142,6 +296,8 @@
     "@types/hast": ["@types/hast@3.0.4", "", { "dependencies": { "@types/unist": "*" } }, "sha512-WPs+bbQw5aCj+x6laNGWLH3wviHtoCv/P3+otBhbOhJgG8qtpdAMlTCxLtsTWA7LH1Oh/bFCHsBn0TPS5m30EQ=="],
 
     "@types/node": ["@types/node@12.20.55", "", {}, "sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ=="],
+
+    "@types/react": ["@types/react@19.2.14", "", { "dependencies": { "csstype": "^3.2.2" } }, "sha512-ilcTH/UniCkMdtexkoCN0bI7pMcJDvmQFPvuPvmEaYA/NSfFTAgdUSLAoVjaRJm7+6PvcM+q1zYOwS4wTYMF9w=="],
 
     "@types/unist": ["@types/unist@3.0.3", "", {}, "sha512-ko/gIFJRv177XgZsZcBwnqJN5x/Gien8qNOn0D5bQU/zAzVf9Zt3BlcUiLqhV9y4ARk0GbT3tnUiPNgnTXzc/Q=="],
 
@@ -196,6 +352,8 @@
     "cosmiconfig-typescript-loader": ["cosmiconfig-typescript-loader@6.3.0", "", { "dependencies": { "jiti": "2.6.1" }, "peerDependencies": { "@types/node": "*", "cosmiconfig": ">=9", "typescript": ">=5" } }, "sha512-Akr82WH1Wfqatyiqpj8HDkO2o2KmJRu1FhKfSNJP3K4IdXwHfEyL7MOb62i1AGQVLtIQM+iCE9CGOtrfhR+mmA=="],
 
     "cross-spawn": ["cross-spawn@7.0.6", "", { "dependencies": { "path-key": "^3.1.0", "shebang-command": "^2.0.0", "which": "^2.0.1" } }, "sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA=="],
+
+    "csstype": ["csstype@3.2.3", "", {}, "sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ=="],
 
     "dargs": ["dargs@8.1.0", "", {}, "sha512-wAV9QHOsNbwnWdNW2FYvE1P56wtgSbM+3SZcdGiWQILwVjACCXDCI3Ai8QlCjMDB8YK5zySiXZYBiwGmNY3lnw=="],
 
@@ -378,6 +536,8 @@
     "quansync": ["quansync@0.2.11", "", {}, "sha512-AifT7QEbW9Nri4tAwR5M/uzpBuqfZf+zwaEM/QkzEjj7NBuFD2rBuy0K3dE+8wltbezDV7JMA0WfnCPYRSYbXA=="],
 
     "queue-microtask": ["queue-microtask@1.2.3", "", {}, "sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A=="],
+
+    "react": ["react@19.2.6", "", {}, "sha512-sfWGGfavi0xr8Pg0sVsyHMAOziVYKgPLNrS7ig+ivMNb3wbCBw3KxtflsGBAwD3gYQlE/AEZsTLgToRrSCjb0Q=="],
 
     "read-yaml-file": ["read-yaml-file@1.1.0", "", { "dependencies": { "graceful-fs": "^4.1.5", "js-yaml": "^3.6.1", "pify": "^4.0.1", "strip-bom": "^3.0.0" } }, "sha512-VIMnQi/Z4HT2Fxuwg5KrY174U1VdUIASQVWXXyqtNRtxSr9IYkn1rsI6Tb6HsrHCmB7gVpNwX6JxPTHcH6IoTA=="],
 

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPointStrategy": "packages",
+  "entryPoints": [
+    "packages/crypto",
+    "packages/types",
+    "packages/tx",
+    "packages/rpc",
+    "packages/bob",
+    "packages/contracts",
+    "packages/contract-registry",
+    "packages/events",
+    "packages/wallet",
+    "packages/tcp",
+    "packages/react"
+  ],
+  "out": "docs",
+  "includeVersion": true,
+  "readme": "none"
+}

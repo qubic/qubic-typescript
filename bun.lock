@@ -27,17 +27,22 @@
     },
     "packages/bob": {
       "name": "@qubic.ts/bob",
-      "version": "0.0.0",
+      "version": "0.1.0",
       "dependencies": {
         "@qubic.ts/types": "workspace:^",
+        "openapi-fetch": "^0.17.0",
       },
       "devDependencies": {
+        "openapi-typescript": "^7.13.0",
         "typescript": "*",
       },
     },
     "packages/contract-registry": {
       "name": "@qubic.ts/contract-registry",
-      "version": "0.0.0",
+      "version": "0.1.0",
+      "dependencies": {
+        "@qubic.ts/types": "workspace:^",
+      },
       "devDependencies": {
         "typescript": "*",
       },

@@ -1,23 +1,28 @@
 {
   "name": "@qubic.ts/contracts",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "sideEffects": false,
   "exports": {
     ".": {
+      "bun": "./src/index.ts",
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     }
   },
   "files": ["dist"],
   "scripts": {
+    "generate": "bun scripts/generate.ts",
     "build": "tsc -p tsconfig.json",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "publish": "bun publish --access public"
   },
   "dependencies": {
     "@qubic.ts/contract-registry": "workspace:^",
+    "@qubic.ts/crypto": "workspace:^",
     "@qubic.ts/rpc": "workspace:^",
-    "@qubic.ts/tx": "workspace:^"
+    "@qubic.ts/types": "workspace:^"
   },
   "devDependencies": {
     "typescript": "*"

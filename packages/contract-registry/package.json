@@ -1,18 +1,32 @@
 {
   "name": "@qubic.ts/contract-registry",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "sideEffects": false,
   "exports": {
     ".": {
+      "bun": "./src/index.ts",
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
-    }
+    },
+    "./client": {
+      "bun": "./src/client.ts",
+      "import": "./dist/client.js",
+      "types": "./dist/client.d.ts"
+    },
+    "./registry.json": "./data/registry.json",
+    "./schema.json": "./data/schema.json"
   },
-  "files": ["dist"],
+  "files": ["dist", "data"],
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "validate": "bun scripts/validate.ts",
+    "publish": "bun publish --access public"
+  },
+  "dependencies": {
+    "@qubic.ts/types": "workspace:^"
   },
   "devDependencies": {
     "typescript": "*"

@@ -1,23 +1,33 @@
 {
   "name": "@qubic.ts/rpc",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "sideEffects": false,
   "exports": {
     ".": {
+      "bun": "./src/index.ts",
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     }
   },
   "files": ["dist"],
   "scripts": {
+    "generate": "openapi-typescript ../../resources/live-api.json -o src/live-schema.d.ts && openapi-typescript ../../resources/query-api.json -o src/query-schema.d.ts",
     "build": "tsc -p tsconfig.json",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "publish": "bun publish --access public"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@qubic.ts/types": "workspace:^"
+    "@qubic.ts/types": "workspace:^",
+    "openapi-fetch": "^0.17.0"
   },
   "devDependencies": {
+    "openapi-typescript": "^7.13.0",
     "typescript": "*"
   }
 }

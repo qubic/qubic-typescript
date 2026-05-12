@@ -14,7 +14,18 @@
   "definitions": {
     "FieldType": {
       "type": "string",
-      "enum": ["uint8", "uint16", "uint32", "uint64", "sint64", "uint128", "id", "bytes", "array", "struct"]
+      "enum": [
+        "uint8",
+        "uint16",
+        "uint32",
+        "uint64",
+        "sint64",
+        "uint128",
+        "id",
+        "bytes",
+        "array",
+        "struct"
+      ]
     },
     "BinaryField": {
       "type": "object",
@@ -43,7 +54,15 @@
     },
     "ContractCallBase": {
       "type": "object",
-      "required": ["kind", "inputType", "name", "inputFields", "outputFields", "inputSize", "outputSize"],
+      "required": [
+        "kind",
+        "inputType",
+        "name",
+        "inputFields",
+        "outputFields",
+        "inputSize",
+        "outputSize"
+      ],
       "properties": {
         "kind": { "type": "string", "enum": ["procedure", "function"] },
         "inputType": { "type": "integer" },
@@ -59,7 +78,16 @@
     },
     "ContractAbiVersion": {
       "type": "object",
-      "required": ["contractIndex", "contractName", "effectiveFromEpoch", "effectiveToEpoch", "structs", "procedures", "functions", "registeredAt"],
+      "required": [
+        "contractIndex",
+        "contractName",
+        "effectiveFromEpoch",
+        "effectiveToEpoch",
+        "structs",
+        "procedures",
+        "functions",
+        "registeredAt"
+      ],
       "properties": {
         "contractIndex": { "type": "integer" },
         "contractName": { "type": "string" },

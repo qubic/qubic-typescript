@@ -1,4 +1,4 @@
-import type { BinaryField, DecodedStruct, NamedStruct } from '@qubic.ts/contract-registry'
+import type { BinaryField, FieldValue, NamedStruct } from '@qubic.ts/contract-registry'
 import { buildPayload, decodePayload } from '@qubic.ts/contract-registry'
 import { QubicRpcError } from '@qubic.ts/rpc'
 import type { QuerySmartContractRequest, QuerySmartContractResponse } from '@qubic.ts/rpc'
@@ -22,7 +22,7 @@ function fromBase64(b64: string): Uint8Array {
   return out
 }
 
-export interface CallContractFunctionOptions<TInput extends DecodedStruct> {
+export interface CallContractFunctionOptions<TInput extends Record<string, unknown>> {
   live: SmartContractCaller
   contractIndex: number
   inputType: number
@@ -35,14 +35,14 @@ export interface CallContractFunctionOptions<TInput extends DecodedStruct> {
   publicKeyToIdentity: (pk: Uint8Array) => string
 }
 
-export async function callContractFunction<TInput extends DecodedStruct, TOutput>(
+export async function callContractFunction<TInput extends Record<string, unknown>, TOutput>(
   options: CallContractFunctionOptions<TInput>,
 ): Promise<Result<TOutput, QubicRpcError>> {
   try {
     const payload = buildPayload(
       options.inputFields,
       options.structs,
-      options.input,
+      options.input as Record<string, FieldValue | Uint8Array>,
       options.identityToPublicKey,
     )
     const response = await options.live.querySmartContract({
@@ -58,9 +58,9 @@ export async function callContractFunction<TInput extends DecodedStruct, TOutput
       options.structs,
       options.publicKeyToIdentity,
     )
-    return ok(decoded as TOutput)
+    return ok(decoded as unknown as TOutput)
   } catch (cause) {
     if (cause instanceof QubicRpcError) return err(cause)
-    return err(new QubicRpcError(0, String(cause), { cause }))
+    return err(new QubicRpcError(0, 'call-contract', String(cause)))
   }
 }

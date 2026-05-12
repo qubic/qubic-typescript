@@ -86,7 +86,7 @@ for (const version of registry.versions) {
 
   const lines: string[] = [
     '// @generated — do not edit by hand. Run `bun run generate` to regenerate.',
-    "import type { BinaryField, NamedStruct } from '@qubic.ts/contract-registry'",
+    "import type { BinaryField, FieldValue, NamedStruct } from '@qubic.ts/contract-registry'",
     "import { buildPayload, decodePayload } from '@qubic.ts/contract-registry'",
     '',
     `export const ${contractSnake}_CONTRACT_INDEX = ${version.contractIndex}`,
@@ -120,7 +120,7 @@ for (const version of registry.versions) {
         `  input: ${pascal}Input,`,
         '  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),',
         '): Uint8Array {',
-        `  return buildPayload(${snake}_INPUT_FIELDS, STRUCTS, input, identityToPublicKey)`,
+        `  return buildPayload(${snake}_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)`,
         '}',
         '',
       )
@@ -143,7 +143,7 @@ for (const version of registry.versions) {
         `    ${snake}_OUTPUT_FIELDS,`,
         '    STRUCTS,',
         '    publicKeyToIdentity,',
-        `  ) as ${pascal}Output`,
+        `  ) as unknown as ${pascal}Output`,
         '}',
         '',
       )

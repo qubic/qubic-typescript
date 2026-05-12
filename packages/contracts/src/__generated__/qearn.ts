@@ -1,5 +1,5 @@
 // @generated — do not edit by hand. Run `bun run generate` to regenerate.
-import type { BinaryField, NamedStruct } from '@qubic.ts/contract-registry'
+import type { BinaryField, FieldValue, NamedStruct } from '@qubic.ts/contract-registry'
 import { buildPayload, decodePayload } from '@qubic.ts/contract-registry'
 
 export const QEARN_CONTRACT_INDEX = 9
@@ -32,7 +32,7 @@ export function decodeLockOutput(
     LOCK_OUTPUT_FIELDS,
     STRUCTS,
     publicKeyToIdentity,
-  ) as LockOutput
+  ) as unknown as LockOutput
 }
 
 export const UNLOCK_INPUT_TYPE = 2
@@ -63,7 +63,7 @@ export function buildUnlockInput(
   input: UnlockInput,
   identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
 ): Uint8Array {
-  return buildPayload(UNLOCK_INPUT_FIELDS, STRUCTS, input, identityToPublicKey)
+  return buildPayload(UNLOCK_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
 
 export interface UnlockOutput {
@@ -88,7 +88,7 @@ export function decodeUnlockOutput(
     UNLOCK_OUTPUT_FIELDS,
     STRUCTS,
     publicKeyToIdentity,
-  ) as UnlockOutput
+  ) as unknown as UnlockOutput
 }
 
 export const GET_STATE_OF_ROUND_INPUT_TYPE = 3
@@ -112,7 +112,7 @@ export function buildGetStateOfRoundInput(
   input: GetStateOfRoundInput,
   identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
 ): Uint8Array {
-  return buildPayload(GET_STATE_OF_ROUND_INPUT_FIELDS, STRUCTS, input, identityToPublicKey)
+  return buildPayload(GET_STATE_OF_ROUND_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
 
 export interface GetStateOfRoundOutput {
@@ -137,6 +137,6 @@ export function decodeGetStateOfRoundOutput(
     GET_STATE_OF_ROUND_OUTPUT_FIELDS,
     STRUCTS,
     publicKeyToIdentity,
-  ) as GetStateOfRoundOutput
+  ) as unknown as GetStateOfRoundOutput
 }
 

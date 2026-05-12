@@ -23,10 +23,7 @@ export interface CloneResult {
  */
 export async function cloneAtRef(options: CloneOptions): Promise<CloneResult> {
   const repo = options.repo ?? 'https://github.com/qubic/core'
-  const dir = join(
-    tmpdir(),
-    `qubic-core-${Date.now()}-${Math.random().toString(36).slice(2)}`,
-  )
+  const dir = join(tmpdir(), `qubic-core-${Date.now()}-${Math.random().toString(36).slice(2)}`)
 
   if (options.paths) {
     await Bun.$`git clone --no-checkout --depth 1 --branch ${options.ref} ${repo} ${dir}`
@@ -47,21 +44,17 @@ export async function cloneAtRef(options: CloneOptions): Promise<CloneResult> {
  * @param token - Optional GitHub personal access token for higher rate limits.
  */
 export async function fetchCoreTags(options?: { token?: string }): Promise<string[]> {
-  const headers: HeadersInit = options?.token
-    ? { Authorization: `Bearer ${options.token}` }
-    : {}
-  const res = await fetch(
-    'https://api.github.com/repos/qubic/core/tags?per_page=100',
-    { headers },
-  )
+  const headers: HeadersInit = options?.token ? { Authorization: `Bearer ${options.token}` } : {}
+  const res = await fetch('https://api.github.com/repos/qubic/core/tags?per_page=100', { headers })
   if (!res.ok) throw new Error(`GitHub API error: ${res.status} ${res.statusText}`)
   const tags = (await res.json()) as Array<{ name: string }>
   return tags
     .map((t) => t.name)
     .sort((a, b) => {
-      const parse = (s: string) => s.replace(/^v/, '').split('.').map(Number) as [number, number, number]
+      const parse = (s: string) =>
+        s.replace(/^v/, '').split('.').map(Number) as [number, number, number]
       const [ma, na, pa] = parse(a)
       const [mb, nb, pb] = parse(b)
-      return (ma - mb) || (na - nb) || (pa - pb)
+      return ma - mb || na - nb || pa - pb
     })
 }

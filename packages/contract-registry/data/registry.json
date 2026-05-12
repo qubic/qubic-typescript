@@ -18,7 +18,9 @@
           "name": "lock",
           "description": "Lock QU for staking. Attach amount via tx.amount.",
           "inputFields": [],
-          "outputFields": [{ "name": "returnCode", "type": "uint32", "offset": 0, "byteLength": 4 }],
+          "outputFields": [
+            { "name": "returnCode", "type": "uint32", "offset": 0, "byteLength": 4 }
+          ],
           "inputSize": 0,
           "outputSize": 4,
           "requiresAmount": true,
@@ -29,10 +31,12 @@
           "inputType": 2,
           "name": "unlock",
           "inputFields": [
-            { "name": "amount",      "type": "uint64", "offset": 0, "byteLength": 8 },
+            { "name": "amount", "type": "uint64", "offset": 0, "byteLength": 8 },
             { "name": "lockedEpoch", "type": "uint32", "offset": 8, "byteLength": 4 }
           ],
-          "outputFields": [{ "name": "returnCode", "type": "uint32", "offset": 0, "byteLength": 4 }],
+          "outputFields": [
+            { "name": "returnCode", "type": "uint32", "offset": 0, "byteLength": 4 }
+          ],
           "inputSize": 12,
           "outputSize": 4,
           "sourceRef": "src/contracts/Qearn.h:722"
@@ -43,7 +47,7 @@
           "kind": "function",
           "inputType": 3,
           "name": "getStateOfRound",
-          "inputFields":  [{ "name": "epoch", "type": "uint32", "offset": 0, "byteLength": 4 }],
+          "inputFields": [{ "name": "epoch", "type": "uint32", "offset": 0, "byteLength": 4 }],
           "outputFields": [{ "name": "state", "type": "uint32", "offset": 0, "byteLength": 4 }],
           "inputSize": 4,
           "outputSize": 4

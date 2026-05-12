@@ -44,11 +44,21 @@
       "linter": {
         "rules": {
           "suspicious": {
-            "noConsole": "warn",
+            "noConsole": "off",
             "noExplicitAny": "warn"
           },
           "style": {
-            "noNonNullAssertion": "warn"
+            "noNonNullAssertion": "off"
+          }
+        }
+      }
+    },
+    {
+      "include": ["**/scripts/**"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noConsole": "off"
           }
         }
       }

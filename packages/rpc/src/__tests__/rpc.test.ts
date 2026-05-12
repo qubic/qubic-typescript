@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'bun:test'
+import { QubicRpcError } from '../errors.js'
 import { createLiveClient } from '../live-client.js'
 import { createQueryClient } from '../query-client.js'
-import { QubicRpcError } from '../errors.js'
 
 function mockFetch(body: unknown, status = 200): (input: Request) => Promise<Response> {
   return async () =>
@@ -39,7 +39,12 @@ describe('createLiveClient', () => {
   test('querySmartContract returns responseData', async () => {
     const body = { responseData: 'AAAA' }
     const live = createLiveClient({ fetch: mockFetch(body) })
-    const result = await live.querySmartContract({ contractIndex: 1, inputType: 0, inputSize: 0, requestData: '' })
+    const result = await live.querySmartContract({
+      contractIndex: 1,
+      inputType: 0,
+      inputSize: 0,
+      requestData: '',
+    })
     expect(result.responseData).toBe('AAAA')
   })
 

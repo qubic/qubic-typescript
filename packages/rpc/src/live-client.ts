@@ -1,6 +1,6 @@
 import createClient from 'openapi-fetch'
-import type { components, paths } from './live-schema.d.ts'
 import { QubicRpcError } from './errors.js'
+import type { components, paths } from './live-schema.d.ts'
 
 export type LiveClientOptions = {
   baseUrl?: string
@@ -76,9 +76,7 @@ export function createLiveClient(options: LiveClientOptions = {}) {
     },
 
     /** Broadcasts a base64-encoded signed transaction; returns peer count and tx id. */
-    async broadcastTransaction(
-      encodedTransaction: string,
-    ): Promise<BroadcastTransactionResponse> {
+    async broadcastTransaction(encodedTransaction: string): Promise<BroadcastTransactionResponse> {
       return unwrap(
         client.POST('/broadcast-transaction', { body: { encodedTransaction }, ...sig(signal) }),
         '/broadcast-transaction',

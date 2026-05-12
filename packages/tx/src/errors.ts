@@ -6,10 +6,10 @@ export class PayloadTooLargeError extends QubicError {
   readonly code = 'PAYLOAD_TOO_LARGE' as const
 
   constructor(readonly byteLength: number) {
-    super(
-      `Payload is ${byteLength} bytes; maximum allowed is ${PROTOCOL.MAX_INPUT_SIZE}`,
-      { byteLength, max: PROTOCOL.MAX_INPUT_SIZE },
-    )
+    super(`Payload is ${byteLength} bytes; maximum allowed is ${PROTOCOL.MAX_INPUT_SIZE}`, {
+      byteLength,
+      max: PROTOCOL.MAX_INPUT_SIZE,
+    })
   }
 }
 

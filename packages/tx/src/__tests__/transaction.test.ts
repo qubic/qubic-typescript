@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'bun:test'
 import { identityToPublicKey, publicKeyToIdentity } from '@qubic.ts/crypto'
 import { PROTOCOL, toSeed } from '@qubic.ts/types'
+import { InvalidTransactionError, PayloadTooLargeError, TickInThePastError } from '../errors.js'
 import {
   buildTransaction,
   computeTransactionHash,
@@ -9,7 +10,6 @@ import {
   signTransaction,
   verifyTransactionSignature,
 } from '../transaction.js'
-import { InvalidTransactionError, PayloadTooLargeError, TickInThePastError } from '../errors.js'
 
 const SEED = toSeed('a'.repeat(55))
 const ZERO_PK = new Uint8Array(32)
@@ -73,12 +73,12 @@ describe('buildTransaction', () => {
   })
 
   test('throws TickInThePastError when targetTick <= currentTick', () => {
-    expect(() =>
-      buildTransaction({ ...BASE_INPUT, targetTick: 100, currentTick: 100 }),
-    ).toThrow(TickInThePastError)
-    expect(() =>
-      buildTransaction({ ...BASE_INPUT, targetTick: 99, currentTick: 100 }),
-    ).toThrow(TickInThePastError)
+    expect(() => buildTransaction({ ...BASE_INPUT, targetTick: 100, currentTick: 100 })).toThrow(
+      TickInThePastError,
+    )
+    expect(() => buildTransaction({ ...BASE_INPUT, targetTick: 99, currentTick: 100 })).toThrow(
+      TickInThePastError,
+    )
   })
 
   test('does not throw when targetTick > currentTick', () => {

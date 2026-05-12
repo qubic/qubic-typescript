@@ -2,7 +2,7 @@ export type { Brand, Identity, Seed } from './brands.js'
 export {
   InvalidIdentityError,
   InvalidSeedError,
-  QubicCryptoError,
+  QubicError,
   SignatureVerificationError,
 } from './errors.js'
 export { k12 } from './k12.js'

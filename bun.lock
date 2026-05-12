@@ -59,6 +59,7 @@
       "version": "0.1.0",
       "dependencies": {
         "@noble/hashes": "^2.2.0",
+        "@qubic.ts/types": "workspace:^",
       },
       "devDependencies": {
         "typescript": "*",
@@ -126,7 +127,7 @@
     },
     "packages/types": {
       "name": "@qubic.ts/types",
-      "version": "0.0.0",
+      "version": "0.1.0",
       "devDependencies": {
         "typescript": "*",
       },

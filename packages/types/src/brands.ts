@@ -1,4 +1,9 @@
-import { InvalidBase64Error, InvalidIdentityError, InvalidSeedError, InvalidTxHashError } from './errors.js'
+import {
+  InvalidBase64Error,
+  InvalidIdentityError,
+  InvalidSeedError,
+  InvalidTxHashError,
+} from './errors.js'
 
 declare const _brand: unique symbol
 export type Brand<T, B extends string> = T & { readonly [_brand]: B }

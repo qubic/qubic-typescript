@@ -2,10 +2,7 @@
   "name": "qubic-typescript",
   "private": true,
   "type": "module",
-  "workspaces": [
-    "packages/*",
-    "apps/*"
-  ],
+  "workspaces": ["packages/*", "apps/*"],
   "scripts": {
     "generate": "bun run --filter '*' generate",
     "build": "bun run --filter '*' build",

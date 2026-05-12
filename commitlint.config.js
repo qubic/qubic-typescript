@@ -1,0 +1,31 @@
+export default {
+  extends: ['@commitlint/config-conventional'],
+  rules: {
+    'scope-enum': [
+      2,
+      'always',
+      [
+        'crypto',
+        'types',
+        'tx',
+        'rpc',
+        'bob',
+        'contracts',
+        'contract-registry',
+        'events',
+        'wallet',
+        'tcp',
+        'registry',
+        'react',
+        'ci',
+        'deps',
+        'release',
+      ],
+    ],
+    'scope-empty': [0],
+    'header-max-length': [2, 'always', 100],
+    'subject-full-stop': [2, 'never', '.'],
+    'type-case': [2, 'always', 'lower-case'],
+    'subject-case': [2, 'never', ['sentence-case', 'start-case', 'pascal-case', 'upper-case']],
+  },
+}

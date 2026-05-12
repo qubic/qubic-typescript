@@ -44,7 +44,9 @@ export async function cloneAtRef(options: CloneOptions): Promise<CloneResult> {
  * @param token - Optional GitHub personal access token for higher rate limits.
  */
 export async function fetchCoreTags(options?: { token?: string }): Promise<string[]> {
-  const headers: HeadersInit = options?.token ? { Authorization: `Bearer ${options.token}` } : {}
+  const headers: Record<string, string> = options?.token
+    ? { Authorization: `Bearer ${options.token}` }
+    : {}
   const res = await fetch('https://api.github.com/repos/qubic/core/tags?per_page=100', { headers })
   if (!res.ok) throw new Error(`GitHub API error: ${res.status} ${res.statusText}`)
   const tags = (await res.json()) as Array<{ name: string }>

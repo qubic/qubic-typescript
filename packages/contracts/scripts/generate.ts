@@ -24,6 +24,9 @@ function tsType(field: BinaryField): string {
     case 'uint8':
     case 'uint16':
     case 'uint32':
+    case 'sint8':
+    case 'sint16':
+    case 'sint32':
       return 'number'
     case 'uint64':
     case 'sint64':

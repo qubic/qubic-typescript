@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-05-12T00:00:00Z",
+  "versions": [
+    {
+      "contractIndex": 9,
+      "contractName": "Qearn",
+      "effectiveFromEpoch": 137,
+      "effectiveToEpoch": null,
+      "coreVersion": "v1.234.0",
+      "changelog": "Initial Qearn deployment.",
+      "registeredAt": "2026-05-12T00:00:00Z",
+      "structs": {},
+      "procedures": [
+        {
+          "kind": "procedure",
+          "inputType": 1,
+          "name": "lock",
+          "description": "Lock QU for staking. Attach amount via tx.amount.",
+          "inputFields": [],
+          "outputFields": [{ "name": "returnCode", "type": "uint32", "offset": 0, "byteLength": 4 }],
+          "inputSize": 0,
+          "outputSize": 4,
+          "requiresAmount": true,
+          "sourceRef": "src/contracts/Qearn.h:577"
+        },
+        {
+          "kind": "procedure",
+          "inputType": 2,
+          "name": "unlock",
+          "inputFields": [
+            { "name": "amount",      "type": "uint64", "offset": 0, "byteLength": 8 },
+            { "name": "lockedEpoch", "type": "uint32", "offset": 8, "byteLength": 4 }
+          ],
+          "outputFields": [{ "name": "returnCode", "type": "uint32", "offset": 0, "byteLength": 4 }],
+          "inputSize": 12,
+          "outputSize": 4,
+          "sourceRef": "src/contracts/Qearn.h:722"
+        }
+      ],
+      "functions": [
+        {
+          "kind": "function",
+          "inputType": 3,
+          "name": "getStateOfRound",
+          "inputFields":  [{ "name": "epoch", "type": "uint32", "offset": 0, "byteLength": 4 }],
+          "outputFields": [{ "name": "state", "type": "uint32", "offset": 0, "byteLength": 4 }],
+          "inputSize": 4,
+          "outputSize": 4
+        }
+      ]
+    }
+  ]
+}

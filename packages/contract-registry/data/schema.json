@@ -1,0 +1,82 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ContractRegistry",
+  "type": "object",
+  "required": ["schemaVersion", "updatedAt", "versions"],
+  "properties": {
+    "schemaVersion": { "type": "integer", "const": 1 },
+    "updatedAt": { "type": "string", "format": "date-time" },
+    "versions": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/ContractAbiVersion" }
+    }
+  },
+  "definitions": {
+    "FieldType": {
+      "type": "string",
+      "enum": ["uint8", "uint16", "uint32", "uint64", "sint64", "uint128", "id", "bytes", "array", "struct"]
+    },
+    "BinaryField": {
+      "type": "object",
+      "required": ["name", "type", "offset", "byteLength"],
+      "properties": {
+        "name": { "type": "string" },
+        "type": { "$ref": "#/definitions/FieldType" },
+        "offset": { "type": "integer" },
+        "byteLength": { "type": "integer" },
+        "description": { "type": "string" },
+        "arrayLength": { "type": "integer" },
+        "arrayItemType": { "$ref": "#/definitions/FieldType" },
+        "arrayItemByteLength": { "type": "integer" },
+        "arrayItemStructRef": { "type": "string" },
+        "structRef": { "type": "string" }
+      }
+    },
+    "NamedStruct": {
+      "type": "object",
+      "required": ["name", "fields", "byteLength"],
+      "properties": {
+        "name": { "type": "string" },
+        "fields": { "type": "array", "items": { "$ref": "#/definitions/BinaryField" } },
+        "byteLength": { "type": "integer" }
+      }
+    },
+    "ContractCallBase": {
+      "type": "object",
+      "required": ["kind", "inputType", "name", "inputFields", "outputFields", "inputSize", "outputSize"],
+      "properties": {
+        "kind": { "type": "string", "enum": ["procedure", "function"] },
+        "inputType": { "type": "integer" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "inputFields": { "type": "array", "items": { "$ref": "#/definitions/BinaryField" } },
+        "outputFields": { "type": "array", "items": { "$ref": "#/definitions/BinaryField" } },
+        "inputSize": { "type": "integer" },
+        "outputSize": { "type": "integer" },
+        "requiresAmount": { "type": "boolean" },
+        "sourceRef": { "type": "string" }
+      }
+    },
+    "ContractAbiVersion": {
+      "type": "object",
+      "required": ["contractIndex", "contractName", "effectiveFromEpoch", "effectiveToEpoch", "structs", "procedures", "functions", "registeredAt"],
+      "properties": {
+        "contractIndex": { "type": "integer" },
+        "contractName": { "type": "string" },
+        "effectiveFromEpoch": { "type": "integer" },
+        "effectiveToEpoch": { "type": ["integer", "null"] },
+        "coreVersion": { "type": "string" },
+        "coreCommit": { "type": "string" },
+        "structs": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/definitions/NamedStruct" }
+        },
+        "procedures": { "type": "array", "items": { "$ref": "#/definitions/ContractCallBase" } },
+        "functions": { "type": "array", "items": { "$ref": "#/definitions/ContractCallBase" } },
+        "changelog": { "type": "string" },
+        "registeredAt": { "type": "string", "format": "date-time" },
+        "registeredBy": { "type": "string" }
+      }
+    }
+  }
+}

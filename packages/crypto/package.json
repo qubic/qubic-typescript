@@ -1,6 +1,6 @@
 {
   "name": "@qubic.ts/crypto",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "sideEffects": false,
   "exports": {
@@ -11,11 +11,17 @@
   },
   "files": ["dist"],
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "typecheck": "tsc --noEmit"
+    "build": "tsc --emitDeclarationOnly && bun build src/index.ts --outdir dist --target browser --format esm --sourcemap",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "publish": "bun publish --access public"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@noble/hashes": "^1.7.2"
+    "@noble/hashes": "^2.2.0"
   },
   "devDependencies": {
     "typescript": "*"

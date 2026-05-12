@@ -23,7 +23,7 @@ jobs:
 
       - uses: oven-sh/setup-bun@v2
 
-      - run: bun install --frozen-lockfile
+      - run: bun install --frozen-lockfile --ignore-scripts
 
       - name: Create Release PR or Publish
         uses: changesets/action@v1

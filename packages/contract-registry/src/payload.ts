@@ -72,16 +72,19 @@ function encodeField(
 ): void {
   switch (field.type) {
     case 'uint8':
+    case 'sint8':
       if (typeof value !== 'number')
         throw new PayloadBuildError(`Field "${field.name}": expected number`)
       view.setUint8(offset, value)
       break
     case 'uint16':
+    case 'sint16':
       if (typeof value !== 'number')
         throw new PayloadBuildError(`Field "${field.name}": expected number`)
       view.setUint16(offset, value, true)
       break
     case 'uint32':
+    case 'sint32':
       if (typeof value !== 'number')
         throw new PayloadBuildError(`Field "${field.name}": expected number`)
       view.setUint32(offset, value, true)
@@ -228,10 +231,13 @@ function decodeField(
 ): FieldValue {
   switch (field.type) {
     case 'uint8':
+    case 'sint8':
       return view.getUint8(offset)
     case 'uint16':
+    case 'sint16':
       return view.getUint16(offset, true)
     case 'uint32':
+    case 'sint32':
       return view.getUint32(offset, true)
     case 'uint64':
       return view.getBigUint64(offset, true)
@@ -320,8 +326,11 @@ export function buildPayloadManual(
 ): Uint8Array {
   const sizes: Record<string, number> = {
     uint8: 1,
+    sint8: 1,
     uint16: 2,
+    sint16: 2,
     uint32: 4,
+    sint32: 4,
     uint64: 8,
     sint64: 8,
     uint128: 16,

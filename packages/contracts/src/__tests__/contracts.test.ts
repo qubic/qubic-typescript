@@ -1,14 +1,14 @@
 import { describe, expect, test } from 'bun:test'
 import { QubicRpcError } from '@qubic.ts/rpc'
 import {
-  GET_STATE_OF_ROUND_INPUT_TYPE,
   QEARN_CONTRACT_INDEX,
-  UNLOCK_INPUT_TYPE,
-  buildGetStateOfRoundInput,
-  buildUnlockInput,
-  decodeGetStateOfRoundOutput,
-  decodeLockOutput,
-  decodeUnlockOutput,
+  QEARN_GET_STATE_OF_ROUND_INPUT_TYPE,
+  QEARN_UNLOCK_INPUT_TYPE,
+  buildQearnGetStateOfRoundInput,
+  buildQearnUnlockInput,
+  decodeQearnGetStateOfRoundOutput,
+  decodeQearnLockOutput,
+  decodeQearnUnlockOutput,
 } from '../__generated__/qearn.js'
 import { callContractFunction } from '../call-contract.js'
 
@@ -17,62 +17,63 @@ describe('generated constants', () => {
     expect(QEARN_CONTRACT_INDEX).toBe(9)
   })
 
-  test('UNLOCK_INPUT_TYPE is 2', () => {
-    expect(UNLOCK_INPUT_TYPE).toBe(2)
+  test('QEARN_UNLOCK_INPUT_TYPE is 7', () => {
+    // lock_input is ordinal 6, unlock_input is ordinal 7 in the header declaration order
+    expect(QEARN_UNLOCK_INPUT_TYPE).toBe(7)
   })
 
-  test('GET_STATE_OF_ROUND_INPUT_TYPE is 3', () => {
-    expect(GET_STATE_OF_ROUND_INPUT_TYPE).toBe(3)
+  test('QEARN_GET_STATE_OF_ROUND_INPUT_TYPE is 3', () => {
+    expect(QEARN_GET_STATE_OF_ROUND_INPUT_TYPE).toBe(3)
   })
 })
 
-describe('buildUnlockInput', () => {
+describe('buildQearnUnlockInput', () => {
   test('produces 12-byte payload', () => {
-    const payload = buildUnlockInput({ amount: 5_000_000n, lockedEpoch: 150 })
+    const payload = buildQearnUnlockInput({ amount: 5_000_000n, lockedEpoch: 150 })
     expect(payload.byteLength).toBe(12)
   })
 
   test('encodes amount as uint64 LE', () => {
-    const payload = buildUnlockInput({ amount: 5_000_000n, lockedEpoch: 150 })
+    const payload = buildQearnUnlockInput({ amount: 5_000_000n, lockedEpoch: 150 })
     expect(new DataView(payload.buffer).getBigUint64(0, true)).toBe(5_000_000n)
   })
 
   test('encodes lockedEpoch as uint32 LE', () => {
-    const payload = buildUnlockInput({ amount: 5_000_000n, lockedEpoch: 150 })
+    const payload = buildQearnUnlockInput({ amount: 5_000_000n, lockedEpoch: 150 })
     expect(new DataView(payload.buffer).getUint32(8, true)).toBe(150)
   })
 })
 
-describe('decodeUnlockOutput', () => {
+describe('decodeQearnUnlockOutput', () => {
   test('decodes returnCode', () => {
     const data = new Uint8Array(4)
     new DataView(data.buffer).setUint32(0, 42, true)
-    const output = decodeUnlockOutput(data)
+    const output = decodeQearnUnlockOutput(data)
     expect(output.returnCode).toBe(42)
   })
 })
 
-describe('decodeLockOutput', () => {
+describe('decodeQearnLockOutput', () => {
   test('decodes returnCode', () => {
     const data = new Uint8Array(4)
     new DataView(data.buffer).setUint32(0, 0, true)
-    expect(decodeLockOutput(data).returnCode).toBe(0)
+    expect(decodeQearnLockOutput(data).returnCode).toBe(0)
   })
 })
 
-describe('buildGetStateOfRoundInput', () => {
+describe('buildQearnGetStateOfRoundInput', () => {
   test('encodes epoch as uint32 LE', () => {
-    const payload = buildGetStateOfRoundInput({ epoch: 137 })
+    const payload = buildQearnGetStateOfRoundInput({ epoch: 137 })
     expect(payload.byteLength).toBe(4)
     expect(new DataView(payload.buffer).getUint32(0, true)).toBe(137)
   })
 })
 
-describe('decodeGetStateOfRoundOutput', () => {
+describe('decodeQearnGetStateOfRoundOutput', () => {
   test('decodes state', () => {
     const data = new Uint8Array(4)
     new DataView(data.buffer).setUint32(0, 99, true)
-    expect(decodeGetStateOfRoundOutput(data).state).toBe(99)
+    expect(decodeQearnGetStateOfRoundOutput(data).state).toBe(99)
   })
 })
 
@@ -96,7 +97,7 @@ describe('callContractFunction', () => {
     const result = await callContractFunction<{ epoch: number }, { state: number }>({
       live,
       contractIndex: QEARN_CONTRACT_INDEX,
-      inputType: GET_STATE_OF_ROUND_INPUT_TYPE,
+      inputType: QEARN_GET_STATE_OF_ROUND_INPUT_TYPE,
       inputSize: 4,
       inputFields: [{ name: 'epoch', type: 'uint32', offset: 0, byteLength: 4 }],
       outputFields: [{ name: 'state', type: 'uint32', offset: 0, byteLength: 4 }],
@@ -120,7 +121,7 @@ describe('callContractFunction', () => {
     const result = await callContractFunction<{ epoch: number }, { state: number }>({
       live,
       contractIndex: QEARN_CONTRACT_INDEX,
-      inputType: GET_STATE_OF_ROUND_INPUT_TYPE,
+      inputType: QEARN_GET_STATE_OF_ROUND_INPUT_TYPE,
       inputSize: 4,
       inputFields: [{ name: 'epoch', type: 'uint32', offset: 0, byteLength: 4 }],
       outputFields: [{ name: 'state', type: 'uint32', offset: 0, byteLength: 4 }],

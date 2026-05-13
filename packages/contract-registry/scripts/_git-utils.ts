@@ -27,7 +27,7 @@ export async function cloneAtRef(options: CloneOptions): Promise<CloneResult> {
 
   if (options.paths) {
     await Bun.$`git clone --no-checkout --depth 1 --branch ${options.ref} ${repo} ${dir}`
-    await Bun.$`git -C ${dir} sparse-checkout set ${options.paths.join(' ')}`
+    await Bun.$`git -C ${dir} sparse-checkout set ${options.paths}`
     await Bun.$`git -C ${dir} checkout`
   } else {
     await Bun.$`git clone --depth 1 --branch ${options.ref} ${repo} ${dir}`
@@ -35,6 +35,47 @@ export async function cloneAtRef(options: CloneOptions): Promise<CloneResult> {
 
   return {
     dir,
+    cleanup: () => rm(dir, { recursive: true, force: true }),
+  }
+}
+
+export interface BackfillCloneResult {
+  dir: string
+  /** Read a file at a specific git ref (tag/SHA). Returns null if not found. */
+  showFile(ref: string, path: string): Promise<string | null>
+  cleanup(): Promise<void>
+}
+
+/**
+ * Single clone for epoch backfill.
+ * Uses treeless partial clone (--filter=blob:none) + sparse checkout +
+ * all tags so that git-show can read any file at any tag without re-cloning.
+ * Blobs are fetched on demand and cached by git.
+ */
+export async function cloneForBackfill(options?: {
+  repo?: string
+  token?: string
+}): Promise<BackfillCloneResult> {
+  const repo = options?.repo ?? 'https://github.com/qubic/core'
+  const dir = join(tmpdir(), `qubic-core-backfill-${Date.now()}`)
+
+  // Treeless clone: fetches all commits+trees, defers blob download to git-show
+  await Bun.$`git clone --filter=blob:none --no-checkout ${repo} ${dir}`
+  // Sparse: we only need these paths (git won't download other blobs at checkout)
+  await Bun.$`git -C ${dir} sparse-checkout init --cone`
+  await Bun.$`git -C ${dir} sparse-checkout set src/public_settings.h src/contracts`
+  // Fetch all remote tags (the initial clone may not have them all)
+  await Bun.$`git -C ${dir} fetch --tags --quiet`
+
+  return {
+    dir,
+    async showFile(ref: string, path: string): Promise<string | null> {
+      try {
+        return await Bun.$`git -C ${dir} show ${`${ref}:${path}`}`.text()
+      } catch {
+        return null
+      }
+    },
     cleanup: () => rm(dir, { recursive: true, force: true }),
   }
 }

@@ -1,14 +1,31 @@
-import { mkdirSync, writeFileSync } from 'node:fs'
+import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import type {
   BinaryField,
-  ContractRegistry,
+  ContractAbiVersion,
   FieldType,
   NamedStruct,
 } from '@qubic.ts/contract-registry'
 
-const registryPath = join(import.meta.dir, '../../contract-registry/data/registry.json')
-const registry = (await Bun.file(registryPath).json()) as ContractRegistry
+const epochsDir = join(import.meta.dir, '../../contract-registry/data/epochs')
+
+// Find the highest-numbered epoch folder
+const epochDirs = readdirSync(epochsDir, { withFileTypes: true })
+  .filter((e) => e.isDirectory() && /^\d+$/.test(e.name))
+  .map((e) => Number(e.name))
+  .sort((a, b) => a - b)
+
+if (epochDirs.length === 0) throw new Error(`No epoch folders found in ${epochsDir}`)
+const latestEpoch = epochDirs[epochDirs.length - 1] as number
+const latestEpochDir = join(epochsDir, String(latestEpoch))
+
+console.log(`Generating from epoch ${latestEpoch} (${latestEpochDir})`)
+
+// Read all contract snapshots from the latest epoch folder
+const versions: ContractAbiVersion[] = readdirSync(latestEpochDir)
+  .filter((f) => f.endsWith('.json'))
+  .map((f) => JSON.parse(readFileSync(join(latestEpochDir, f), 'utf-8')) as ContractAbiVersion)
+  .sort((a, b) => a.contractIndex - b.contractIndex)
 
 const outDir = join(import.meta.dir, '../src/__generated__')
 mkdirSync(outDir, { recursive: true })
@@ -115,9 +132,7 @@ function structLiteral(s: NamedStruct): string {
 
 const contractFiles: string[] = []
 
-for (const version of registry.versions) {
-  if (version.effectiveToEpoch !== null) continue
-
+for (const version of versions) {
   const cSnake = toScreamingSnake(version.contractName)
   const cPascal = toContractPascal(version.contractName)
   const contractFile = toFileName(version.contractName)
@@ -158,7 +173,6 @@ for (const version of registry.versions) {
   const allCalls = [...version.procedures, ...version.functions]
 
   for (const call of allCalls) {
-    // Prefix procedure/function name with contract name to prevent barrel collisions
     const callPascal = toPascalCase(call.name)
     const callSnake = toScreamingSnake(call.name)
 
@@ -217,3 +231,5 @@ for (const version of registry.versions) {
 
 const indexContent = `${contractFiles.map((f) => `export * from './${f}.js'`).join('\n')}\n`
 writeFileSync(join(outDir, 'index.ts'), indexContent)
+
+console.log(`Generated ${contractFiles.length} contract files from epoch ${latestEpoch}.`)

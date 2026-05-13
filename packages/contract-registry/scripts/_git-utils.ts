@@ -41,22 +41,39 @@ export async function cloneAtRef(options: CloneOptions): Promise<CloneResult> {
 
 /**
  * Returns all git tags from qubic/core sorted chronologically (semver order).
+ * Paginates until all tags are fetched.
  * @param token - Optional GitHub personal access token for higher rate limits.
  */
 export async function fetchCoreTags(options?: { token?: string }): Promise<string[]> {
   const headers: Record<string, string> = options?.token
     ? { Authorization: `Bearer ${options.token}` }
     : {}
-  const res = await fetch('https://api.github.com/repos/qubic/core/tags?per_page=100', { headers })
-  if (!res.ok) throw new Error(`GitHub API error: ${res.status} ${res.statusText}`)
-  const tags = (await res.json()) as Array<{ name: string }>
-  return tags
-    .map((t) => t.name)
+  const allTags: string[] = []
+  let page = 1
+  while (true) {
+    const res = await fetch(
+      `https://api.github.com/repos/qubic/core/tags?per_page=100&page=${page}`,
+      { headers },
+    )
+    if (!res.ok) throw new Error(`GitHub API error: ${res.status} ${res.statusText}`)
+    const batch = (await res.json()) as Array<{ name: string }>
+    if (batch.length === 0) break
+    for (const t of batch) allTags.push(t.name)
+    if (batch.length < 100) break
+    page++
+  }
+  return allTags
+    .filter((t) => /^v\d+\.\d+\.\d+$/.test(t))
     .sort((a, b) => {
-      const parse = (s: string) =>
-        s.replace(/^v/, '').split('.').map(Number) as [number, number, number]
-      const [ma, na, pa] = parse(a)
-      const [mb, nb, pb] = parse(b)
+      const parse = (s: string) => s.replace(/^v/, '').split('.').map(Number) as number[]
+      const [ma = 0, na = 0, pa = 0] = parse(a)
+      const [mb = 0, nb = 0, pb = 0] = parse(b)
       return ma - mb || na - nb || pa - pb
     })
+}
+
+/** Extracts the epoch number from a tag like "v1.234.0" → 234. Returns null if not parseable. */
+export function tagToEpoch(tag: string): number | null {
+  const m = tag.match(/^v\d+\.(\d+)\.\d+$/)
+  return m ? Number(m[1]) : null
 }

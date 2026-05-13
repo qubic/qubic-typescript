@@ -63,7 +63,7 @@ const version = parseContractHeader({
   contractName,
   contractIndex,
   effectiveFromEpoch: effectiveFrom,
-  explicitStructName: args['struct-name'],
+  ...(args['struct-name'] !== undefined ? { explicitStructName: args['struct-name'] } : {}),
 })
 
 const jsonOut = JSON.stringify(version, null, 2)

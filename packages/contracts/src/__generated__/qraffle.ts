@@ -1,20 +1,41 @@
 // @generated — do not edit by hand. Run `bun run generate` to regenerate.
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.ts/contract-registry'
 import { buildPayload, decodePayload } from '@qubic.ts/contract-registry'
+import type { QubicRpcError } from '@qubic.ts/rpc'
+import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import type { Result } from '../result.js'
 
 export const Q_RAFFLE_CONTRACT_INDEX = 19
 
 const STRUCTS: Record<string, NamedStruct> = {}
 
 export const Q_RAFFLE_REGISTER_IN_SYSTEM_INPUT_TYPE = 1
-export const Q_RAFFLE_REGISTER_IN_SYSTEM_INPUT_SIZE = 0
-export const Q_RAFFLE_REGISTER_IN_SYSTEM_OUTPUT_SIZE = 4
+
+export interface QRaffleRegisterInSystemInput {
+  useQXMR: number
+}
+
+const Q_RAFFLE_REGISTER_IN_SYSTEM_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'useQXMR',
+    type: 'uint8',
+    offset: 0,
+    byteLength: 1,
+  },
+]
+
+export function buildQRaffleRegisterInSystemInput(
+  input: QRaffleRegisterInSystemInput,
+  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+): Uint8Array {
+  return buildPayload(Q_RAFFLE_REGISTER_IN_SYSTEM_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+}
 
 export interface QRaffleRegisterInSystemOutput {
   returnCode: number
 }
 
-export const Q_RAFFLE_REGISTER_IN_SYSTEM_OUTPUT_FIELDS: BinaryField[] = [
+const Q_RAFFLE_REGISTER_IN_SYSTEM_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'sint32',
@@ -27,23 +48,16 @@ export function decodeQRaffleRegisterInSystemOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QRaffleRegisterInSystemOutput {
-  return decodePayload(
-    data,
-    Q_RAFFLE_REGISTER_IN_SYSTEM_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QRaffleRegisterInSystemOutput
+  return decodePayload(data, Q_RAFFLE_REGISTER_IN_SYSTEM_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleRegisterInSystemOutput
 }
 
 export const Q_RAFFLE_LOGOUT_IN_SYSTEM_INPUT_TYPE = 2
-export const Q_RAFFLE_LOGOUT_IN_SYSTEM_INPUT_SIZE = 0
-export const Q_RAFFLE_LOGOUT_IN_SYSTEM_OUTPUT_SIZE = 4
 
 export interface QRaffleLogoutInSystemOutput {
   returnCode: number
 }
 
-export const Q_RAFFLE_LOGOUT_IN_SYSTEM_OUTPUT_FIELDS: BinaryField[] = [
+const Q_RAFFLE_LOGOUT_IN_SYSTEM_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'sint32',
@@ -56,23 +70,16 @@ export function decodeQRaffleLogoutInSystemOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QRaffleLogoutInSystemOutput {
-  return decodePayload(
-    data,
-    Q_RAFFLE_LOGOUT_IN_SYSTEM_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QRaffleLogoutInSystemOutput
+  return decodePayload(data, Q_RAFFLE_LOGOUT_IN_SYSTEM_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleLogoutInSystemOutput
 }
 
 export const Q_RAFFLE_SUBMIT_ENTRY_AMOUNT_INPUT_TYPE = 3
-export const Q_RAFFLE_SUBMIT_ENTRY_AMOUNT_INPUT_SIZE = 8
-export const Q_RAFFLE_SUBMIT_ENTRY_AMOUNT_OUTPUT_SIZE = 4
 
 export interface QRaffleSubmitEntryAmountInput {
   amount: bigint
 }
 
-export const Q_RAFFLE_SUBMIT_ENTRY_AMOUNT_INPUT_FIELDS: BinaryField[] = [
+const Q_RAFFLE_SUBMIT_ENTRY_AMOUNT_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'amount',
     type: 'uint64',
@@ -92,7 +99,7 @@ export interface QRaffleSubmitEntryAmountOutput {
   returnCode: number
 }
 
-export const Q_RAFFLE_SUBMIT_ENTRY_AMOUNT_OUTPUT_FIELDS: BinaryField[] = [
+const Q_RAFFLE_SUBMIT_ENTRY_AMOUNT_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'sint32',
@@ -105,17 +112,10 @@ export function decodeQRaffleSubmitEntryAmountOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QRaffleSubmitEntryAmountOutput {
-  return decodePayload(
-    data,
-    Q_RAFFLE_SUBMIT_ENTRY_AMOUNT_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QRaffleSubmitEntryAmountOutput
+  return decodePayload(data, Q_RAFFLE_SUBMIT_ENTRY_AMOUNT_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleSubmitEntryAmountOutput
 }
 
 export const Q_RAFFLE_SUBMIT_PROPOSAL_INPUT_TYPE = 4
-export const Q_RAFFLE_SUBMIT_PROPOSAL_INPUT_SIZE = 48
-export const Q_RAFFLE_SUBMIT_PROPOSAL_OUTPUT_SIZE = 4
 
 export interface QRaffleSubmitProposalInput {
   tokenIssuer: string
@@ -123,7 +123,7 @@ export interface QRaffleSubmitProposalInput {
   entryAmount: bigint
 }
 
-export const Q_RAFFLE_SUBMIT_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
+const Q_RAFFLE_SUBMIT_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'tokenIssuer',
     type: 'id',
@@ -155,7 +155,7 @@ export interface QRaffleSubmitProposalOutput {
   returnCode: number
 }
 
-export const Q_RAFFLE_SUBMIT_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
+const Q_RAFFLE_SUBMIT_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'sint32',
@@ -168,28 +168,28 @@ export function decodeQRaffleSubmitProposalOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QRaffleSubmitProposalOutput {
-  return decodePayload(
-    data,
-    Q_RAFFLE_SUBMIT_PROPOSAL_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QRaffleSubmitProposalOutput
+  return decodePayload(data, Q_RAFFLE_SUBMIT_PROPOSAL_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleSubmitProposalOutput
 }
 
 export const Q_RAFFLE_VOTE_IN_PROPOSAL_INPUT_TYPE = 5
-export const Q_RAFFLE_VOTE_IN_PROPOSAL_INPUT_SIZE = 4
-export const Q_RAFFLE_VOTE_IN_PROPOSAL_OUTPUT_SIZE = 4
 
 export interface QRaffleVoteInProposalInput {
   indexOfProposal: number
+  yes: number
 }
 
-export const Q_RAFFLE_VOTE_IN_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
+const Q_RAFFLE_VOTE_IN_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'indexOfProposal',
     type: 'uint32',
     offset: 0,
     byteLength: 4,
+  },
+  {
+    name: 'yes',
+    type: 'uint8',
+    offset: 4,
+    byteLength: 1,
   },
 ]
 
@@ -204,7 +204,7 @@ export interface QRaffleVoteInProposalOutput {
   returnCode: number
 }
 
-export const Q_RAFFLE_VOTE_IN_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
+const Q_RAFFLE_VOTE_IN_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'sint32',
@@ -217,23 +217,16 @@ export function decodeQRaffleVoteInProposalOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QRaffleVoteInProposalOutput {
-  return decodePayload(
-    data,
-    Q_RAFFLE_VOTE_IN_PROPOSAL_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QRaffleVoteInProposalOutput
+  return decodePayload(data, Q_RAFFLE_VOTE_IN_PROPOSAL_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleVoteInProposalOutput
 }
 
 export const Q_RAFFLE_DEPOSIT_IN_QU_RAFFLE_INPUT_TYPE = 6
-export const Q_RAFFLE_DEPOSIT_IN_QU_RAFFLE_INPUT_SIZE = 0
-export const Q_RAFFLE_DEPOSIT_IN_QU_RAFFLE_OUTPUT_SIZE = 4
 
 export interface QRaffleDepositInQuRaffleOutput {
   returnCode: number
 }
 
-export const Q_RAFFLE_DEPOSIT_IN_QU_RAFFLE_OUTPUT_FIELDS: BinaryField[] = [
+const Q_RAFFLE_DEPOSIT_IN_QU_RAFFLE_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'sint32',
@@ -246,23 +239,16 @@ export function decodeQRaffleDepositInQuRaffleOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QRaffleDepositInQuRaffleOutput {
-  return decodePayload(
-    data,
-    Q_RAFFLE_DEPOSIT_IN_QU_RAFFLE_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QRaffleDepositInQuRaffleOutput
+  return decodePayload(data, Q_RAFFLE_DEPOSIT_IN_QU_RAFFLE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleDepositInQuRaffleOutput
 }
 
 export const Q_RAFFLE_DEPOSIT_IN_TOKEN_RAFFLE_INPUT_TYPE = 7
-export const Q_RAFFLE_DEPOSIT_IN_TOKEN_RAFFLE_INPUT_SIZE = 4
-export const Q_RAFFLE_DEPOSIT_IN_TOKEN_RAFFLE_OUTPUT_SIZE = 4
 
 export interface QRaffleDepositInTokenRaffleInput {
   indexOfTokenRaffle: number
 }
 
-export const Q_RAFFLE_DEPOSIT_IN_TOKEN_RAFFLE_INPUT_FIELDS: BinaryField[] = [
+const Q_RAFFLE_DEPOSIT_IN_TOKEN_RAFFLE_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'indexOfTokenRaffle',
     type: 'uint32',
@@ -282,7 +268,7 @@ export interface QRaffleDepositInTokenRaffleOutput {
   returnCode: number
 }
 
-export const Q_RAFFLE_DEPOSIT_IN_TOKEN_RAFFLE_OUTPUT_FIELDS: BinaryField[] = [
+const Q_RAFFLE_DEPOSIT_IN_TOKEN_RAFFLE_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'sint32',
@@ -295,17 +281,10 @@ export function decodeQRaffleDepositInTokenRaffleOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QRaffleDepositInTokenRaffleOutput {
-  return decodePayload(
-    data,
-    Q_RAFFLE_DEPOSIT_IN_TOKEN_RAFFLE_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QRaffleDepositInTokenRaffleOutput
+  return decodePayload(data, Q_RAFFLE_DEPOSIT_IN_TOKEN_RAFFLE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleDepositInTokenRaffleOutput
 }
 
 export const Q_RAFFLE_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE = 8
-export const Q_RAFFLE_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_SIZE = 52
-export const Q_RAFFLE_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_SIZE = 8
 
 export interface QRaffleTransferShareManagementRightsInput {
   tokenIssuer: string
@@ -314,7 +293,7 @@ export interface QRaffleTransferShareManagementRightsInput {
   newManagingContractIndex: number
 }
 
-export const Q_RAFFLE_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
+const Q_RAFFLE_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'tokenIssuer',
     type: 'id',
@@ -352,7 +331,7 @@ export interface QRaffleTransferShareManagementRightsOutput {
   transferredNumberOfShares: bigint
 }
 
-export const Q_RAFFLE_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
+const Q_RAFFLE_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'transferredNumberOfShares',
     type: 'sint64',
@@ -365,24 +344,18 @@ export function decodeQRaffleTransferShareManagementRightsOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QRaffleTransferShareManagementRightsOutput {
-  return decodePayload(
-    data,
-    Q_RAFFLE_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QRaffleTransferShareManagementRightsOutput
+  return decodePayload(data, Q_RAFFLE_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleTransferShareManagementRightsOutput
 }
 
 export const Q_RAFFLE_GET_REGISTERS_INPUT_TYPE = 9
 export const Q_RAFFLE_GET_REGISTERS_INPUT_SIZE = 8
-export const Q_RAFFLE_GET_REGISTERS_OUTPUT_SIZE = 36
 
 export interface QRaffleGetRegistersInput {
   offset: number
   limit: number
 }
 
-export const Q_RAFFLE_GET_REGISTERS_INPUT_FIELDS: BinaryField[] = [
+const Q_RAFFLE_GET_REGISTERS_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'offset',
     type: 'uint32',
@@ -409,7 +382,7 @@ export interface QRaffleGetRegistersOutput {
   returnCode: number
 }
 
-export const Q_RAFFLE_GET_REGISTERS_OUTPUT_FIELDS: BinaryField[] = [
+const Q_RAFFLE_GET_REGISTERS_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'register1',
     type: 'id',
@@ -428,17 +401,29 @@ export function decodeQRaffleGetRegistersOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QRaffleGetRegistersOutput {
-  return decodePayload(
-    data,
-    Q_RAFFLE_GET_REGISTERS_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QRaffleGetRegistersOutput
+  return decodePayload(data, Q_RAFFLE_GET_REGISTERS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleGetRegistersOutput
+}
+
+export async function qRaffleGetRegisters(
+  live: SmartContractCaller,
+  input: QRaffleGetRegistersInput,
+  options?: ContractCallOptions,
+): Promise<Result<QRaffleGetRegistersOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: Q_RAFFLE_CONTRACT_INDEX,
+    inputType: Q_RAFFLE_GET_REGISTERS_INPUT_TYPE,
+    inputSize: Q_RAFFLE_GET_REGISTERS_INPUT_SIZE,
+    inputFields: Q_RAFFLE_GET_REGISTERS_INPUT_FIELDS,
+    outputFields: Q_RAFFLE_GET_REGISTERS_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const Q_RAFFLE_GET_ANALYTICS_INPUT_TYPE = 10
 export const Q_RAFFLE_GET_ANALYTICS_INPUT_SIZE = 0
-export const Q_RAFFLE_GET_ANALYTICS_OUTPUT_SIZE = 92
 
 export interface QRaffleGetAnalyticsOutput {
   currentQuRaffleAmount: bigint
@@ -458,7 +443,7 @@ export interface QRaffleGetAnalyticsOutput {
   returnCode: number
 }
 
-export const Q_RAFFLE_GET_ANALYTICS_OUTPUT_FIELDS: BinaryField[] = [
+const Q_RAFFLE_GET_ANALYTICS_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'currentQuRaffleAmount',
     type: 'uint64',
@@ -555,23 +540,34 @@ export function decodeQRaffleGetAnalyticsOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QRaffleGetAnalyticsOutput {
-  return decodePayload(
-    data,
-    Q_RAFFLE_GET_ANALYTICS_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QRaffleGetAnalyticsOutput
+  return decodePayload(data, Q_RAFFLE_GET_ANALYTICS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleGetAnalyticsOutput
+}
+
+export async function qRaffleGetAnalytics(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<QRaffleGetAnalyticsOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: Q_RAFFLE_CONTRACT_INDEX,
+    inputType: Q_RAFFLE_GET_ANALYTICS_INPUT_TYPE,
+    inputSize: Q_RAFFLE_GET_ANALYTICS_INPUT_SIZE,
+    inputFields: [],
+    outputFields: Q_RAFFLE_GET_ANALYTICS_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
 }
 
 export const Q_RAFFLE_GET_ACTIVE_PROPOSAL_INPUT_TYPE = 11
 export const Q_RAFFLE_GET_ACTIVE_PROPOSAL_INPUT_SIZE = 4
-export const Q_RAFFLE_GET_ACTIVE_PROPOSAL_OUTPUT_SIZE = 92
 
 export interface QRaffleGetActiveProposalInput {
   indexOfProposal: number
 }
 
-export const Q_RAFFLE_GET_ACTIVE_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
+const Q_RAFFLE_GET_ACTIVE_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'indexOfProposal',
     type: 'uint32',
@@ -597,7 +593,7 @@ export interface QRaffleGetActiveProposalOutput {
   returnCode: number
 }
 
-export const Q_RAFFLE_GET_ACTIVE_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
+const Q_RAFFLE_GET_ACTIVE_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'tokenIssuer',
     type: 'id',
@@ -646,23 +642,35 @@ export function decodeQRaffleGetActiveProposalOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QRaffleGetActiveProposalOutput {
-  return decodePayload(
-    data,
-    Q_RAFFLE_GET_ACTIVE_PROPOSAL_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QRaffleGetActiveProposalOutput
+  return decodePayload(data, Q_RAFFLE_GET_ACTIVE_PROPOSAL_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleGetActiveProposalOutput
+}
+
+export async function qRaffleGetActiveProposal(
+  live: SmartContractCaller,
+  input: QRaffleGetActiveProposalInput,
+  options?: ContractCallOptions,
+): Promise<Result<QRaffleGetActiveProposalOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: Q_RAFFLE_CONTRACT_INDEX,
+    inputType: Q_RAFFLE_GET_ACTIVE_PROPOSAL_INPUT_TYPE,
+    inputSize: Q_RAFFLE_GET_ACTIVE_PROPOSAL_INPUT_SIZE,
+    inputFields: Q_RAFFLE_GET_ACTIVE_PROPOSAL_INPUT_FIELDS,
+    outputFields: Q_RAFFLE_GET_ACTIVE_PROPOSAL_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const Q_RAFFLE_GET_ENDED_TOKEN_RAFFLE_INPUT_TYPE = 12
 export const Q_RAFFLE_GET_ENDED_TOKEN_RAFFLE_INPUT_SIZE = 4
-export const Q_RAFFLE_GET_ENDED_TOKEN_RAFFLE_OUTPUT_SIZE = 96
 
 export interface QRaffleGetEndedTokenRaffleInput {
   indexOfRaffle: number
 }
 
-export const Q_RAFFLE_GET_ENDED_TOKEN_RAFFLE_INPUT_FIELDS: BinaryField[] = [
+const Q_RAFFLE_GET_ENDED_TOKEN_RAFFLE_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'indexOfRaffle',
     type: 'uint32',
@@ -689,7 +697,7 @@ export interface QRaffleGetEndedTokenRaffleOutput {
   returnCode: number
 }
 
-export const Q_RAFFLE_GET_ENDED_TOKEN_RAFFLE_OUTPUT_FIELDS: BinaryField[] = [
+const Q_RAFFLE_GET_ENDED_TOKEN_RAFFLE_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'epochWinner',
     type: 'id',
@@ -744,23 +752,35 @@ export function decodeQRaffleGetEndedTokenRaffleOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QRaffleGetEndedTokenRaffleOutput {
-  return decodePayload(
-    data,
-    Q_RAFFLE_GET_ENDED_TOKEN_RAFFLE_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QRaffleGetEndedTokenRaffleOutput
+  return decodePayload(data, Q_RAFFLE_GET_ENDED_TOKEN_RAFFLE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleGetEndedTokenRaffleOutput
+}
+
+export async function qRaffleGetEndedTokenRaffle(
+  live: SmartContractCaller,
+  input: QRaffleGetEndedTokenRaffleInput,
+  options?: ContractCallOptions,
+): Promise<Result<QRaffleGetEndedTokenRaffleOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: Q_RAFFLE_CONTRACT_INDEX,
+    inputType: Q_RAFFLE_GET_ENDED_TOKEN_RAFFLE_INPUT_TYPE,
+    inputSize: Q_RAFFLE_GET_ENDED_TOKEN_RAFFLE_INPUT_SIZE,
+    inputFields: Q_RAFFLE_GET_ENDED_TOKEN_RAFFLE_INPUT_FIELDS,
+    outputFields: Q_RAFFLE_GET_ENDED_TOKEN_RAFFLE_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_INPUT_TYPE = 13
 export const Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_INPUT_SIZE = 4
-export const Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_OUTPUT_SIZE = 12
 
 export interface QRaffleGetEpochRaffleIndexesInput {
   epoch: number
 }
 
-export const Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_INPUT_FIELDS: BinaryField[] = [
+const Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'epoch',
     type: 'uint32',
@@ -782,7 +802,7 @@ export interface QRaffleGetEpochRaffleIndexesOutput {
   returnCode: number
 }
 
-export const Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_OUTPUT_FIELDS: BinaryField[] = [
+const Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'StartIndex',
     type: 'uint32',
@@ -807,23 +827,35 @@ export function decodeQRaffleGetEpochRaffleIndexesOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QRaffleGetEpochRaffleIndexesOutput {
-  return decodePayload(
-    data,
-    Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QRaffleGetEpochRaffleIndexesOutput
+  return decodePayload(data, Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleGetEpochRaffleIndexesOutput
+}
+
+export async function qRaffleGetEpochRaffleIndexes(
+  live: SmartContractCaller,
+  input: QRaffleGetEpochRaffleIndexesInput,
+  options?: ContractCallOptions,
+): Promise<Result<QRaffleGetEpochRaffleIndexesOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: Q_RAFFLE_CONTRACT_INDEX,
+    inputType: Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_INPUT_TYPE,
+    inputSize: Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_INPUT_SIZE,
+    inputFields: Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_INPUT_FIELDS,
+    outputFields: Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const Q_RAFFLE_GET_ENDED_QU_RAFFLE_INPUT_TYPE = 14
 export const Q_RAFFLE_GET_ENDED_QU_RAFFLE_INPUT_SIZE = 4
-export const Q_RAFFLE_GET_ENDED_QU_RAFFLE_OUTPUT_SIZE = 64
 
 export interface QRaffleGetEndedQuRaffleInput {
   epoch: number
 }
 
-export const Q_RAFFLE_GET_ENDED_QU_RAFFLE_INPUT_FIELDS: BinaryField[] = [
+const Q_RAFFLE_GET_ENDED_QU_RAFFLE_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'epoch',
     type: 'uint32',
@@ -849,7 +881,7 @@ export interface QRaffleGetEndedQuRaffleOutput {
   returnCode: number
 }
 
-export const Q_RAFFLE_GET_ENDED_QU_RAFFLE_OUTPUT_FIELDS: BinaryField[] = [
+const Q_RAFFLE_GET_ENDED_QU_RAFFLE_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'epochWinner',
     type: 'id',
@@ -898,23 +930,35 @@ export function decodeQRaffleGetEndedQuRaffleOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QRaffleGetEndedQuRaffleOutput {
-  return decodePayload(
-    data,
-    Q_RAFFLE_GET_ENDED_QU_RAFFLE_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QRaffleGetEndedQuRaffleOutput
+  return decodePayload(data, Q_RAFFLE_GET_ENDED_QU_RAFFLE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleGetEndedQuRaffleOutput
+}
+
+export async function qRaffleGetEndedQuRaffle(
+  live: SmartContractCaller,
+  input: QRaffleGetEndedQuRaffleInput,
+  options?: ContractCallOptions,
+): Promise<Result<QRaffleGetEndedQuRaffleOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: Q_RAFFLE_CONTRACT_INDEX,
+    inputType: Q_RAFFLE_GET_ENDED_QU_RAFFLE_INPUT_TYPE,
+    inputSize: Q_RAFFLE_GET_ENDED_QU_RAFFLE_INPUT_SIZE,
+    inputFields: Q_RAFFLE_GET_ENDED_QU_RAFFLE_INPUT_FIELDS,
+    outputFields: Q_RAFFLE_GET_ENDED_QU_RAFFLE_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const Q_RAFFLE_GET_ACTIVE_TOKEN_RAFFLE_INPUT_TYPE = 15
 export const Q_RAFFLE_GET_ACTIVE_TOKEN_RAFFLE_INPUT_SIZE = 4
-export const Q_RAFFLE_GET_ACTIVE_TOKEN_RAFFLE_OUTPUT_SIZE = 56
 
 export interface QRaffleGetActiveTokenRaffleInput {
   indexOfTokenRaffle: number
 }
 
-export const Q_RAFFLE_GET_ACTIVE_TOKEN_RAFFLE_INPUT_FIELDS: BinaryField[] = [
+const Q_RAFFLE_GET_ACTIVE_TOKEN_RAFFLE_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'indexOfTokenRaffle',
     type: 'uint32',
@@ -938,7 +982,7 @@ export interface QRaffleGetActiveTokenRaffleOutput {
   returnCode: number
 }
 
-export const Q_RAFFLE_GET_ACTIVE_TOKEN_RAFFLE_OUTPUT_FIELDS: BinaryField[] = [
+const Q_RAFFLE_GET_ACTIVE_TOKEN_RAFFLE_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'tokenIssuer',
     type: 'id',
@@ -975,23 +1019,35 @@ export function decodeQRaffleGetActiveTokenRaffleOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QRaffleGetActiveTokenRaffleOutput {
-  return decodePayload(
-    data,
-    Q_RAFFLE_GET_ACTIVE_TOKEN_RAFFLE_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QRaffleGetActiveTokenRaffleOutput
+  return decodePayload(data, Q_RAFFLE_GET_ACTIVE_TOKEN_RAFFLE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleGetActiveTokenRaffleOutput
+}
+
+export async function qRaffleGetActiveTokenRaffle(
+  live: SmartContractCaller,
+  input: QRaffleGetActiveTokenRaffleInput,
+  options?: ContractCallOptions,
+): Promise<Result<QRaffleGetActiveTokenRaffleOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: Q_RAFFLE_CONTRACT_INDEX,
+    inputType: Q_RAFFLE_GET_ACTIVE_TOKEN_RAFFLE_INPUT_TYPE,
+    inputSize: Q_RAFFLE_GET_ACTIVE_TOKEN_RAFFLE_INPUT_SIZE,
+    inputFields: Q_RAFFLE_GET_ACTIVE_TOKEN_RAFFLE_INPUT_FIELDS,
+    outputFields: Q_RAFFLE_GET_ACTIVE_TOKEN_RAFFLE_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AMOUNT_PER_USER_INPUT_TYPE = 16
 export const Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AMOUNT_PER_USER_INPUT_SIZE = 32
-export const Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AMOUNT_PER_USER_OUTPUT_SIZE = 12
 
 export interface QRaffleGetQuRaffleEntryAmountPerUserInput {
   user: string
 }
 
-export const Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AMOUNT_PER_USER_INPUT_FIELDS: BinaryField[] = [
+const Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AMOUNT_PER_USER_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'user',
     type: 'id',
@@ -1012,7 +1068,7 @@ export interface QRaffleGetQuRaffleEntryAmountPerUserOutput {
   returnCode: number
 }
 
-export const Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AMOUNT_PER_USER_OUTPUT_FIELDS: BinaryField[] = [
+const Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AMOUNT_PER_USER_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'entryAmount',
     type: 'uint64',
@@ -1031,24 +1087,36 @@ export function decodeQRaffleGetQuRaffleEntryAmountPerUserOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QRaffleGetQuRaffleEntryAmountPerUserOutput {
-  return decodePayload(
-    data,
-    Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AMOUNT_PER_USER_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QRaffleGetQuRaffleEntryAmountPerUserOutput
+  return decodePayload(data, Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AMOUNT_PER_USER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleGetQuRaffleEntryAmountPerUserOutput
+}
+
+export async function qRaffleGetQuRaffleEntryAmountPerUser(
+  live: SmartContractCaller,
+  input: QRaffleGetQuRaffleEntryAmountPerUserInput,
+  options?: ContractCallOptions,
+): Promise<Result<QRaffleGetQuRaffleEntryAmountPerUserOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: Q_RAFFLE_CONTRACT_INDEX,
+    inputType: Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AMOUNT_PER_USER_INPUT_TYPE,
+    inputSize: Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AMOUNT_PER_USER_INPUT_SIZE,
+    inputFields: Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AMOUNT_PER_USER_INPUT_FIELDS,
+    outputFields: Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AMOUNT_PER_USER_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AVERAGE_AMOUNT_INPUT_TYPE = 17
 export const Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AVERAGE_AMOUNT_INPUT_SIZE = 0
-export const Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AVERAGE_AMOUNT_OUTPUT_SIZE = 12
 
 export interface QRaffleGetQuRaffleEntryAverageAmountOutput {
   entryAverageAmount: bigint
   returnCode: number
 }
 
-export const Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AVERAGE_AMOUNT_OUTPUT_FIELDS: BinaryField[] = [
+const Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AVERAGE_AMOUNT_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'entryAverageAmount',
     type: 'uint64',
@@ -1067,11 +1135,50 @@ export function decodeQRaffleGetQuRaffleEntryAverageAmountOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QRaffleGetQuRaffleEntryAverageAmountOutput {
-  return decodePayload(
-    data,
-    Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AVERAGE_AMOUNT_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QRaffleGetQuRaffleEntryAverageAmountOutput
+  return decodePayload(data, Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AVERAGE_AMOUNT_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleGetQuRaffleEntryAverageAmountOutput
+}
+
+export async function qRaffleGetQuRaffleEntryAverageAmount(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<QRaffleGetQuRaffleEntryAverageAmountOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: Q_RAFFLE_CONTRACT_INDEX,
+    inputType: Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AVERAGE_AMOUNT_INPUT_TYPE,
+    inputSize: Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AVERAGE_AMOUNT_INPUT_SIZE,
+    inputFields: [],
+    outputFields: Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AVERAGE_AMOUNT_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
+}
+
+export const qRaffle = {
+  contractIndex: Q_RAFFLE_CONTRACT_INDEX,
+  getRegisters: qRaffleGetRegisters,
+  getAnalytics: qRaffleGetAnalytics,
+  getActiveProposal: qRaffleGetActiveProposal,
+  getEndedTokenRaffle: qRaffleGetEndedTokenRaffle,
+  getEpochRaffleIndexes: qRaffleGetEpochRaffleIndexes,
+  getEndedQuRaffle: qRaffleGetEndedQuRaffle,
+  getActiveTokenRaffle: qRaffleGetActiveTokenRaffle,
+  getQuRaffleEntryAmountPerUser: qRaffleGetQuRaffleEntryAmountPerUser,
+  getQuRaffleEntryAverageAmount: qRaffleGetQuRaffleEntryAverageAmount,
+  buildRegisterInSystemInput: buildQRaffleRegisterInSystemInput,
+  decodeRegisterInSystemOutput: decodeQRaffleRegisterInSystemOutput,
+  decodeLogoutInSystemOutput: decodeQRaffleLogoutInSystemOutput,
+  buildSubmitEntryAmountInput: buildQRaffleSubmitEntryAmountInput,
+  decodeSubmitEntryAmountOutput: decodeQRaffleSubmitEntryAmountOutput,
+  buildSubmitProposalInput: buildQRaffleSubmitProposalInput,
+  decodeSubmitProposalOutput: decodeQRaffleSubmitProposalOutput,
+  buildVoteInProposalInput: buildQRaffleVoteInProposalInput,
+  decodeVoteInProposalOutput: decodeQRaffleVoteInProposalOutput,
+  decodeDepositInQuRaffleOutput: decodeQRaffleDepositInQuRaffleOutput,
+  buildDepositInTokenRaffleInput: buildQRaffleDepositInTokenRaffleInput,
+  decodeDepositInTokenRaffleOutput: decodeQRaffleDepositInTokenRaffleOutput,
+  buildTransferShareManagementRightsInput: buildQRaffleTransferShareManagementRightsInput,
+  decodeTransferShareManagementRightsOutput: decodeQRaffleTransferShareManagementRightsOutput,
 }
 

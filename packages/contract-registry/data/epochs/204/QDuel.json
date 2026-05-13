@@ -3,7 +3,7 @@
   "contractName": "QDuel",
   "effectiveFromEpoch": 204,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T12:08:42.781Z",
+  "registeredAt": "2026-05-13T14:13:38.402Z",
   "structs": {
     "RoomInfo": {
       "name": "RoomInfo",
@@ -37,9 +37,16 @@
           "type": "uint64",
           "offset": 104,
           "byteLength": 8
+        },
+        {
+          "name": "lastUpdate",
+          "type": "struct",
+          "offset": 112,
+          "byteLength": 8,
+          "structRef": "DateAndTime"
         }
       ],
-      "byteLength": 112
+      "byteLength": 120
     },
     "WinnerData": {
       "name": "WinnerData",
@@ -355,20 +362,20 @@
           "name": "rooms",
           "type": "array",
           "offset": 0,
-          "byteLength": 57344,
+          "byteLength": 61440,
           "arrayLength": 512,
           "arrayItemStructRef": "RoomInfo",
-          "arrayItemByteLength": 112
+          "arrayItemByteLength": 120
         },
         {
           "name": "returnCode",
           "type": "uint8",
-          "offset": 57344,
+          "offset": 61440,
           "byteLength": 1
         }
       ],
       "inputSize": 0,
-      "outputSize": 57345
+      "outputSize": 61441
     },
     {
       "kind": "function",

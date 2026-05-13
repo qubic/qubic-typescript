@@ -1,6 +1,9 @@
 // @generated — do not edit by hand. Run `bun run generate` to regenerate.
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.ts/contract-registry'
 import { buildPayload, decodePayload } from '@qubic.ts/contract-registry'
+import type { QubicRpcError } from '@qubic.ts/rpc'
+import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import type { Result } from '../result.js'
 
 export const VOTTUN_BRIDGE_CONTRACT_INDEX = 25
 
@@ -23,6 +26,8 @@ export interface VottunBridgeAdminProposalStruct {
   amount: bigint
   approvals: string[]
   approvalsCount: number
+  executed: number
+  active: number
 }
 
 export interface VottunBridgeBridgeOrderStruct {
@@ -33,6 +38,9 @@ export interface VottunBridgeBridgeOrderStruct {
   amount: bigint
   orderType: number
   status: number
+  fromQubicToEthereum: number
+  tokensReceived: number
+  tokensLocked: number
 }
 
 const STRUCTS: Record<string, NamedStruct> = {
@@ -98,7 +106,7 @@ const STRUCTS: Record<string, NamedStruct> = {
 },
   AdminProposal: {
   name: 'AdminProposal',
-  byteLength: 594,
+  byteLength: 596,
   fields: [
     {
       name: 'proposalId',
@@ -145,11 +153,23 @@ const STRUCTS: Record<string, NamedStruct> = {
       offset: 593,
       byteLength: 1,
     },
+    {
+      name: 'executed',
+      type: 'uint8',
+      offset: 594,
+      byteLength: 1,
+    },
+    {
+      name: 'active',
+      type: 'uint8',
+      offset: 595,
+      byteLength: 1,
+    },
 ],
 },
   BridgeOrder: {
   name: 'BridgeOrder',
-  byteLength: 146,
+  byteLength: 149,
   fields: [
     {
       name: 'qubicSender',
@@ -196,21 +216,38 @@ const STRUCTS: Record<string, NamedStruct> = {
       offset: 145,
       byteLength: 1,
     },
+    {
+      name: 'fromQubicToEthereum',
+      type: 'uint8',
+      offset: 146,
+      byteLength: 1,
+    },
+    {
+      name: 'tokensReceived',
+      type: 'uint8',
+      offset: 147,
+      byteLength: 1,
+    },
+    {
+      name: 'tokensLocked',
+      type: 'uint8',
+      offset: 148,
+      byteLength: 1,
+    },
 ],
 },
 }
 
 export const VOTTUN_BRIDGE_CREATE_ORDER_INPUT_TYPE = 1
-export const VOTTUN_BRIDGE_CREATE_ORDER_INPUT_SIZE = 104
-export const VOTTUN_BRIDGE_CREATE_ORDER_OUTPUT_SIZE = 9
 
 export interface VottunBridgeCreateOrderInput {
   qubicDestination: string
   amount: bigint
   ethAddress: number[]
+  fromQubicToEthereum: number
 }
 
-export const VOTTUN_BRIDGE_CREATE_ORDER_INPUT_FIELDS: BinaryField[] = [
+const VOTTUN_BRIDGE_CREATE_ORDER_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'qubicDestination',
     type: 'id',
@@ -232,6 +269,12 @@ export const VOTTUN_BRIDGE_CREATE_ORDER_INPUT_FIELDS: BinaryField[] = [
     arrayItemType: 'uint8',
     arrayItemByteLength: 1,
   },
+  {
+    name: 'fromQubicToEthereum',
+    type: 'uint8',
+    offset: 104,
+    byteLength: 1,
+  },
 ]
 
 export function buildVottunBridgeCreateOrderInput(
@@ -246,7 +289,7 @@ export interface VottunBridgeCreateOrderOutput {
   orderId: bigint
 }
 
-export const VOTTUN_BRIDGE_CREATE_ORDER_OUTPUT_FIELDS: BinaryField[] = [
+const VOTTUN_BRIDGE_CREATE_ORDER_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'status',
     type: 'uint8',
@@ -265,23 +308,16 @@ export function decodeVottunBridgeCreateOrderOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): VottunBridgeCreateOrderOutput {
-  return decodePayload(
-    data,
-    VOTTUN_BRIDGE_CREATE_ORDER_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as VottunBridgeCreateOrderOutput
+  return decodePayload(data, VOTTUN_BRIDGE_CREATE_ORDER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as VottunBridgeCreateOrderOutput
 }
 
 export const VOTTUN_BRIDGE_COMPLETE_ORDER_INPUT_TYPE = 3
-export const VOTTUN_BRIDGE_COMPLETE_ORDER_INPUT_SIZE = 8
-export const VOTTUN_BRIDGE_COMPLETE_ORDER_OUTPUT_SIZE = 1
 
 export interface VottunBridgeCompleteOrderInput {
   orderId: bigint
 }
 
-export const VOTTUN_BRIDGE_COMPLETE_ORDER_INPUT_FIELDS: BinaryField[] = [
+const VOTTUN_BRIDGE_COMPLETE_ORDER_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'orderId',
     type: 'uint64',
@@ -301,7 +337,7 @@ export interface VottunBridgeCompleteOrderOutput {
   status: number
 }
 
-export const VOTTUN_BRIDGE_COMPLETE_ORDER_OUTPUT_FIELDS: BinaryField[] = [
+const VOTTUN_BRIDGE_COMPLETE_ORDER_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'status',
     type: 'uint8',
@@ -314,23 +350,16 @@ export function decodeVottunBridgeCompleteOrderOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): VottunBridgeCompleteOrderOutput {
-  return decodePayload(
-    data,
-    VOTTUN_BRIDGE_COMPLETE_ORDER_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as VottunBridgeCompleteOrderOutput
+  return decodePayload(data, VOTTUN_BRIDGE_COMPLETE_ORDER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as VottunBridgeCompleteOrderOutput
 }
 
 export const VOTTUN_BRIDGE_REFUND_ORDER_INPUT_TYPE = 4
-export const VOTTUN_BRIDGE_REFUND_ORDER_INPUT_SIZE = 8
-export const VOTTUN_BRIDGE_REFUND_ORDER_OUTPUT_SIZE = 1
 
 export interface VottunBridgeRefundOrderInput {
   orderId: bigint
 }
 
-export const VOTTUN_BRIDGE_REFUND_ORDER_INPUT_FIELDS: BinaryField[] = [
+const VOTTUN_BRIDGE_REFUND_ORDER_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'orderId',
     type: 'uint64',
@@ -350,7 +379,7 @@ export interface VottunBridgeRefundOrderOutput {
   status: number
 }
 
-export const VOTTUN_BRIDGE_REFUND_ORDER_OUTPUT_FIELDS: BinaryField[] = [
+const VOTTUN_BRIDGE_REFUND_ORDER_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'status',
     type: 'uint8',
@@ -363,24 +392,17 @@ export function decodeVottunBridgeRefundOrderOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): VottunBridgeRefundOrderOutput {
-  return decodePayload(
-    data,
-    VOTTUN_BRIDGE_REFUND_ORDER_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as VottunBridgeRefundOrderOutput
+  return decodePayload(data, VOTTUN_BRIDGE_REFUND_ORDER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as VottunBridgeRefundOrderOutput
 }
 
 export const VOTTUN_BRIDGE_TRANSFER_TO_CONTRACT_INPUT_TYPE = 5
-export const VOTTUN_BRIDGE_TRANSFER_TO_CONTRACT_INPUT_SIZE = 16
-export const VOTTUN_BRIDGE_TRANSFER_TO_CONTRACT_OUTPUT_SIZE = 1
 
 export interface VottunBridgeTransferToContractInput {
   amount: bigint
   orderId: bigint
 }
 
-export const VOTTUN_BRIDGE_TRANSFER_TO_CONTRACT_INPUT_FIELDS: BinaryField[] = [
+const VOTTUN_BRIDGE_TRANSFER_TO_CONTRACT_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'amount',
     type: 'uint64',
@@ -406,7 +428,7 @@ export interface VottunBridgeTransferToContractOutput {
   status: number
 }
 
-export const VOTTUN_BRIDGE_TRANSFER_TO_CONTRACT_OUTPUT_FIELDS: BinaryField[] = [
+const VOTTUN_BRIDGE_TRANSFER_TO_CONTRACT_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'status',
     type: 'uint8',
@@ -419,17 +441,10 @@ export function decodeVottunBridgeTransferToContractOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): VottunBridgeTransferToContractOutput {
-  return decodePayload(
-    data,
-    VOTTUN_BRIDGE_TRANSFER_TO_CONTRACT_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as VottunBridgeTransferToContractOutput
+  return decodePayload(data, VOTTUN_BRIDGE_TRANSFER_TO_CONTRACT_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as VottunBridgeTransferToContractOutput
 }
 
 export const VOTTUN_BRIDGE_CREATE_PROPOSAL_INPUT_TYPE = 10
-export const VOTTUN_BRIDGE_CREATE_PROPOSAL_INPUT_SIZE = 73
-export const VOTTUN_BRIDGE_CREATE_PROPOSAL_OUTPUT_SIZE = 9
 
 export interface VottunBridgeCreateProposalInput {
   proposalType: number
@@ -438,7 +453,7 @@ export interface VottunBridgeCreateProposalInput {
   amount: bigint
 }
 
-export const VOTTUN_BRIDGE_CREATE_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
+const VOTTUN_BRIDGE_CREATE_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'proposalType',
     type: 'uint8',
@@ -477,7 +492,7 @@ export interface VottunBridgeCreateProposalOutput {
   proposalId: bigint
 }
 
-export const VOTTUN_BRIDGE_CREATE_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
+const VOTTUN_BRIDGE_CREATE_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'status',
     type: 'uint8',
@@ -496,23 +511,16 @@ export function decodeVottunBridgeCreateProposalOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): VottunBridgeCreateProposalOutput {
-  return decodePayload(
-    data,
-    VOTTUN_BRIDGE_CREATE_PROPOSAL_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as VottunBridgeCreateProposalOutput
+  return decodePayload(data, VOTTUN_BRIDGE_CREATE_PROPOSAL_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as VottunBridgeCreateProposalOutput
 }
 
 export const VOTTUN_BRIDGE_APPROVE_PROPOSAL_INPUT_TYPE = 11
-export const VOTTUN_BRIDGE_APPROVE_PROPOSAL_INPUT_SIZE = 8
-export const VOTTUN_BRIDGE_APPROVE_PROPOSAL_OUTPUT_SIZE = 1
 
 export interface VottunBridgeApproveProposalInput {
   proposalId: bigint
 }
 
-export const VOTTUN_BRIDGE_APPROVE_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
+const VOTTUN_BRIDGE_APPROVE_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'proposalId',
     type: 'uint64',
@@ -530,13 +538,20 @@ export function buildVottunBridgeApproveProposalInput(
 
 export interface VottunBridgeApproveProposalOutput {
   status: number
+  executed: number
 }
 
-export const VOTTUN_BRIDGE_APPROVE_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
+const VOTTUN_BRIDGE_APPROVE_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'status',
     type: 'uint8',
     offset: 0,
+    byteLength: 1,
+  },
+  {
+    name: 'executed',
+    type: 'uint8',
+    offset: 1,
     byteLength: 1,
   },
 ]
@@ -545,23 +560,16 @@ export function decodeVottunBridgeApproveProposalOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): VottunBridgeApproveProposalOutput {
-  return decodePayload(
-    data,
-    VOTTUN_BRIDGE_APPROVE_PROPOSAL_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as VottunBridgeApproveProposalOutput
+  return decodePayload(data, VOTTUN_BRIDGE_APPROVE_PROPOSAL_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as VottunBridgeApproveProposalOutput
 }
 
 export const VOTTUN_BRIDGE_CANCEL_PROPOSAL_INPUT_TYPE = 13
-export const VOTTUN_BRIDGE_CANCEL_PROPOSAL_INPUT_SIZE = 8
-export const VOTTUN_BRIDGE_CANCEL_PROPOSAL_OUTPUT_SIZE = 1
 
 export interface VottunBridgeCancelProposalInput {
   proposalId: bigint
 }
 
-export const VOTTUN_BRIDGE_CANCEL_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
+const VOTTUN_BRIDGE_CANCEL_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'proposalId',
     type: 'uint64',
@@ -581,7 +589,7 @@ export interface VottunBridgeCancelProposalOutput {
   status: number
 }
 
-export const VOTTUN_BRIDGE_CANCEL_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
+const VOTTUN_BRIDGE_CANCEL_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'status',
     type: 'uint8',
@@ -594,17 +602,10 @@ export function decodeVottunBridgeCancelProposalOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): VottunBridgeCancelProposalOutput {
-  return decodePayload(
-    data,
-    VOTTUN_BRIDGE_CANCEL_PROPOSAL_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as VottunBridgeCancelProposalOutput
+  return decodePayload(data, VOTTUN_BRIDGE_CANCEL_PROPOSAL_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as VottunBridgeCancelProposalOutput
 }
 
 export const VOTTUN_BRIDGE_ADD_LIQUIDITY_INPUT_TYPE = 15
-export const VOTTUN_BRIDGE_ADD_LIQUIDITY_INPUT_SIZE = 0
-export const VOTTUN_BRIDGE_ADD_LIQUIDITY_OUTPUT_SIZE = 17
 
 export interface VottunBridgeAddLiquidityOutput {
   status: number
@@ -612,7 +613,7 @@ export interface VottunBridgeAddLiquidityOutput {
   totalLocked: bigint
 }
 
-export const VOTTUN_BRIDGE_ADD_LIQUIDITY_OUTPUT_FIELDS: BinaryField[] = [
+const VOTTUN_BRIDGE_ADD_LIQUIDITY_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'status',
     type: 'uint8',
@@ -637,23 +638,17 @@ export function decodeVottunBridgeAddLiquidityOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): VottunBridgeAddLiquidityOutput {
-  return decodePayload(
-    data,
-    VOTTUN_BRIDGE_ADD_LIQUIDITY_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as VottunBridgeAddLiquidityOutput
+  return decodePayload(data, VOTTUN_BRIDGE_ADD_LIQUIDITY_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as VottunBridgeAddLiquidityOutput
 }
 
 export const VOTTUN_BRIDGE_GET_TOTAL_RECEIVED_TOKENS_INPUT_TYPE = 2
 export const VOTTUN_BRIDGE_GET_TOTAL_RECEIVED_TOKENS_INPUT_SIZE = 0
-export const VOTTUN_BRIDGE_GET_TOTAL_RECEIVED_TOKENS_OUTPUT_SIZE = 8
 
 export interface VottunBridgeGetTotalReceivedTokensOutput {
   totalTokens: bigint
 }
 
-export const VOTTUN_BRIDGE_GET_TOTAL_RECEIVED_TOKENS_OUTPUT_FIELDS: BinaryField[] = [
+const VOTTUN_BRIDGE_GET_TOTAL_RECEIVED_TOKENS_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'totalTokens',
     type: 'uint64',
@@ -666,17 +661,28 @@ export function decodeVottunBridgeGetTotalReceivedTokensOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): VottunBridgeGetTotalReceivedTokensOutput {
-  return decodePayload(
-    data,
-    VOTTUN_BRIDGE_GET_TOTAL_RECEIVED_TOKENS_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as VottunBridgeGetTotalReceivedTokensOutput
+  return decodePayload(data, VOTTUN_BRIDGE_GET_TOTAL_RECEIVED_TOKENS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as VottunBridgeGetTotalReceivedTokensOutput
+}
+
+export async function vottunBridgeGetTotalReceivedTokens(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<VottunBridgeGetTotalReceivedTokensOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: VOTTUN_BRIDGE_CONTRACT_INDEX,
+    inputType: VOTTUN_BRIDGE_GET_TOTAL_RECEIVED_TOKENS_INPUT_TYPE,
+    inputSize: VOTTUN_BRIDGE_GET_TOTAL_RECEIVED_TOKENS_INPUT_SIZE,
+    inputFields: [],
+    outputFields: VOTTUN_BRIDGE_GET_TOTAL_RECEIVED_TOKENS_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
 }
 
 export const VOTTUN_BRIDGE_GET_AVAILABLE_FEES_INPUT_TYPE = 6
 export const VOTTUN_BRIDGE_GET_AVAILABLE_FEES_INPUT_SIZE = 0
-export const VOTTUN_BRIDGE_GET_AVAILABLE_FEES_OUTPUT_SIZE = 24
 
 export interface VottunBridgeGetAvailableFeesOutput {
   availableFees: bigint
@@ -684,7 +690,7 @@ export interface VottunBridgeGetAvailableFeesOutput {
   totalDistributedFees: bigint
 }
 
-export const VOTTUN_BRIDGE_GET_AVAILABLE_FEES_OUTPUT_FIELDS: BinaryField[] = [
+const VOTTUN_BRIDGE_GET_AVAILABLE_FEES_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'availableFees',
     type: 'uint64',
@@ -709,23 +715,34 @@ export function decodeVottunBridgeGetAvailableFeesOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): VottunBridgeGetAvailableFeesOutput {
-  return decodePayload(
-    data,
-    VOTTUN_BRIDGE_GET_AVAILABLE_FEES_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as VottunBridgeGetAvailableFeesOutput
+  return decodePayload(data, VOTTUN_BRIDGE_GET_AVAILABLE_FEES_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as VottunBridgeGetAvailableFeesOutput
+}
+
+export async function vottunBridgeGetAvailableFees(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<VottunBridgeGetAvailableFeesOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: VOTTUN_BRIDGE_CONTRACT_INDEX,
+    inputType: VOTTUN_BRIDGE_GET_AVAILABLE_FEES_INPUT_TYPE,
+    inputSize: VOTTUN_BRIDGE_GET_AVAILABLE_FEES_INPUT_SIZE,
+    inputFields: [],
+    outputFields: VOTTUN_BRIDGE_GET_AVAILABLE_FEES_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
 }
 
 export const VOTTUN_BRIDGE_GET_ORDER_INPUT_TYPE = 7
 export const VOTTUN_BRIDGE_GET_ORDER_INPUT_SIZE = 8
-export const VOTTUN_BRIDGE_GET_ORDER_OUTPUT_SIZE = 246
 
 export interface VottunBridgeGetOrderInput {
   orderId: bigint
 }
 
-export const VOTTUN_BRIDGE_GET_ORDER_INPUT_FIELDS: BinaryField[] = [
+const VOTTUN_BRIDGE_GET_ORDER_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'orderId',
     type: 'uint64',
@@ -747,7 +764,7 @@ export interface VottunBridgeGetOrderOutput {
   message: number[]
 }
 
-export const VOTTUN_BRIDGE_GET_ORDER_OUTPUT_FIELDS: BinaryField[] = [
+const VOTTUN_BRIDGE_GET_ORDER_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'status',
     type: 'uint8',
@@ -776,17 +793,29 @@ export function decodeVottunBridgeGetOrderOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): VottunBridgeGetOrderOutput {
-  return decodePayload(
-    data,
-    VOTTUN_BRIDGE_GET_ORDER_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as VottunBridgeGetOrderOutput
+  return decodePayload(data, VOTTUN_BRIDGE_GET_ORDER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as VottunBridgeGetOrderOutput
+}
+
+export async function vottunBridgeGetOrder(
+  live: SmartContractCaller,
+  input: VottunBridgeGetOrderInput,
+  options?: ContractCallOptions,
+): Promise<Result<VottunBridgeGetOrderOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: VOTTUN_BRIDGE_CONTRACT_INDEX,
+    inputType: VOTTUN_BRIDGE_GET_ORDER_INPUT_TYPE,
+    inputSize: VOTTUN_BRIDGE_GET_ORDER_INPUT_SIZE,
+    inputFields: VOTTUN_BRIDGE_GET_ORDER_INPUT_FIELDS,
+    outputFields: VOTTUN_BRIDGE_GET_ORDER_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const VOTTUN_BRIDGE_GET_CONTRACT_INFO_INPUT_TYPE = 8
 export const VOTTUN_BRIDGE_GET_CONTRACT_INFO_INPUT_SIZE = 0
-export const VOTTUN_BRIDGE_GET_CONTRACT_INFO_OUTPUT_SIZE = 3426
 
 export interface VottunBridgeGetContractInfoOutput {
   managers: string[]
@@ -805,7 +834,7 @@ export interface VottunBridgeGetContractInfoOutput {
   totalProposals: bigint
 }
 
-export const VOTTUN_BRIDGE_GET_CONTRACT_INFO_OUTPUT_FIELDS: BinaryField[] = [
+const VOTTUN_BRIDGE_GET_CONTRACT_INFO_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'managers',
     type: 'array',
@@ -855,27 +884,27 @@ export const VOTTUN_BRIDGE_GET_CONTRACT_INFO_OUTPUT_FIELDS: BinaryField[] = [
     name: 'firstOrders',
     type: 'array',
     offset: 552,
-    byteLength: 2336,
+    byteLength: 2384,
     arrayLength: 16,
-    arrayItemByteLength: 146,
+    arrayItemByteLength: 149,
     arrayItemStructRef: 'BridgeOrder',
   },
   {
     name: 'totalOrdersFound',
     type: 'uint64',
-    offset: 2888,
+    offset: 2936,
     byteLength: 8,
   },
   {
     name: 'emptySlots',
     type: 'uint64',
-    offset: 2896,
+    offset: 2944,
     byteLength: 8,
   },
   {
     name: 'multisigAdmins',
     type: 'array',
-    offset: 2904,
+    offset: 2952,
     byteLength: 512,
     arrayLength: 16,
     arrayItemType: 'id',
@@ -884,19 +913,19 @@ export const VOTTUN_BRIDGE_GET_CONTRACT_INFO_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'numberOfAdmins',
     type: 'uint8',
-    offset: 3416,
+    offset: 3464,
     byteLength: 1,
   },
   {
     name: 'requiredApprovals',
     type: 'uint8',
-    offset: 3417,
+    offset: 3465,
     byteLength: 1,
   },
   {
     name: 'totalProposals',
     type: 'uint64',
-    offset: 3418,
+    offset: 3466,
     byteLength: 8,
   },
 ]
@@ -905,23 +934,34 @@ export function decodeVottunBridgeGetContractInfoOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): VottunBridgeGetContractInfoOutput {
-  return decodePayload(
-    data,
-    VOTTUN_BRIDGE_GET_CONTRACT_INFO_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as VottunBridgeGetContractInfoOutput
+  return decodePayload(data, VOTTUN_BRIDGE_GET_CONTRACT_INFO_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as VottunBridgeGetContractInfoOutput
+}
+
+export async function vottunBridgeGetContractInfo(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<VottunBridgeGetContractInfoOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: VOTTUN_BRIDGE_CONTRACT_INDEX,
+    inputType: VOTTUN_BRIDGE_GET_CONTRACT_INFO_INPUT_TYPE,
+    inputSize: VOTTUN_BRIDGE_GET_CONTRACT_INFO_INPUT_SIZE,
+    inputFields: [],
+    outputFields: VOTTUN_BRIDGE_GET_CONTRACT_INFO_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
 }
 
 export const VOTTUN_BRIDGE_GET_TOTAL_LOCKED_TOKENS_INPUT_TYPE = 9
 export const VOTTUN_BRIDGE_GET_TOTAL_LOCKED_TOKENS_INPUT_SIZE = 0
-export const VOTTUN_BRIDGE_GET_TOTAL_LOCKED_TOKENS_OUTPUT_SIZE = 8
 
 export interface VottunBridgeGetTotalLockedTokensOutput {
   totalLockedTokens: bigint
 }
 
-export const VOTTUN_BRIDGE_GET_TOTAL_LOCKED_TOKENS_OUTPUT_FIELDS: BinaryField[] = [
+const VOTTUN_BRIDGE_GET_TOTAL_LOCKED_TOKENS_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'totalLockedTokens',
     type: 'uint64',
@@ -934,23 +974,34 @@ export function decodeVottunBridgeGetTotalLockedTokensOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): VottunBridgeGetTotalLockedTokensOutput {
-  return decodePayload(
-    data,
-    VOTTUN_BRIDGE_GET_TOTAL_LOCKED_TOKENS_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as VottunBridgeGetTotalLockedTokensOutput
+  return decodePayload(data, VOTTUN_BRIDGE_GET_TOTAL_LOCKED_TOKENS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as VottunBridgeGetTotalLockedTokensOutput
+}
+
+export async function vottunBridgeGetTotalLockedTokens(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<VottunBridgeGetTotalLockedTokensOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: VOTTUN_BRIDGE_CONTRACT_INDEX,
+    inputType: VOTTUN_BRIDGE_GET_TOTAL_LOCKED_TOKENS_INPUT_TYPE,
+    inputSize: VOTTUN_BRIDGE_GET_TOTAL_LOCKED_TOKENS_INPUT_SIZE,
+    inputFields: [],
+    outputFields: VOTTUN_BRIDGE_GET_TOTAL_LOCKED_TOKENS_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
 }
 
 export const VOTTUN_BRIDGE_GET_PROPOSAL_INPUT_TYPE = 12
 export const VOTTUN_BRIDGE_GET_PROPOSAL_INPUT_SIZE = 8
-export const VOTTUN_BRIDGE_GET_PROPOSAL_OUTPUT_SIZE = 595
 
 export interface VottunBridgeGetProposalInput {
   proposalId: bigint
 }
 
-export const VOTTUN_BRIDGE_GET_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
+const VOTTUN_BRIDGE_GET_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'proposalId',
     type: 'uint64',
@@ -971,7 +1022,7 @@ export interface VottunBridgeGetProposalOutput {
   proposal: VottunBridgeAdminProposalStruct
 }
 
-export const VOTTUN_BRIDGE_GET_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
+const VOTTUN_BRIDGE_GET_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'status',
     type: 'uint8',
@@ -982,7 +1033,7 @@ export const VOTTUN_BRIDGE_GET_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
     name: 'proposal',
     type: 'struct',
     offset: 1,
-    byteLength: 594,
+    byteLength: 596,
     structRef: 'AdminProposal',
   },
 ]
@@ -991,17 +1042,29 @@ export function decodeVottunBridgeGetProposalOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): VottunBridgeGetProposalOutput {
-  return decodePayload(
-    data,
-    VOTTUN_BRIDGE_GET_PROPOSAL_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as VottunBridgeGetProposalOutput
+  return decodePayload(data, VOTTUN_BRIDGE_GET_PROPOSAL_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as VottunBridgeGetProposalOutput
+}
+
+export async function vottunBridgeGetProposal(
+  live: SmartContractCaller,
+  input: VottunBridgeGetProposalInput,
+  options?: ContractCallOptions,
+): Promise<Result<VottunBridgeGetProposalOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: VOTTUN_BRIDGE_CONTRACT_INDEX,
+    inputType: VOTTUN_BRIDGE_GET_PROPOSAL_INPUT_TYPE,
+    inputSize: VOTTUN_BRIDGE_GET_PROPOSAL_INPUT_SIZE,
+    inputFields: VOTTUN_BRIDGE_GET_PROPOSAL_INPUT_FIELDS,
+    outputFields: VOTTUN_BRIDGE_GET_PROPOSAL_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const VOTTUN_BRIDGE_GET_ORDER_BY_DETAILS_INPUT_TYPE = 14
 export const VOTTUN_BRIDGE_GET_ORDER_BY_DETAILS_INPUT_SIZE = 73
-export const VOTTUN_BRIDGE_GET_ORDER_BY_DETAILS_OUTPUT_SIZE = 41
 
 export interface VottunBridgeGetOrderByDetailsInput {
   ethAddress: number[]
@@ -1009,7 +1072,7 @@ export interface VottunBridgeGetOrderByDetailsInput {
   status: number
 }
 
-export const VOTTUN_BRIDGE_GET_ORDER_BY_DETAILS_INPUT_FIELDS: BinaryField[] = [
+const VOTTUN_BRIDGE_GET_ORDER_BY_DETAILS_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'ethAddress',
     type: 'array',
@@ -1046,7 +1109,7 @@ export interface VottunBridgeGetOrderByDetailsOutput {
   qubicDestination: string
 }
 
-export const VOTTUN_BRIDGE_GET_ORDER_BY_DETAILS_OUTPUT_FIELDS: BinaryField[] = [
+const VOTTUN_BRIDGE_GET_ORDER_BY_DETAILS_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'status',
     type: 'uint8',
@@ -1071,11 +1134,50 @@ export function decodeVottunBridgeGetOrderByDetailsOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): VottunBridgeGetOrderByDetailsOutput {
-  return decodePayload(
-    data,
-    VOTTUN_BRIDGE_GET_ORDER_BY_DETAILS_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as VottunBridgeGetOrderByDetailsOutput
+  return decodePayload(data, VOTTUN_BRIDGE_GET_ORDER_BY_DETAILS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as VottunBridgeGetOrderByDetailsOutput
+}
+
+export async function vottunBridgeGetOrderByDetails(
+  live: SmartContractCaller,
+  input: VottunBridgeGetOrderByDetailsInput,
+  options?: ContractCallOptions,
+): Promise<Result<VottunBridgeGetOrderByDetailsOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: VOTTUN_BRIDGE_CONTRACT_INDEX,
+    inputType: VOTTUN_BRIDGE_GET_ORDER_BY_DETAILS_INPUT_TYPE,
+    inputSize: VOTTUN_BRIDGE_GET_ORDER_BY_DETAILS_INPUT_SIZE,
+    inputFields: VOTTUN_BRIDGE_GET_ORDER_BY_DETAILS_INPUT_FIELDS,
+    outputFields: VOTTUN_BRIDGE_GET_ORDER_BY_DETAILS_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
+}
+
+export const vottunBridge = {
+  contractIndex: VOTTUN_BRIDGE_CONTRACT_INDEX,
+  getTotalReceivedTokens: vottunBridgeGetTotalReceivedTokens,
+  getAvailableFees: vottunBridgeGetAvailableFees,
+  getOrder: vottunBridgeGetOrder,
+  getContractInfo: vottunBridgeGetContractInfo,
+  getTotalLockedTokens: vottunBridgeGetTotalLockedTokens,
+  getProposal: vottunBridgeGetProposal,
+  getOrderByDetails: vottunBridgeGetOrderByDetails,
+  buildCreateOrderInput: buildVottunBridgeCreateOrderInput,
+  decodeCreateOrderOutput: decodeVottunBridgeCreateOrderOutput,
+  buildCompleteOrderInput: buildVottunBridgeCompleteOrderInput,
+  decodeCompleteOrderOutput: decodeVottunBridgeCompleteOrderOutput,
+  buildRefundOrderInput: buildVottunBridgeRefundOrderInput,
+  decodeRefundOrderOutput: decodeVottunBridgeRefundOrderOutput,
+  buildTransferToContractInput: buildVottunBridgeTransferToContractInput,
+  decodeTransferToContractOutput: decodeVottunBridgeTransferToContractOutput,
+  buildCreateProposalInput: buildVottunBridgeCreateProposalInput,
+  decodeCreateProposalOutput: decodeVottunBridgeCreateProposalOutput,
+  buildApproveProposalInput: buildVottunBridgeApproveProposalInput,
+  decodeApproveProposalOutput: decodeVottunBridgeApproveProposalOutput,
+  buildCancelProposalInput: buildVottunBridgeCancelProposalInput,
+  decodeCancelProposalOutput: decodeVottunBridgeCancelProposalOutput,
+  decodeAddLiquidityOutput: decodeVottunBridgeAddLiquidityOutput,
 }
 

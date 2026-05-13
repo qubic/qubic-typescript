@@ -3,8 +3,26 @@
   "contractName": "QUtil",
   "effectiveFromEpoch": 207,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T12:08:45.395Z",
+  "registeredAt": "2026-05-13T14:13:41.145Z",
   "structs": {
+    "Asset": {
+      "name": "Asset",
+      "byteLength": 40,
+      "fields": [
+        {
+          "name": "issuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        }
+      ]
+    },
     "Poll": {
       "name": "Poll",
       "fields": [
@@ -39,13 +57,22 @@
           "byteLength": 32
         },
         {
+          "name": "allowed_assets",
+          "type": "array",
+          "offset": 88,
+          "byteLength": 640,
+          "arrayLength": 16,
+          "arrayItemStructRef": "Asset",
+          "arrayItemByteLength": 40
+        },
+        {
           "name": "num_assets",
           "type": "uint64",
-          "offset": 88,
+          "offset": 728,
           "byteLength": 8
         }
       ],
-      "byteLength": 96
+      "byteLength": 736
     }
   },
   "procedures": [
@@ -198,9 +225,18 @@
           "arrayItemByteLength": 1
         },
         {
+          "name": "allowed_assets",
+          "type": "array",
+          "offset": 304,
+          "byteLength": 640,
+          "arrayLength": 16,
+          "arrayItemStructRef": "Asset",
+          "arrayItemByteLength": 40
+        },
+        {
           "name": "num_assets",
           "type": "uint64",
-          "offset": 304,
+          "offset": 944,
           "byteLength": 8
         }
       ],
@@ -212,7 +248,7 @@
           "byteLength": 8
         }
       ],
-      "inputSize": 312,
+      "inputSize": 952,
       "outputSize": 8
     },
     {
@@ -245,9 +281,16 @@
           "byteLength": 8
         }
       ],
-      "outputFields": [],
+      "outputFields": [
+        {
+          "name": "success",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
       "inputSize": 56,
-      "outputSize": 0
+      "outputSize": 1
     },
     {
       "kind": "procedure",
@@ -261,15 +304,30 @@
           "byteLength": 8
         }
       ],
-      "outputFields": [],
+      "outputFields": [
+        {
+          "name": "success",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
       "inputSize": 8,
-      "outputSize": 0
+      "outputSize": 1
     },
     {
       "kind": "procedure",
       "inputType": 18,
       "name": "DistributeQuToShareholders",
-      "inputFields": [],
+      "inputFields": [
+        {
+          "name": "asset",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 40,
+          "structRef": "Asset"
+        }
+      ],
       "outputFields": [
         {
           "name": "shareholders",
@@ -296,7 +354,7 @@
           "byteLength": 8
         }
       ],
-      "inputSize": 0,
+      "inputSize": 40,
       "outputSize": 32
     },
     {
@@ -332,6 +390,12 @@
           "type": "uint32",
           "offset": 0,
           "byteLength": 4
+        },
+        {
+          "name": "notifyPreviousValue",
+          "type": "uint8",
+          "offset": 4,
+          "byteLength": 1
         }
       ],
       "outputFields": [
@@ -342,7 +406,7 @@
           "byteLength": 4
         }
       ],
-      "inputSize": 4,
+      "inputSize": 5,
       "outputSize": 4
     },
     {
@@ -357,9 +421,16 @@
           "byteLength": 4
         }
       ],
-      "outputFields": [],
+      "outputFields": [
+        {
+          "name": "success",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
       "inputSize": 4,
-      "outputSize": 0
+      "outputSize": 1
     }
   ],
   "functions": [
@@ -578,13 +649,13 @@
           "name": "poll_info",
           "type": "struct",
           "offset": 8,
-          "byteLength": 96,
+          "byteLength": 736,
           "structRef": "Poll"
         },
         {
           "name": "poll_link",
           "type": "array",
-          "offset": 104,
+          "offset": 744,
           "byteLength": 256,
           "arrayLength": 256,
           "arrayItemType": "uint8",
@@ -592,7 +663,7 @@
         }
       ],
       "inputSize": 8,
-      "outputSize": 360
+      "outputSize": 1000
     }
   ]
 }

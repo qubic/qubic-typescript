@@ -1,20 +1,45 @@
 // @generated — do not edit by hand. Run `bun run generate` to regenerate.
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.ts/contract-registry'
 import { buildPayload, decodePayload } from '@qubic.ts/contract-registry'
+import type { QubicRpcError } from '@qubic.ts/rpc'
+import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import type { Result } from '../result.js'
 
 export const QSWAP_CONTRACT_INDEX = 13
 
-const STRUCTS: Record<string, NamedStruct> = {}
+export interface QswapAssetStruct {
+  issuer: string
+  assetName: bigint
+}
+
+const STRUCTS: Record<string, NamedStruct> = {
+  Asset: {
+  name: 'Asset',
+  byteLength: 40,
+  fields: [
+    {
+      name: 'issuer',
+      type: 'id',
+      offset: 0,
+      byteLength: 32,
+    },
+    {
+      name: 'assetName',
+      type: 'uint64',
+      offset: 32,
+      byteLength: 8,
+    },
+],
+},
+}
 
 export const QSWAP_SET_INVEST_REWARDS_INFO_INPUT_TYPE = 3
-export const QSWAP_SET_INVEST_REWARDS_INFO_INPUT_SIZE = 32
-export const QSWAP_SET_INVEST_REWARDS_INFO_OUTPUT_SIZE = 1
 
 export interface QswapSetInvestRewardsInfoInput {
   newInvestRewardsId: string
 }
 
-export const QSWAP_SET_INVEST_REWARDS_INFO_INPUT_FIELDS: BinaryField[] = [
+const QSWAP_SET_INVEST_REWARDS_INFO_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'newInvestRewardsId',
     type: 'id',
@@ -34,7 +59,7 @@ export interface QswapSetInvestRewardsInfoOutput {
   success: number
 }
 
-export const QSWAP_SET_INVEST_REWARDS_INFO_OUTPUT_FIELDS: BinaryField[] = [
+const QSWAP_SET_INVEST_REWARDS_INFO_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'success',
     type: 'uint8',
@@ -47,17 +72,10 @@ export function decodeQswapSetInvestRewardsInfoOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QswapSetInvestRewardsInfoOutput {
-  return decodePayload(
-    data,
-    QSWAP_SET_INVEST_REWARDS_INFO_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QswapSetInvestRewardsInfoOutput
+  return decodePayload(data, QSWAP_SET_INVEST_REWARDS_INFO_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QswapSetInvestRewardsInfoOutput
 }
 
 export const QSWAP_ISSUE_ASSET_INPUT_TYPE = 10
-export const QSWAP_ISSUE_ASSET_INPUT_SIZE = 25
-export const QSWAP_ISSUE_ASSET_OUTPUT_SIZE = 8
 
 export interface QswapIssueAssetInput {
   assetName: bigint
@@ -66,7 +84,7 @@ export interface QswapIssueAssetInput {
   numberOfDecimalPlaces: number
 }
 
-export const QSWAP_ISSUE_ASSET_INPUT_FIELDS: BinaryField[] = [
+const QSWAP_ISSUE_ASSET_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'assetName',
     type: 'uint64',
@@ -104,7 +122,7 @@ export interface QswapIssueAssetOutput {
   issuedNumberOfShares: bigint
 }
 
-export const QSWAP_ISSUE_ASSET_OUTPUT_FIELDS: BinaryField[] = [
+const QSWAP_ISSUE_ASSET_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'issuedNumberOfShares',
     type: 'sint64',
@@ -117,24 +135,17 @@ export function decodeQswapIssueAssetOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QswapIssueAssetOutput {
-  return decodePayload(
-    data,
-    QSWAP_ISSUE_ASSET_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QswapIssueAssetOutput
+  return decodePayload(data, QSWAP_ISSUE_ASSET_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QswapIssueAssetOutput
 }
 
 export const QSWAP_CREATE_POOL_INPUT_TYPE = 11
-export const QSWAP_CREATE_POOL_INPUT_SIZE = 40
-export const QSWAP_CREATE_POOL_OUTPUT_SIZE = 1
 
 export interface QswapCreatePoolInput {
   assetIssuer: string
   assetName: bigint
 }
 
-export const QSWAP_CREATE_POOL_INPUT_FIELDS: BinaryField[] = [
+const QSWAP_CREATE_POOL_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'assetIssuer',
     type: 'id',
@@ -160,7 +171,7 @@ export interface QswapCreatePoolOutput {
   success: number
 }
 
-export const QSWAP_CREATE_POOL_OUTPUT_FIELDS: BinaryField[] = [
+const QSWAP_CREATE_POOL_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'success',
     type: 'uint8',
@@ -173,17 +184,10 @@ export function decodeQswapCreatePoolOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QswapCreatePoolOutput {
-  return decodePayload(
-    data,
-    QSWAP_CREATE_POOL_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QswapCreatePoolOutput
+  return decodePayload(data, QSWAP_CREATE_POOL_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QswapCreatePoolOutput
 }
 
 export const QSWAP_TRANSFER_SHARE_OWNERSHIP_AND_POSSESSION_INPUT_TYPE = 12
-export const QSWAP_TRANSFER_SHARE_OWNERSHIP_AND_POSSESSION_INPUT_SIZE = 80
-export const QSWAP_TRANSFER_SHARE_OWNERSHIP_AND_POSSESSION_OUTPUT_SIZE = 8
 
 export interface QswapTransferShareOwnershipAndPossessionInput {
   assetIssuer: string
@@ -192,7 +196,7 @@ export interface QswapTransferShareOwnershipAndPossessionInput {
   amount: bigint
 }
 
-export const QSWAP_TRANSFER_SHARE_OWNERSHIP_AND_POSSESSION_INPUT_FIELDS: BinaryField[] = [
+const QSWAP_TRANSFER_SHARE_OWNERSHIP_AND_POSSESSION_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'assetIssuer',
     type: 'id',
@@ -230,7 +234,7 @@ export interface QswapTransferShareOwnershipAndPossessionOutput {
   transferredAmount: bigint
 }
 
-export const QSWAP_TRANSFER_SHARE_OWNERSHIP_AND_POSSESSION_OUTPUT_FIELDS: BinaryField[] = [
+const QSWAP_TRANSFER_SHARE_OWNERSHIP_AND_POSSESSION_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'transferredAmount',
     type: 'sint64',
@@ -243,17 +247,10 @@ export function decodeQswapTransferShareOwnershipAndPossessionOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QswapTransferShareOwnershipAndPossessionOutput {
-  return decodePayload(
-    data,
-    QSWAP_TRANSFER_SHARE_OWNERSHIP_AND_POSSESSION_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QswapTransferShareOwnershipAndPossessionOutput
+  return decodePayload(data, QSWAP_TRANSFER_SHARE_OWNERSHIP_AND_POSSESSION_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QswapTransferShareOwnershipAndPossessionOutput
 }
 
 export const QSWAP_ADD_LIQUIDITY_INPUT_TYPE = 13
-export const QSWAP_ADD_LIQUIDITY_INPUT_SIZE = 64
-export const QSWAP_ADD_LIQUIDITY_OUTPUT_SIZE = 24
 
 export interface QswapAddLiquidityInput {
   assetIssuer: string
@@ -263,7 +260,7 @@ export interface QswapAddLiquidityInput {
   assetAmountMin: bigint
 }
 
-export const QSWAP_ADD_LIQUIDITY_INPUT_FIELDS: BinaryField[] = [
+const QSWAP_ADD_LIQUIDITY_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'assetIssuer',
     type: 'id',
@@ -309,7 +306,7 @@ export interface QswapAddLiquidityOutput {
   assetAmount: bigint
 }
 
-export const QSWAP_ADD_LIQUIDITY_OUTPUT_FIELDS: BinaryField[] = [
+const QSWAP_ADD_LIQUIDITY_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'userIncreaseLiquidity',
     type: 'sint64',
@@ -334,17 +331,10 @@ export function decodeQswapAddLiquidityOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QswapAddLiquidityOutput {
-  return decodePayload(
-    data,
-    QSWAP_ADD_LIQUIDITY_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QswapAddLiquidityOutput
+  return decodePayload(data, QSWAP_ADD_LIQUIDITY_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QswapAddLiquidityOutput
 }
 
 export const QSWAP_REMOVE_LIQUIDITY_INPUT_TYPE = 14
-export const QSWAP_REMOVE_LIQUIDITY_INPUT_SIZE = 64
-export const QSWAP_REMOVE_LIQUIDITY_OUTPUT_SIZE = 16
 
 export interface QswapRemoveLiquidityInput {
   assetIssuer: string
@@ -354,7 +344,7 @@ export interface QswapRemoveLiquidityInput {
   assetAmountMin: bigint
 }
 
-export const QSWAP_REMOVE_LIQUIDITY_INPUT_FIELDS: BinaryField[] = [
+const QSWAP_REMOVE_LIQUIDITY_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'assetIssuer',
     type: 'id',
@@ -399,7 +389,7 @@ export interface QswapRemoveLiquidityOutput {
   assetAmount: bigint
 }
 
-export const QSWAP_REMOVE_LIQUIDITY_OUTPUT_FIELDS: BinaryField[] = [
+const QSWAP_REMOVE_LIQUIDITY_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'quAmount',
     type: 'sint64',
@@ -418,17 +408,10 @@ export function decodeQswapRemoveLiquidityOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QswapRemoveLiquidityOutput {
-  return decodePayload(
-    data,
-    QSWAP_REMOVE_LIQUIDITY_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QswapRemoveLiquidityOutput
+  return decodePayload(data, QSWAP_REMOVE_LIQUIDITY_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QswapRemoveLiquidityOutput
 }
 
 export const QSWAP_SWAP_EXACT_QU_FOR_ASSET_INPUT_TYPE = 15
-export const QSWAP_SWAP_EXACT_QU_FOR_ASSET_INPUT_SIZE = 48
-export const QSWAP_SWAP_EXACT_QU_FOR_ASSET_OUTPUT_SIZE = 8
 
 export interface QswapSwapExactQuForAssetInput {
   assetIssuer: string
@@ -436,7 +419,7 @@ export interface QswapSwapExactQuForAssetInput {
   assetAmountOutMin: bigint
 }
 
-export const QSWAP_SWAP_EXACT_QU_FOR_ASSET_INPUT_FIELDS: BinaryField[] = [
+const QSWAP_SWAP_EXACT_QU_FOR_ASSET_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'assetIssuer',
     type: 'id',
@@ -468,7 +451,7 @@ export interface QswapSwapExactQuForAssetOutput {
   assetAmountOut: bigint
 }
 
-export const QSWAP_SWAP_EXACT_QU_FOR_ASSET_OUTPUT_FIELDS: BinaryField[] = [
+const QSWAP_SWAP_EXACT_QU_FOR_ASSET_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'assetAmountOut',
     type: 'sint64',
@@ -481,17 +464,10 @@ export function decodeQswapSwapExactQuForAssetOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QswapSwapExactQuForAssetOutput {
-  return decodePayload(
-    data,
-    QSWAP_SWAP_EXACT_QU_FOR_ASSET_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QswapSwapExactQuForAssetOutput
+  return decodePayload(data, QSWAP_SWAP_EXACT_QU_FOR_ASSET_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QswapSwapExactQuForAssetOutput
 }
 
 export const QSWAP_SWAP_QU_FOR_EXACT_ASSET_INPUT_TYPE = 16
-export const QSWAP_SWAP_QU_FOR_EXACT_ASSET_INPUT_SIZE = 48
-export const QSWAP_SWAP_QU_FOR_EXACT_ASSET_OUTPUT_SIZE = 8
 
 export interface QswapSwapQuForExactAssetInput {
   assetIssuer: string
@@ -499,7 +475,7 @@ export interface QswapSwapQuForExactAssetInput {
   assetAmountOut: bigint
 }
 
-export const QSWAP_SWAP_QU_FOR_EXACT_ASSET_INPUT_FIELDS: BinaryField[] = [
+const QSWAP_SWAP_QU_FOR_EXACT_ASSET_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'assetIssuer',
     type: 'id',
@@ -531,7 +507,7 @@ export interface QswapSwapQuForExactAssetOutput {
   quAmountIn: bigint
 }
 
-export const QSWAP_SWAP_QU_FOR_EXACT_ASSET_OUTPUT_FIELDS: BinaryField[] = [
+const QSWAP_SWAP_QU_FOR_EXACT_ASSET_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'quAmountIn',
     type: 'sint64',
@@ -544,17 +520,10 @@ export function decodeQswapSwapQuForExactAssetOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QswapSwapQuForExactAssetOutput {
-  return decodePayload(
-    data,
-    QSWAP_SWAP_QU_FOR_EXACT_ASSET_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QswapSwapQuForExactAssetOutput
+  return decodePayload(data, QSWAP_SWAP_QU_FOR_EXACT_ASSET_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QswapSwapQuForExactAssetOutput
 }
 
 export const QSWAP_SWAP_EXACT_ASSET_FOR_QU_INPUT_TYPE = 17
-export const QSWAP_SWAP_EXACT_ASSET_FOR_QU_INPUT_SIZE = 56
-export const QSWAP_SWAP_EXACT_ASSET_FOR_QU_OUTPUT_SIZE = 8
 
 export interface QswapSwapExactAssetForQuInput {
   assetIssuer: string
@@ -563,7 +532,7 @@ export interface QswapSwapExactAssetForQuInput {
   quAmountOutMin: bigint
 }
 
-export const QSWAP_SWAP_EXACT_ASSET_FOR_QU_INPUT_FIELDS: BinaryField[] = [
+const QSWAP_SWAP_EXACT_ASSET_FOR_QU_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'assetIssuer',
     type: 'id',
@@ -601,7 +570,7 @@ export interface QswapSwapExactAssetForQuOutput {
   quAmountOut: bigint
 }
 
-export const QSWAP_SWAP_EXACT_ASSET_FOR_QU_OUTPUT_FIELDS: BinaryField[] = [
+const QSWAP_SWAP_EXACT_ASSET_FOR_QU_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'quAmountOut',
     type: 'sint64',
@@ -614,17 +583,10 @@ export function decodeQswapSwapExactAssetForQuOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QswapSwapExactAssetForQuOutput {
-  return decodePayload(
-    data,
-    QSWAP_SWAP_EXACT_ASSET_FOR_QU_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QswapSwapExactAssetForQuOutput
+  return decodePayload(data, QSWAP_SWAP_EXACT_ASSET_FOR_QU_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QswapSwapExactAssetForQuOutput
 }
 
 export const QSWAP_SWAP_ASSET_FOR_EXACT_QU_INPUT_TYPE = 18
-export const QSWAP_SWAP_ASSET_FOR_EXACT_QU_INPUT_SIZE = 56
-export const QSWAP_SWAP_ASSET_FOR_EXACT_QU_OUTPUT_SIZE = 8
 
 export interface QswapSwapAssetForExactQuInput {
   assetIssuer: string
@@ -633,7 +595,7 @@ export interface QswapSwapAssetForExactQuInput {
   quAmountOut: bigint
 }
 
-export const QSWAP_SWAP_ASSET_FOR_EXACT_QU_INPUT_FIELDS: BinaryField[] = [
+const QSWAP_SWAP_ASSET_FOR_EXACT_QU_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'assetIssuer',
     type: 'id',
@@ -671,7 +633,7 @@ export interface QswapSwapAssetForExactQuOutput {
   assetAmountIn: bigint
 }
 
-export const QSWAP_SWAP_ASSET_FOR_EXACT_QU_OUTPUT_FIELDS: BinaryField[] = [
+const QSWAP_SWAP_ASSET_FOR_EXACT_QU_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'assetAmountIn',
     type: 'sint64',
@@ -684,34 +646,35 @@ export function decodeQswapSwapAssetForExactQuOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QswapSwapAssetForExactQuOutput {
-  return decodePayload(
-    data,
-    QSWAP_SWAP_ASSET_FOR_EXACT_QU_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QswapSwapAssetForExactQuOutput
+  return decodePayload(data, QSWAP_SWAP_ASSET_FOR_EXACT_QU_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QswapSwapAssetForExactQuOutput
 }
 
 export const QSWAP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE = 19
-export const QSWAP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_SIZE = 12
-export const QSWAP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_SIZE = 8
 
 export interface QswapTransferShareManagementRightsInput {
+  asset: QswapAssetStruct
   numberOfShares: bigint
   newManagingContractIndex: number
 }
 
-export const QSWAP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
+const QSWAP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'asset',
+    type: 'struct',
+    offset: 0,
+    byteLength: 40,
+    structRef: 'Asset',
+  },
   {
     name: 'numberOfShares',
     type: 'sint64',
-    offset: 0,
+    offset: 40,
     byteLength: 8,
   },
   {
     name: 'newManagingContractIndex',
     type: 'uint32',
-    offset: 8,
+    offset: 48,
     byteLength: 4,
   },
 ]
@@ -727,7 +690,7 @@ export interface QswapTransferShareManagementRightsOutput {
   transferredNumberOfShares: bigint
 }
 
-export const QSWAP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
+const QSWAP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'transferredNumberOfShares',
     type: 'sint64',
@@ -740,17 +703,11 @@ export function decodeQswapTransferShareManagementRightsOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QswapTransferShareManagementRightsOutput {
-  return decodePayload(
-    data,
-    QSWAP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QswapTransferShareManagementRightsOutput
+  return decodePayload(data, QSWAP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QswapTransferShareManagementRightsOutput
 }
 
 export const QSWAP_FEES_INPUT_TYPE = 1
 export const QSWAP_FEES_INPUT_SIZE = 0
-export const QSWAP_FEES_OUTPUT_SIZE = 32
 
 export interface QswapFeesOutput {
   assetIssuanceFee: number
@@ -763,7 +720,7 @@ export interface QswapFeesOutput {
   burnFee: number
 }
 
-export const QSWAP_FEES_OUTPUT_FIELDS: BinaryField[] = [
+const QSWAP_FEES_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'assetIssuanceFee',
     type: 'uint32',
@@ -818,24 +775,35 @@ export function decodeQswapFeesOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QswapFeesOutput {
-  return decodePayload(
-    data,
-    QSWAP_FEES_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QswapFeesOutput
+  return decodePayload(data, QSWAP_FEES_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QswapFeesOutput
+}
+
+export async function qswapFees(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<QswapFeesOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QSWAP_CONTRACT_INDEX,
+    inputType: QSWAP_FEES_INPUT_TYPE,
+    inputSize: QSWAP_FEES_INPUT_SIZE,
+    inputFields: [],
+    outputFields: QSWAP_FEES_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
 }
 
 export const QSWAP_INVEST_REWARDS_INFO_INPUT_TYPE = 2
 export const QSWAP_INVEST_REWARDS_INFO_INPUT_SIZE = 0
-export const QSWAP_INVEST_REWARDS_INFO_OUTPUT_SIZE = 36
 
 export interface QswapInvestRewardsInfoOutput {
   investRewardsFee: number
   investRewardsId: string
 }
 
-export const QSWAP_INVEST_REWARDS_INFO_OUTPUT_FIELDS: BinaryField[] = [
+const QSWAP_INVEST_REWARDS_INFO_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'investRewardsFee',
     type: 'uint32',
@@ -854,24 +822,35 @@ export function decodeQswapInvestRewardsInfoOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QswapInvestRewardsInfoOutput {
-  return decodePayload(
-    data,
-    QSWAP_INVEST_REWARDS_INFO_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QswapInvestRewardsInfoOutput
+  return decodePayload(data, QSWAP_INVEST_REWARDS_INFO_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QswapInvestRewardsInfoOutput
+}
+
+export async function qswapInvestRewardsInfo(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<QswapInvestRewardsInfoOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QSWAP_CONTRACT_INDEX,
+    inputType: QSWAP_INVEST_REWARDS_INFO_INPUT_TYPE,
+    inputSize: QSWAP_INVEST_REWARDS_INFO_INPUT_SIZE,
+    inputFields: [],
+    outputFields: QSWAP_INVEST_REWARDS_INFO_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
 }
 
 export const QSWAP_GET_POOL_BASIC_STATE_INPUT_TYPE = 4
 export const QSWAP_GET_POOL_BASIC_STATE_INPUT_SIZE = 40
-export const QSWAP_GET_POOL_BASIC_STATE_OUTPUT_SIZE = 32
 
 export interface QswapGetPoolBasicStateInput {
   assetIssuer: string
   assetName: bigint
 }
 
-export const QSWAP_GET_POOL_BASIC_STATE_INPUT_FIELDS: BinaryField[] = [
+const QSWAP_GET_POOL_BASIC_STATE_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'assetIssuer',
     type: 'id',
@@ -900,7 +879,7 @@ export interface QswapGetPoolBasicStateOutput {
   totalLiquidity: bigint
 }
 
-export const QSWAP_GET_POOL_BASIC_STATE_OUTPUT_FIELDS: BinaryField[] = [
+const QSWAP_GET_POOL_BASIC_STATE_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'poolExists',
     type: 'sint64',
@@ -931,17 +910,29 @@ export function decodeQswapGetPoolBasicStateOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QswapGetPoolBasicStateOutput {
-  return decodePayload(
-    data,
-    QSWAP_GET_POOL_BASIC_STATE_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QswapGetPoolBasicStateOutput
+  return decodePayload(data, QSWAP_GET_POOL_BASIC_STATE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QswapGetPoolBasicStateOutput
+}
+
+export async function qswapGetPoolBasicState(
+  live: SmartContractCaller,
+  input: QswapGetPoolBasicStateInput,
+  options?: ContractCallOptions,
+): Promise<Result<QswapGetPoolBasicStateOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QSWAP_CONTRACT_INDEX,
+    inputType: QSWAP_GET_POOL_BASIC_STATE_INPUT_TYPE,
+    inputSize: QSWAP_GET_POOL_BASIC_STATE_INPUT_SIZE,
+    inputFields: QSWAP_GET_POOL_BASIC_STATE_INPUT_FIELDS,
+    outputFields: QSWAP_GET_POOL_BASIC_STATE_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const QSWAP_GET_LIQUIDITY_OF_INPUT_TYPE = 5
 export const QSWAP_GET_LIQUIDITY_OF_INPUT_SIZE = 72
-export const QSWAP_GET_LIQUIDITY_OF_OUTPUT_SIZE = 8
 
 export interface QswapGetLiquidityOfInput {
   assetIssuer: string
@@ -949,7 +940,7 @@ export interface QswapGetLiquidityOfInput {
   account: string
 }
 
-export const QSWAP_GET_LIQUIDITY_OF_INPUT_FIELDS: BinaryField[] = [
+const QSWAP_GET_LIQUIDITY_OF_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'assetIssuer',
     type: 'id',
@@ -981,7 +972,7 @@ export interface QswapGetLiquidityOfOutput {
   liquidity: bigint
 }
 
-export const QSWAP_GET_LIQUIDITY_OF_OUTPUT_FIELDS: BinaryField[] = [
+const QSWAP_GET_LIQUIDITY_OF_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'liquidity',
     type: 'sint64',
@@ -994,17 +985,29 @@ export function decodeQswapGetLiquidityOfOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QswapGetLiquidityOfOutput {
-  return decodePayload(
-    data,
-    QSWAP_GET_LIQUIDITY_OF_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QswapGetLiquidityOfOutput
+  return decodePayload(data, QSWAP_GET_LIQUIDITY_OF_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QswapGetLiquidityOfOutput
+}
+
+export async function qswapGetLiquidityOf(
+  live: SmartContractCaller,
+  input: QswapGetLiquidityOfInput,
+  options?: ContractCallOptions,
+): Promise<Result<QswapGetLiquidityOfOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QSWAP_CONTRACT_INDEX,
+    inputType: QSWAP_GET_LIQUIDITY_OF_INPUT_TYPE,
+    inputSize: QSWAP_GET_LIQUIDITY_OF_INPUT_SIZE,
+    inputFields: QSWAP_GET_LIQUIDITY_OF_INPUT_FIELDS,
+    outputFields: QSWAP_GET_LIQUIDITY_OF_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const QSWAP_QUOTE_EXACT_QU_INPUT_INPUT_TYPE = 6
 export const QSWAP_QUOTE_EXACT_QU_INPUT_INPUT_SIZE = 48
-export const QSWAP_QUOTE_EXACT_QU_INPUT_OUTPUT_SIZE = 8
 
 export interface QswapQuoteExactQuInputInput {
   assetIssuer: string
@@ -1012,7 +1015,7 @@ export interface QswapQuoteExactQuInputInput {
   quAmountIn: bigint
 }
 
-export const QSWAP_QUOTE_EXACT_QU_INPUT_INPUT_FIELDS: BinaryField[] = [
+const QSWAP_QUOTE_EXACT_QU_INPUT_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'assetIssuer',
     type: 'id',
@@ -1044,7 +1047,7 @@ export interface QswapQuoteExactQuInputOutput {
   assetAmountOut: bigint
 }
 
-export const QSWAP_QUOTE_EXACT_QU_INPUT_OUTPUT_FIELDS: BinaryField[] = [
+const QSWAP_QUOTE_EXACT_QU_INPUT_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'assetAmountOut',
     type: 'sint64',
@@ -1057,17 +1060,29 @@ export function decodeQswapQuoteExactQuInputOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QswapQuoteExactQuInputOutput {
-  return decodePayload(
-    data,
-    QSWAP_QUOTE_EXACT_QU_INPUT_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QswapQuoteExactQuInputOutput
+  return decodePayload(data, QSWAP_QUOTE_EXACT_QU_INPUT_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QswapQuoteExactQuInputOutput
+}
+
+export async function qswapQuoteExactQuInput(
+  live: SmartContractCaller,
+  input: QswapQuoteExactQuInputInput,
+  options?: ContractCallOptions,
+): Promise<Result<QswapQuoteExactQuInputOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QSWAP_CONTRACT_INDEX,
+    inputType: QSWAP_QUOTE_EXACT_QU_INPUT_INPUT_TYPE,
+    inputSize: QSWAP_QUOTE_EXACT_QU_INPUT_INPUT_SIZE,
+    inputFields: QSWAP_QUOTE_EXACT_QU_INPUT_INPUT_FIELDS,
+    outputFields: QSWAP_QUOTE_EXACT_QU_INPUT_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const QSWAP_QUOTE_EXACT_QU_OUTPUT_INPUT_TYPE = 7
 export const QSWAP_QUOTE_EXACT_QU_OUTPUT_INPUT_SIZE = 48
-export const QSWAP_QUOTE_EXACT_QU_OUTPUT_OUTPUT_SIZE = 8
 
 export interface QswapQuoteExactQuOutputInput {
   assetIssuer: string
@@ -1075,7 +1090,7 @@ export interface QswapQuoteExactQuOutputInput {
   quAmountOut: bigint
 }
 
-export const QSWAP_QUOTE_EXACT_QU_OUTPUT_INPUT_FIELDS: BinaryField[] = [
+const QSWAP_QUOTE_EXACT_QU_OUTPUT_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'assetIssuer',
     type: 'id',
@@ -1107,7 +1122,7 @@ export interface QswapQuoteExactQuOutputOutput {
   assetAmountIn: bigint
 }
 
-export const QSWAP_QUOTE_EXACT_QU_OUTPUT_OUTPUT_FIELDS: BinaryField[] = [
+const QSWAP_QUOTE_EXACT_QU_OUTPUT_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'assetAmountIn',
     type: 'sint64',
@@ -1120,17 +1135,29 @@ export function decodeQswapQuoteExactQuOutputOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QswapQuoteExactQuOutputOutput {
-  return decodePayload(
-    data,
-    QSWAP_QUOTE_EXACT_QU_OUTPUT_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QswapQuoteExactQuOutputOutput
+  return decodePayload(data, QSWAP_QUOTE_EXACT_QU_OUTPUT_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QswapQuoteExactQuOutputOutput
+}
+
+export async function qswapQuoteExactQuOutput(
+  live: SmartContractCaller,
+  input: QswapQuoteExactQuOutputInput,
+  options?: ContractCallOptions,
+): Promise<Result<QswapQuoteExactQuOutputOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QSWAP_CONTRACT_INDEX,
+    inputType: QSWAP_QUOTE_EXACT_QU_OUTPUT_INPUT_TYPE,
+    inputSize: QSWAP_QUOTE_EXACT_QU_OUTPUT_INPUT_SIZE,
+    inputFields: QSWAP_QUOTE_EXACT_QU_OUTPUT_INPUT_FIELDS,
+    outputFields: QSWAP_QUOTE_EXACT_QU_OUTPUT_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const QSWAP_QUOTE_EXACT_ASSET_INPUT_INPUT_TYPE = 8
 export const QSWAP_QUOTE_EXACT_ASSET_INPUT_INPUT_SIZE = 48
-export const QSWAP_QUOTE_EXACT_ASSET_INPUT_OUTPUT_SIZE = 8
 
 export interface QswapQuoteExactAssetInputInput {
   assetIssuer: string
@@ -1138,7 +1165,7 @@ export interface QswapQuoteExactAssetInputInput {
   assetAmountIn: bigint
 }
 
-export const QSWAP_QUOTE_EXACT_ASSET_INPUT_INPUT_FIELDS: BinaryField[] = [
+const QSWAP_QUOTE_EXACT_ASSET_INPUT_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'assetIssuer',
     type: 'id',
@@ -1170,7 +1197,7 @@ export interface QswapQuoteExactAssetInputOutput {
   quAmountOut: bigint
 }
 
-export const QSWAP_QUOTE_EXACT_ASSET_INPUT_OUTPUT_FIELDS: BinaryField[] = [
+const QSWAP_QUOTE_EXACT_ASSET_INPUT_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'quAmountOut',
     type: 'sint64',
@@ -1183,17 +1210,29 @@ export function decodeQswapQuoteExactAssetInputOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QswapQuoteExactAssetInputOutput {
-  return decodePayload(
-    data,
-    QSWAP_QUOTE_EXACT_ASSET_INPUT_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QswapQuoteExactAssetInputOutput
+  return decodePayload(data, QSWAP_QUOTE_EXACT_ASSET_INPUT_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QswapQuoteExactAssetInputOutput
+}
+
+export async function qswapQuoteExactAssetInput(
+  live: SmartContractCaller,
+  input: QswapQuoteExactAssetInputInput,
+  options?: ContractCallOptions,
+): Promise<Result<QswapQuoteExactAssetInputOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QSWAP_CONTRACT_INDEX,
+    inputType: QSWAP_QUOTE_EXACT_ASSET_INPUT_INPUT_TYPE,
+    inputSize: QSWAP_QUOTE_EXACT_ASSET_INPUT_INPUT_SIZE,
+    inputFields: QSWAP_QUOTE_EXACT_ASSET_INPUT_INPUT_FIELDS,
+    outputFields: QSWAP_QUOTE_EXACT_ASSET_INPUT_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const QSWAP_QUOTE_EXACT_ASSET_OUTPUT_INPUT_TYPE = 9
 export const QSWAP_QUOTE_EXACT_ASSET_OUTPUT_INPUT_SIZE = 48
-export const QSWAP_QUOTE_EXACT_ASSET_OUTPUT_OUTPUT_SIZE = 8
 
 export interface QswapQuoteExactAssetOutputInput {
   assetIssuer: string
@@ -1201,7 +1240,7 @@ export interface QswapQuoteExactAssetOutputInput {
   assetAmountOut: bigint
 }
 
-export const QSWAP_QUOTE_EXACT_ASSET_OUTPUT_INPUT_FIELDS: BinaryField[] = [
+const QSWAP_QUOTE_EXACT_ASSET_OUTPUT_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'assetIssuer',
     type: 'id',
@@ -1233,7 +1272,7 @@ export interface QswapQuoteExactAssetOutputOutput {
   quAmountIn: bigint
 }
 
-export const QSWAP_QUOTE_EXACT_ASSET_OUTPUT_OUTPUT_FIELDS: BinaryField[] = [
+const QSWAP_QUOTE_EXACT_ASSET_OUTPUT_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'quAmountIn',
     type: 'sint64',
@@ -1246,11 +1285,58 @@ export function decodeQswapQuoteExactAssetOutputOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QswapQuoteExactAssetOutputOutput {
-  return decodePayload(
-    data,
-    QSWAP_QUOTE_EXACT_ASSET_OUTPUT_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QswapQuoteExactAssetOutputOutput
+  return decodePayload(data, QSWAP_QUOTE_EXACT_ASSET_OUTPUT_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QswapQuoteExactAssetOutputOutput
+}
+
+export async function qswapQuoteExactAssetOutput(
+  live: SmartContractCaller,
+  input: QswapQuoteExactAssetOutputInput,
+  options?: ContractCallOptions,
+): Promise<Result<QswapQuoteExactAssetOutputOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QSWAP_CONTRACT_INDEX,
+    inputType: QSWAP_QUOTE_EXACT_ASSET_OUTPUT_INPUT_TYPE,
+    inputSize: QSWAP_QUOTE_EXACT_ASSET_OUTPUT_INPUT_SIZE,
+    inputFields: QSWAP_QUOTE_EXACT_ASSET_OUTPUT_INPUT_FIELDS,
+    outputFields: QSWAP_QUOTE_EXACT_ASSET_OUTPUT_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
+}
+
+export const qswap = {
+  contractIndex: QSWAP_CONTRACT_INDEX,
+  Fees: qswapFees,
+  InvestRewardsInfo: qswapInvestRewardsInfo,
+  GetPoolBasicState: qswapGetPoolBasicState,
+  GetLiquidityOf: qswapGetLiquidityOf,
+  QuoteExactQuInput: qswapQuoteExactQuInput,
+  QuoteExactQuOutput: qswapQuoteExactQuOutput,
+  QuoteExactAssetInput: qswapQuoteExactAssetInput,
+  QuoteExactAssetOutput: qswapQuoteExactAssetOutput,
+  buildSetInvestRewardsInfoInput: buildQswapSetInvestRewardsInfoInput,
+  decodeSetInvestRewardsInfoOutput: decodeQswapSetInvestRewardsInfoOutput,
+  buildIssueAssetInput: buildQswapIssueAssetInput,
+  decodeIssueAssetOutput: decodeQswapIssueAssetOutput,
+  buildCreatePoolInput: buildQswapCreatePoolInput,
+  decodeCreatePoolOutput: decodeQswapCreatePoolOutput,
+  buildTransferShareOwnershipAndPossessionInput: buildQswapTransferShareOwnershipAndPossessionInput,
+  decodeTransferShareOwnershipAndPossessionOutput: decodeQswapTransferShareOwnershipAndPossessionOutput,
+  buildAddLiquidityInput: buildQswapAddLiquidityInput,
+  decodeAddLiquidityOutput: decodeQswapAddLiquidityOutput,
+  buildRemoveLiquidityInput: buildQswapRemoveLiquidityInput,
+  decodeRemoveLiquidityOutput: decodeQswapRemoveLiquidityOutput,
+  buildSwapExactQuForAssetInput: buildQswapSwapExactQuForAssetInput,
+  decodeSwapExactQuForAssetOutput: decodeQswapSwapExactQuForAssetOutput,
+  buildSwapQuForExactAssetInput: buildQswapSwapQuForExactAssetInput,
+  decodeSwapQuForExactAssetOutput: decodeQswapSwapQuForExactAssetOutput,
+  buildSwapExactAssetForQuInput: buildQswapSwapExactAssetForQuInput,
+  decodeSwapExactAssetForQuOutput: decodeQswapSwapExactAssetForQuOutput,
+  buildSwapAssetForExactQuInput: buildQswapSwapAssetForExactQuInput,
+  decodeSwapAssetForExactQuOutput: decodeQswapSwapAssetForExactQuOutput,
+  buildTransferShareManagementRightsInput: buildQswapTransferShareManagementRightsInput,
+  decodeTransferShareManagementRightsOutput: decodeQswapTransferShareManagementRightsOutput,
 }
 

@@ -3,8 +3,78 @@
   "contractName": "QUtil",
   "effectiveFromEpoch": 187,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T12:08:05.528Z",
-  "structs": {},
+  "registeredAt": "2026-05-13T14:12:59.646Z",
+  "structs": {
+    "Asset": {
+      "name": "Asset",
+      "byteLength": 40,
+      "fields": [
+        {
+          "name": "issuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        }
+      ]
+    },
+    "QUTILPoll": {
+      "name": "QUTILPoll",
+      "fields": [
+        {
+          "name": "poll_name",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "poll_type",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "min_amount",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "is_active",
+          "type": "uint64",
+          "offset": 48,
+          "byteLength": 8
+        },
+        {
+          "name": "creator",
+          "type": "id",
+          "offset": 56,
+          "byteLength": 32
+        },
+        {
+          "name": "allowed_assets",
+          "type": "array",
+          "offset": 88,
+          "byteLength": 640,
+          "arrayLength": 16,
+          "arrayItemStructRef": "Asset",
+          "arrayItemByteLength": 40
+        },
+        {
+          "name": "num_assets",
+          "type": "uint64",
+          "offset": 728,
+          "byteLength": 8
+        }
+      ],
+      "byteLength": 736
+    }
+  },
   "procedures": [
     {
       "kind": "procedure",
@@ -155,9 +225,18 @@
           "arrayItemByteLength": 1
         },
         {
+          "name": "allowed_assets",
+          "type": "array",
+          "offset": 304,
+          "byteLength": 640,
+          "arrayLength": 16,
+          "arrayItemStructRef": "Asset",
+          "arrayItemByteLength": 40
+        },
+        {
           "name": "num_assets",
           "type": "uint64",
-          "offset": 304,
+          "offset": 944,
           "byteLength": 8
         }
       ],
@@ -169,7 +248,7 @@
           "byteLength": 8
         }
       ],
-      "inputSize": 312,
+      "inputSize": 952,
       "outputSize": 8
     },
     {
@@ -202,9 +281,16 @@
           "byteLength": 8
         }
       ],
-      "outputFields": [],
+      "outputFields": [
+        {
+          "name": "success",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
       "inputSize": 56,
-      "outputSize": 0
+      "outputSize": 1
     },
     {
       "kind": "procedure",
@@ -218,15 +304,30 @@
           "byteLength": 8
         }
       ],
-      "outputFields": [],
+      "outputFields": [
+        {
+          "name": "success",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
       "inputSize": 8,
-      "outputSize": 0
+      "outputSize": 1
     },
     {
       "kind": "procedure",
       "inputType": 18,
       "name": "DistributeQuToShareholders",
-      "inputFields": [],
+      "inputFields": [
+        {
+          "name": "asset",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 40,
+          "structRef": "Asset"
+        }
+      ],
       "outputFields": [
         {
           "name": "shareholders",
@@ -253,7 +354,7 @@
           "byteLength": 8
         }
       ],
-      "inputSize": 0,
+      "inputSize": 40,
       "outputSize": 32
     }
   ],
@@ -470,9 +571,16 @@
           "byteLength": 8
         },
         {
+          "name": "poll_info",
+          "type": "struct",
+          "offset": 8,
+          "byteLength": 736,
+          "structRef": "QUTILPoll"
+        },
+        {
           "name": "poll_link",
           "type": "array",
-          "offset": 8,
+          "offset": 744,
           "byteLength": 256,
           "arrayLength": 256,
           "arrayItemType": "uint8",
@@ -480,7 +588,7 @@
         }
       ],
       "inputSize": 8,
-      "outputSize": 264
+      "outputSize": 1000
     }
   ]
 }

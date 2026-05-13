@@ -3,7 +3,7 @@
   "contractName": "Pulse",
   "effectiveFromEpoch": 206,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T12:08:44.876Z",
+  "registeredAt": "2026-05-13T14:13:40.587Z",
   "structs": {
     "WinnerInfo": {
       "name": "WinnerInfo",
@@ -96,6 +96,12 @@
           "type": "sint16",
           "offset": 8,
           "byteLength": 2
+        },
+        {
+          "name": "buyNow",
+          "type": "uint8",
+          "offset": 10,
+          "byteLength": 1
         }
       ],
       "outputFields": [
@@ -106,7 +112,7 @@
           "byteLength": 1
         }
       ],
-      "inputSize": 10,
+      "inputSize": 11,
       "outputSize": 1
     },
     {

@@ -1,14 +1,39 @@
 // @generated — do not edit by hand. Run `bun run generate` to regenerate.
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.ts/contract-registry'
 import { buildPayload, decodePayload } from '@qubic.ts/contract-registry'
+import type { QubicRpcError } from '@qubic.ts/rpc'
+import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import type { Result } from '../result.js'
 
 export const QIP_CONTRACT_INDEX = 18
 
-const STRUCTS: Record<string, NamedStruct> = {}
+export interface QIPAssetStruct {
+  issuer: string
+  assetName: bigint
+}
+
+const STRUCTS: Record<string, NamedStruct> = {
+  Asset: {
+  name: 'Asset',
+  byteLength: 40,
+  fields: [
+    {
+      name: 'issuer',
+      type: 'id',
+      offset: 0,
+      byteLength: 32,
+    },
+    {
+      name: 'assetName',
+      type: 'uint64',
+      offset: 32,
+      byteLength: 8,
+    },
+],
+},
+}
 
 export const QIP_CREATE_ICO_INPUT_TYPE = 1
-export const QIP_CREATE_ICO_INPUT_SIZE = 128
-export const QIP_CREATE_ICO_OUTPUT_SIZE = 4
 
 export interface QIPCreateICOInput {
   issuer: string
@@ -24,7 +49,7 @@ export interface QIPCreateICOInput {
   startEpoch: number
 }
 
-export const QIP_CREATE_ICO_INPUT_FIELDS: BinaryField[] = [
+const QIP_CREATE_ICO_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'issuer',
     type: 'id',
@@ -104,7 +129,7 @@ export interface QIPCreateICOOutput {
   returnCode: number
 }
 
-export const QIP_CREATE_ICO_OUTPUT_FIELDS: BinaryField[] = [
+const QIP_CREATE_ICO_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'sint32',
@@ -117,24 +142,17 @@ export function decodeQIPCreateICOOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QIPCreateICOOutput {
-  return decodePayload(
-    data,
-    QIP_CREATE_ICO_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QIPCreateICOOutput
+  return decodePayload(data, QIP_CREATE_ICO_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QIPCreateICOOutput
 }
 
 export const QIP_BUY_TOKEN_INPUT_TYPE = 2
-export const QIP_BUY_TOKEN_INPUT_SIZE = 12
-export const QIP_BUY_TOKEN_OUTPUT_SIZE = 4
 
 export interface QIPBuyTokenInput {
   indexOfICO: number
   amount: bigint
 }
 
-export const QIP_BUY_TOKEN_INPUT_FIELDS: BinaryField[] = [
+const QIP_BUY_TOKEN_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'indexOfICO',
     type: 'uint32',
@@ -160,7 +178,7 @@ export interface QIPBuyTokenOutput {
   returnCode: number
 }
 
-export const QIP_BUY_TOKEN_OUTPUT_FIELDS: BinaryField[] = [
+const QIP_BUY_TOKEN_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'sint32',
@@ -173,34 +191,35 @@ export function decodeQIPBuyTokenOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QIPBuyTokenOutput {
-  return decodePayload(
-    data,
-    QIP_BUY_TOKEN_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QIPBuyTokenOutput
+  return decodePayload(data, QIP_BUY_TOKEN_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QIPBuyTokenOutput
 }
 
 export const QIP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE = 3
-export const QIP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_SIZE = 12
-export const QIP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_SIZE = 8
 
 export interface QIPTransferShareManagementRightsInput {
+  asset: QIPAssetStruct
   numberOfShares: bigint
   newManagingContractIndex: number
 }
 
-export const QIP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
+const QIP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'asset',
+    type: 'struct',
+    offset: 0,
+    byteLength: 40,
+    structRef: 'Asset',
+  },
   {
     name: 'numberOfShares',
     type: 'sint64',
-    offset: 0,
+    offset: 40,
     byteLength: 8,
   },
   {
     name: 'newManagingContractIndex',
     type: 'uint32',
-    offset: 8,
+    offset: 48,
     byteLength: 4,
   },
 ]
@@ -216,7 +235,7 @@ export interface QIPTransferShareManagementRightsOutput {
   transferredNumberOfShares: bigint
 }
 
-export const QIP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
+const QIP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'transferredNumberOfShares',
     type: 'sint64',
@@ -229,23 +248,17 @@ export function decodeQIPTransferShareManagementRightsOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QIPTransferShareManagementRightsOutput {
-  return decodePayload(
-    data,
-    QIP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QIPTransferShareManagementRightsOutput
+  return decodePayload(data, QIP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QIPTransferShareManagementRightsOutput
 }
 
 export const QIP_GET_ICO_INFO_INPUT_TYPE = 4
 export const QIP_GET_ICO_INFO_INPUT_SIZE = 4
-export const QIP_GET_ICO_INFO_OUTPUT_SIZE = 184
 
 export interface QIPGetICOInfoInput {
   indexOfICO: number
 }
 
-export const QIP_GET_ICO_INFO_INPUT_FIELDS: BinaryField[] = [
+const QIP_GET_ICO_INFO_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'indexOfICO',
     type: 'uint32',
@@ -279,7 +292,7 @@ export interface QIPGetICOInfoOutput {
   startEpoch: number
 }
 
-export const QIP_GET_ICO_INFO_OUTPUT_FIELDS: BinaryField[] = [
+const QIP_GET_ICO_INFO_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'creatorOfICO',
     type: 'id',
@@ -376,11 +389,35 @@ export function decodeQIPGetICOInfoOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QIPGetICOInfoOutput {
-  return decodePayload(
-    data,
-    QIP_GET_ICO_INFO_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QIPGetICOInfoOutput
+  return decodePayload(data, QIP_GET_ICO_INFO_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QIPGetICOInfoOutput
+}
+
+export async function qIPGetICOInfo(
+  live: SmartContractCaller,
+  input: QIPGetICOInfoInput,
+  options?: ContractCallOptions,
+): Promise<Result<QIPGetICOInfoOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QIP_CONTRACT_INDEX,
+    inputType: QIP_GET_ICO_INFO_INPUT_TYPE,
+    inputSize: QIP_GET_ICO_INFO_INPUT_SIZE,
+    inputFields: QIP_GET_ICO_INFO_INPUT_FIELDS,
+    outputFields: QIP_GET_ICO_INFO_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
+}
+
+export const qIP = {
+  contractIndex: QIP_CONTRACT_INDEX,
+  getICOInfo: qIPGetICOInfo,
+  buildCreateICOInput: buildQIPCreateICOInput,
+  decodeCreateICOOutput: decodeQIPCreateICOOutput,
+  buildBuyTokenInput: buildQIPBuyTokenInput,
+  decodeBuyTokenOutput: decodeQIPBuyTokenOutput,
+  buildTransferShareManagementRightsInput: buildQIPTransferShareManagementRightsInput,
+  decodeTransferShareManagementRightsOutput: decodeQIPTransferShareManagementRightsOutput,
 }
 

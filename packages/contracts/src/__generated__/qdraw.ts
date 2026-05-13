@@ -1,20 +1,21 @@
 // @generated — do not edit by hand. Run `bun run generate` to regenerate.
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.ts/contract-registry'
 import { buildPayload, decodePayload } from '@qubic.ts/contract-registry'
+import type { QubicRpcError } from '@qubic.ts/rpc'
+import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import type { Result } from '../result.js'
 
 export const QDRAW_CONTRACT_INDEX = 15
 
 const STRUCTS: Record<string, NamedStruct> = {}
 
 export const QDRAW_BUY_TICKET_INPUT_TYPE = 1
-export const QDRAW_BUY_TICKET_INPUT_SIZE = 8
-export const QDRAW_BUY_TICKET_OUTPUT_SIZE = 0
 
 export interface QdrawBuyTicketInput {
   ticketCount: bigint
 }
 
-export const QDRAW_BUY_TICKET_INPUT_FIELDS: BinaryField[] = [
+const QDRAW_BUY_TICKET_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'ticketCount',
     type: 'uint64',
@@ -32,7 +33,6 @@ export function buildQdrawBuyTicketInput(
 
 export const QDRAW_GET_INFO_INPUT_TYPE = 2
 export const QDRAW_GET_INFO_INPUT_SIZE = 0
-export const QDRAW_GET_INFO_OUTPUT_SIZE = 59
 
 export interface QdrawGetInfoOutput {
   pot: bigint
@@ -44,7 +44,7 @@ export interface QdrawGetInfoOutput {
   nextDrawHour: number
 }
 
-export const QDRAW_GET_INFO_OUTPUT_FIELDS: BinaryField[] = [
+const QDRAW_GET_INFO_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'pot',
     type: 'sint64',
@@ -93,17 +93,28 @@ export function decodeQdrawGetInfoOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QdrawGetInfoOutput {
-  return decodePayload(
-    data,
-    QDRAW_GET_INFO_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QdrawGetInfoOutput
+  return decodePayload(data, QDRAW_GET_INFO_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QdrawGetInfoOutput
+}
+
+export async function qdrawGetInfo(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<QdrawGetInfoOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QDRAW_CONTRACT_INDEX,
+    inputType: QDRAW_GET_INFO_INPUT_TYPE,
+    inputSize: QDRAW_GET_INFO_INPUT_SIZE,
+    inputFields: [],
+    outputFields: QDRAW_GET_INFO_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
 }
 
 export const QDRAW_GET_PARTICIPANTS_INPUT_TYPE = 3
 export const QDRAW_GET_PARTICIPANTS_INPUT_SIZE = 0
-export const QDRAW_GET_PARTICIPANTS_OUTPUT_SIZE = 40976
 
 export interface QdrawGetParticipantsOutput {
   participantCount: bigint
@@ -112,7 +123,7 @@ export interface QdrawGetParticipantsOutput {
   ticketCounts: bigint[]
 }
 
-export const QDRAW_GET_PARTICIPANTS_OUTPUT_FIELDS: BinaryField[] = [
+const QDRAW_GET_PARTICIPANTS_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'participantCount',
     type: 'uint64',
@@ -149,11 +160,30 @@ export function decodeQdrawGetParticipantsOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QdrawGetParticipantsOutput {
-  return decodePayload(
-    data,
-    QDRAW_GET_PARTICIPANTS_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QdrawGetParticipantsOutput
+  return decodePayload(data, QDRAW_GET_PARTICIPANTS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QdrawGetParticipantsOutput
+}
+
+export async function qdrawGetParticipants(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<QdrawGetParticipantsOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QDRAW_CONTRACT_INDEX,
+    inputType: QDRAW_GET_PARTICIPANTS_INPUT_TYPE,
+    inputSize: QDRAW_GET_PARTICIPANTS_INPUT_SIZE,
+    inputFields: [],
+    outputFields: QDRAW_GET_PARTICIPANTS_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
+}
+
+export const qdraw = {
+  contractIndex: QDRAW_CONTRACT_INDEX,
+  getInfo: qdrawGetInfo,
+  getParticipants: qdrawGetParticipants,
+  buildBuyTicketInput: buildQdrawBuyTicketInput,
 }
 

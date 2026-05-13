@@ -1,6 +1,9 @@
 // @generated — do not edit by hand. Run `bun run generate` to regenerate.
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.ts/contract-registry'
 import { buildPayload, decodePayload } from '@qubic.ts/contract-registry'
+import type { QubicRpcError } from '@qubic.ts/rpc'
+import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import type { Result } from '../result.js'
 
 export const Q_DUEL_CONTRACT_INDEX = 23
 
@@ -10,6 +13,7 @@ export interface QDuelRoomInfoStruct {
   allowedPlayer: string
   amount: bigint
   closeTimer: bigint
+  lastUpdate: QDuelDateAndTimeStruct
 }
 
 export interface QDuelWinnerDataStruct {
@@ -19,10 +23,14 @@ export interface QDuelWinnerDataStruct {
   revenue: bigint
 }
 
+export interface QDuelDateAndTimeStruct {
+  value: bigint
+}
+
 const STRUCTS: Record<string, NamedStruct> = {
   RoomInfo: {
   name: 'RoomInfo',
-  byteLength: 112,
+  byteLength: 120,
   fields: [
     {
       name: 'roomId',
@@ -53,6 +61,13 @@ const STRUCTS: Record<string, NamedStruct> = {
       type: 'uint64',
       offset: 104,
       byteLength: 8,
+    },
+    {
+      name: 'lastUpdate',
+      type: 'struct',
+      offset: 112,
+      byteLength: 8,
+      structRef: 'DateAndTime',
     },
 ],
 },
@@ -86,11 +101,21 @@ const STRUCTS: Record<string, NamedStruct> = {
     },
 ],
 },
+  DateAndTime: {
+  name: 'DateAndTime',
+  byteLength: 8,
+  fields: [
+    {
+      name: 'value',
+      type: 'uint64',
+      offset: 0,
+      byteLength: 8,
+    },
+],
+},
 }
 
 export const Q_DUEL_CREATE_ROOM_INPUT_TYPE = 3
-export const Q_DUEL_CREATE_ROOM_INPUT_SIZE = 56
-export const Q_DUEL_CREATE_ROOM_OUTPUT_SIZE = 1
 
 export interface QDuelCreateRoomInput {
   allowedPlayer: string
@@ -99,7 +124,7 @@ export interface QDuelCreateRoomInput {
   maxStake: bigint
 }
 
-export const Q_DUEL_CREATE_ROOM_INPUT_FIELDS: BinaryField[] = [
+const Q_DUEL_CREATE_ROOM_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'allowedPlayer',
     type: 'id',
@@ -137,7 +162,7 @@ export interface QDuelCreateRoomOutput {
   returnCode: number
 }
 
-export const Q_DUEL_CREATE_ROOM_OUTPUT_FIELDS: BinaryField[] = [
+const Q_DUEL_CREATE_ROOM_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'uint8',
@@ -150,23 +175,16 @@ export function decodeQDuelCreateRoomOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QDuelCreateRoomOutput {
-  return decodePayload(
-    data,
-    Q_DUEL_CREATE_ROOM_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QDuelCreateRoomOutput
+  return decodePayload(data, Q_DUEL_CREATE_ROOM_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QDuelCreateRoomOutput
 }
 
 export const Q_DUEL_CONNECT_TO_ROOM_INPUT_TYPE = 10
-export const Q_DUEL_CONNECT_TO_ROOM_INPUT_SIZE = 32
-export const Q_DUEL_CONNECT_TO_ROOM_OUTPUT_SIZE = 33
 
 export interface QDuelConnectToRoomInput {
   roomId: string
 }
 
-export const Q_DUEL_CONNECT_TO_ROOM_INPUT_FIELDS: BinaryField[] = [
+const Q_DUEL_CONNECT_TO_ROOM_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'roomId',
     type: 'id',
@@ -187,7 +205,7 @@ export interface QDuelConnectToRoomOutput {
   returnCode: number
 }
 
-export const Q_DUEL_CONNECT_TO_ROOM_OUTPUT_FIELDS: BinaryField[] = [
+const Q_DUEL_CONNECT_TO_ROOM_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'winner',
     type: 'id',
@@ -206,23 +224,16 @@ export function decodeQDuelConnectToRoomOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QDuelConnectToRoomOutput {
-  return decodePayload(
-    data,
-    Q_DUEL_CONNECT_TO_ROOM_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QDuelConnectToRoomOutput
+  return decodePayload(data, Q_DUEL_CONNECT_TO_ROOM_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QDuelConnectToRoomOutput
 }
 
 export const Q_DUEL_CLOSE_ROOM_INPUT_TYPE = 11
-export const Q_DUEL_CLOSE_ROOM_INPUT_SIZE = 0
-export const Q_DUEL_CLOSE_ROOM_OUTPUT_SIZE = 1
 
 export interface QDuelCloseRoomOutput {
   returnCode: number
 }
 
-export const Q_DUEL_CLOSE_ROOM_OUTPUT_FIELDS: BinaryField[] = [
+const Q_DUEL_CLOSE_ROOM_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'uint8',
@@ -235,17 +246,10 @@ export function decodeQDuelCloseRoomOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QDuelCloseRoomOutput {
-  return decodePayload(
-    data,
-    Q_DUEL_CLOSE_ROOM_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QDuelCloseRoomOutput
+  return decodePayload(data, Q_DUEL_CLOSE_ROOM_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QDuelCloseRoomOutput
 }
 
 export const Q_DUEL_SET_PERCENT_FEES_INPUT_TYPE = 13
-export const Q_DUEL_SET_PERCENT_FEES_INPUT_SIZE = 5
-export const Q_DUEL_SET_PERCENT_FEES_OUTPUT_SIZE = 1
 
 export interface QDuelSetPercentFeesInput {
   devFeePercentBps: number
@@ -254,7 +258,7 @@ export interface QDuelSetPercentFeesInput {
   percentScale: number
 }
 
-export const Q_DUEL_SET_PERCENT_FEES_INPUT_FIELDS: BinaryField[] = [
+const Q_DUEL_SET_PERCENT_FEES_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'devFeePercentBps',
     type: 'uint8',
@@ -292,7 +296,7 @@ export interface QDuelSetPercentFeesOutput {
   returnCode: number
 }
 
-export const Q_DUEL_SET_PERCENT_FEES_OUTPUT_FIELDS: BinaryField[] = [
+const Q_DUEL_SET_PERCENT_FEES_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'uint8',
@@ -305,23 +309,16 @@ export function decodeQDuelSetPercentFeesOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QDuelSetPercentFeesOutput {
-  return decodePayload(
-    data,
-    Q_DUEL_SET_PERCENT_FEES_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QDuelSetPercentFeesOutput
+  return decodePayload(data, Q_DUEL_SET_PERCENT_FEES_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QDuelSetPercentFeesOutput
 }
 
 export const Q_DUEL_SET_TTL_HOURS_INPUT_TYPE = 15
-export const Q_DUEL_SET_TTL_HOURS_INPUT_SIZE = 1
-export const Q_DUEL_SET_TTL_HOURS_OUTPUT_SIZE = 1
 
 export interface QDuelSetTTLHoursInput {
   ttlHours: number
 }
 
-export const Q_DUEL_SET_TTL_HOURS_INPUT_FIELDS: BinaryField[] = [
+const Q_DUEL_SET_TTL_HOURS_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'ttlHours',
     type: 'uint8',
@@ -341,7 +338,7 @@ export interface QDuelSetTTLHoursOutput {
   returnCode: number
 }
 
-export const Q_DUEL_SET_TTL_HOURS_OUTPUT_FIELDS: BinaryField[] = [
+const Q_DUEL_SET_TTL_HOURS_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'uint8',
@@ -354,23 +351,16 @@ export function decodeQDuelSetTTLHoursOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QDuelSetTTLHoursOutput {
-  return decodePayload(
-    data,
-    Q_DUEL_SET_TTL_HOURS_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QDuelSetTTLHoursOutput
+  return decodePayload(data, Q_DUEL_SET_TTL_HOURS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QDuelSetTTLHoursOutput
 }
 
 export const Q_DUEL_DEPOSIT_INPUT_TYPE = 18
-export const Q_DUEL_DEPOSIT_INPUT_SIZE = 0
-export const Q_DUEL_DEPOSIT_OUTPUT_SIZE = 1
 
 export interface QDuelDepositOutput {
   returnCode: number
 }
 
-export const Q_DUEL_DEPOSIT_OUTPUT_FIELDS: BinaryField[] = [
+const Q_DUEL_DEPOSIT_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'uint8',
@@ -383,23 +373,16 @@ export function decodeQDuelDepositOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QDuelDepositOutput {
-  return decodePayload(
-    data,
-    Q_DUEL_DEPOSIT_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QDuelDepositOutput
+  return decodePayload(data, Q_DUEL_DEPOSIT_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QDuelDepositOutput
 }
 
 export const Q_DUEL_WITHDRAW_INPUT_TYPE = 19
-export const Q_DUEL_WITHDRAW_INPUT_SIZE = 8
-export const Q_DUEL_WITHDRAW_OUTPUT_SIZE = 1
 
 export interface QDuelWithdrawInput {
   amount: bigint
 }
 
-export const Q_DUEL_WITHDRAW_INPUT_FIELDS: BinaryField[] = [
+const Q_DUEL_WITHDRAW_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'amount',
     type: 'sint64',
@@ -419,7 +402,7 @@ export interface QDuelWithdrawOutput {
   returnCode: number
 }
 
-export const Q_DUEL_WITHDRAW_OUTPUT_FIELDS: BinaryField[] = [
+const Q_DUEL_WITHDRAW_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'uint8',
@@ -432,23 +415,17 @@ export function decodeQDuelWithdrawOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QDuelWithdrawOutput {
-  return decodePayload(
-    data,
-    Q_DUEL_WITHDRAW_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QDuelWithdrawOutput
+  return decodePayload(data, Q_DUEL_WITHDRAW_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QDuelWithdrawOutput
 }
 
 export const Q_DUEL_CALCULATE_REVENUE_INPUT_TYPE = 7
 export const Q_DUEL_CALCULATE_REVENUE_INPUT_SIZE = 8
-export const Q_DUEL_CALCULATE_REVENUE_OUTPUT_SIZE = 32
 
 export interface QDuelCalculateRevenueInput {
   amount: bigint
 }
 
-export const Q_DUEL_CALCULATE_REVENUE_INPUT_FIELDS: BinaryField[] = [
+const Q_DUEL_CALCULATE_REVENUE_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'amount',
     type: 'uint64',
@@ -471,7 +448,7 @@ export interface QDuelCalculateRevenueOutput {
   winner: bigint
 }
 
-export const Q_DUEL_CALCULATE_REVENUE_OUTPUT_FIELDS: BinaryField[] = [
+const Q_DUEL_CALCULATE_REVENUE_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'devFee',
     type: 'uint64',
@@ -502,17 +479,29 @@ export function decodeQDuelCalculateRevenueOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QDuelCalculateRevenueOutput {
-  return decodePayload(
-    data,
-    Q_DUEL_CALCULATE_REVENUE_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QDuelCalculateRevenueOutput
+  return decodePayload(data, Q_DUEL_CALCULATE_REVENUE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QDuelCalculateRevenueOutput
+}
+
+export async function qDuelCalculateRevenue(
+  live: SmartContractCaller,
+  input: QDuelCalculateRevenueInput,
+  options?: ContractCallOptions,
+): Promise<Result<QDuelCalculateRevenueOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: Q_DUEL_CONTRACT_INDEX,
+    inputType: Q_DUEL_CALCULATE_REVENUE_INPUT_TYPE,
+    inputSize: Q_DUEL_CALCULATE_REVENUE_INPUT_SIZE,
+    inputFields: Q_DUEL_CALCULATE_REVENUE_INPUT_FIELDS,
+    outputFields: Q_DUEL_CALCULATE_REVENUE_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const Q_DUEL_GET_PERCENT_FEES_INPUT_TYPE = 12
 export const Q_DUEL_GET_PERCENT_FEES_INPUT_SIZE = 0
-export const Q_DUEL_GET_PERCENT_FEES_OUTPUT_SIZE = 13
 
 export interface QDuelGetPercentFeesOutput {
   devFeePercentBps: number
@@ -522,7 +511,7 @@ export interface QDuelGetPercentFeesOutput {
   returnCode: bigint
 }
 
-export const Q_DUEL_GET_PERCENT_FEES_OUTPUT_FIELDS: BinaryField[] = [
+const Q_DUEL_GET_PERCENT_FEES_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'devFeePercentBps',
     type: 'uint8',
@@ -559,37 +548,48 @@ export function decodeQDuelGetPercentFeesOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QDuelGetPercentFeesOutput {
-  return decodePayload(
-    data,
-    Q_DUEL_GET_PERCENT_FEES_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QDuelGetPercentFeesOutput
+  return decodePayload(data, Q_DUEL_GET_PERCENT_FEES_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QDuelGetPercentFeesOutput
+}
+
+export async function qDuelGetPercentFees(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<QDuelGetPercentFeesOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: Q_DUEL_CONTRACT_INDEX,
+    inputType: Q_DUEL_GET_PERCENT_FEES_INPUT_TYPE,
+    inputSize: Q_DUEL_GET_PERCENT_FEES_INPUT_SIZE,
+    inputFields: [],
+    outputFields: Q_DUEL_GET_PERCENT_FEES_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
 }
 
 export const Q_DUEL_GET_ROOMS_INPUT_TYPE = 14
 export const Q_DUEL_GET_ROOMS_INPUT_SIZE = 0
-export const Q_DUEL_GET_ROOMS_OUTPUT_SIZE = 57345
 
 export interface QDuelGetRoomsOutput {
   rooms: number[]
   returnCode: number
 }
 
-export const Q_DUEL_GET_ROOMS_OUTPUT_FIELDS: BinaryField[] = [
+const Q_DUEL_GET_ROOMS_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'rooms',
     type: 'array',
     offset: 0,
-    byteLength: 57344,
+    byteLength: 61440,
     arrayLength: 512,
-    arrayItemByteLength: 112,
+    arrayItemByteLength: 120,
     arrayItemStructRef: 'RoomInfo',
   },
   {
     name: 'returnCode',
     type: 'uint8',
-    offset: 57344,
+    offset: 61440,
     byteLength: 1,
   },
 ]
@@ -598,24 +598,35 @@ export function decodeQDuelGetRoomsOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QDuelGetRoomsOutput {
-  return decodePayload(
-    data,
-    Q_DUEL_GET_ROOMS_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QDuelGetRoomsOutput
+  return decodePayload(data, Q_DUEL_GET_ROOMS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QDuelGetRoomsOutput
+}
+
+export async function qDuelGetRooms(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<QDuelGetRoomsOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: Q_DUEL_CONTRACT_INDEX,
+    inputType: Q_DUEL_GET_ROOMS_INPUT_TYPE,
+    inputSize: Q_DUEL_GET_ROOMS_INPUT_SIZE,
+    inputFields: [],
+    outputFields: Q_DUEL_GET_ROOMS_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
 }
 
 export const Q_DUEL_GET_TTL_HOURS_INPUT_TYPE = 16
 export const Q_DUEL_GET_TTL_HOURS_INPUT_SIZE = 0
-export const Q_DUEL_GET_TTL_HOURS_OUTPUT_SIZE = 2
 
 export interface QDuelGetTTLHoursOutput {
   ttlHours: number
   returnCode: number
 }
 
-export const Q_DUEL_GET_TTL_HOURS_OUTPUT_FIELDS: BinaryField[] = [
+const Q_DUEL_GET_TTL_HOURS_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'ttlHours',
     type: 'uint8',
@@ -634,23 +645,34 @@ export function decodeQDuelGetTTLHoursOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QDuelGetTTLHoursOutput {
-  return decodePayload(
-    data,
-    Q_DUEL_GET_TTL_HOURS_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QDuelGetTTLHoursOutput
+  return decodePayload(data, Q_DUEL_GET_TTL_HOURS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QDuelGetTTLHoursOutput
+}
+
+export async function qDuelGetTTLHours(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<QDuelGetTTLHoursOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: Q_DUEL_CONTRACT_INDEX,
+    inputType: Q_DUEL_GET_TTL_HOURS_INPUT_TYPE,
+    inputSize: Q_DUEL_GET_TTL_HOURS_INPUT_SIZE,
+    inputFields: [],
+    outputFields: Q_DUEL_GET_TTL_HOURS_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
 }
 
 export const Q_DUEL_GET_USER_PROFILE_INPUT_TYPE = 17
 export const Q_DUEL_GET_USER_PROFILE_INPUT_SIZE = 32
-export const Q_DUEL_GET_USER_PROFILE_OUTPUT_SIZE = 73
 
 export interface QDuelGetUserProfileInput {
   userId: string
 }
 
-export const Q_DUEL_GET_USER_PROFILE_INPUT_FIELDS: BinaryField[] = [
+const Q_DUEL_GET_USER_PROFILE_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'userId',
     type: 'id',
@@ -676,7 +698,7 @@ export interface QDuelGetUserProfileOutput {
   returnCode: number
 }
 
-export const Q_DUEL_GET_USER_PROFILE_OUTPUT_FIELDS: BinaryField[] = [
+const Q_DUEL_GET_USER_PROFILE_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'roomId',
     type: 'id',
@@ -725,24 +747,36 @@ export function decodeQDuelGetUserProfileOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QDuelGetUserProfileOutput {
-  return decodePayload(
-    data,
-    Q_DUEL_GET_USER_PROFILE_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QDuelGetUserProfileOutput
+  return decodePayload(data, Q_DUEL_GET_USER_PROFILE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QDuelGetUserProfileOutput
+}
+
+export async function qDuelGetUserProfile(
+  live: SmartContractCaller,
+  input: QDuelGetUserProfileInput,
+  options?: ContractCallOptions,
+): Promise<Result<QDuelGetUserProfileOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: Q_DUEL_CONTRACT_INDEX,
+    inputType: Q_DUEL_GET_USER_PROFILE_INPUT_TYPE,
+    inputSize: Q_DUEL_GET_USER_PROFILE_INPUT_SIZE,
+    inputFields: Q_DUEL_GET_USER_PROFILE_INPUT_FIELDS,
+    outputFields: Q_DUEL_GET_USER_PROFILE_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const Q_DUEL_GET_LAST_WINNERS_INPUT_TYPE = 20
 export const Q_DUEL_GET_LAST_WINNERS_INPUT_SIZE = 0
-export const Q_DUEL_GET_LAST_WINNERS_OUTPUT_SIZE = 13313
 
 export interface QDuelGetLastWinnersOutput {
   winners: number[]
   returnCode: number
 }
 
-export const Q_DUEL_GET_LAST_WINNERS_OUTPUT_FIELDS: BinaryField[] = [
+const Q_DUEL_GET_LAST_WINNERS_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'winners',
     type: 'array',
@@ -764,11 +798,45 @@ export function decodeQDuelGetLastWinnersOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QDuelGetLastWinnersOutput {
-  return decodePayload(
-    data,
-    Q_DUEL_GET_LAST_WINNERS_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QDuelGetLastWinnersOutput
+  return decodePayload(data, Q_DUEL_GET_LAST_WINNERS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QDuelGetLastWinnersOutput
+}
+
+export async function qDuelGetLastWinners(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<QDuelGetLastWinnersOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: Q_DUEL_CONTRACT_INDEX,
+    inputType: Q_DUEL_GET_LAST_WINNERS_INPUT_TYPE,
+    inputSize: Q_DUEL_GET_LAST_WINNERS_INPUT_SIZE,
+    inputFields: [],
+    outputFields: Q_DUEL_GET_LAST_WINNERS_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
+}
+
+export const qDuel = {
+  contractIndex: Q_DUEL_CONTRACT_INDEX,
+  CalculateRevenue: qDuelCalculateRevenue,
+  GetPercentFees: qDuelGetPercentFees,
+  GetRooms: qDuelGetRooms,
+  GetTTLHours: qDuelGetTTLHours,
+  GetUserProfile: qDuelGetUserProfile,
+  GetLastWinners: qDuelGetLastWinners,
+  buildCreateRoomInput: buildQDuelCreateRoomInput,
+  decodeCreateRoomOutput: decodeQDuelCreateRoomOutput,
+  buildConnectToRoomInput: buildQDuelConnectToRoomInput,
+  decodeConnectToRoomOutput: decodeQDuelConnectToRoomOutput,
+  decodeCloseRoomOutput: decodeQDuelCloseRoomOutput,
+  buildSetPercentFeesInput: buildQDuelSetPercentFeesInput,
+  decodeSetPercentFeesOutput: decodeQDuelSetPercentFeesOutput,
+  buildSetTTLHoursInput: buildQDuelSetTTLHoursInput,
+  decodeSetTTLHoursOutput: decodeQDuelSetTTLHoursOutput,
+  decodeDepositOutput: decodeQDuelDepositOutput,
+  buildWithdrawInput: buildQDuelWithdrawInput,
+  decodeWithdrawOutput: decodeQDuelWithdrawOutput,
 }
 

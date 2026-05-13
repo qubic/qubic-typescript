@@ -1,8 +1,16 @@
 // @generated — do not edit by hand. Run `bun run generate` to regenerate.
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.ts/contract-registry'
 import { buildPayload, decodePayload } from '@qubic.ts/contract-registry'
+import type { QubicRpcError } from '@qubic.ts/rpc'
+import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import type { Result } from '../result.js'
 
 export const NOSTROMO_CONTRACT_INDEX = 14
+
+export interface NostromoAssetStruct {
+  issuer: string
+  assetName: bigint
+}
 
 export interface NostromoProjectInfoStruct {
   creator: string
@@ -12,6 +20,7 @@ export interface NostromoProjectInfoStruct {
   endDate: number
   numberOfYes: number
   numberOfNo: number
+  isCreatedFundarasing: number
 }
 
 export interface NostromoFundaraisingInfoStruct {
@@ -32,6 +41,7 @@ export interface NostromoFundaraisingInfoStruct {
   threshold: number
   TGE: number
   stepOfVesting: number
+  isCreatedToken: number
 }
 
 export interface NostromoInvestInfoStruct {
@@ -41,9 +51,27 @@ export interface NostromoInvestInfoStruct {
 }
 
 const STRUCTS: Record<string, NamedStruct> = {
+  Asset: {
+  name: 'Asset',
+  byteLength: 40,
+  fields: [
+    {
+      name: 'issuer',
+      type: 'id',
+      offset: 0,
+      byteLength: 32,
+    },
+    {
+      name: 'assetName',
+      type: 'uint64',
+      offset: 32,
+      byteLength: 8,
+    },
+],
+},
   projectInfo: {
   name: 'projectInfo',
-  byteLength: 64,
+  byteLength: 65,
   fields: [
     {
       name: 'creator',
@@ -87,11 +115,17 @@ const STRUCTS: Record<string, NamedStruct> = {
       offset: 60,
       byteLength: 4,
     },
+    {
+      name: 'isCreatedFundarasing',
+      type: 'uint8',
+      offset: 64,
+      byteLength: 1,
+    },
 ],
 },
   fundaraisingInfo: {
   name: 'fundaraisingInfo',
-  byteLength: 75,
+  byteLength: 76,
   fields: [
     {
       name: 'tokenPrice',
@@ -195,6 +229,12 @@ const STRUCTS: Record<string, NamedStruct> = {
       offset: 74,
       byteLength: 1,
     },
+    {
+      name: 'isCreatedToken',
+      type: 'uint8',
+      offset: 75,
+      byteLength: 1,
+    },
 ],
 },
   investInfo: {
@@ -224,14 +264,12 @@ const STRUCTS: Record<string, NamedStruct> = {
 }
 
 export const NOSTROMO_REGISTER_IN_TIER_INPUT_TYPE = 1
-export const NOSTROMO_REGISTER_IN_TIER_INPUT_SIZE = 4
-export const NOSTROMO_REGISTER_IN_TIER_OUTPUT_SIZE = 4
 
 export interface NostromoRegisterInTierInput {
   tierLevel: number
 }
 
-export const NOSTROMO_REGISTER_IN_TIER_INPUT_FIELDS: BinaryField[] = [
+const NOSTROMO_REGISTER_IN_TIER_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'tierLevel',
     type: 'uint32',
@@ -251,7 +289,7 @@ export interface NostromoRegisterInTierOutput {
   tierLevel: number
 }
 
-export const NOSTROMO_REGISTER_IN_TIER_OUTPUT_FIELDS: BinaryField[] = [
+const NOSTROMO_REGISTER_IN_TIER_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'tierLevel',
     type: 'uint32',
@@ -264,21 +302,32 @@ export function decodeNostromoRegisterInTierOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): NostromoRegisterInTierOutput {
-  return decodePayload(
-    data,
-    NOSTROMO_REGISTER_IN_TIER_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as NostromoRegisterInTierOutput
+  return decodePayload(data, NOSTROMO_REGISTER_IN_TIER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as NostromoRegisterInTierOutput
 }
 
 export const NOSTROMO_LOGOUT_FROM_TIER_INPUT_TYPE = 2
-export const NOSTROMO_LOGOUT_FROM_TIER_INPUT_SIZE = 0
-export const NOSTROMO_LOGOUT_FROM_TIER_OUTPUT_SIZE = 0
+
+export interface NostromoLogoutFromTierOutput {
+  result: number
+}
+
+const NOSTROMO_LOGOUT_FROM_TIER_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'result',
+    type: 'uint8',
+    offset: 0,
+    byteLength: 1,
+  },
+]
+
+export function decodeNostromoLogoutFromTierOutput(
+  data: Uint8Array,
+  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+): NostromoLogoutFromTierOutput {
+  return decodePayload(data, NOSTROMO_LOGOUT_FROM_TIER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as NostromoLogoutFromTierOutput
+}
 
 export const NOSTROMO_CREATE_PROJECT_INPUT_TYPE = 3
-export const NOSTROMO_CREATE_PROJECT_INPUT_SIZE = 48
-export const NOSTROMO_CREATE_PROJECT_OUTPUT_SIZE = 4
 
 export interface NostromoCreateProjectInput {
   tokenName: bigint
@@ -293,7 +342,7 @@ export interface NostromoCreateProjectInput {
   endHour: number
 }
 
-export const NOSTROMO_CREATE_PROJECT_INPUT_FIELDS: BinaryField[] = [
+const NOSTROMO_CREATE_PROJECT_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'tokenName',
     type: 'uint64',
@@ -367,7 +416,7 @@ export interface NostromoCreateProjectOutput {
   indexOfProject: number
 }
 
-export const NOSTROMO_CREATE_PROJECT_OUTPUT_FIELDS: BinaryField[] = [
+const NOSTROMO_CREATE_PROJECT_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'indexOfProject',
     type: 'uint32',
@@ -380,28 +429,28 @@ export function decodeNostromoCreateProjectOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): NostromoCreateProjectOutput {
-  return decodePayload(
-    data,
-    NOSTROMO_CREATE_PROJECT_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as NostromoCreateProjectOutput
+  return decodePayload(data, NOSTROMO_CREATE_PROJECT_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as NostromoCreateProjectOutput
 }
 
 export const NOSTROMO_VOTE_IN_PROJECT_INPUT_TYPE = 4
-export const NOSTROMO_VOTE_IN_PROJECT_INPUT_SIZE = 4
-export const NOSTROMO_VOTE_IN_PROJECT_OUTPUT_SIZE = 0
 
 export interface NostromoVoteInProjectInput {
   indexOfProject: number
+  decision: number
 }
 
-export const NOSTROMO_VOTE_IN_PROJECT_INPUT_FIELDS: BinaryField[] = [
+const NOSTROMO_VOTE_IN_PROJECT_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'indexOfProject',
     type: 'uint32',
     offset: 0,
     byteLength: 4,
+  },
+  {
+    name: 'decision',
+    type: 'uint8',
+    offset: 4,
+    byteLength: 1,
   },
 ]
 
@@ -413,8 +462,6 @@ export function buildNostromoVoteInProjectInput(
 }
 
 export const NOSTROMO_CREATE_FUNDRAISING_INPUT_TYPE = 5
-export const NOSTROMO_CREATE_FUNDRAISING_INPUT_SIZE = 175
-export const NOSTROMO_CREATE_FUNDRAISING_OUTPUT_SIZE = 0
 
 export interface NostromoCreateFundraisingInput {
   tokenPrice: bigint
@@ -462,7 +509,7 @@ export interface NostromoCreateFundraisingInput {
   stepOfVesting: number
 }
 
-export const NOSTROMO_CREATE_FUNDRAISING_INPUT_FIELDS: BinaryField[] = [
+const NOSTROMO_CREATE_FUNDRAISING_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'tokenPrice',
     type: 'uint64',
@@ -731,14 +778,12 @@ export function buildNostromoCreateFundraisingInput(
 }
 
 export const NOSTROMO_INVEST_IN_PROJECT_INPUT_TYPE = 6
-export const NOSTROMO_INVEST_IN_PROJECT_INPUT_SIZE = 4
-export const NOSTROMO_INVEST_IN_PROJECT_OUTPUT_SIZE = 0
 
 export interface NostromoInvestInProjectInput {
   indexOfFundraising: number
 }
 
-export const NOSTROMO_INVEST_IN_PROJECT_INPUT_FIELDS: BinaryField[] = [
+const NOSTROMO_INVEST_IN_PROJECT_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'indexOfFundraising',
     type: 'uint32',
@@ -755,15 +800,13 @@ export function buildNostromoInvestInProjectInput(
 }
 
 export const NOSTROMO_CLAIM_TOKEN_INPUT_TYPE = 7
-export const NOSTROMO_CLAIM_TOKEN_INPUT_SIZE = 12
-export const NOSTROMO_CLAIM_TOKEN_OUTPUT_SIZE = 8
 
 export interface NostromoClaimTokenInput {
   amount: bigint
   indexOfFundraising: number
 }
 
-export const NOSTROMO_CLAIM_TOKEN_INPUT_FIELDS: BinaryField[] = [
+const NOSTROMO_CLAIM_TOKEN_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'amount',
     type: 'uint64',
@@ -789,7 +832,7 @@ export interface NostromoClaimTokenOutput {
   claimedAmount: bigint
 }
 
-export const NOSTROMO_CLAIM_TOKEN_OUTPUT_FIELDS: BinaryField[] = [
+const NOSTROMO_CLAIM_TOKEN_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'claimedAmount',
     type: 'uint64',
@@ -802,23 +845,16 @@ export function decodeNostromoClaimTokenOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): NostromoClaimTokenOutput {
-  return decodePayload(
-    data,
-    NOSTROMO_CLAIM_TOKEN_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as NostromoClaimTokenOutput
+  return decodePayload(data, NOSTROMO_CLAIM_TOKEN_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as NostromoClaimTokenOutput
 }
 
 export const NOSTROMO_UPGRADE_TIER_INPUT_TYPE = 8
-export const NOSTROMO_UPGRADE_TIER_INPUT_SIZE = 4
-export const NOSTROMO_UPGRADE_TIER_OUTPUT_SIZE = 0
 
 export interface NostromoUpgradeTierInput {
   newTierLevel: number
 }
 
-export const NOSTROMO_UPGRADE_TIER_INPUT_FIELDS: BinaryField[] = [
+const NOSTROMO_UPGRADE_TIER_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'newTierLevel',
     type: 'uint32',
@@ -835,25 +871,31 @@ export function buildNostromoUpgradeTierInput(
 }
 
 export const NOSTROMO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE = 9
-export const NOSTROMO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_SIZE = 12
-export const NOSTROMO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_SIZE = 8
 
 export interface NostromoTransferShareManagementRightsInput {
+  asset: NostromoAssetStruct
   numberOfShares: bigint
   newManagingContractIndex: number
 }
 
-export const NOSTROMO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
+const NOSTROMO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'asset',
+    type: 'struct',
+    offset: 0,
+    byteLength: 40,
+    structRef: 'Asset',
+  },
   {
     name: 'numberOfShares',
     type: 'sint64',
-    offset: 0,
+    offset: 40,
     byteLength: 8,
   },
   {
     name: 'newManagingContractIndex',
     type: 'uint32',
-    offset: 8,
+    offset: 48,
     byteLength: 4,
   },
 ]
@@ -869,7 +911,7 @@ export interface NostromoTransferShareManagementRightsOutput {
   transferredNumberOfShares: bigint
 }
 
-export const NOSTROMO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
+const NOSTROMO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'transferredNumberOfShares',
     type: 'sint64',
@@ -882,24 +924,18 @@ export function decodeNostromoTransferShareManagementRightsOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): NostromoTransferShareManagementRightsOutput {
-  return decodePayload(
-    data,
-    NOSTROMO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as NostromoTransferShareManagementRightsOutput
+  return decodePayload(data, NOSTROMO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as NostromoTransferShareManagementRightsOutput
 }
 
 export const NOSTROMO_GET_STATS_INPUT_TYPE = 10
 export const NOSTROMO_GET_STATS_INPUT_SIZE = 0
-export const NOSTROMO_GET_STATS_OUTPUT_SIZE = 12
 
 export interface NostromoGetStatsOutput {
   epochRevenue: bigint
   numberOfRegister: number
 }
 
-export const NOSTROMO_GET_STATS_OUTPUT_FIELDS: BinaryField[] = [
+const NOSTROMO_GET_STATS_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'epochRevenue',
     type: 'uint64',
@@ -918,23 +954,34 @@ export function decodeNostromoGetStatsOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): NostromoGetStatsOutput {
-  return decodePayload(
-    data,
-    NOSTROMO_GET_STATS_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as NostromoGetStatsOutput
+  return decodePayload(data, NOSTROMO_GET_STATS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as NostromoGetStatsOutput
+}
+
+export async function nostromoGetStats(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<NostromoGetStatsOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: NOSTROMO_CONTRACT_INDEX,
+    inputType: NOSTROMO_GET_STATS_INPUT_TYPE,
+    inputSize: NOSTROMO_GET_STATS_INPUT_SIZE,
+    inputFields: [],
+    outputFields: NOSTROMO_GET_STATS_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
 }
 
 export const NOSTROMO_GET_TIER_LEVEL_BY_USER_INPUT_TYPE = 11
 export const NOSTROMO_GET_TIER_LEVEL_BY_USER_INPUT_SIZE = 32
-export const NOSTROMO_GET_TIER_LEVEL_BY_USER_OUTPUT_SIZE = 1
 
 export interface NostromoGetTierLevelByUserInput {
   userId: string
 }
 
-export const NOSTROMO_GET_TIER_LEVEL_BY_USER_INPUT_FIELDS: BinaryField[] = [
+const NOSTROMO_GET_TIER_LEVEL_BY_USER_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'userId',
     type: 'id',
@@ -954,7 +1001,7 @@ export interface NostromoGetTierLevelByUserOutput {
   tierLevel: number
 }
 
-export const NOSTROMO_GET_TIER_LEVEL_BY_USER_OUTPUT_FIELDS: BinaryField[] = [
+const NOSTROMO_GET_TIER_LEVEL_BY_USER_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'tierLevel',
     type: 'uint8',
@@ -967,23 +1014,35 @@ export function decodeNostromoGetTierLevelByUserOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): NostromoGetTierLevelByUserOutput {
-  return decodePayload(
-    data,
-    NOSTROMO_GET_TIER_LEVEL_BY_USER_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as NostromoGetTierLevelByUserOutput
+  return decodePayload(data, NOSTROMO_GET_TIER_LEVEL_BY_USER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as NostromoGetTierLevelByUserOutput
+}
+
+export async function nostromoGetTierLevelByUser(
+  live: SmartContractCaller,
+  input: NostromoGetTierLevelByUserInput,
+  options?: ContractCallOptions,
+): Promise<Result<NostromoGetTierLevelByUserOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: NOSTROMO_CONTRACT_INDEX,
+    inputType: NOSTROMO_GET_TIER_LEVEL_BY_USER_INPUT_TYPE,
+    inputSize: NOSTROMO_GET_TIER_LEVEL_BY_USER_INPUT_SIZE,
+    inputFields: NOSTROMO_GET_TIER_LEVEL_BY_USER_INPUT_FIELDS,
+    outputFields: NOSTROMO_GET_TIER_LEVEL_BY_USER_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const NOSTROMO_GET_USER_VOTE_STATUS_INPUT_TYPE = 12
 export const NOSTROMO_GET_USER_VOTE_STATUS_INPUT_SIZE = 32
-export const NOSTROMO_GET_USER_VOTE_STATUS_OUTPUT_SIZE = 516
 
 export interface NostromoGetUserVoteStatusInput {
   userId: string
 }
 
-export const NOSTROMO_GET_USER_VOTE_STATUS_INPUT_FIELDS: BinaryField[] = [
+const NOSTROMO_GET_USER_VOTE_STATUS_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'userId',
     type: 'id',
@@ -1004,7 +1063,7 @@ export interface NostromoGetUserVoteStatusOutput {
   projectIndexList: number[]
 }
 
-export const NOSTROMO_GET_USER_VOTE_STATUS_OUTPUT_FIELDS: BinaryField[] = [
+const NOSTROMO_GET_USER_VOTE_STATUS_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'numberOfVotedProjects',
     type: 'uint32',
@@ -1026,23 +1085,35 @@ export function decodeNostromoGetUserVoteStatusOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): NostromoGetUserVoteStatusOutput {
-  return decodePayload(
-    data,
-    NOSTROMO_GET_USER_VOTE_STATUS_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as NostromoGetUserVoteStatusOutput
+  return decodePayload(data, NOSTROMO_GET_USER_VOTE_STATUS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as NostromoGetUserVoteStatusOutput
+}
+
+export async function nostromoGetUserVoteStatus(
+  live: SmartContractCaller,
+  input: NostromoGetUserVoteStatusInput,
+  options?: ContractCallOptions,
+): Promise<Result<NostromoGetUserVoteStatusOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: NOSTROMO_CONTRACT_INDEX,
+    inputType: NOSTROMO_GET_USER_VOTE_STATUS_INPUT_TYPE,
+    inputSize: NOSTROMO_GET_USER_VOTE_STATUS_INPUT_SIZE,
+    inputFields: NOSTROMO_GET_USER_VOTE_STATUS_INPUT_FIELDS,
+    outputFields: NOSTROMO_GET_USER_VOTE_STATUS_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const NOSTROMO_CHECK_TOKEN_CREATABILITY_INPUT_TYPE = 13
 export const NOSTROMO_CHECK_TOKEN_CREATABILITY_INPUT_SIZE = 8
-export const NOSTROMO_CHECK_TOKEN_CREATABILITY_OUTPUT_SIZE = 0
 
 export interface NostromoCheckTokenCreatabilityInput {
   tokenName: bigint
 }
 
-export const NOSTROMO_CHECK_TOKEN_CREATABILITY_INPUT_FIELDS: BinaryField[] = [
+const NOSTROMO_CHECK_TOKEN_CREATABILITY_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'tokenName',
     type: 'uint64',
@@ -1058,15 +1129,52 @@ export function buildNostromoCheckTokenCreatabilityInput(
   return buildPayload(NOSTROMO_CHECK_TOKEN_CREATABILITY_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
 
+export interface NostromoCheckTokenCreatabilityOutput {
+  result: number
+}
+
+const NOSTROMO_CHECK_TOKEN_CREATABILITY_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'result',
+    type: 'uint8',
+    offset: 0,
+    byteLength: 1,
+  },
+]
+
+export function decodeNostromoCheckTokenCreatabilityOutput(
+  data: Uint8Array,
+  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+): NostromoCheckTokenCreatabilityOutput {
+  return decodePayload(data, NOSTROMO_CHECK_TOKEN_CREATABILITY_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as NostromoCheckTokenCreatabilityOutput
+}
+
+export async function nostromoCheckTokenCreatability(
+  live: SmartContractCaller,
+  input: NostromoCheckTokenCreatabilityInput,
+  options?: ContractCallOptions,
+): Promise<Result<NostromoCheckTokenCreatabilityOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: NOSTROMO_CONTRACT_INDEX,
+    inputType: NOSTROMO_CHECK_TOKEN_CREATABILITY_INPUT_TYPE,
+    inputSize: NOSTROMO_CHECK_TOKEN_CREATABILITY_INPUT_SIZE,
+    inputFields: NOSTROMO_CHECK_TOKEN_CREATABILITY_INPUT_FIELDS,
+    outputFields: NOSTROMO_CHECK_TOKEN_CREATABILITY_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
+}
+
 export const NOSTROMO_GET_NUMBER_OF_INVESTED_PROJECTS_INPUT_TYPE = 14
 export const NOSTROMO_GET_NUMBER_OF_INVESTED_PROJECTS_INPUT_SIZE = 32
-export const NOSTROMO_GET_NUMBER_OF_INVESTED_PROJECTS_OUTPUT_SIZE = 4
 
 export interface NostromoGetNumberOfInvestedProjectsInput {
   userId: string
 }
 
-export const NOSTROMO_GET_NUMBER_OF_INVESTED_PROJECTS_INPUT_FIELDS: BinaryField[] = [
+const NOSTROMO_GET_NUMBER_OF_INVESTED_PROJECTS_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'userId',
     type: 'id',
@@ -1086,7 +1194,7 @@ export interface NostromoGetNumberOfInvestedProjectsOutput {
   numberOfInvestedProjects: number
 }
 
-export const NOSTROMO_GET_NUMBER_OF_INVESTED_PROJECTS_OUTPUT_FIELDS: BinaryField[] = [
+const NOSTROMO_GET_NUMBER_OF_INVESTED_PROJECTS_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'numberOfInvestedProjects',
     type: 'uint32',
@@ -1099,23 +1207,35 @@ export function decodeNostromoGetNumberOfInvestedProjectsOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): NostromoGetNumberOfInvestedProjectsOutput {
-  return decodePayload(
-    data,
-    NOSTROMO_GET_NUMBER_OF_INVESTED_PROJECTS_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as NostromoGetNumberOfInvestedProjectsOutput
+  return decodePayload(data, NOSTROMO_GET_NUMBER_OF_INVESTED_PROJECTS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as NostromoGetNumberOfInvestedProjectsOutput
+}
+
+export async function nostromoGetNumberOfInvestedProjects(
+  live: SmartContractCaller,
+  input: NostromoGetNumberOfInvestedProjectsInput,
+  options?: ContractCallOptions,
+): Promise<Result<NostromoGetNumberOfInvestedProjectsOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: NOSTROMO_CONTRACT_INDEX,
+    inputType: NOSTROMO_GET_NUMBER_OF_INVESTED_PROJECTS_INPUT_TYPE,
+    inputSize: NOSTROMO_GET_NUMBER_OF_INVESTED_PROJECTS_INPUT_SIZE,
+    inputFields: NOSTROMO_GET_NUMBER_OF_INVESTED_PROJECTS_INPUT_FIELDS,
+    outputFields: NOSTROMO_GET_NUMBER_OF_INVESTED_PROJECTS_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const NOSTROMO_GET_PROJECT_BY_INDEX_INPUT_TYPE = 15
 export const NOSTROMO_GET_PROJECT_BY_INDEX_INPUT_SIZE = 4
-export const NOSTROMO_GET_PROJECT_BY_INDEX_OUTPUT_SIZE = 64
 
 export interface NostromoGetProjectByIndexInput {
   indexOfProject: number
 }
 
-export const NOSTROMO_GET_PROJECT_BY_INDEX_INPUT_FIELDS: BinaryField[] = [
+const NOSTROMO_GET_PROJECT_BY_INDEX_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'indexOfProject',
     type: 'uint32',
@@ -1135,12 +1255,12 @@ export interface NostromoGetProjectByIndexOutput {
   project: NostromoProjectInfoStruct
 }
 
-export const NOSTROMO_GET_PROJECT_BY_INDEX_OUTPUT_FIELDS: BinaryField[] = [
+const NOSTROMO_GET_PROJECT_BY_INDEX_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'project',
     type: 'struct',
     offset: 0,
-    byteLength: 64,
+    byteLength: 65,
     structRef: 'projectInfo',
   },
 ]
@@ -1149,23 +1269,35 @@ export function decodeNostromoGetProjectByIndexOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): NostromoGetProjectByIndexOutput {
-  return decodePayload(
-    data,
-    NOSTROMO_GET_PROJECT_BY_INDEX_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as NostromoGetProjectByIndexOutput
+  return decodePayload(data, NOSTROMO_GET_PROJECT_BY_INDEX_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as NostromoGetProjectByIndexOutput
+}
+
+export async function nostromoGetProjectByIndex(
+  live: SmartContractCaller,
+  input: NostromoGetProjectByIndexInput,
+  options?: ContractCallOptions,
+): Promise<Result<NostromoGetProjectByIndexOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: NOSTROMO_CONTRACT_INDEX,
+    inputType: NOSTROMO_GET_PROJECT_BY_INDEX_INPUT_TYPE,
+    inputSize: NOSTROMO_GET_PROJECT_BY_INDEX_INPUT_SIZE,
+    inputFields: NOSTROMO_GET_PROJECT_BY_INDEX_INPUT_FIELDS,
+    outputFields: NOSTROMO_GET_PROJECT_BY_INDEX_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const NOSTROMO_GET_FUNDARASING_BY_INDEX_INPUT_TYPE = 16
 export const NOSTROMO_GET_FUNDARASING_BY_INDEX_INPUT_SIZE = 4
-export const NOSTROMO_GET_FUNDARASING_BY_INDEX_OUTPUT_SIZE = 75
 
 export interface NostromoGetFundarasingByIndexInput {
   indexOfFundarasing: number
 }
 
-export const NOSTROMO_GET_FUNDARASING_BY_INDEX_INPUT_FIELDS: BinaryField[] = [
+const NOSTROMO_GET_FUNDARASING_BY_INDEX_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'indexOfFundarasing',
     type: 'uint32',
@@ -1185,12 +1317,12 @@ export interface NostromoGetFundarasingByIndexOutput {
   fundarasing: NostromoFundaraisingInfoStruct
 }
 
-export const NOSTROMO_GET_FUNDARASING_BY_INDEX_OUTPUT_FIELDS: BinaryField[] = [
+const NOSTROMO_GET_FUNDARASING_BY_INDEX_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'fundarasing',
     type: 'struct',
     offset: 0,
-    byteLength: 75,
+    byteLength: 76,
     structRef: 'fundaraisingInfo',
   },
 ]
@@ -1199,23 +1331,35 @@ export function decodeNostromoGetFundarasingByIndexOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): NostromoGetFundarasingByIndexOutput {
-  return decodePayload(
-    data,
-    NOSTROMO_GET_FUNDARASING_BY_INDEX_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as NostromoGetFundarasingByIndexOutput
+  return decodePayload(data, NOSTROMO_GET_FUNDARASING_BY_INDEX_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as NostromoGetFundarasingByIndexOutput
+}
+
+export async function nostromoGetFundarasingByIndex(
+  live: SmartContractCaller,
+  input: NostromoGetFundarasingByIndexInput,
+  options?: ContractCallOptions,
+): Promise<Result<NostromoGetFundarasingByIndexOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: NOSTROMO_CONTRACT_INDEX,
+    inputType: NOSTROMO_GET_FUNDARASING_BY_INDEX_INPUT_TYPE,
+    inputSize: NOSTROMO_GET_FUNDARASING_BY_INDEX_INPUT_SIZE,
+    inputFields: NOSTROMO_GET_FUNDARASING_BY_INDEX_INPUT_FIELDS,
+    outputFields: NOSTROMO_GET_FUNDARASING_BY_INDEX_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const NOSTROMO_GET_PROJECT_INDEX_LIST_BY_CREATOR_INPUT_TYPE = 17
 export const NOSTROMO_GET_PROJECT_INDEX_LIST_BY_CREATOR_INPUT_SIZE = 32
-export const NOSTROMO_GET_PROJECT_INDEX_LIST_BY_CREATOR_OUTPUT_SIZE = 512
 
 export interface NostromoGetProjectIndexListByCreatorInput {
   creator: string
 }
 
-export const NOSTROMO_GET_PROJECT_INDEX_LIST_BY_CREATOR_INPUT_FIELDS: BinaryField[] = [
+const NOSTROMO_GET_PROJECT_INDEX_LIST_BY_CREATOR_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'creator',
     type: 'id',
@@ -1235,7 +1379,7 @@ export interface NostromoGetProjectIndexListByCreatorOutput {
   indexListForProjects: number[]
 }
 
-export const NOSTROMO_GET_PROJECT_INDEX_LIST_BY_CREATOR_OUTPUT_FIELDS: BinaryField[] = [
+const NOSTROMO_GET_PROJECT_INDEX_LIST_BY_CREATOR_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'indexListForProjects',
     type: 'array',
@@ -1251,23 +1395,35 @@ export function decodeNostromoGetProjectIndexListByCreatorOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): NostromoGetProjectIndexListByCreatorOutput {
-  return decodePayload(
-    data,
-    NOSTROMO_GET_PROJECT_INDEX_LIST_BY_CREATOR_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as NostromoGetProjectIndexListByCreatorOutput
+  return decodePayload(data, NOSTROMO_GET_PROJECT_INDEX_LIST_BY_CREATOR_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as NostromoGetProjectIndexListByCreatorOutput
+}
+
+export async function nostromoGetProjectIndexListByCreator(
+  live: SmartContractCaller,
+  input: NostromoGetProjectIndexListByCreatorInput,
+  options?: ContractCallOptions,
+): Promise<Result<NostromoGetProjectIndexListByCreatorOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: NOSTROMO_CONTRACT_INDEX,
+    inputType: NOSTROMO_GET_PROJECT_INDEX_LIST_BY_CREATOR_INPUT_TYPE,
+    inputSize: NOSTROMO_GET_PROJECT_INDEX_LIST_BY_CREATOR_INPUT_SIZE,
+    inputFields: NOSTROMO_GET_PROJECT_INDEX_LIST_BY_CREATOR_INPUT_FIELDS,
+    outputFields: NOSTROMO_GET_PROJECT_INDEX_LIST_BY_CREATOR_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const NOSTROMO_GET_INFO_USER_INVESTED_INPUT_TYPE = 18
 export const NOSTROMO_GET_INFO_USER_INVESTED_INPUT_SIZE = 32
-export const NOSTROMO_GET_INFO_USER_INVESTED_OUTPUT_SIZE = 2560
 
 export interface NostromoGetInfoUserInvestedInput {
   investorId: string
 }
 
-export const NOSTROMO_GET_INFO_USER_INVESTED_INPUT_FIELDS: BinaryField[] = [
+const NOSTROMO_GET_INFO_USER_INVESTED_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'investorId',
     type: 'id',
@@ -1287,7 +1443,7 @@ export interface NostromoGetInfoUserInvestedOutput {
   listUserInvested: number[]
 }
 
-export const NOSTROMO_GET_INFO_USER_INVESTED_OUTPUT_FIELDS: BinaryField[] = [
+const NOSTROMO_GET_INFO_USER_INVESTED_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'listUserInvested',
     type: 'array',
@@ -1303,24 +1459,36 @@ export function decodeNostromoGetInfoUserInvestedOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): NostromoGetInfoUserInvestedOutput {
-  return decodePayload(
-    data,
-    NOSTROMO_GET_INFO_USER_INVESTED_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as NostromoGetInfoUserInvestedOutput
+  return decodePayload(data, NOSTROMO_GET_INFO_USER_INVESTED_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as NostromoGetInfoUserInvestedOutput
+}
+
+export async function nostromoGetInfoUserInvested(
+  live: SmartContractCaller,
+  input: NostromoGetInfoUserInvestedInput,
+  options?: ContractCallOptions,
+): Promise<Result<NostromoGetInfoUserInvestedOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: NOSTROMO_CONTRACT_INDEX,
+    inputType: NOSTROMO_GET_INFO_USER_INVESTED_INPUT_TYPE,
+    inputSize: NOSTROMO_GET_INFO_USER_INVESTED_INPUT_SIZE,
+    inputFields: NOSTROMO_GET_INFO_USER_INVESTED_INPUT_FIELDS,
+    outputFields: NOSTROMO_GET_INFO_USER_INVESTED_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const NOSTROMO_GET_MAX_CLAIM_AMOUNT_INPUT_TYPE = 19
 export const NOSTROMO_GET_MAX_CLAIM_AMOUNT_INPUT_SIZE = 36
-export const NOSTROMO_GET_MAX_CLAIM_AMOUNT_OUTPUT_SIZE = 8
 
 export interface NostromoGetMaxClaimAmountInput {
   investorId: string
   indexOfFundraising: number
 }
 
-export const NOSTROMO_GET_MAX_CLAIM_AMOUNT_INPUT_FIELDS: BinaryField[] = [
+const NOSTROMO_GET_MAX_CLAIM_AMOUNT_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'investorId',
     type: 'id',
@@ -1346,7 +1514,7 @@ export interface NostromoGetMaxClaimAmountOutput {
   amount: bigint
 }
 
-export const NOSTROMO_GET_MAX_CLAIM_AMOUNT_OUTPUT_FIELDS: BinaryField[] = [
+const NOSTROMO_GET_MAX_CLAIM_AMOUNT_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'amount',
     type: 'uint64',
@@ -1359,11 +1527,51 @@ export function decodeNostromoGetMaxClaimAmountOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): NostromoGetMaxClaimAmountOutput {
-  return decodePayload(
-    data,
-    NOSTROMO_GET_MAX_CLAIM_AMOUNT_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as NostromoGetMaxClaimAmountOutput
+  return decodePayload(data, NOSTROMO_GET_MAX_CLAIM_AMOUNT_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as NostromoGetMaxClaimAmountOutput
+}
+
+export async function nostromoGetMaxClaimAmount(
+  live: SmartContractCaller,
+  input: NostromoGetMaxClaimAmountInput,
+  options?: ContractCallOptions,
+): Promise<Result<NostromoGetMaxClaimAmountOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: NOSTROMO_CONTRACT_INDEX,
+    inputType: NOSTROMO_GET_MAX_CLAIM_AMOUNT_INPUT_TYPE,
+    inputSize: NOSTROMO_GET_MAX_CLAIM_AMOUNT_INPUT_SIZE,
+    inputFields: NOSTROMO_GET_MAX_CLAIM_AMOUNT_INPUT_FIELDS,
+    outputFields: NOSTROMO_GET_MAX_CLAIM_AMOUNT_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
+}
+
+export const nostromo = {
+  contractIndex: NOSTROMO_CONTRACT_INDEX,
+  getStats: nostromoGetStats,
+  getTierLevelByUser: nostromoGetTierLevelByUser,
+  getUserVoteStatus: nostromoGetUserVoteStatus,
+  checkTokenCreatability: nostromoCheckTokenCreatability,
+  getNumberOfInvestedProjects: nostromoGetNumberOfInvestedProjects,
+  getProjectByIndex: nostromoGetProjectByIndex,
+  getFundarasingByIndex: nostromoGetFundarasingByIndex,
+  getProjectIndexListByCreator: nostromoGetProjectIndexListByCreator,
+  getInfoUserInvested: nostromoGetInfoUserInvested,
+  getMaxClaimAmount: nostromoGetMaxClaimAmount,
+  buildRegisterInTierInput: buildNostromoRegisterInTierInput,
+  decodeRegisterInTierOutput: decodeNostromoRegisterInTierOutput,
+  decodeLogoutFromTierOutput: decodeNostromoLogoutFromTierOutput,
+  buildCreateProjectInput: buildNostromoCreateProjectInput,
+  decodeCreateProjectOutput: decodeNostromoCreateProjectOutput,
+  buildVoteInProjectInput: buildNostromoVoteInProjectInput,
+  buildCreateFundraisingInput: buildNostromoCreateFundraisingInput,
+  buildInvestInProjectInput: buildNostromoInvestInProjectInput,
+  buildClaimTokenInput: buildNostromoClaimTokenInput,
+  decodeClaimTokenOutput: decodeNostromoClaimTokenOutput,
+  buildUpgradeTierInput: buildNostromoUpgradeTierInput,
+  buildTransferShareManagementRightsInput: buildNostromoTransferShareManagementRightsInput,
+  decodeTransferShareManagementRightsOutput: decodeNostromoTransferShareManagementRightsOutput,
 }
 

@@ -30,12 +30,14 @@ const versions: ContractAbiVersion[] = readdirSync(latestEpochDir)
 const outDir = join(import.meta.dir, '../src/__generated__')
 mkdirSync(outDir, { recursive: true })
 
+// ── Name helpers ──────────────────────────────────────────────────────────────
+
 // "My Last Match" → "mylastmatch"  |  "QEarn" → "qearn"
 function toFileName(name: string): string {
   return name.replace(/[^a-zA-Z0-9]/g, '').toLowerCase()
 }
 
-// "My Last Match" → "MyLastMatch"  |  "Multi-Sign Vault" → "MultiSignVault"  |  "QEarn" → "QEarn"
+// "My Last Match" → "MyLastMatch"  |  "Multi-Sign Vault" → "MultiSignVault"
 function toContractPascal(name: string): string {
   return name
     .replace(/[^a-zA-Z0-9]+(.)/g, (_, c: string) => c.toUpperCase())
@@ -58,6 +60,14 @@ function toScreamingSnake(name: string): string {
 function toPascalCase(name: string): string {
   return name.charAt(0).toUpperCase() + name.slice(1)
 }
+
+// "GeneralQuorumProposal" → "generalQuorumProposal"  |  "QEarn" → "qEarn"
+function toObjectName(name: string): string {
+  const pascal = toContractPascal(name)
+  return pascal.charAt(0).toLowerCase() + pascal.slice(1)
+}
+
+// ── Code helpers ──────────────────────────────────────────────────────────────
 
 function tsType(field: BinaryField, contractPascal: string): string {
   switch (field.type) {
@@ -130,27 +140,41 @@ function structLiteral(s: NamedStruct): string {
 }`
 }
 
+// ── Per-contract generation ───────────────────────────────────────────────────
+
 const contractFiles: string[] = []
 
 for (const version of versions) {
   const cSnake = toScreamingSnake(version.contractName)
   const cPascal = toContractPascal(version.contractName)
   const contractFile = toFileName(version.contractName)
+  const cObject = toObjectName(version.contractName)
   contractFiles.push(contractFile)
 
   const structNames = Object.keys(version.structs)
   const hasStructs = structNames.length > 0
 
+  // Determine which runtime helpers are needed
+  const functionsWithOutput = version.functions.filter((f) => f.outputFields.length > 0)
+  const needsCallRuntime = functionsWithOutput.length > 0
+
   const lines: string[] = [
     '// @generated — do not edit by hand. Run `bun run generate` to regenerate.',
     "import type { BinaryField, FieldValue, NamedStruct } from '@qubic.ts/contract-registry'",
     "import { buildPayload, decodePayload } from '@qubic.ts/contract-registry'",
+    ...(needsCallRuntime
+      ? [
+          "import type { QubicRpcError } from '@qubic.ts/rpc'",
+          "import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'",
+          "import type { Result } from '../result.js'",
+        ]
+      : []),
     '',
     `export const ${cSnake}_CONTRACT_INDEX = ${version.contractIndex}`,
     '',
   ]
 
-  // Struct interfaces + internal STRUCTS map (not exported — only used by build/decode calls)
+  // Struct interfaces + internal STRUCTS map
   if (hasStructs) {
     for (const [name, s] of Object.entries(version.structs)) {
       if (s.fields.length > 0) {
@@ -170,18 +194,13 @@ for (const version of versions) {
     lines.push('const STRUCTS: Record<string, NamedStruct> = {}', '')
   }
 
-  const allCalls = [...version.procedures, ...version.functions]
-
-  for (const call of allCalls) {
+  // ── Procedures ──────────────────────────────────────────────────────────────
+  // Procedures are write operations: expose buildInput + decodeOutput only.
+  for (const call of version.procedures) {
     const callPascal = toPascalCase(call.name)
     const callSnake = toScreamingSnake(call.name)
 
-    lines.push(
-      `export const ${cSnake}_${callSnake}_INPUT_TYPE = ${call.inputType}`,
-      `export const ${cSnake}_${callSnake}_INPUT_SIZE = ${call.inputSize}`,
-      `export const ${cSnake}_${callSnake}_OUTPUT_SIZE = ${call.outputSize}`,
-      '',
-    )
+    lines.push(`export const ${cSnake}_${callSnake}_INPUT_TYPE = ${call.inputType}`, '')
 
     if (call.inputFields.length > 0) {
       lines.push(
@@ -189,7 +208,7 @@ for (const version of versions) {
         interfaceFields(call.inputFields, cPascal),
         '}',
         '',
-        `export const ${cSnake}_${callSnake}_INPUT_FIELDS: BinaryField[] = ${fieldsLiteral(call.inputFields)}`,
+        `const ${cSnake}_${callSnake}_INPUT_FIELDS: BinaryField[] = ${fieldsLiteral(call.inputFields)}`,
         '',
         `export function build${cPascal}${callPascal}Input(`,
         `  input: ${cPascal}${callPascal}Input,`,
@@ -207,23 +226,107 @@ for (const version of versions) {
         interfaceFields(call.outputFields, cPascal),
         '}',
         '',
-        `export const ${cSnake}_${callSnake}_OUTPUT_FIELDS: BinaryField[] = ${fieldsLiteral(call.outputFields)}`,
+        `const ${cSnake}_${callSnake}_OUTPUT_FIELDS: BinaryField[] = ${fieldsLiteral(call.outputFields)}`,
         '',
         `export function decode${cPascal}${callPascal}Output(`,
         '  data: Uint8Array,',
         "  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),",
         `): ${cPascal}${callPascal}Output {`,
-        '  return decodePayload(',
-        '    data,',
-        `    ${cSnake}_${callSnake}_OUTPUT_FIELDS,`,
-        '    STRUCTS,',
-        '    publicKeyToIdentity,',
-        `  ) as unknown as ${cPascal}${callPascal}Output`,
+        `  return decodePayload(data, ${cSnake}_${callSnake}_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as ${cPascal}${callPascal}Output`,
         '}',
         '',
       )
     }
   }
+
+  // ── Functions ────────────────────────────────────────────────────────────────
+  // Functions are read-only queries: expose a high-level async caller + low-level decode.
+  for (const call of version.functions) {
+    const callPascal = toPascalCase(call.name)
+    const callSnake = toScreamingSnake(call.name)
+    const hasInput = call.inputFields.length > 0
+
+    lines.push(
+      `export const ${cSnake}_${callSnake}_INPUT_TYPE = ${call.inputType}`,
+      `export const ${cSnake}_${callSnake}_INPUT_SIZE = ${call.inputSize}`,
+      '',
+    )
+
+    if (hasInput) {
+      lines.push(
+        `export interface ${cPascal}${callPascal}Input {`,
+        interfaceFields(call.inputFields, cPascal),
+        '}',
+        '',
+        `const ${cSnake}_${callSnake}_INPUT_FIELDS: BinaryField[] = ${fieldsLiteral(call.inputFields)}`,
+        '',
+        `export function build${cPascal}${callPascal}Input(`,
+        `  input: ${cPascal}${callPascal}Input,`,
+        '  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),',
+        '): Uint8Array {',
+        `  return buildPayload(${cSnake}_${callSnake}_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)`,
+        '}',
+        '',
+      )
+    }
+
+    if (call.outputFields.length > 0) {
+      lines.push(
+        `export interface ${cPascal}${callPascal}Output {`,
+        interfaceFields(call.outputFields, cPascal),
+        '}',
+        '',
+        `const ${cSnake}_${callSnake}_OUTPUT_FIELDS: BinaryField[] = ${fieldsLiteral(call.outputFields)}`,
+        '',
+        `export function decode${cPascal}${callPascal}Output(`,
+        '  data: Uint8Array,',
+        "  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),",
+        `): ${cPascal}${callPascal}Output {`,
+        `  return decodePayload(data, ${cSnake}_${callSnake}_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as ${cPascal}${callPascal}Output`,
+        '}',
+        '',
+        // High-level async caller
+        `export async function ${cObject}${callPascal}(`,
+        '  live: SmartContractCaller,',
+        ...(hasInput ? [`  input: ${cPascal}${callPascal}Input,`] : []),
+        '  options?: ContractCallOptions,',
+        `): Promise<Result<${cPascal}${callPascal}Output, QubicRpcError>> {`,
+        '  return callContractFunction({',
+        '    live,',
+        `    contractIndex: ${cSnake}_CONTRACT_INDEX,`,
+        `    inputType: ${cSnake}_${callSnake}_INPUT_TYPE,`,
+        `    inputSize: ${cSnake}_${callSnake}_INPUT_SIZE,`,
+        `    inputFields: ${hasInput ? `${cSnake}_${callSnake}_INPUT_FIELDS` : '[]'},`,
+        `    outputFields: ${cSnake}_${callSnake}_OUTPUT_FIELDS,`,
+        '    structs: STRUCTS,',
+        `    input: ${hasInput ? '(input as unknown as Record<string, unknown>)' : '{}'},`,
+        '    ...options,',
+        '  })',
+        '}',
+        '',
+      )
+    }
+  }
+
+  // ── Contract namespace object ─────────────────────────────────────────────────
+  // Bundles all entrypoints under a single ergonomic object.
+  // Async function callers + sync procedure payload builders/decoders.
+  const objEntries: string[] = [`  contractIndex: ${cSnake}_CONTRACT_INDEX,`]
+
+  for (const call of version.functions) {
+    if (call.outputFields.length === 0) continue
+    objEntries.push(`  ${call.name}: ${cObject}${toPascalCase(call.name)},`)
+  }
+
+  for (const call of version.procedures) {
+    const callPascal = toPascalCase(call.name)
+    if (call.inputFields.length > 0)
+      objEntries.push(`  build${callPascal}Input: build${cPascal}${callPascal}Input,`)
+    if (call.outputFields.length > 0)
+      objEntries.push(`  decode${callPascal}Output: decode${cPascal}${callPascal}Output,`)
+  }
+
+  lines.push(`export const ${cObject} = {`, ...objEntries, '}', '')
 
   const content = `${lines.join('\n')}\n`
   writeFileSync(join(outDir, `${contractFile}.ts`), content)

@@ -3,7 +3,7 @@
   "contractName": "QDuel",
   "effectiveFromEpoch": 212,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T14:10:52.532Z",
+  "registeredAt": "2026-05-13T14:30:09.066Z",
   "structs": {
     "RoomInfo": {
       "name": "RoomInfo",
@@ -77,6 +77,18 @@
         }
       ],
       "byteLength": 104
+    },
+    "DateAndTime": {
+      "name": "DateAndTime",
+      "byteLength": 8,
+      "fields": [
+        {
+          "name": "value",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ]
     }
   },
   "procedures": [

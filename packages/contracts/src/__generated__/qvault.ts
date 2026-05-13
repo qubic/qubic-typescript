@@ -1,8 +1,16 @@
 // @generated — do not edit by hand. Run `bun run generate` to regenerate.
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.ts/contract-registry'
 import { buildPayload, decodePayload } from '@qubic.ts/contract-registry'
+import type { QubicRpcError } from '@qubic.ts/rpc'
+import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import type { Result } from '../result.js'
 
 export const QVAULT_CONTRACT_INDEX = 10
+
+export interface QVAULTAssetStruct {
+  issuer: string
+  assetName: bigint
+}
 
 export interface QVAULTGPInfoStruct {
   proposer: string
@@ -100,6 +108,24 @@ export interface QVAULTAlloPInfoStruct {
 }
 
 const STRUCTS: Record<string, NamedStruct> = {
+  Asset: {
+  name: 'Asset',
+  byteLength: 40,
+  fields: [
+    {
+      name: 'issuer',
+      type: 'id',
+      offset: 0,
+      byteLength: 32,
+    },
+    {
+      name: 'assetName',
+      type: 'uint64',
+      offset: 32,
+      byteLength: 8,
+    },
+],
+},
   GPInfo: {
   name: 'GPInfo',
   byteLength: 309,
@@ -610,14 +636,12 @@ const STRUCTS: Record<string, NamedStruct> = {
 }
 
 export const QVAULT_STAKE_INPUT_TYPE = 2
-export const QVAULT_STAKE_INPUT_SIZE = 4
-export const QVAULT_STAKE_OUTPUT_SIZE = 4
 
 export interface QVAULTStakeInput {
   amount: number
 }
 
-export const QVAULT_STAKE_INPUT_FIELDS: BinaryField[] = [
+const QVAULT_STAKE_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'amount',
     type: 'uint32',
@@ -637,7 +661,7 @@ export interface QVAULTStakeOutput {
   returnCode: number
 }
 
-export const QVAULT_STAKE_OUTPUT_FIELDS: BinaryField[] = [
+const QVAULT_STAKE_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'sint32',
@@ -650,23 +674,16 @@ export function decodeQVAULTStakeOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QVAULTStakeOutput {
-  return decodePayload(
-    data,
-    QVAULT_STAKE_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QVAULTStakeOutput
+  return decodePayload(data, QVAULT_STAKE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTStakeOutput
 }
 
 export const QVAULT_UN_STAKE_INPUT_TYPE = 3
-export const QVAULT_UN_STAKE_INPUT_SIZE = 4
-export const QVAULT_UN_STAKE_OUTPUT_SIZE = 4
 
 export interface QVAULTUnStakeInput {
   amount: number
 }
 
-export const QVAULT_UN_STAKE_INPUT_FIELDS: BinaryField[] = [
+const QVAULT_UN_STAKE_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'amount',
     type: 'uint32',
@@ -686,7 +703,7 @@ export interface QVAULTUnStakeOutput {
   returnCode: number
 }
 
-export const QVAULT_UN_STAKE_OUTPUT_FIELDS: BinaryField[] = [
+const QVAULT_UN_STAKE_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'sint32',
@@ -699,23 +716,16 @@ export function decodeQVAULTUnStakeOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QVAULTUnStakeOutput {
-  return decodePayload(
-    data,
-    QVAULT_UN_STAKE_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QVAULTUnStakeOutput
+  return decodePayload(data, QVAULT_UN_STAKE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTUnStakeOutput
 }
 
 export const QVAULT_SUBMIT_GP_INPUT_TYPE = 4
-export const QVAULT_SUBMIT_GP_INPUT_SIZE = 256
-export const QVAULT_SUBMIT_GP_OUTPUT_SIZE = 4
 
 export interface QVAULTSubmitGPInput {
   url: number[]
 }
 
-export const QVAULT_SUBMIT_GP_INPUT_FIELDS: BinaryField[] = [
+const QVAULT_SUBMIT_GP_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'url',
     type: 'array',
@@ -738,7 +748,7 @@ export interface QVAULTSubmitGPOutput {
   returnCode: number
 }
 
-export const QVAULT_SUBMIT_GP_OUTPUT_FIELDS: BinaryField[] = [
+const QVAULT_SUBMIT_GP_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'sint32',
@@ -751,24 +761,17 @@ export function decodeQVAULTSubmitGPOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QVAULTSubmitGPOutput {
-  return decodePayload(
-    data,
-    QVAULT_SUBMIT_GP_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QVAULTSubmitGPOutput
+  return decodePayload(data, QVAULT_SUBMIT_GP_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTSubmitGPOutput
 }
 
 export const QVAULT_SUBMIT_QCP_INPUT_TYPE = 5
-export const QVAULT_SUBMIT_QCP_INPUT_SIZE = 260
-export const QVAULT_SUBMIT_QCP_OUTPUT_SIZE = 4
 
 export interface QVAULTSubmitQCPInput {
   newQuorumPercent: number
   url: number[]
 }
 
-export const QVAULT_SUBMIT_QCP_INPUT_FIELDS: BinaryField[] = [
+const QVAULT_SUBMIT_QCP_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'newQuorumPercent',
     type: 'uint32',
@@ -797,7 +800,7 @@ export interface QVAULTSubmitQCPOutput {
   returnCode: number
 }
 
-export const QVAULT_SUBMIT_QCP_OUTPUT_FIELDS: BinaryField[] = [
+const QVAULT_SUBMIT_QCP_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'sint32',
@@ -810,24 +813,17 @@ export function decodeQVAULTSubmitQCPOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QVAULTSubmitQCPOutput {
-  return decodePayload(
-    data,
-    QVAULT_SUBMIT_QCP_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QVAULTSubmitQCPOutput
+  return decodePayload(data, QVAULT_SUBMIT_QCP_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTSubmitQCPOutput
 }
 
 export const QVAULT_SUBMIT_IPOP_INPUT_TYPE = 6
-export const QVAULT_SUBMIT_IPOP_INPUT_SIZE = 260
-export const QVAULT_SUBMIT_IPOP_OUTPUT_SIZE = 4
 
 export interface QVAULTSubmitIPOPInput {
   ipoContractIndex: number
   url: number[]
 }
 
-export const QVAULT_SUBMIT_IPOP_INPUT_FIELDS: BinaryField[] = [
+const QVAULT_SUBMIT_IPOP_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'ipoContractIndex',
     type: 'uint32',
@@ -856,7 +852,7 @@ export interface QVAULTSubmitIPOPOutput {
   returnCode: number
 }
 
-export const QVAULT_SUBMIT_IPOP_OUTPUT_FIELDS: BinaryField[] = [
+const QVAULT_SUBMIT_IPOP_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'sint32',
@@ -869,17 +865,10 @@ export function decodeQVAULTSubmitIPOPOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QVAULTSubmitIPOPOutput {
-  return decodePayload(
-    data,
-    QVAULT_SUBMIT_IPOP_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QVAULTSubmitIPOPOutput
+  return decodePayload(data, QVAULT_SUBMIT_IPOP_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTSubmitIPOPOutput
 }
 
 export const QVAULT_SUBMIT_Q_EARN_P_INPUT_TYPE = 7
-export const QVAULT_SUBMIT_Q_EARN_P_INPUT_SIZE = 268
-export const QVAULT_SUBMIT_Q_EARN_P_OUTPUT_SIZE = 4
 
 export interface QVAULTSubmitQEarnPInput {
   amountPerEpoch: bigint
@@ -887,7 +876,7 @@ export interface QVAULTSubmitQEarnPInput {
   url: number[]
 }
 
-export const QVAULT_SUBMIT_Q_EARN_P_INPUT_FIELDS: BinaryField[] = [
+const QVAULT_SUBMIT_Q_EARN_P_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'amountPerEpoch',
     type: 'uint64',
@@ -922,7 +911,7 @@ export interface QVAULTSubmitQEarnPOutput {
   returnCode: number
 }
 
-export const QVAULT_SUBMIT_Q_EARN_P_OUTPUT_FIELDS: BinaryField[] = [
+const QVAULT_SUBMIT_Q_EARN_P_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'sint32',
@@ -935,17 +924,10 @@ export function decodeQVAULTSubmitQEarnPOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QVAULTSubmitQEarnPOutput {
-  return decodePayload(
-    data,
-    QVAULT_SUBMIT_Q_EARN_P_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QVAULTSubmitQEarnPOutput
+  return decodePayload(data, QVAULT_SUBMIT_Q_EARN_P_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTSubmitQEarnPOutput
 }
 
 export const QVAULT_SUBMIT_FUND_P_INPUT_TYPE = 8
-export const QVAULT_SUBMIT_FUND_P_INPUT_SIZE = 268
-export const QVAULT_SUBMIT_FUND_P_OUTPUT_SIZE = 4
 
 export interface QVAULTSubmitFundPInput {
   priceOfOneQcap: bigint
@@ -953,7 +935,7 @@ export interface QVAULTSubmitFundPInput {
   url: number[]
 }
 
-export const QVAULT_SUBMIT_FUND_P_INPUT_FIELDS: BinaryField[] = [
+const QVAULT_SUBMIT_FUND_P_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'priceOfOneQcap',
     type: 'uint64',
@@ -988,7 +970,7 @@ export interface QVAULTSubmitFundPOutput {
   returnCode: number
 }
 
-export const QVAULT_SUBMIT_FUND_P_OUTPUT_FIELDS: BinaryField[] = [
+const QVAULT_SUBMIT_FUND_P_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'sint32',
@@ -1001,17 +983,10 @@ export function decodeQVAULTSubmitFundPOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QVAULTSubmitFundPOutput {
-  return decodePayload(
-    data,
-    QVAULT_SUBMIT_FUND_P_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QVAULTSubmitFundPOutput
+  return decodePayload(data, QVAULT_SUBMIT_FUND_P_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTSubmitFundPOutput
 }
 
 export const QVAULT_SUBMIT_MKTP_INPUT_TYPE = 9
-export const QVAULT_SUBMIT_MKTP_INPUT_SIZE = 284
-export const QVAULT_SUBMIT_MKTP_OUTPUT_SIZE = 4
 
 export interface QVAULTSubmitMKTPInput {
   amountOfQubic: bigint
@@ -1022,7 +997,7 @@ export interface QVAULTSubmitMKTPInput {
   url: number[]
 }
 
-export const QVAULT_SUBMIT_MKTP_INPUT_FIELDS: BinaryField[] = [
+const QVAULT_SUBMIT_MKTP_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'amountOfQubic',
     type: 'uint64',
@@ -1075,7 +1050,7 @@ export interface QVAULTSubmitMKTPOutput {
   returnCode: number
 }
 
-export const QVAULT_SUBMIT_MKTP_OUTPUT_FIELDS: BinaryField[] = [
+const QVAULT_SUBMIT_MKTP_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'sint32',
@@ -1088,17 +1063,10 @@ export function decodeQVAULTSubmitMKTPOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QVAULTSubmitMKTPOutput {
-  return decodePayload(
-    data,
-    QVAULT_SUBMIT_MKTP_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QVAULTSubmitMKTPOutput
+  return decodePayload(data, QVAULT_SUBMIT_MKTP_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTSubmitMKTPOutput
 }
 
 export const QVAULT_SUBMIT_ALLO_P_INPUT_TYPE = 10
-export const QVAULT_SUBMIT_ALLO_P_INPUT_SIZE = 268
-export const QVAULT_SUBMIT_ALLO_P_OUTPUT_SIZE = 4
 
 export interface QVAULTSubmitAlloPInput {
   reinvested: number
@@ -1107,7 +1075,7 @@ export interface QVAULTSubmitAlloPInput {
   url: number[]
 }
 
-export const QVAULT_SUBMIT_ALLO_P_INPUT_FIELDS: BinaryField[] = [
+const QVAULT_SUBMIT_ALLO_P_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'reinvested',
     type: 'uint32',
@@ -1148,7 +1116,7 @@ export interface QVAULTSubmitAlloPOutput {
   returnCode: number
 }
 
-export const QVAULT_SUBMIT_ALLO_P_OUTPUT_FIELDS: BinaryField[] = [
+const QVAULT_SUBMIT_ALLO_P_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'sint32',
@@ -1161,25 +1129,19 @@ export function decodeQVAULTSubmitAlloPOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QVAULTSubmitAlloPOutput {
-  return decodePayload(
-    data,
-    QVAULT_SUBMIT_ALLO_P_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QVAULTSubmitAlloPOutput
+  return decodePayload(data, QVAULT_SUBMIT_ALLO_P_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTSubmitAlloPOutput
 }
 
 export const QVAULT_VOTE_IN_PROPOSAL_INPUT_TYPE = 11
-export const QVAULT_VOTE_IN_PROPOSAL_INPUT_SIZE = 16
-export const QVAULT_VOTE_IN_PROPOSAL_OUTPUT_SIZE = 4
 
 export interface QVAULTVoteInProposalInput {
   priceOfIPO: bigint
   proposalType: number
   proposalId: number
+  yes: number
 }
 
-export const QVAULT_VOTE_IN_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
+const QVAULT_VOTE_IN_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'priceOfIPO',
     type: 'uint64',
@@ -1198,6 +1160,12 @@ export const QVAULT_VOTE_IN_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
     offset: 12,
     byteLength: 4,
   },
+  {
+    name: 'yes',
+    type: 'uint8',
+    offset: 16,
+    byteLength: 1,
+  },
 ]
 
 export function buildQVAULTVoteInProposalInput(
@@ -1211,7 +1179,7 @@ export interface QVAULTVoteInProposalOutput {
   returnCode: number
 }
 
-export const QVAULT_VOTE_IN_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
+const QVAULT_VOTE_IN_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'sint32',
@@ -1224,23 +1192,16 @@ export function decodeQVAULTVoteInProposalOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QVAULTVoteInProposalOutput {
-  return decodePayload(
-    data,
-    QVAULT_VOTE_IN_PROPOSAL_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QVAULTVoteInProposalOutput
+  return decodePayload(data, QVAULT_VOTE_IN_PROPOSAL_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTVoteInProposalOutput
 }
 
 export const QVAULT_BUY_QCAP_INPUT_TYPE = 12
-export const QVAULT_BUY_QCAP_INPUT_SIZE = 4
-export const QVAULT_BUY_QCAP_OUTPUT_SIZE = 4
 
 export interface QVAULTBuyQcapInput {
   amount: number
 }
 
-export const QVAULT_BUY_QCAP_INPUT_FIELDS: BinaryField[] = [
+const QVAULT_BUY_QCAP_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'amount',
     type: 'uint32',
@@ -1260,7 +1221,7 @@ export interface QVAULTBuyQcapOutput {
   returnCode: number
 }
 
-export const QVAULT_BUY_QCAP_OUTPUT_FIELDS: BinaryField[] = [
+const QVAULT_BUY_QCAP_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'sint32',
@@ -1273,34 +1234,35 @@ export function decodeQVAULTBuyQcapOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QVAULTBuyQcapOutput {
-  return decodePayload(
-    data,
-    QVAULT_BUY_QCAP_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QVAULTBuyQcapOutput
+  return decodePayload(data, QVAULT_BUY_QCAP_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTBuyQcapOutput
 }
 
 export const QVAULT_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE = 13
-export const QVAULT_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_SIZE = 12
-export const QVAULT_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_SIZE = 12
 
 export interface QVAULTTransferShareManagementRightsInput {
+  asset: QVAULTAssetStruct
   numberOfShares: bigint
   newManagingContractIndex: number
 }
 
-export const QVAULT_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
+const QVAULT_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'asset',
+    type: 'struct',
+    offset: 0,
+    byteLength: 40,
+    structRef: 'Asset',
+  },
   {
     name: 'numberOfShares',
     type: 'sint64',
-    offset: 0,
+    offset: 40,
     byteLength: 8,
   },
   {
     name: 'newManagingContractIndex',
     type: 'uint32',
-    offset: 8,
+    offset: 48,
     byteLength: 4,
   },
 ]
@@ -1317,7 +1279,7 @@ export interface QVAULTTransferShareManagementRightsOutput {
   returnCode: number
 }
 
-export const QVAULT_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
+const QVAULT_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'transferredNumberOfShares',
     type: 'sint64',
@@ -1336,17 +1298,11 @@ export function decodeQVAULTTransferShareManagementRightsOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QVAULTTransferShareManagementRightsOutput {
-  return decodePayload(
-    data,
-    QVAULT_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QVAULTTransferShareManagementRightsOutput
+  return decodePayload(data, QVAULT_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTTransferShareManagementRightsOutput
 }
 
 export const QVAULT_GET_DATA_INPUT_TYPE = 1
 export const QVAULT_GET_DATA_INPUT_SIZE = 0
-export const QVAULT_GET_DATA_OUTPUT_SIZE = 168
 
 export interface QVAULTGetDataOutput {
   returnCode: number
@@ -1383,7 +1339,7 @@ export interface QVAULTGetDataOutput {
   quorumPercent: number
 }
 
-export const QVAULT_GET_DATA_OUTPUT_FIELDS: BinaryField[] = [
+const QVAULT_GET_DATA_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'sint32',
@@ -1582,23 +1538,34 @@ export function decodeQVAULTGetDataOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QVAULTGetDataOutput {
-  return decodePayload(
-    data,
-    QVAULT_GET_DATA_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QVAULTGetDataOutput
+  return decodePayload(data, QVAULT_GET_DATA_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetDataOutput
+}
+
+export async function qVAULTGetData(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<QVAULTGetDataOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QVAULT_CONTRACT_INDEX,
+    inputType: QVAULT_GET_DATA_INPUT_TYPE,
+    inputSize: QVAULT_GET_DATA_INPUT_SIZE,
+    inputFields: [],
+    outputFields: QVAULT_GET_DATA_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
 }
 
 export const QVAULT_GET_STAKED_AMOUNT_AND_VOTING_POWER_INPUT_TYPE = 14
 export const QVAULT_GET_STAKED_AMOUNT_AND_VOTING_POWER_INPUT_SIZE = 32
-export const QVAULT_GET_STAKED_AMOUNT_AND_VOTING_POWER_OUTPUT_SIZE = 12
 
 export interface QVAULTGetStakedAmountAndVotingPowerInput {
   address: string
 }
 
-export const QVAULT_GET_STAKED_AMOUNT_AND_VOTING_POWER_INPUT_FIELDS: BinaryField[] = [
+const QVAULT_GET_STAKED_AMOUNT_AND_VOTING_POWER_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'address',
     type: 'id',
@@ -1620,7 +1587,7 @@ export interface QVAULTGetStakedAmountAndVotingPowerOutput {
   votingPower: number
 }
 
-export const QVAULT_GET_STAKED_AMOUNT_AND_VOTING_POWER_OUTPUT_FIELDS: BinaryField[] = [
+const QVAULT_GET_STAKED_AMOUNT_AND_VOTING_POWER_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'sint32',
@@ -1645,23 +1612,35 @@ export function decodeQVAULTGetStakedAmountAndVotingPowerOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QVAULTGetStakedAmountAndVotingPowerOutput {
-  return decodePayload(
-    data,
-    QVAULT_GET_STAKED_AMOUNT_AND_VOTING_POWER_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QVAULTGetStakedAmountAndVotingPowerOutput
+  return decodePayload(data, QVAULT_GET_STAKED_AMOUNT_AND_VOTING_POWER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetStakedAmountAndVotingPowerOutput
+}
+
+export async function qVAULTGetStakedAmountAndVotingPower(
+  live: SmartContractCaller,
+  input: QVAULTGetStakedAmountAndVotingPowerInput,
+  options?: ContractCallOptions,
+): Promise<Result<QVAULTGetStakedAmountAndVotingPowerOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QVAULT_CONTRACT_INDEX,
+    inputType: QVAULT_GET_STAKED_AMOUNT_AND_VOTING_POWER_INPUT_TYPE,
+    inputSize: QVAULT_GET_STAKED_AMOUNT_AND_VOTING_POWER_INPUT_SIZE,
+    inputFields: QVAULT_GET_STAKED_AMOUNT_AND_VOTING_POWER_INPUT_FIELDS,
+    outputFields: QVAULT_GET_STAKED_AMOUNT_AND_VOTING_POWER_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const QVAULT_GET_GP_INPUT_TYPE = 15
 export const QVAULT_GET_GP_INPUT_SIZE = 4
-export const QVAULT_GET_GP_OUTPUT_SIZE = 313
 
 export interface QVAULTGetGPInput {
   proposalId: number
 }
 
-export const QVAULT_GET_GP_INPUT_FIELDS: BinaryField[] = [
+const QVAULT_GET_GP_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'proposalId',
     type: 'uint32',
@@ -1682,7 +1661,7 @@ export interface QVAULTGetGPOutput {
   proposal: QVAULTGPInfoStruct
 }
 
-export const QVAULT_GET_GP_OUTPUT_FIELDS: BinaryField[] = [
+const QVAULT_GET_GP_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'sint32',
@@ -1702,23 +1681,35 @@ export function decodeQVAULTGetGPOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QVAULTGetGPOutput {
-  return decodePayload(
-    data,
-    QVAULT_GET_GP_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QVAULTGetGPOutput
+  return decodePayload(data, QVAULT_GET_GP_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetGPOutput
+}
+
+export async function qVAULTGetGP(
+  live: SmartContractCaller,
+  input: QVAULTGetGPInput,
+  options?: ContractCallOptions,
+): Promise<Result<QVAULTGetGPOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QVAULT_CONTRACT_INDEX,
+    inputType: QVAULT_GET_GP_INPUT_TYPE,
+    inputSize: QVAULT_GET_GP_INPUT_SIZE,
+    inputFields: QVAULT_GET_GP_INPUT_FIELDS,
+    outputFields: QVAULT_GET_GP_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const QVAULT_GET_QCP_INPUT_TYPE = 16
 export const QVAULT_GET_QCP_INPUT_SIZE = 4
-export const QVAULT_GET_QCP_OUTPUT_SIZE = 317
 
 export interface QVAULTGetQCPInput {
   proposalId: number
 }
 
-export const QVAULT_GET_QCP_INPUT_FIELDS: BinaryField[] = [
+const QVAULT_GET_QCP_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'proposalId',
     type: 'uint32',
@@ -1739,7 +1730,7 @@ export interface QVAULTGetQCPOutput {
   proposal: QVAULTQCPInfoStruct
 }
 
-export const QVAULT_GET_QCP_OUTPUT_FIELDS: BinaryField[] = [
+const QVAULT_GET_QCP_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'sint32',
@@ -1759,23 +1750,35 @@ export function decodeQVAULTGetQCPOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QVAULTGetQCPOutput {
-  return decodePayload(
-    data,
-    QVAULT_GET_QCP_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QVAULTGetQCPOutput
+  return decodePayload(data, QVAULT_GET_QCP_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetQCPOutput
+}
+
+export async function qVAULTGetQCP(
+  live: SmartContractCaller,
+  input: QVAULTGetQCPInput,
+  options?: ContractCallOptions,
+): Promise<Result<QVAULTGetQCPOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QVAULT_CONTRACT_INDEX,
+    inputType: QVAULT_GET_QCP_INPUT_TYPE,
+    inputSize: QVAULT_GET_QCP_INPUT_SIZE,
+    inputFields: QVAULT_GET_QCP_INPUT_FIELDS,
+    outputFields: QVAULT_GET_QCP_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const QVAULT_GET_IPOP_INPUT_TYPE = 17
 export const QVAULT_GET_IPOP_INPUT_SIZE = 4
-export const QVAULT_GET_IPOP_OUTPUT_SIZE = 333
 
 export interface QVAULTGetIPOPInput {
   proposalId: number
 }
 
-export const QVAULT_GET_IPOP_INPUT_FIELDS: BinaryField[] = [
+const QVAULT_GET_IPOP_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'proposalId',
     type: 'uint32',
@@ -1796,7 +1799,7 @@ export interface QVAULTGetIPOPOutput {
   proposal: QVAULTIPOPInfoStruct
 }
 
-export const QVAULT_GET_IPOP_OUTPUT_FIELDS: BinaryField[] = [
+const QVAULT_GET_IPOP_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'sint32',
@@ -1816,23 +1819,35 @@ export function decodeQVAULTGetIPOPOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QVAULTGetIPOPOutput {
-  return decodePayload(
-    data,
-    QVAULT_GET_IPOP_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QVAULTGetIPOPOutput
+  return decodePayload(data, QVAULT_GET_IPOP_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetIPOPOutput
+}
+
+export async function qVAULTGetIPOP(
+  live: SmartContractCaller,
+  input: QVAULTGetIPOPInput,
+  options?: ContractCallOptions,
+): Promise<Result<QVAULTGetIPOPOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QVAULT_CONTRACT_INDEX,
+    inputType: QVAULT_GET_IPOP_INPUT_TYPE,
+    inputSize: QVAULT_GET_IPOP_INPUT_SIZE,
+    inputFields: QVAULT_GET_IPOP_INPUT_FIELDS,
+    outputFields: QVAULT_GET_IPOP_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const QVAULT_GET_Q_EARN_P_INPUT_TYPE = 18
 export const QVAULT_GET_Q_EARN_P_INPUT_SIZE = 4
-export const QVAULT_GET_Q_EARN_P_OUTPUT_SIZE = 330
 
 export interface QVAULTGetQEarnPInput {
   proposalId: number
 }
 
-export const QVAULT_GET_Q_EARN_P_INPUT_FIELDS: BinaryField[] = [
+const QVAULT_GET_Q_EARN_P_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'proposalId',
     type: 'uint32',
@@ -1853,7 +1868,7 @@ export interface QVAULTGetQEarnPOutput {
   proposal: QVAULTQEarnPInfoStruct
 }
 
-export const QVAULT_GET_Q_EARN_P_OUTPUT_FIELDS: BinaryField[] = [
+const QVAULT_GET_Q_EARN_P_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'sint32',
@@ -1873,23 +1888,35 @@ export function decodeQVAULTGetQEarnPOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QVAULTGetQEarnPOutput {
-  return decodePayload(
-    data,
-    QVAULT_GET_Q_EARN_P_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QVAULTGetQEarnPOutput
+  return decodePayload(data, QVAULT_GET_Q_EARN_P_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetQEarnPOutput
+}
+
+export async function qVAULTGetQEarnP(
+  live: SmartContractCaller,
+  input: QVAULTGetQEarnPInput,
+  options?: ContractCallOptions,
+): Promise<Result<QVAULTGetQEarnPOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QVAULT_CONTRACT_INDEX,
+    inputType: QVAULT_GET_Q_EARN_P_INPUT_TYPE,
+    inputSize: QVAULT_GET_Q_EARN_P_INPUT_SIZE,
+    inputFields: QVAULT_GET_Q_EARN_P_INPUT_FIELDS,
+    outputFields: QVAULT_GET_Q_EARN_P_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const QVAULT_GET_FUND_P_INPUT_TYPE = 19
 export const QVAULT_GET_FUND_P_INPUT_SIZE = 4
-export const QVAULT_GET_FUND_P_OUTPUT_SIZE = 329
 
 export interface QVAULTGetFundPInput {
   proposalId: number
 }
 
-export const QVAULT_GET_FUND_P_INPUT_FIELDS: BinaryField[] = [
+const QVAULT_GET_FUND_P_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'proposalId',
     type: 'uint32',
@@ -1910,7 +1937,7 @@ export interface QVAULTGetFundPOutput {
   proposal: QVAULTFundPInfoStruct
 }
 
-export const QVAULT_GET_FUND_P_OUTPUT_FIELDS: BinaryField[] = [
+const QVAULT_GET_FUND_P_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'sint32',
@@ -1930,23 +1957,35 @@ export function decodeQVAULTGetFundPOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QVAULTGetFundPOutput {
-  return decodePayload(
-    data,
-    QVAULT_GET_FUND_P_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QVAULTGetFundPOutput
+  return decodePayload(data, QVAULT_GET_FUND_P_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetFundPOutput
+}
+
+export async function qVAULTGetFundP(
+  live: SmartContractCaller,
+  input: QVAULTGetFundPInput,
+  options?: ContractCallOptions,
+): Promise<Result<QVAULTGetFundPOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QVAULT_CONTRACT_INDEX,
+    inputType: QVAULT_GET_FUND_P_INPUT_TYPE,
+    inputSize: QVAULT_GET_FUND_P_INPUT_SIZE,
+    inputFields: QVAULT_GET_FUND_P_INPUT_FIELDS,
+    outputFields: QVAULT_GET_FUND_P_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const QVAULT_GET_MKTP_INPUT_TYPE = 20
 export const QVAULT_GET_MKTP_INPUT_SIZE = 4
-export const QVAULT_GET_MKTP_OUTPUT_SIZE = 341
 
 export interface QVAULTGetMKTPInput {
   proposalId: number
 }
 
-export const QVAULT_GET_MKTP_INPUT_FIELDS: BinaryField[] = [
+const QVAULT_GET_MKTP_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'proposalId',
     type: 'uint32',
@@ -1967,7 +2006,7 @@ export interface QVAULTGetMKTPOutput {
   proposal: QVAULTMKTPInfoStruct
 }
 
-export const QVAULT_GET_MKTP_OUTPUT_FIELDS: BinaryField[] = [
+const QVAULT_GET_MKTP_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'sint32',
@@ -1987,23 +2026,35 @@ export function decodeQVAULTGetMKTPOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QVAULTGetMKTPOutput {
-  return decodePayload(
-    data,
-    QVAULT_GET_MKTP_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QVAULTGetMKTPOutput
+  return decodePayload(data, QVAULT_GET_MKTP_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetMKTPOutput
+}
+
+export async function qVAULTGetMKTP(
+  live: SmartContractCaller,
+  input: QVAULTGetMKTPInput,
+  options?: ContractCallOptions,
+): Promise<Result<QVAULTGetMKTPOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QVAULT_CONTRACT_INDEX,
+    inputType: QVAULT_GET_MKTP_INPUT_TYPE,
+    inputSize: QVAULT_GET_MKTP_INPUT_SIZE,
+    inputFields: QVAULT_GET_MKTP_INPUT_FIELDS,
+    outputFields: QVAULT_GET_MKTP_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const QVAULT_GET_ALLO_P_INPUT_TYPE = 21
 export const QVAULT_GET_ALLO_P_INPUT_SIZE = 4
-export const QVAULT_GET_ALLO_P_OUTPUT_SIZE = 325
 
 export interface QVAULTGetAlloPInput {
   proposalId: number
 }
 
-export const QVAULT_GET_ALLO_P_INPUT_FIELDS: BinaryField[] = [
+const QVAULT_GET_ALLO_P_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'proposalId',
     type: 'uint32',
@@ -2024,7 +2075,7 @@ export interface QVAULTGetAlloPOutput {
   proposal: QVAULTAlloPInfoStruct
 }
 
-export const QVAULT_GET_ALLO_P_OUTPUT_FIELDS: BinaryField[] = [
+const QVAULT_GET_ALLO_P_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'sint32',
@@ -2044,24 +2095,36 @@ export function decodeQVAULTGetAlloPOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QVAULTGetAlloPOutput {
-  return decodePayload(
-    data,
-    QVAULT_GET_ALLO_P_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QVAULTGetAlloPOutput
+  return decodePayload(data, QVAULT_GET_ALLO_P_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetAlloPOutput
+}
+
+export async function qVAULTGetAlloP(
+  live: SmartContractCaller,
+  input: QVAULTGetAlloPInput,
+  options?: ContractCallOptions,
+): Promise<Result<QVAULTGetAlloPOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QVAULT_CONTRACT_INDEX,
+    inputType: QVAULT_GET_ALLO_P_INPUT_TYPE,
+    inputSize: QVAULT_GET_ALLO_P_INPUT_SIZE,
+    inputFields: QVAULT_GET_ALLO_P_INPUT_FIELDS,
+    outputFields: QVAULT_GET_ALLO_P_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const QVAULT_GET_IDENTITIES_HV_VT_PW_INPUT_TYPE = 22
 export const QVAULT_GET_IDENTITIES_HV_VT_PW_INPUT_SIZE = 8
-export const QVAULT_GET_IDENTITIES_HV_VT_PW_OUTPUT_SIZE = 9220
 
 export interface QVAULTGetIdentitiesHvVtPwInput {
   offset: number
   count: number
 }
 
-export const QVAULT_GET_IDENTITIES_HV_VT_PW_INPUT_FIELDS: BinaryField[] = [
+const QVAULT_GET_IDENTITIES_HV_VT_PW_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'offset',
     type: 'uint32',
@@ -2089,7 +2152,7 @@ export interface QVAULTGetIdentitiesHvVtPwOutput {
   amountList: number[]
 }
 
-export const QVAULT_GET_IDENTITIES_HV_VT_PW_OUTPUT_FIELDS: BinaryField[] = [
+const QVAULT_GET_IDENTITIES_HV_VT_PW_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'sint32',
@@ -2120,23 +2183,35 @@ export function decodeQVAULTGetIdentitiesHvVtPwOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QVAULTGetIdentitiesHvVtPwOutput {
-  return decodePayload(
-    data,
-    QVAULT_GET_IDENTITIES_HV_VT_PW_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QVAULTGetIdentitiesHvVtPwOutput
+  return decodePayload(data, QVAULT_GET_IDENTITIES_HV_VT_PW_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetIdentitiesHvVtPwOutput
+}
+
+export async function qVAULTGetIdentitiesHvVtPw(
+  live: SmartContractCaller,
+  input: QVAULTGetIdentitiesHvVtPwInput,
+  options?: ContractCallOptions,
+): Promise<Result<QVAULTGetIdentitiesHvVtPwOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QVAULT_CONTRACT_INDEX,
+    inputType: QVAULT_GET_IDENTITIES_HV_VT_PW_INPUT_TYPE,
+    inputSize: QVAULT_GET_IDENTITIES_HV_VT_PW_INPUT_SIZE,
+    inputFields: QVAULT_GET_IDENTITIES_HV_VT_PW_INPUT_FIELDS,
+    outputFields: QVAULT_GET_IDENTITIES_HV_VT_PW_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const QVAULT_PP_CREATION_POWER_INPUT_TYPE = 23
 export const QVAULT_PP_CREATION_POWER_INPUT_SIZE = 32
-export const QVAULT_PP_CREATION_POWER_OUTPUT_SIZE = 4
 
 export interface QVAULTPpCreationPowerInput {
   address: string
 }
 
-export const QVAULT_PP_CREATION_POWER_INPUT_FIELDS: BinaryField[] = [
+const QVAULT_PP_CREATION_POWER_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'address',
     type: 'id',
@@ -2154,14 +2229,21 @@ export function buildQVAULTPpCreationPowerInput(
 
 export interface QVAULTPpCreationPowerOutput {
   returnCode: number
+  status: number
 }
 
-export const QVAULT_PP_CREATION_POWER_OUTPUT_FIELDS: BinaryField[] = [
+const QVAULT_PP_CREATION_POWER_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'sint32',
     offset: 0,
     byteLength: 4,
+  },
+  {
+    name: 'status',
+    type: 'uint8',
+    offset: 4,
+    byteLength: 1,
   },
 ]
 
@@ -2169,23 +2251,35 @@ export function decodeQVAULTPpCreationPowerOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QVAULTPpCreationPowerOutput {
-  return decodePayload(
-    data,
-    QVAULT_PP_CREATION_POWER_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QVAULTPpCreationPowerOutput
+  return decodePayload(data, QVAULT_PP_CREATION_POWER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTPpCreationPowerOutput
+}
+
+export async function qVAULTPpCreationPower(
+  live: SmartContractCaller,
+  input: QVAULTPpCreationPowerInput,
+  options?: ContractCallOptions,
+): Promise<Result<QVAULTPpCreationPowerOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QVAULT_CONTRACT_INDEX,
+    inputType: QVAULT_PP_CREATION_POWER_INPUT_TYPE,
+    inputSize: QVAULT_PP_CREATION_POWER_INPUT_SIZE,
+    inputFields: QVAULT_PP_CREATION_POWER_INPUT_FIELDS,
+    outputFields: QVAULT_PP_CREATION_POWER_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const QVAULT_GET_QCAP_BURNT_AMOUNT_IN_LAST_EPOCHES_INPUT_TYPE = 24
 export const QVAULT_GET_QCAP_BURNT_AMOUNT_IN_LAST_EPOCHES_INPUT_SIZE = 4
-export const QVAULT_GET_QCAP_BURNT_AMOUNT_IN_LAST_EPOCHES_OUTPUT_SIZE = 8
 
 export interface QVAULTGetQcapBurntAmountInLastEpochesInput {
   numberOfLastEpoches: number
 }
 
-export const QVAULT_GET_QCAP_BURNT_AMOUNT_IN_LAST_EPOCHES_INPUT_FIELDS: BinaryField[] = [
+const QVAULT_GET_QCAP_BURNT_AMOUNT_IN_LAST_EPOCHES_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'numberOfLastEpoches',
     type: 'uint32',
@@ -2206,7 +2300,7 @@ export interface QVAULTGetQcapBurntAmountInLastEpochesOutput {
   burntAmount: number
 }
 
-export const QVAULT_GET_QCAP_BURNT_AMOUNT_IN_LAST_EPOCHES_OUTPUT_FIELDS: BinaryField[] = [
+const QVAULT_GET_QCAP_BURNT_AMOUNT_IN_LAST_EPOCHES_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'sint32',
@@ -2225,23 +2319,35 @@ export function decodeQVAULTGetQcapBurntAmountInLastEpochesOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QVAULTGetQcapBurntAmountInLastEpochesOutput {
-  return decodePayload(
-    data,
-    QVAULT_GET_QCAP_BURNT_AMOUNT_IN_LAST_EPOCHES_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QVAULTGetQcapBurntAmountInLastEpochesOutput
+  return decodePayload(data, QVAULT_GET_QCAP_BURNT_AMOUNT_IN_LAST_EPOCHES_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetQcapBurntAmountInLastEpochesOutput
+}
+
+export async function qVAULTGetQcapBurntAmountInLastEpoches(
+  live: SmartContractCaller,
+  input: QVAULTGetQcapBurntAmountInLastEpochesInput,
+  options?: ContractCallOptions,
+): Promise<Result<QVAULTGetQcapBurntAmountInLastEpochesOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QVAULT_CONTRACT_INDEX,
+    inputType: QVAULT_GET_QCAP_BURNT_AMOUNT_IN_LAST_EPOCHES_INPUT_TYPE,
+    inputSize: QVAULT_GET_QCAP_BURNT_AMOUNT_IN_LAST_EPOCHES_INPUT_SIZE,
+    inputFields: QVAULT_GET_QCAP_BURNT_AMOUNT_IN_LAST_EPOCHES_INPUT_FIELDS,
+    outputFields: QVAULT_GET_QCAP_BURNT_AMOUNT_IN_LAST_EPOCHES_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const QVAULT_GET_AMOUNT_TO_BE_SOLD_PER_YEAR_INPUT_TYPE = 25
 export const QVAULT_GET_AMOUNT_TO_BE_SOLD_PER_YEAR_INPUT_SIZE = 4
-export const QVAULT_GET_AMOUNT_TO_BE_SOLD_PER_YEAR_OUTPUT_SIZE = 4
 
 export interface QVAULTGetAmountToBeSoldPerYearInput {
   year: number
 }
 
-export const QVAULT_GET_AMOUNT_TO_BE_SOLD_PER_YEAR_INPUT_FIELDS: BinaryField[] = [
+const QVAULT_GET_AMOUNT_TO_BE_SOLD_PER_YEAR_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'year',
     type: 'uint32',
@@ -2261,7 +2367,7 @@ export interface QVAULTGetAmountToBeSoldPerYearOutput {
   amount: number
 }
 
-export const QVAULT_GET_AMOUNT_TO_BE_SOLD_PER_YEAR_OUTPUT_FIELDS: BinaryField[] = [
+const QVAULT_GET_AMOUNT_TO_BE_SOLD_PER_YEAR_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'amount',
     type: 'uint32',
@@ -2274,23 +2380,35 @@ export function decodeQVAULTGetAmountToBeSoldPerYearOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QVAULTGetAmountToBeSoldPerYearOutput {
-  return decodePayload(
-    data,
-    QVAULT_GET_AMOUNT_TO_BE_SOLD_PER_YEAR_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QVAULTGetAmountToBeSoldPerYearOutput
+  return decodePayload(data, QVAULT_GET_AMOUNT_TO_BE_SOLD_PER_YEAR_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetAmountToBeSoldPerYearOutput
+}
+
+export async function qVAULTGetAmountToBeSoldPerYear(
+  live: SmartContractCaller,
+  input: QVAULTGetAmountToBeSoldPerYearInput,
+  options?: ContractCallOptions,
+): Promise<Result<QVAULTGetAmountToBeSoldPerYearOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QVAULT_CONTRACT_INDEX,
+    inputType: QVAULT_GET_AMOUNT_TO_BE_SOLD_PER_YEAR_INPUT_TYPE,
+    inputSize: QVAULT_GET_AMOUNT_TO_BE_SOLD_PER_YEAR_INPUT_SIZE,
+    inputFields: QVAULT_GET_AMOUNT_TO_BE_SOLD_PER_YEAR_INPUT_FIELDS,
+    outputFields: QVAULT_GET_AMOUNT_TO_BE_SOLD_PER_YEAR_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const QVAULT_GET_TOTAL_REVENUE_IN_QCAP_INPUT_TYPE = 26
 export const QVAULT_GET_TOTAL_REVENUE_IN_QCAP_INPUT_SIZE = 0
-export const QVAULT_GET_TOTAL_REVENUE_IN_QCAP_OUTPUT_SIZE = 8
 
 export interface QVAULTGetTotalRevenueInQcapOutput {
   revenue: bigint
 }
 
-export const QVAULT_GET_TOTAL_REVENUE_IN_QCAP_OUTPUT_FIELDS: BinaryField[] = [
+const QVAULT_GET_TOTAL_REVENUE_IN_QCAP_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'revenue',
     type: 'uint64',
@@ -2303,23 +2421,34 @@ export function decodeQVAULTGetTotalRevenueInQcapOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QVAULTGetTotalRevenueInQcapOutput {
-  return decodePayload(
-    data,
-    QVAULT_GET_TOTAL_REVENUE_IN_QCAP_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QVAULTGetTotalRevenueInQcapOutput
+  return decodePayload(data, QVAULT_GET_TOTAL_REVENUE_IN_QCAP_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetTotalRevenueInQcapOutput
+}
+
+export async function qVAULTGetTotalRevenueInQcap(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<QVAULTGetTotalRevenueInQcapOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QVAULT_CONTRACT_INDEX,
+    inputType: QVAULT_GET_TOTAL_REVENUE_IN_QCAP_INPUT_TYPE,
+    inputSize: QVAULT_GET_TOTAL_REVENUE_IN_QCAP_INPUT_SIZE,
+    inputFields: [],
+    outputFields: QVAULT_GET_TOTAL_REVENUE_IN_QCAP_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
 }
 
 export const QVAULT_GET_REVENUE_IN_QCAP_PER_EPOCH_INPUT_TYPE = 27
 export const QVAULT_GET_REVENUE_IN_QCAP_PER_EPOCH_INPUT_SIZE = 4
-export const QVAULT_GET_REVENUE_IN_QCAP_PER_EPOCH_OUTPUT_SIZE = 32
 
 export interface QVAULTGetRevenueInQcapPerEpochInput {
   epoch: number
 }
 
-export const QVAULT_GET_REVENUE_IN_QCAP_PER_EPOCH_INPUT_FIELDS: BinaryField[] = [
+const QVAULT_GET_REVENUE_IN_QCAP_PER_EPOCH_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'epoch',
     type: 'uint32',
@@ -2342,7 +2471,7 @@ export interface QVAULTGetRevenueInQcapPerEpochOutput {
   epochReinvestAmount: bigint
 }
 
-export const QVAULT_GET_REVENUE_IN_QCAP_PER_EPOCH_OUTPUT_FIELDS: BinaryField[] = [
+const QVAULT_GET_REVENUE_IN_QCAP_PER_EPOCH_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'epochTotalRevenue',
     type: 'uint64',
@@ -2373,23 +2502,35 @@ export function decodeQVAULTGetRevenueInQcapPerEpochOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QVAULTGetRevenueInQcapPerEpochOutput {
-  return decodePayload(
-    data,
-    QVAULT_GET_REVENUE_IN_QCAP_PER_EPOCH_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QVAULTGetRevenueInQcapPerEpochOutput
+  return decodePayload(data, QVAULT_GET_REVENUE_IN_QCAP_PER_EPOCH_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetRevenueInQcapPerEpochOutput
+}
+
+export async function qVAULTGetRevenueInQcapPerEpoch(
+  live: SmartContractCaller,
+  input: QVAULTGetRevenueInQcapPerEpochInput,
+  options?: ContractCallOptions,
+): Promise<Result<QVAULTGetRevenueInQcapPerEpochOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QVAULT_CONTRACT_INDEX,
+    inputType: QVAULT_GET_REVENUE_IN_QCAP_PER_EPOCH_INPUT_TYPE,
+    inputSize: QVAULT_GET_REVENUE_IN_QCAP_PER_EPOCH_INPUT_SIZE,
+    inputFields: QVAULT_GET_REVENUE_IN_QCAP_PER_EPOCH_INPUT_FIELDS,
+    outputFields: QVAULT_GET_REVENUE_IN_QCAP_PER_EPOCH_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const QVAULT_GET_REVENUE_PER_SHARE_INPUT_TYPE = 28
 export const QVAULT_GET_REVENUE_PER_SHARE_INPUT_SIZE = 4
-export const QVAULT_GET_REVENUE_PER_SHARE_OUTPUT_SIZE = 8
 
 export interface QVAULTGetRevenuePerShareInput {
   contractIndex: number
 }
 
-export const QVAULT_GET_REVENUE_PER_SHARE_INPUT_FIELDS: BinaryField[] = [
+const QVAULT_GET_REVENUE_PER_SHARE_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'contractIndex',
     type: 'uint32',
@@ -2409,7 +2550,7 @@ export interface QVAULTGetRevenuePerShareOutput {
   revenue: bigint
 }
 
-export const QVAULT_GET_REVENUE_PER_SHARE_OUTPUT_FIELDS: BinaryField[] = [
+const QVAULT_GET_REVENUE_PER_SHARE_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'revenue',
     type: 'uint64',
@@ -2422,23 +2563,56 @@ export function decodeQVAULTGetRevenuePerShareOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QVAULTGetRevenuePerShareOutput {
-  return decodePayload(
-    data,
-    QVAULT_GET_REVENUE_PER_SHARE_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QVAULTGetRevenuePerShareOutput
+  return decodePayload(data, QVAULT_GET_REVENUE_PER_SHARE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetRevenuePerShareOutput
+}
+
+export async function qVAULTGetRevenuePerShare(
+  live: SmartContractCaller,
+  input: QVAULTGetRevenuePerShareInput,
+  options?: ContractCallOptions,
+): Promise<Result<QVAULTGetRevenuePerShareOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QVAULT_CONTRACT_INDEX,
+    inputType: QVAULT_GET_REVENUE_PER_SHARE_INPUT_TYPE,
+    inputSize: QVAULT_GET_REVENUE_PER_SHARE_INPUT_SIZE,
+    inputFields: QVAULT_GET_REVENUE_PER_SHARE_INPUT_FIELDS,
+    outputFields: QVAULT_GET_REVENUE_PER_SHARE_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const QVAULT_GET_AMOUNT_OF_SHARE_QVAULT_HOLD_INPUT_TYPE = 29
-export const QVAULT_GET_AMOUNT_OF_SHARE_QVAULT_HOLD_INPUT_SIZE = 0
-export const QVAULT_GET_AMOUNT_OF_SHARE_QVAULT_HOLD_OUTPUT_SIZE = 4
+export const QVAULT_GET_AMOUNT_OF_SHARE_QVAULT_HOLD_INPUT_SIZE = 40
+
+export interface QVAULTGetAmountOfShareQvaultHoldInput {
+  assetInfo: QVAULTAssetStruct
+}
+
+const QVAULT_GET_AMOUNT_OF_SHARE_QVAULT_HOLD_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'assetInfo',
+    type: 'struct',
+    offset: 0,
+    byteLength: 40,
+    structRef: 'Asset',
+  },
+]
+
+export function buildQVAULTGetAmountOfShareQvaultHoldInput(
+  input: QVAULTGetAmountOfShareQvaultHoldInput,
+  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+): Uint8Array {
+  return buildPayload(QVAULT_GET_AMOUNT_OF_SHARE_QVAULT_HOLD_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+}
 
 export interface QVAULTGetAmountOfShareQvaultHoldOutput {
   amount: number
 }
 
-export const QVAULT_GET_AMOUNT_OF_SHARE_QVAULT_HOLD_OUTPUT_FIELDS: BinaryField[] = [
+const QVAULT_GET_AMOUNT_OF_SHARE_QVAULT_HOLD_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'amount',
     type: 'uint32',
@@ -2451,17 +2625,29 @@ export function decodeQVAULTGetAmountOfShareQvaultHoldOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QVAULTGetAmountOfShareQvaultHoldOutput {
-  return decodePayload(
-    data,
-    QVAULT_GET_AMOUNT_OF_SHARE_QVAULT_HOLD_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QVAULTGetAmountOfShareQvaultHoldOutput
+  return decodePayload(data, QVAULT_GET_AMOUNT_OF_SHARE_QVAULT_HOLD_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetAmountOfShareQvaultHoldOutput
+}
+
+export async function qVAULTGetAmountOfShareQvaultHold(
+  live: SmartContractCaller,
+  input: QVAULTGetAmountOfShareQvaultHoldInput,
+  options?: ContractCallOptions,
+): Promise<Result<QVAULTGetAmountOfShareQvaultHoldOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QVAULT_CONTRACT_INDEX,
+    inputType: QVAULT_GET_AMOUNT_OF_SHARE_QVAULT_HOLD_INPUT_TYPE,
+    inputSize: QVAULT_GET_AMOUNT_OF_SHARE_QVAULT_HOLD_INPUT_SIZE,
+    inputFields: QVAULT_GET_AMOUNT_OF_SHARE_QVAULT_HOLD_INPUT_FIELDS,
+    outputFields: QVAULT_GET_AMOUNT_OF_SHARE_QVAULT_HOLD_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const QVAULT_GET_NUMBER_OF_HOLDER_AND_AVG_AM_INPUT_TYPE = 30
 export const QVAULT_GET_NUMBER_OF_HOLDER_AND_AVG_AM_INPUT_SIZE = 0
-export const QVAULT_GET_NUMBER_OF_HOLDER_AND_AVG_AM_OUTPUT_SIZE = 12
 
 export interface QVAULTGetNumberOfHolderAndAvgAmOutput {
   returnCode: number
@@ -2469,7 +2655,7 @@ export interface QVAULTGetNumberOfHolderAndAvgAmOutput {
   avgAmount: number
 }
 
-export const QVAULT_GET_NUMBER_OF_HOLDER_AND_AVG_AM_OUTPUT_FIELDS: BinaryField[] = [
+const QVAULT_GET_NUMBER_OF_HOLDER_AND_AVG_AM_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'sint32',
@@ -2494,23 +2680,34 @@ export function decodeQVAULTGetNumberOfHolderAndAvgAmOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QVAULTGetNumberOfHolderAndAvgAmOutput {
-  return decodePayload(
-    data,
-    QVAULT_GET_NUMBER_OF_HOLDER_AND_AVG_AM_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QVAULTGetNumberOfHolderAndAvgAmOutput
+  return decodePayload(data, QVAULT_GET_NUMBER_OF_HOLDER_AND_AVG_AM_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetNumberOfHolderAndAvgAmOutput
+}
+
+export async function qVAULTGetNumberOfHolderAndAvgAm(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<QVAULTGetNumberOfHolderAndAvgAmOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QVAULT_CONTRACT_INDEX,
+    inputType: QVAULT_GET_NUMBER_OF_HOLDER_AND_AVG_AM_INPUT_TYPE,
+    inputSize: QVAULT_GET_NUMBER_OF_HOLDER_AND_AVG_AM_INPUT_SIZE,
+    inputFields: [],
+    outputFields: QVAULT_GET_NUMBER_OF_HOLDER_AND_AVG_AM_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
 }
 
 export const QVAULT_GET_AMOUNT_FOR_QEARN_IN_UPCOMING_EPOCH_INPUT_TYPE = 31
 export const QVAULT_GET_AMOUNT_FOR_QEARN_IN_UPCOMING_EPOCH_INPUT_SIZE = 4
-export const QVAULT_GET_AMOUNT_FOR_QEARN_IN_UPCOMING_EPOCH_OUTPUT_SIZE = 12
 
 export interface QVAULTGetAmountForQearnInUpcomingEpochInput {
   epoch: number
 }
 
-export const QVAULT_GET_AMOUNT_FOR_QEARN_IN_UPCOMING_EPOCH_INPUT_FIELDS: BinaryField[] = [
+const QVAULT_GET_AMOUNT_FOR_QEARN_IN_UPCOMING_EPOCH_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'epoch',
     type: 'uint32',
@@ -2531,7 +2728,7 @@ export interface QVAULTGetAmountForQearnInUpcomingEpochOutput {
   amount: bigint
 }
 
-export const QVAULT_GET_AMOUNT_FOR_QEARN_IN_UPCOMING_EPOCH_OUTPUT_FIELDS: BinaryField[] = [
+const QVAULT_GET_AMOUNT_FOR_QEARN_IN_UPCOMING_EPOCH_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'sint32',
@@ -2550,17 +2747,29 @@ export function decodeQVAULTGetAmountForQearnInUpcomingEpochOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QVAULTGetAmountForQearnInUpcomingEpochOutput {
-  return decodePayload(
-    data,
-    QVAULT_GET_AMOUNT_FOR_QEARN_IN_UPCOMING_EPOCH_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QVAULTGetAmountForQearnInUpcomingEpochOutput
+  return decodePayload(data, QVAULT_GET_AMOUNT_FOR_QEARN_IN_UPCOMING_EPOCH_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetAmountForQearnInUpcomingEpochOutput
+}
+
+export async function qVAULTGetAmountForQearnInUpcomingEpoch(
+  live: SmartContractCaller,
+  input: QVAULTGetAmountForQearnInUpcomingEpochInput,
+  options?: ContractCallOptions,
+): Promise<Result<QVAULTGetAmountForQearnInUpcomingEpochOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QVAULT_CONTRACT_INDEX,
+    inputType: QVAULT_GET_AMOUNT_FOR_QEARN_IN_UPCOMING_EPOCH_INPUT_TYPE,
+    inputSize: QVAULT_GET_AMOUNT_FOR_QEARN_IN_UPCOMING_EPOCH_INPUT_SIZE,
+    inputFields: QVAULT_GET_AMOUNT_FOR_QEARN_IN_UPCOMING_EPOCH_INPUT_FIELDS,
+    outputFields: QVAULT_GET_AMOUNT_FOR_QEARN_IN_UPCOMING_EPOCH_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const QVAULT_GET_VOTE_IN_PROPOSAL_INPUT_TYPE = 32
 export const QVAULT_GET_VOTE_IN_PROPOSAL_INPUT_SIZE = 48
-export const QVAULT_GET_VOTE_IN_PROPOSAL_OUTPUT_SIZE = 24
 
 export interface QVAULTGetVoteInProposalInput {
   userID: string
@@ -2568,7 +2777,7 @@ export interface QVAULTGetVoteInProposalInput {
   proposalId: bigint
 }
 
-export const QVAULT_GET_VOTE_IN_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
+const QVAULT_GET_VOTE_IN_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'userID',
     type: 'id',
@@ -2602,7 +2811,7 @@ export interface QVAULTGetVoteInProposalOutput {
   votingDecision: bigint
 }
 
-export const QVAULT_GET_VOTE_IN_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
+const QVAULT_GET_VOTE_IN_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'sint64',
@@ -2627,11 +2836,72 @@ export function decodeQVAULTGetVoteInProposalOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QVAULTGetVoteInProposalOutput {
-  return decodePayload(
-    data,
-    QVAULT_GET_VOTE_IN_PROPOSAL_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QVAULTGetVoteInProposalOutput
+  return decodePayload(data, QVAULT_GET_VOTE_IN_PROPOSAL_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetVoteInProposalOutput
+}
+
+export async function qVAULTGetVoteInProposal(
+  live: SmartContractCaller,
+  input: QVAULTGetVoteInProposalInput,
+  options?: ContractCallOptions,
+): Promise<Result<QVAULTGetVoteInProposalOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QVAULT_CONTRACT_INDEX,
+    inputType: QVAULT_GET_VOTE_IN_PROPOSAL_INPUT_TYPE,
+    inputSize: QVAULT_GET_VOTE_IN_PROPOSAL_INPUT_SIZE,
+    inputFields: QVAULT_GET_VOTE_IN_PROPOSAL_INPUT_FIELDS,
+    outputFields: QVAULT_GET_VOTE_IN_PROPOSAL_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
+}
+
+export const qVAULT = {
+  contractIndex: QVAULT_CONTRACT_INDEX,
+  getData: qVAULTGetData,
+  getStakedAmountAndVotingPower: qVAULTGetStakedAmountAndVotingPower,
+  getGP: qVAULTGetGP,
+  getQCP: qVAULTGetQCP,
+  getIPOP: qVAULTGetIPOP,
+  getQEarnP: qVAULTGetQEarnP,
+  getFundP: qVAULTGetFundP,
+  getMKTP: qVAULTGetMKTP,
+  getAlloP: qVAULTGetAlloP,
+  getIdentitiesHvVtPw: qVAULTGetIdentitiesHvVtPw,
+  ppCreationPower: qVAULTPpCreationPower,
+  getQcapBurntAmountInLastEpoches: qVAULTGetQcapBurntAmountInLastEpoches,
+  getAmountToBeSoldPerYear: qVAULTGetAmountToBeSoldPerYear,
+  getTotalRevenueInQcap: qVAULTGetTotalRevenueInQcap,
+  getRevenueInQcapPerEpoch: qVAULTGetRevenueInQcapPerEpoch,
+  getRevenuePerShare: qVAULTGetRevenuePerShare,
+  getAmountOfShareQvaultHold: qVAULTGetAmountOfShareQvaultHold,
+  getNumberOfHolderAndAvgAm: qVAULTGetNumberOfHolderAndAvgAm,
+  getAmountForQearnInUpcomingEpoch: qVAULTGetAmountForQearnInUpcomingEpoch,
+  getVoteInProposal: qVAULTGetVoteInProposal,
+  buildStakeInput: buildQVAULTStakeInput,
+  decodeStakeOutput: decodeQVAULTStakeOutput,
+  buildUnStakeInput: buildQVAULTUnStakeInput,
+  decodeUnStakeOutput: decodeQVAULTUnStakeOutput,
+  buildSubmitGPInput: buildQVAULTSubmitGPInput,
+  decodeSubmitGPOutput: decodeQVAULTSubmitGPOutput,
+  buildSubmitQCPInput: buildQVAULTSubmitQCPInput,
+  decodeSubmitQCPOutput: decodeQVAULTSubmitQCPOutput,
+  buildSubmitIPOPInput: buildQVAULTSubmitIPOPInput,
+  decodeSubmitIPOPOutput: decodeQVAULTSubmitIPOPOutput,
+  buildSubmitQEarnPInput: buildQVAULTSubmitQEarnPInput,
+  decodeSubmitQEarnPOutput: decodeQVAULTSubmitQEarnPOutput,
+  buildSubmitFundPInput: buildQVAULTSubmitFundPInput,
+  decodeSubmitFundPOutput: decodeQVAULTSubmitFundPOutput,
+  buildSubmitMKTPInput: buildQVAULTSubmitMKTPInput,
+  decodeSubmitMKTPOutput: decodeQVAULTSubmitMKTPOutput,
+  buildSubmitAlloPInput: buildQVAULTSubmitAlloPInput,
+  decodeSubmitAlloPOutput: decodeQVAULTSubmitAlloPOutput,
+  buildVoteInProposalInput: buildQVAULTVoteInProposalInput,
+  decodeVoteInProposalOutput: decodeQVAULTVoteInProposalOutput,
+  buildBuyQcapInput: buildQVAULTBuyQcapInput,
+  decodeBuyQcapOutput: decodeQVAULTBuyQcapOutput,
+  buildTransferShareManagementRightsInput: buildQVAULTTransferShareManagementRightsInput,
+  decodeTransferShareManagementRightsOutput: decodeQVAULTTransferShareManagementRightsOutput,
 }
 

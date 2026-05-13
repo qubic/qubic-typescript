@@ -7,14 +7,12 @@ export const RANDOM_CONTRACT_INDEX = 3
 const STRUCTS: Record<string, NamedStruct> = {}
 
 export const RANDOM_REVEAL_AND_COMMIT_INPUT_TYPE = 1
-export const RANDOM_REVEAL_AND_COMMIT_INPUT_SIZE = 32
-export const RANDOM_REVEAL_AND_COMMIT_OUTPUT_SIZE = 0
 
 export interface RandomRevealAndCommitInput {
   commit: string
 }
 
-export const RANDOM_REVEAL_AND_COMMIT_INPUT_FIELDS: BinaryField[] = [
+const RANDOM_REVEAL_AND_COMMIT_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'commit',
     type: 'id',
@@ -28,5 +26,10 @@ export function buildRandomRevealAndCommitInput(
   identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(RANDOM_REVEAL_AND_COMMIT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+}
+
+export const random = {
+  contractIndex: RANDOM_CONTRACT_INDEX,
+  buildRevealAndCommitInput: buildRandomRevealAndCommitInput,
 }
 

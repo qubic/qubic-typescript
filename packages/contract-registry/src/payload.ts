@@ -61,6 +61,64 @@ export function buildPayload(
   return buf
 }
 
+// Encodes a primitive (non-struct, non-array) value directly — avoids allocating a BinaryField
+// object when encoding array items of scalar type.
+function encodeScalar(
+  type: FieldType,
+  fieldName: string,
+  value: FieldValue,
+  buf: Uint8Array,
+  view: DataView,
+  offset: number,
+  identityToPublicKey: (identity: string) => Uint8Array,
+): void {
+  switch (type) {
+    case 'uint8':
+    case 'sint8':
+      if (typeof value !== 'number')
+        throw new PayloadBuildError(`Field "${fieldName}": expected number`)
+      view.setUint8(offset, value)
+      break
+    case 'uint16':
+    case 'sint16':
+      if (typeof value !== 'number')
+        throw new PayloadBuildError(`Field "${fieldName}": expected number`)
+      view.setUint16(offset, value, true)
+      break
+    case 'uint32':
+    case 'sint32':
+      if (typeof value !== 'number')
+        throw new PayloadBuildError(`Field "${fieldName}": expected number`)
+      view.setUint32(offset, value, true)
+      break
+    case 'uint64':
+      if (typeof value !== 'bigint')
+        throw new PayloadBuildError(`Field "${fieldName}": expected bigint`)
+      view.setBigUint64(offset, value, true)
+      break
+    case 'sint64':
+      if (typeof value !== 'bigint')
+        throw new PayloadBuildError(`Field "${fieldName}": expected bigint`)
+      view.setBigInt64(offset, value, true)
+      break
+    case 'uint128': {
+      if (typeof value !== 'bigint')
+        throw new PayloadBuildError(`Field "${fieldName}": expected bigint`)
+      view.setBigUint64(offset, value & 0xffffffffffffffffn, true)
+      view.setBigUint64(offset + 8, value >> 64n, true)
+      break
+    }
+    case 'id': {
+      if (typeof value !== 'string')
+        throw new PayloadBuildError(`Field "${fieldName}": expected Identity string`)
+      buf.set(identityToPublicKey(value).subarray(0, 32), offset)
+      break
+    }
+    default:
+      throw new PayloadBuildError(`Scalar encoding not supported for type "${type}"`)
+  }
+}
+
 function encodeField(
   field: BinaryField,
   value: FieldValue,
@@ -179,21 +237,7 @@ function encodeField(
             )
           }
         } else {
-          const pseudoField: BinaryField = {
-            name: `${field.name}[${i}]`,
-            type: itemType,
-            offset: itemOffset,
-            byteLength: itemLen,
-          }
-          encodeField(
-            pseudoField,
-            value[i] as FieldValue,
-            buf,
-            view,
-            itemOffset,
-            structs,
-            identityToPublicKey,
-          )
+          encodeScalar(itemType, field.name, value[i] as FieldValue, buf, view, itemOffset, identityToPublicKey)
         }
       }
       break
@@ -219,6 +263,41 @@ export function decodePayload(
     result[field.name] = decodeField(field, data, view, field.offset, structs, publicKeyToIdentity)
   }
   return result
+}
+
+// Decodes a primitive (non-struct, non-array) scalar value directly — avoids allocating a
+// BinaryField object when decoding array items of scalar type.
+function decodeScalar(
+  type: FieldType,
+  data: Uint8Array,
+  view: DataView,
+  offset: number,
+  publicKeyToIdentity: (pk: Uint8Array) => string,
+): FieldValue {
+  switch (type) {
+    case 'uint8':
+    case 'sint8':
+      return view.getUint8(offset)
+    case 'uint16':
+    case 'sint16':
+      return view.getUint16(offset, true)
+    case 'uint32':
+    case 'sint32':
+      return view.getUint32(offset, true)
+    case 'uint64':
+      return view.getBigUint64(offset, true)
+    case 'sint64':
+      return view.getBigInt64(offset, true)
+    case 'uint128': {
+      const lo = view.getBigUint64(offset, true)
+      const hi = view.getBigUint64(offset + 8, true)
+      return lo + hi * 2n ** 64n
+    }
+    case 'id':
+      return publicKeyToIdentity(data.subarray(offset, offset + 32))
+    default:
+      return 0
+  }
 }
 
 function decodeField(
@@ -295,13 +374,7 @@ function decodeField(
             items.push(nested)
           }
         } else {
-          const pseudoField: BinaryField = {
-            name: `${field.name}[${i}]`,
-            type: itemType,
-            offset: itemOffset,
-            byteLength: itemLen,
-          }
-          items.push(decodeField(pseudoField, data, view, itemOffset, structs, publicKeyToIdentity))
+          items.push(decodeScalar(itemType, data, view, itemOffset, publicKeyToIdentity))
         }
       }
       return items

@@ -3,19 +3,44 @@
   "contractName": "MsVault",
   "effectiveFromEpoch": 201,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T12:08:26.379Z",
+  "registeredAt": "2026-05-13T14:13:21.622Z",
   "structs": {
+    "Asset": {
+      "name": "Asset",
+      "byteLength": 40,
+      "fields": [
+        {
+          "name": "issuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        }
+      ]
+    },
     "AssetBalance": {
       "name": "AssetBalance",
       "fields": [
         {
+          "name": "asset",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 40,
+          "structRef": "Asset"
+        },
+        {
           "name": "balance",
           "type": "uint64",
-          "offset": 0,
+          "offset": 40,
           "byteLength": 8
         }
       ],
-      "byteLength": 8
+      "byteLength": 48
     },
     "MsVaultFeeVote": {
       "name": "MsVaultFeeVote",
@@ -245,9 +270,16 @@
           "byteLength": 8
         },
         {
+          "name": "asset",
+          "type": "struct",
+          "offset": 8,
+          "byteLength": 40,
+          "structRef": "Asset"
+        },
+        {
           "name": "amount",
           "type": "uint64",
-          "offset": 8,
+          "offset": 48,
           "byteLength": 8
         }
       ],
@@ -259,7 +291,7 @@
           "byteLength": 8
         }
       ],
-      "inputSize": 16,
+      "inputSize": 56,
       "outputSize": 8
     },
     {
@@ -268,9 +300,16 @@
       "name": "revokeAssetManagementRights",
       "inputFields": [
         {
+          "name": "asset",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 40,
+          "structRef": "Asset"
+        },
+        {
           "name": "numberOfShares",
           "type": "sint64",
-          "offset": 0,
+          "offset": 40,
           "byteLength": 8
         }
       ],
@@ -288,7 +327,7 @@
           "byteLength": 8
         }
       ],
-      "inputSize": 8,
+      "inputSize": 48,
       "outputSize": 16
     },
     {
@@ -303,15 +342,22 @@
           "byteLength": 8
         },
         {
+          "name": "asset",
+          "type": "struct",
+          "offset": 8,
+          "byteLength": 40,
+          "structRef": "Asset"
+        },
+        {
           "name": "amount",
           "type": "uint64",
-          "offset": 8,
+          "offset": 48,
           "byteLength": 8
         },
         {
           "name": "destination",
           "type": "id",
-          "offset": 16,
+          "offset": 56,
           "byteLength": 32
         }
       ],
@@ -323,7 +369,7 @@
           "byteLength": 8
         }
       ],
-      "inputSize": 48,
+      "inputSize": 88,
       "outputSize": 8
     },
     {
@@ -380,9 +426,16 @@
       "name": "getManagedAssetBalance",
       "inputFields": [
         {
+          "name": "asset",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 40,
+          "structRef": "Asset"
+        },
+        {
           "name": "owner",
           "type": "id",
-          "offset": 0,
+          "offset": 40,
           "byteLength": 32
         }
       ],
@@ -394,7 +447,7 @@
           "byteLength": 8
         }
       ],
-      "inputSize": 32,
+      "inputSize": 72,
       "outputSize": 8
     },
     {
@@ -836,9 +889,18 @@
           "byteLength": 8
         },
         {
-          "name": "amounts",
+          "name": "assets",
           "type": "array",
           "offset": 8,
+          "byteLength": 640,
+          "arrayLength": 16,
+          "arrayItemStructRef": "Asset",
+          "arrayItemByteLength": 40
+        },
+        {
+          "name": "amounts",
+          "type": "array",
+          "offset": 648,
           "byteLength": 128,
           "arrayLength": 16,
           "arrayItemType": "uint64",
@@ -847,7 +909,7 @@
         {
           "name": "destinations",
           "type": "array",
-          "offset": 136,
+          "offset": 776,
           "byteLength": 512,
           "arrayLength": 16,
           "arrayItemType": "id",
@@ -855,7 +917,7 @@
         }
       ],
       "inputSize": 8,
-      "outputSize": 648
+      "outputSize": 1288
     },
     {
       "kind": "function",
@@ -886,14 +948,14 @@
           "name": "assetBalances",
           "type": "array",
           "offset": 16,
-          "byteLength": 64,
+          "byteLength": 384,
           "arrayLength": 8,
           "arrayItemStructRef": "AssetBalance",
-          "arrayItemByteLength": 8
+          "arrayItemByteLength": 48
         }
       ],
       "inputSize": 8,
-      "outputSize": 80
+      "outputSize": 400
     }
   ]
 }

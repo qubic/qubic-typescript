@@ -1,21 +1,46 @@
 // @generated — do not edit by hand. Run `bun run generate` to regenerate.
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.ts/contract-registry'
 import { buildPayload, decodePayload } from '@qubic.ts/contract-registry'
+import type { QubicRpcError } from '@qubic.ts/rpc'
+import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import type { Result } from '../result.js'
 
 export const QBAY_CONTRACT_INDEX = 12
 
-const STRUCTS: Record<string, NamedStruct> = {}
+export interface QbayAssetStruct {
+  issuer: string
+  assetName: bigint
+}
+
+const STRUCTS: Record<string, NamedStruct> = {
+  Asset: {
+  name: 'Asset',
+  byteLength: 40,
+  fields: [
+    {
+      name: 'issuer',
+      type: 'id',
+      offset: 0,
+      byteLength: 32,
+    },
+    {
+      name: 'assetName',
+      type: 'uint64',
+      offset: 32,
+      byteLength: 8,
+    },
+],
+},
+}
 
 export const QBAY_SETTING_CFB_AND_QUBIC_PRICE_INPUT_TYPE = 1
-export const QBAY_SETTING_CFB_AND_QUBIC_PRICE_INPUT_SIZE = 16
-export const QBAY_SETTING_CFB_AND_QUBIC_PRICE_OUTPUT_SIZE = 4
 
 export interface QbaySettingCFBAndQubicPriceInput {
   CFBPrice: bigint
   QubicPrice: bigint
 }
 
-export const QBAY_SETTING_CFB_AND_QUBIC_PRICE_INPUT_FIELDS: BinaryField[] = [
+const QBAY_SETTING_CFB_AND_QUBIC_PRICE_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'CFBPrice',
     type: 'uint64',
@@ -41,7 +66,7 @@ export interface QbaySettingCFBAndQubicPriceOutput {
   returnCode: number
 }
 
-export const QBAY_SETTING_CFB_AND_QUBIC_PRICE_OUTPUT_FIELDS: BinaryField[] = [
+const QBAY_SETTING_CFB_AND_QUBIC_PRICE_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'uint32',
@@ -54,17 +79,10 @@ export function decodeQbaySettingCFBAndQubicPriceOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QbaySettingCFBAndQubicPriceOutput {
-  return decodePayload(
-    data,
-    QBAY_SETTING_CFB_AND_QUBIC_PRICE_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QbaySettingCFBAndQubicPriceOutput
+  return decodePayload(data, QBAY_SETTING_CFB_AND_QUBIC_PRICE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QbaySettingCFBAndQubicPriceOutput
 }
 
 export const QBAY_CREATE_COLLECTION_INPUT_TYPE = 2
-export const QBAY_CREATE_COLLECTION_INPUT_SIZE = 84
-export const QBAY_CREATE_COLLECTION_OUTPUT_SIZE = 4
 
 export interface QbayCreateCollectionInput {
   priceForDropMint: bigint
@@ -72,9 +90,10 @@ export interface QbayCreateCollectionInput {
   royalty: number
   maxSizePerOneId: number
   URI: number[]
+  typeOfCollection: number
 }
 
-export const QBAY_CREATE_COLLECTION_INPUT_FIELDS: BinaryField[] = [
+const QBAY_CREATE_COLLECTION_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'priceForDropMint',
     type: 'uint64',
@@ -108,6 +127,12 @@ export const QBAY_CREATE_COLLECTION_INPUT_FIELDS: BinaryField[] = [
     arrayItemType: 'uint8',
     arrayItemByteLength: 1,
   },
+  {
+    name: 'typeOfCollection',
+    type: 'uint8',
+    offset: 84,
+    byteLength: 1,
+  },
 ]
 
 export function buildQbayCreateCollectionInput(
@@ -121,7 +146,7 @@ export interface QbayCreateCollectionOutput {
   returnCode: number
 }
 
-export const QBAY_CREATE_COLLECTION_OUTPUT_FIELDS: BinaryField[] = [
+const QBAY_CREATE_COLLECTION_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'uint32',
@@ -134,25 +159,19 @@ export function decodeQbayCreateCollectionOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QbayCreateCollectionOutput {
-  return decodePayload(
-    data,
-    QBAY_CREATE_COLLECTION_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QbayCreateCollectionOutput
+  return decodePayload(data, QBAY_CREATE_COLLECTION_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QbayCreateCollectionOutput
 }
 
 export const QBAY_MINT_INPUT_TYPE = 3
-export const QBAY_MINT_INPUT_SIZE = 72
-export const QBAY_MINT_OUTPUT_SIZE = 4
 
 export interface QbayMintInput {
   royalty: number
   collectionId: number
   URI: number[]
+  typeOfMint: number
 }
 
-export const QBAY_MINT_INPUT_FIELDS: BinaryField[] = [
+const QBAY_MINT_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'royalty',
     type: 'uint32',
@@ -174,6 +193,12 @@ export const QBAY_MINT_INPUT_FIELDS: BinaryField[] = [
     arrayItemType: 'uint8',
     arrayItemByteLength: 1,
   },
+  {
+    name: 'typeOfMint',
+    type: 'uint8',
+    offset: 72,
+    byteLength: 1,
+  },
 ]
 
 export function buildQbayMintInput(
@@ -187,7 +212,7 @@ export interface QbayMintOutput {
   returnCode: number
 }
 
-export const QBAY_MINT_OUTPUT_FIELDS: BinaryField[] = [
+const QBAY_MINT_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'uint32',
@@ -200,24 +225,17 @@ export function decodeQbayMintOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QbayMintOutput {
-  return decodePayload(
-    data,
-    QBAY_MINT_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QbayMintOutput
+  return decodePayload(data, QBAY_MINT_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QbayMintOutput
 }
 
 export const QBAY_MINT_OF_DROP_INPUT_TYPE = 4
-export const QBAY_MINT_OF_DROP_INPUT_SIZE = 68
-export const QBAY_MINT_OF_DROP_OUTPUT_SIZE = 4
 
 export interface QbayMintOfDropInput {
   collectionId: number
   URI: number[]
 }
 
-export const QBAY_MINT_OF_DROP_INPUT_FIELDS: BinaryField[] = [
+const QBAY_MINT_OF_DROP_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'collectionId',
     type: 'uint32',
@@ -246,7 +264,7 @@ export interface QbayMintOfDropOutput {
   returnCode: number
 }
 
-export const QBAY_MINT_OF_DROP_OUTPUT_FIELDS: BinaryField[] = [
+const QBAY_MINT_OF_DROP_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'uint32',
@@ -259,24 +277,17 @@ export function decodeQbayMintOfDropOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QbayMintOfDropOutput {
-  return decodePayload(
-    data,
-    QBAY_MINT_OF_DROP_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QbayMintOfDropOutput
+  return decodePayload(data, QBAY_MINT_OF_DROP_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QbayMintOfDropOutput
 }
 
 export const QBAY_TRANSFER_INPUT_TYPE = 5
-export const QBAY_TRANSFER_INPUT_SIZE = 36
-export const QBAY_TRANSFER_OUTPUT_SIZE = 4
 
 export interface QbayTransferInput {
   receiver: string
   NFTid: number
 }
 
-export const QBAY_TRANSFER_INPUT_FIELDS: BinaryField[] = [
+const QBAY_TRANSFER_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'receiver',
     type: 'id',
@@ -302,7 +313,7 @@ export interface QbayTransferOutput {
   returnCode: number
 }
 
-export const QBAY_TRANSFER_OUTPUT_FIELDS: BinaryField[] = [
+const QBAY_TRANSFER_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'uint32',
@@ -315,24 +326,17 @@ export function decodeQbayTransferOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QbayTransferOutput {
-  return decodePayload(
-    data,
-    QBAY_TRANSFER_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QbayTransferOutput
+  return decodePayload(data, QBAY_TRANSFER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QbayTransferOutput
 }
 
 export const QBAY_LIST_IN_MARKET_INPUT_TYPE = 6
-export const QBAY_LIST_IN_MARKET_INPUT_SIZE = 12
-export const QBAY_LIST_IN_MARKET_OUTPUT_SIZE = 4
 
 export interface QbayListInMarketInput {
   price: bigint
   NFTid: number
 }
 
-export const QBAY_LIST_IN_MARKET_INPUT_FIELDS: BinaryField[] = [
+const QBAY_LIST_IN_MARKET_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'price',
     type: 'uint64',
@@ -358,7 +362,7 @@ export interface QbayListInMarketOutput {
   returnCode: number
 }
 
-export const QBAY_LIST_IN_MARKET_OUTPUT_FIELDS: BinaryField[] = [
+const QBAY_LIST_IN_MARKET_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'uint32',
@@ -371,28 +375,28 @@ export function decodeQbayListInMarketOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QbayListInMarketOutput {
-  return decodePayload(
-    data,
-    QBAY_LIST_IN_MARKET_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QbayListInMarketOutput
+  return decodePayload(data, QBAY_LIST_IN_MARKET_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QbayListInMarketOutput
 }
 
 export const QBAY_BUY_INPUT_TYPE = 7
-export const QBAY_BUY_INPUT_SIZE = 4
-export const QBAY_BUY_OUTPUT_SIZE = 4
 
 export interface QbayBuyInput {
   NFTid: number
+  methodOfPayment: number
 }
 
-export const QBAY_BUY_INPUT_FIELDS: BinaryField[] = [
+const QBAY_BUY_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'NFTid',
     type: 'uint32',
     offset: 0,
     byteLength: 4,
+  },
+  {
+    name: 'methodOfPayment',
+    type: 'uint8',
+    offset: 4,
+    byteLength: 1,
   },
 ]
 
@@ -407,7 +411,7 @@ export interface QbayBuyOutput {
   returnCode: number
 }
 
-export const QBAY_BUY_OUTPUT_FIELDS: BinaryField[] = [
+const QBAY_BUY_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'uint32',
@@ -420,23 +424,16 @@ export function decodeQbayBuyOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QbayBuyOutput {
-  return decodePayload(
-    data,
-    QBAY_BUY_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QbayBuyOutput
+  return decodePayload(data, QBAY_BUY_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QbayBuyOutput
 }
 
 export const QBAY_CANCEL_SALE_INPUT_TYPE = 8
-export const QBAY_CANCEL_SALE_INPUT_SIZE = 4
-export const QBAY_CANCEL_SALE_OUTPUT_SIZE = 4
 
 export interface QbayCancelSaleInput {
   NFTid: number
 }
 
-export const QBAY_CANCEL_SALE_INPUT_FIELDS: BinaryField[] = [
+const QBAY_CANCEL_SALE_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'NFTid',
     type: 'uint32',
@@ -456,7 +453,7 @@ export interface QbayCancelSaleOutput {
   returnCode: number
 }
 
-export const QBAY_CANCEL_SALE_OUTPUT_FIELDS: BinaryField[] = [
+const QBAY_CANCEL_SALE_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'uint32',
@@ -469,24 +466,17 @@ export function decodeQbayCancelSaleOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QbayCancelSaleOutput {
-  return decodePayload(
-    data,
-    QBAY_CANCEL_SALE_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QbayCancelSaleOutput
+  return decodePayload(data, QBAY_CANCEL_SALE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QbayCancelSaleOutput
 }
 
 export const QBAY_LIST_IN_EXCHANGE_INPUT_TYPE = 9
-export const QBAY_LIST_IN_EXCHANGE_INPUT_SIZE = 8
-export const QBAY_LIST_IN_EXCHANGE_OUTPUT_SIZE = 4
 
 export interface QbayListInExchangeInput {
   possessedNFT: number
   anotherNFT: number
 }
 
-export const QBAY_LIST_IN_EXCHANGE_INPUT_FIELDS: BinaryField[] = [
+const QBAY_LIST_IN_EXCHANGE_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'possessedNFT',
     type: 'uint32',
@@ -512,7 +502,7 @@ export interface QbayListInExchangeOutput {
   returnCode: number
 }
 
-export const QBAY_LIST_IN_EXCHANGE_OUTPUT_FIELDS: BinaryField[] = [
+const QBAY_LIST_IN_EXCHANGE_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'uint32',
@@ -525,24 +515,17 @@ export function decodeQbayListInExchangeOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QbayListInExchangeOutput {
-  return decodePayload(
-    data,
-    QBAY_LIST_IN_EXCHANGE_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QbayListInExchangeOutput
+  return decodePayload(data, QBAY_LIST_IN_EXCHANGE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QbayListInExchangeOutput
 }
 
 export const QBAY_CANCEL_EXCHANGE_INPUT_TYPE = 10
-export const QBAY_CANCEL_EXCHANGE_INPUT_SIZE = 8
-export const QBAY_CANCEL_EXCHANGE_OUTPUT_SIZE = 4
 
 export interface QbayCancelExchangeInput {
   possessedNFT: number
   anotherNFT: number
 }
 
-export const QBAY_CANCEL_EXCHANGE_INPUT_FIELDS: BinaryField[] = [
+const QBAY_CANCEL_EXCHANGE_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'possessedNFT',
     type: 'uint32',
@@ -568,7 +551,7 @@ export interface QbayCancelExchangeOutput {
   returnCode: number
 }
 
-export const QBAY_CANCEL_EXCHANGE_OUTPUT_FIELDS: BinaryField[] = [
+const QBAY_CANCEL_EXCHANGE_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'uint32',
@@ -581,24 +564,18 @@ export function decodeQbayCancelExchangeOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QbayCancelExchangeOutput {
-  return decodePayload(
-    data,
-    QBAY_CANCEL_EXCHANGE_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QbayCancelExchangeOutput
+  return decodePayload(data, QBAY_CANCEL_EXCHANGE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QbayCancelExchangeOutput
 }
 
 export const QBAY_MAKE_OFFER_INPUT_TYPE = 11
-export const QBAY_MAKE_OFFER_INPUT_SIZE = 12
-export const QBAY_MAKE_OFFER_OUTPUT_SIZE = 4
 
 export interface QbayMakeOfferInput {
   askPrice: bigint
   NFTid: number
+  paymentMethod: number
 }
 
-export const QBAY_MAKE_OFFER_INPUT_FIELDS: BinaryField[] = [
+const QBAY_MAKE_OFFER_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'askPrice',
     type: 'uint64',
@@ -610,6 +587,12 @@ export const QBAY_MAKE_OFFER_INPUT_FIELDS: BinaryField[] = [
     type: 'uint32',
     offset: 8,
     byteLength: 4,
+  },
+  {
+    name: 'paymentMethod',
+    type: 'uint8',
+    offset: 12,
+    byteLength: 1,
   },
 ]
 
@@ -624,7 +607,7 @@ export interface QbayMakeOfferOutput {
   returnCode: number
 }
 
-export const QBAY_MAKE_OFFER_OUTPUT_FIELDS: BinaryField[] = [
+const QBAY_MAKE_OFFER_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'uint32',
@@ -637,23 +620,16 @@ export function decodeQbayMakeOfferOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QbayMakeOfferOutput {
-  return decodePayload(
-    data,
-    QBAY_MAKE_OFFER_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QbayMakeOfferOutput
+  return decodePayload(data, QBAY_MAKE_OFFER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QbayMakeOfferOutput
 }
 
 export const QBAY_ACCEPT_OFFER_INPUT_TYPE = 12
-export const QBAY_ACCEPT_OFFER_INPUT_SIZE = 4
-export const QBAY_ACCEPT_OFFER_OUTPUT_SIZE = 4
 
 export interface QbayAcceptOfferInput {
   NFTid: number
 }
 
-export const QBAY_ACCEPT_OFFER_INPUT_FIELDS: BinaryField[] = [
+const QBAY_ACCEPT_OFFER_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'NFTid',
     type: 'uint32',
@@ -673,7 +649,7 @@ export interface QbayAcceptOfferOutput {
   returnCode: number
 }
 
-export const QBAY_ACCEPT_OFFER_OUTPUT_FIELDS: BinaryField[] = [
+const QBAY_ACCEPT_OFFER_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'uint32',
@@ -686,23 +662,16 @@ export function decodeQbayAcceptOfferOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QbayAcceptOfferOutput {
-  return decodePayload(
-    data,
-    QBAY_ACCEPT_OFFER_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QbayAcceptOfferOutput
+  return decodePayload(data, QBAY_ACCEPT_OFFER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QbayAcceptOfferOutput
 }
 
 export const QBAY_CANCEL_OFFER_INPUT_TYPE = 13
-export const QBAY_CANCEL_OFFER_INPUT_SIZE = 4
-export const QBAY_CANCEL_OFFER_OUTPUT_SIZE = 4
 
 export interface QbayCancelOfferInput {
   NFTid: number
 }
 
-export const QBAY_CANCEL_OFFER_INPUT_FIELDS: BinaryField[] = [
+const QBAY_CANCEL_OFFER_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'NFTid',
     type: 'uint32',
@@ -722,7 +691,7 @@ export interface QbayCancelOfferOutput {
   returnCode: number
 }
 
-export const QBAY_CANCEL_OFFER_OUTPUT_FIELDS: BinaryField[] = [
+const QBAY_CANCEL_OFFER_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'uint32',
@@ -735,17 +704,10 @@ export function decodeQbayCancelOfferOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QbayCancelOfferOutput {
-  return decodePayload(
-    data,
-    QBAY_CANCEL_OFFER_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QbayCancelOfferOutput
+  return decodePayload(data, QBAY_CANCEL_OFFER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QbayCancelOfferOutput
 }
 
 export const QBAY_CREATE_TRADITIONAL_AUCTION_INPUT_TYPE = 14
-export const QBAY_CREATE_TRADITIONAL_AUCTION_INPUT_SIZE = 44
-export const QBAY_CREATE_TRADITIONAL_AUCTION_OUTPUT_SIZE = 4
 
 export interface QbayCreateTraditionalAuctionInput {
   minPrice: bigint
@@ -758,9 +720,10 @@ export interface QbayCreateTraditionalAuctionInput {
   endMonth: number
   endDay: number
   endHour: number
+  paymentMethodOfAuction: number
 }
 
-export const QBAY_CREATE_TRADITIONAL_AUCTION_INPUT_FIELDS: BinaryField[] = [
+const QBAY_CREATE_TRADITIONAL_AUCTION_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'minPrice',
     type: 'uint64',
@@ -821,6 +784,12 @@ export const QBAY_CREATE_TRADITIONAL_AUCTION_INPUT_FIELDS: BinaryField[] = [
     offset: 40,
     byteLength: 4,
   },
+  {
+    name: 'paymentMethodOfAuction',
+    type: 'uint8',
+    offset: 44,
+    byteLength: 1,
+  },
 ]
 
 export function buildQbayCreateTraditionalAuctionInput(
@@ -834,7 +803,7 @@ export interface QbayCreateTraditionalAuctionOutput {
   returnCode: number
 }
 
-export const QBAY_CREATE_TRADITIONAL_AUCTION_OUTPUT_FIELDS: BinaryField[] = [
+const QBAY_CREATE_TRADITIONAL_AUCTION_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'uint32',
@@ -847,24 +816,18 @@ export function decodeQbayCreateTraditionalAuctionOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QbayCreateTraditionalAuctionOutput {
-  return decodePayload(
-    data,
-    QBAY_CREATE_TRADITIONAL_AUCTION_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QbayCreateTraditionalAuctionOutput
+  return decodePayload(data, QBAY_CREATE_TRADITIONAL_AUCTION_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QbayCreateTraditionalAuctionOutput
 }
 
 export const QBAY_BID_ON_TRADITIONAL_AUCTION_INPUT_TYPE = 15
-export const QBAY_BID_ON_TRADITIONAL_AUCTION_INPUT_SIZE = 12
-export const QBAY_BID_ON_TRADITIONAL_AUCTION_OUTPUT_SIZE = 4
 
 export interface QbayBidOnTraditionalAuctionInput {
   price: bigint
   NFTId: number
+  paymentMethod: number
 }
 
-export const QBAY_BID_ON_TRADITIONAL_AUCTION_INPUT_FIELDS: BinaryField[] = [
+const QBAY_BID_ON_TRADITIONAL_AUCTION_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'price',
     type: 'uint64',
@@ -876,6 +839,12 @@ export const QBAY_BID_ON_TRADITIONAL_AUCTION_INPUT_FIELDS: BinaryField[] = [
     type: 'uint32',
     offset: 8,
     byteLength: 4,
+  },
+  {
+    name: 'paymentMethod',
+    type: 'uint8',
+    offset: 12,
+    byteLength: 1,
   },
 ]
 
@@ -890,7 +859,7 @@ export interface QbayBidOnTraditionalAuctionOutput {
   returnCode: number
 }
 
-export const QBAY_BID_ON_TRADITIONAL_AUCTION_OUTPUT_FIELDS: BinaryField[] = [
+const QBAY_BID_ON_TRADITIONAL_AUCTION_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'uint32',
@@ -903,34 +872,35 @@ export function decodeQbayBidOnTraditionalAuctionOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QbayBidOnTraditionalAuctionOutput {
-  return decodePayload(
-    data,
-    QBAY_BID_ON_TRADITIONAL_AUCTION_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QbayBidOnTraditionalAuctionOutput
+  return decodePayload(data, QBAY_BID_ON_TRADITIONAL_AUCTION_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QbayBidOnTraditionalAuctionOutput
 }
 
 export const QBAY_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE = 16
-export const QBAY_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_SIZE = 12
-export const QBAY_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_SIZE = 12
 
 export interface QbayTransferShareManagementRightsInput {
+  asset: QbayAssetStruct
   numberOfShares: bigint
   newManagingContractIndex: number
 }
 
-export const QBAY_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
+const QBAY_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'asset',
+    type: 'struct',
+    offset: 0,
+    byteLength: 40,
+    structRef: 'Asset',
+  },
   {
     name: 'numberOfShares',
     type: 'sint64',
-    offset: 0,
+    offset: 40,
     byteLength: 8,
   },
   {
     name: 'newManagingContractIndex',
     type: 'uint32',
-    offset: 8,
+    offset: 48,
     byteLength: 4,
   },
 ]
@@ -947,7 +917,7 @@ export interface QbayTransferShareManagementRightsOutput {
   returnCode: number
 }
 
-export const QBAY_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
+const QBAY_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'transferredNumberOfShares',
     type: 'sint64',
@@ -966,23 +936,36 @@ export function decodeQbayTransferShareManagementRightsOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QbayTransferShareManagementRightsOutput {
-  return decodePayload(
-    data,
-    QBAY_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QbayTransferShareManagementRightsOutput
+  return decodePayload(data, QBAY_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QbayTransferShareManagementRightsOutput
 }
 
 export const QBAY_CHANGE_STATUS_OF_MARKET_PLACE_INPUT_TYPE = 17
-export const QBAY_CHANGE_STATUS_OF_MARKET_PLACE_INPUT_SIZE = 0
-export const QBAY_CHANGE_STATUS_OF_MARKET_PLACE_OUTPUT_SIZE = 4
+
+export interface QbayChangeStatusOfMarketPlaceInput {
+  status: number
+}
+
+const QBAY_CHANGE_STATUS_OF_MARKET_PLACE_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'status',
+    type: 'uint8',
+    offset: 0,
+    byteLength: 1,
+  },
+]
+
+export function buildQbayChangeStatusOfMarketPlaceInput(
+  input: QbayChangeStatusOfMarketPlaceInput,
+  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+): Uint8Array {
+  return buildPayload(QBAY_CHANGE_STATUS_OF_MARKET_PLACE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+}
 
 export interface QbayChangeStatusOfMarketPlaceOutput {
   returnCode: number
 }
 
-export const QBAY_CHANGE_STATUS_OF_MARKET_PLACE_OUTPUT_FIELDS: BinaryField[] = [
+const QBAY_CHANGE_STATUS_OF_MARKET_PLACE_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'uint32',
@@ -995,23 +978,17 @@ export function decodeQbayChangeStatusOfMarketPlaceOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QbayChangeStatusOfMarketPlaceOutput {
-  return decodePayload(
-    data,
-    QBAY_CHANGE_STATUS_OF_MARKET_PLACE_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QbayChangeStatusOfMarketPlaceOutput
+  return decodePayload(data, QBAY_CHANGE_STATUS_OF_MARKET_PLACE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QbayChangeStatusOfMarketPlaceOutput
 }
 
 export const QBAY_GET_NUMBER_OF_NFT_FOR_USER_INPUT_TYPE = 18
 export const QBAY_GET_NUMBER_OF_NFT_FOR_USER_INPUT_SIZE = 32
-export const QBAY_GET_NUMBER_OF_NFT_FOR_USER_OUTPUT_SIZE = 4
 
 export interface QbayGetNumberOfNFTForUserInput {
   user: string
 }
 
-export const QBAY_GET_NUMBER_OF_NFT_FOR_USER_INPUT_FIELDS: BinaryField[] = [
+const QBAY_GET_NUMBER_OF_NFT_FOR_USER_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'user',
     type: 'id',
@@ -1031,7 +1008,7 @@ export interface QbayGetNumberOfNFTForUserOutput {
   numberOfNFT: number
 }
 
-export const QBAY_GET_NUMBER_OF_NFT_FOR_USER_OUTPUT_FIELDS: BinaryField[] = [
+const QBAY_GET_NUMBER_OF_NFT_FOR_USER_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'numberOfNFT',
     type: 'uint32',
@@ -1044,24 +1021,36 @@ export function decodeQbayGetNumberOfNFTForUserOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QbayGetNumberOfNFTForUserOutput {
-  return decodePayload(
-    data,
-    QBAY_GET_NUMBER_OF_NFT_FOR_USER_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QbayGetNumberOfNFTForUserOutput
+  return decodePayload(data, QBAY_GET_NUMBER_OF_NFT_FOR_USER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QbayGetNumberOfNFTForUserOutput
+}
+
+export async function qbayGetNumberOfNFTForUser(
+  live: SmartContractCaller,
+  input: QbayGetNumberOfNFTForUserInput,
+  options?: ContractCallOptions,
+): Promise<Result<QbayGetNumberOfNFTForUserOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QBAY_CONTRACT_INDEX,
+    inputType: QBAY_GET_NUMBER_OF_NFT_FOR_USER_INPUT_TYPE,
+    inputSize: QBAY_GET_NUMBER_OF_NFT_FOR_USER_INPUT_SIZE,
+    inputFields: QBAY_GET_NUMBER_OF_NFT_FOR_USER_INPUT_FIELDS,
+    outputFields: QBAY_GET_NUMBER_OF_NFT_FOR_USER_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const QBAY_GET_INFO_OF_NFT_USER_POSSESSED_INPUT_TYPE = 19
 export const QBAY_GET_INFO_OF_NFT_USER_POSSESSED_INPUT_SIZE = 36
-export const QBAY_GET_INFO_OF_NFT_USER_POSSESSED_OUTPUT_SIZE = 237
 
 export interface QbayGetInfoOfNFTUserPossessedInput {
   user: string
   NFTNumber: number
 }
 
-export const QBAY_GET_INFO_OF_NFT_USER_POSSESSED_INPUT_FIELDS: BinaryField[] = [
+const QBAY_GET_INFO_OF_NFT_USER_POSSESSED_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'user',
     type: 'id',
@@ -1107,9 +1096,14 @@ export interface QbayGetInfoOfNFTUserPossessedOutput {
   hourAuctionEnded: number
   minuteAuctionEnded: number
   secondAuctionEnded: number
+  statusOfSale: number
+  statusOfAsk: number
+  paymentMethodOfAsk: number
+  statusOfExchange: number
+  paymentMethodOfAuction: number
 }
 
-export const QBAY_GET_INFO_OF_NFT_USER_POSSESSED_OUTPUT_FIELDS: BinaryField[] = [
+const QBAY_GET_INFO_OF_NFT_USER_POSSESSED_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'creator',
     type: 'id',
@@ -1251,23 +1245,65 @@ export const QBAY_GET_INFO_OF_NFT_USER_POSSESSED_OUTPUT_FIELDS: BinaryField[] = 
     offset: 236,
     byteLength: 1,
   },
+  {
+    name: 'statusOfSale',
+    type: 'uint8',
+    offset: 237,
+    byteLength: 1,
+  },
+  {
+    name: 'statusOfAsk',
+    type: 'uint8',
+    offset: 238,
+    byteLength: 1,
+  },
+  {
+    name: 'paymentMethodOfAsk',
+    type: 'uint8',
+    offset: 239,
+    byteLength: 1,
+  },
+  {
+    name: 'statusOfExchange',
+    type: 'uint8',
+    offset: 240,
+    byteLength: 1,
+  },
+  {
+    name: 'paymentMethodOfAuction',
+    type: 'uint8',
+    offset: 241,
+    byteLength: 1,
+  },
 ]
 
 export function decodeQbayGetInfoOfNFTUserPossessedOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QbayGetInfoOfNFTUserPossessedOutput {
-  return decodePayload(
-    data,
-    QBAY_GET_INFO_OF_NFT_USER_POSSESSED_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QbayGetInfoOfNFTUserPossessedOutput
+  return decodePayload(data, QBAY_GET_INFO_OF_NFT_USER_POSSESSED_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QbayGetInfoOfNFTUserPossessedOutput
+}
+
+export async function qbayGetInfoOfNFTUserPossessed(
+  live: SmartContractCaller,
+  input: QbayGetInfoOfNFTUserPossessedInput,
+  options?: ContractCallOptions,
+): Promise<Result<QbayGetInfoOfNFTUserPossessedOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QBAY_CONTRACT_INDEX,
+    inputType: QBAY_GET_INFO_OF_NFT_USER_POSSESSED_INPUT_TYPE,
+    inputSize: QBAY_GET_INFO_OF_NFT_USER_POSSESSED_INPUT_SIZE,
+    inputFields: QBAY_GET_INFO_OF_NFT_USER_POSSESSED_INPUT_FIELDS,
+    outputFields: QBAY_GET_INFO_OF_NFT_USER_POSSESSED_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const QBAY_GET_INFO_OF_MARKETPLACE_INPUT_TYPE = 20
 export const QBAY_GET_INFO_OF_MARKETPLACE_INPUT_SIZE = 0
-export const QBAY_GET_INFO_OF_MARKETPLACE_OUTPUT_SIZE = 48
 
 export interface QbayGetInfoOfMarketplaceOutput {
   priceOfCFB: bigint
@@ -1277,9 +1313,10 @@ export interface QbayGetInfoOfMarketplaceOutput {
   earnedCFB: bigint
   numberOfCollection: number
   numberOfNFT: number
+  statusOfMarketPlace: number
 }
 
-export const QBAY_GET_INFO_OF_MARKETPLACE_OUTPUT_FIELDS: BinaryField[] = [
+const QBAY_GET_INFO_OF_MARKETPLACE_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'priceOfCFB',
     type: 'uint64',
@@ -1322,30 +1359,47 @@ export const QBAY_GET_INFO_OF_MARKETPLACE_OUTPUT_FIELDS: BinaryField[] = [
     offset: 44,
     byteLength: 4,
   },
+  {
+    name: 'statusOfMarketPlace',
+    type: 'uint8',
+    offset: 48,
+    byteLength: 1,
+  },
 ]
 
 export function decodeQbayGetInfoOfMarketplaceOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QbayGetInfoOfMarketplaceOutput {
-  return decodePayload(
-    data,
-    QBAY_GET_INFO_OF_MARKETPLACE_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QbayGetInfoOfMarketplaceOutput
+  return decodePayload(data, QBAY_GET_INFO_OF_MARKETPLACE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QbayGetInfoOfMarketplaceOutput
+}
+
+export async function qbayGetInfoOfMarketplace(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<QbayGetInfoOfMarketplaceOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QBAY_CONTRACT_INDEX,
+    inputType: QBAY_GET_INFO_OF_MARKETPLACE_INPUT_TYPE,
+    inputSize: QBAY_GET_INFO_OF_MARKETPLACE_INPUT_SIZE,
+    inputFields: [],
+    outputFields: QBAY_GET_INFO_OF_MARKETPLACE_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
 }
 
 export const QBAY_GET_INFO_OF_COLLECTION_BY_CREATOR_INPUT_TYPE = 21
 export const QBAY_GET_INFO_OF_COLLECTION_BY_CREATOR_INPUT_SIZE = 36
-export const QBAY_GET_INFO_OF_COLLECTION_BY_CREATOR_OUTPUT_SIZE = 88
 
 export interface QbayGetInfoOfCollectionByCreatorInput {
   creator: string
   orderOfCollection: number
 }
 
-export const QBAY_GET_INFO_OF_COLLECTION_BY_CREATOR_INPUT_FIELDS: BinaryField[] = [
+const QBAY_GET_INFO_OF_COLLECTION_BY_CREATOR_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'creator',
     type: 'id',
@@ -1374,9 +1428,10 @@ export interface QbayGetInfoOfCollectionByCreatorOutput {
   currentSize: number
   maxSizeHoldingPerOneId: number
   URI: number[]
+  typeOfCollection: number
 }
 
-export const QBAY_GET_INFO_OF_COLLECTION_BY_CREATOR_OUTPUT_FIELDS: BinaryField[] = [
+const QBAY_GET_INFO_OF_COLLECTION_BY_CREATOR_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'priceForDropMint',
     type: 'uint64',
@@ -1416,29 +1471,47 @@ export const QBAY_GET_INFO_OF_COLLECTION_BY_CREATOR_OUTPUT_FIELDS: BinaryField[]
     arrayItemType: 'uint8',
     arrayItemByteLength: 1,
   },
+  {
+    name: 'typeOfCollection',
+    type: 'uint8',
+    offset: 88,
+    byteLength: 1,
+  },
 ]
 
 export function decodeQbayGetInfoOfCollectionByCreatorOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QbayGetInfoOfCollectionByCreatorOutput {
-  return decodePayload(
-    data,
-    QBAY_GET_INFO_OF_COLLECTION_BY_CREATOR_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QbayGetInfoOfCollectionByCreatorOutput
+  return decodePayload(data, QBAY_GET_INFO_OF_COLLECTION_BY_CREATOR_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QbayGetInfoOfCollectionByCreatorOutput
+}
+
+export async function qbayGetInfoOfCollectionByCreator(
+  live: SmartContractCaller,
+  input: QbayGetInfoOfCollectionByCreatorInput,
+  options?: ContractCallOptions,
+): Promise<Result<QbayGetInfoOfCollectionByCreatorOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QBAY_CONTRACT_INDEX,
+    inputType: QBAY_GET_INFO_OF_COLLECTION_BY_CREATOR_INPUT_TYPE,
+    inputSize: QBAY_GET_INFO_OF_COLLECTION_BY_CREATOR_INPUT_SIZE,
+    inputFields: QBAY_GET_INFO_OF_COLLECTION_BY_CREATOR_INPUT_FIELDS,
+    outputFields: QBAY_GET_INFO_OF_COLLECTION_BY_CREATOR_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const QBAY_GET_INFO_OF_COLLECTION_BY_ID_INPUT_TYPE = 22
 export const QBAY_GET_INFO_OF_COLLECTION_BY_ID_INPUT_SIZE = 4
-export const QBAY_GET_INFO_OF_COLLECTION_BY_ID_OUTPUT_SIZE = 116
 
 export interface QbayGetInfoOfCollectionByIdInput {
   idOfCollection: number
 }
 
-export const QBAY_GET_INFO_OF_COLLECTION_BY_ID_INPUT_FIELDS: BinaryField[] = [
+const QBAY_GET_INFO_OF_COLLECTION_BY_ID_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'idOfCollection',
     type: 'uint32',
@@ -1461,9 +1534,10 @@ export interface QbayGetInfoOfCollectionByIdOutput {
   currentSize: number
   maxSizeHoldingPerOneId: number
   URI: number[]
+  typeOfCollection: number
 }
 
-export const QBAY_GET_INFO_OF_COLLECTION_BY_ID_OUTPUT_FIELDS: BinaryField[] = [
+const QBAY_GET_INFO_OF_COLLECTION_BY_ID_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'creator',
     type: 'id',
@@ -1503,30 +1577,48 @@ export const QBAY_GET_INFO_OF_COLLECTION_BY_ID_OUTPUT_FIELDS: BinaryField[] = [
     arrayItemType: 'uint8',
     arrayItemByteLength: 1,
   },
+  {
+    name: 'typeOfCollection',
+    type: 'uint8',
+    offset: 116,
+    byteLength: 1,
+  },
 ]
 
 export function decodeQbayGetInfoOfCollectionByIdOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QbayGetInfoOfCollectionByIdOutput {
-  return decodePayload(
-    data,
-    QBAY_GET_INFO_OF_COLLECTION_BY_ID_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QbayGetInfoOfCollectionByIdOutput
+  return decodePayload(data, QBAY_GET_INFO_OF_COLLECTION_BY_ID_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QbayGetInfoOfCollectionByIdOutput
+}
+
+export async function qbayGetInfoOfCollectionById(
+  live: SmartContractCaller,
+  input: QbayGetInfoOfCollectionByIdInput,
+  options?: ContractCallOptions,
+): Promise<Result<QbayGetInfoOfCollectionByIdOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QBAY_CONTRACT_INDEX,
+    inputType: QBAY_GET_INFO_OF_COLLECTION_BY_ID_INPUT_TYPE,
+    inputSize: QBAY_GET_INFO_OF_COLLECTION_BY_ID_INPUT_SIZE,
+    inputFields: QBAY_GET_INFO_OF_COLLECTION_BY_ID_INPUT_FIELDS,
+    outputFields: QBAY_GET_INFO_OF_COLLECTION_BY_ID_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const QBAY_GET_INCOMING_AUCTIONS_INPUT_TYPE = 23
 export const QBAY_GET_INCOMING_AUCTIONS_INPUT_SIZE = 8
-export const QBAY_GET_INCOMING_AUCTIONS_OUTPUT_SIZE = 4096
 
 export interface QbayGetIncomingAuctionsInput {
   offset: number
   count: number
 }
 
-export const QBAY_GET_INCOMING_AUCTIONS_INPUT_FIELDS: BinaryField[] = [
+const QBAY_GET_INCOMING_AUCTIONS_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'offset',
     type: 'uint32',
@@ -1552,7 +1644,7 @@ export interface QbayGetIncomingAuctionsOutput {
   NFTId: number[]
 }
 
-export const QBAY_GET_INCOMING_AUCTIONS_OUTPUT_FIELDS: BinaryField[] = [
+const QBAY_GET_INCOMING_AUCTIONS_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'NFTId',
     type: 'array',
@@ -1568,23 +1660,35 @@ export function decodeQbayGetIncomingAuctionsOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QbayGetIncomingAuctionsOutput {
-  return decodePayload(
-    data,
-    QBAY_GET_INCOMING_AUCTIONS_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QbayGetIncomingAuctionsOutput
+  return decodePayload(data, QBAY_GET_INCOMING_AUCTIONS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QbayGetIncomingAuctionsOutput
+}
+
+export async function qbayGetIncomingAuctions(
+  live: SmartContractCaller,
+  input: QbayGetIncomingAuctionsInput,
+  options?: ContractCallOptions,
+): Promise<Result<QbayGetIncomingAuctionsOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QBAY_CONTRACT_INDEX,
+    inputType: QBAY_GET_INCOMING_AUCTIONS_INPUT_TYPE,
+    inputSize: QBAY_GET_INCOMING_AUCTIONS_INPUT_SIZE,
+    inputFields: QBAY_GET_INCOMING_AUCTIONS_INPUT_FIELDS,
+    outputFields: QBAY_GET_INCOMING_AUCTIONS_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const QBAY_GET_INFO_OF_NFT_BY_ID_INPUT_TYPE = 24
 export const QBAY_GET_INFO_OF_NFT_BY_ID_INPUT_SIZE = 4
-export const QBAY_GET_INFO_OF_NFT_BY_ID_OUTPUT_SIZE = 237
 
 export interface QbayGetInfoOfNFTByIdInput {
   NFTId: number
 }
 
-export const QBAY_GET_INFO_OF_NFT_BY_ID_INPUT_FIELDS: BinaryField[] = [
+const QBAY_GET_INFO_OF_NFT_BY_ID_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'NFTId',
     type: 'uint32',
@@ -1624,9 +1728,14 @@ export interface QbayGetInfoOfNFTByIdOutput {
   hourAuctionEnded: number
   minuteAuctionEnded: number
   secondAuctionEnded: number
+  statusOfSale: number
+  statusOfAsk: number
+  paymentMethodOfAsk: number
+  statusOfExchange: number
+  paymentMethodOfAuction: number
 }
 
-export const QBAY_GET_INFO_OF_NFT_BY_ID_OUTPUT_FIELDS: BinaryField[] = [
+const QBAY_GET_INFO_OF_NFT_BY_ID_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'creator',
     type: 'id',
@@ -1768,23 +1877,65 @@ export const QBAY_GET_INFO_OF_NFT_BY_ID_OUTPUT_FIELDS: BinaryField[] = [
     offset: 236,
     byteLength: 1,
   },
+  {
+    name: 'statusOfSale',
+    type: 'uint8',
+    offset: 237,
+    byteLength: 1,
+  },
+  {
+    name: 'statusOfAsk',
+    type: 'uint8',
+    offset: 238,
+    byteLength: 1,
+  },
+  {
+    name: 'paymentMethodOfAsk',
+    type: 'uint8',
+    offset: 239,
+    byteLength: 1,
+  },
+  {
+    name: 'statusOfExchange',
+    type: 'uint8',
+    offset: 240,
+    byteLength: 1,
+  },
+  {
+    name: 'paymentMethodOfAuction',
+    type: 'uint8',
+    offset: 241,
+    byteLength: 1,
+  },
 ]
 
 export function decodeQbayGetInfoOfNFTByIdOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QbayGetInfoOfNFTByIdOutput {
-  return decodePayload(
-    data,
-    QBAY_GET_INFO_OF_NFT_BY_ID_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QbayGetInfoOfNFTByIdOutput
+  return decodePayload(data, QBAY_GET_INFO_OF_NFT_BY_ID_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QbayGetInfoOfNFTByIdOutput
+}
+
+export async function qbayGetInfoOfNFTById(
+  live: SmartContractCaller,
+  input: QbayGetInfoOfNFTByIdInput,
+  options?: ContractCallOptions,
+): Promise<Result<QbayGetInfoOfNFTByIdOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QBAY_CONTRACT_INDEX,
+    inputType: QBAY_GET_INFO_OF_NFT_BY_ID_INPUT_TYPE,
+    inputSize: QBAY_GET_INFO_OF_NFT_BY_ID_INPUT_SIZE,
+    inputFields: QBAY_GET_INFO_OF_NFT_BY_ID_INPUT_FIELDS,
+    outputFields: QBAY_GET_INFO_OF_NFT_BY_ID_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const QBAY_GET_USER_CREATED_COLLECTION_INPUT_TYPE = 25
 export const QBAY_GET_USER_CREATED_COLLECTION_INPUT_SIZE = 40
-export const QBAY_GET_USER_CREATED_COLLECTION_OUTPUT_SIZE = 4096
 
 export interface QbayGetUserCreatedCollectionInput {
   user: string
@@ -1792,7 +1943,7 @@ export interface QbayGetUserCreatedCollectionInput {
   count: number
 }
 
-export const QBAY_GET_USER_CREATED_COLLECTION_INPUT_FIELDS: BinaryField[] = [
+const QBAY_GET_USER_CREATED_COLLECTION_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'user',
     type: 'id',
@@ -1824,7 +1975,7 @@ export interface QbayGetUserCreatedCollectionOutput {
   collectionId: number[]
 }
 
-export const QBAY_GET_USER_CREATED_COLLECTION_OUTPUT_FIELDS: BinaryField[] = [
+const QBAY_GET_USER_CREATED_COLLECTION_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'collectionId',
     type: 'array',
@@ -1840,17 +1991,29 @@ export function decodeQbayGetUserCreatedCollectionOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QbayGetUserCreatedCollectionOutput {
-  return decodePayload(
-    data,
-    QBAY_GET_USER_CREATED_COLLECTION_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QbayGetUserCreatedCollectionOutput
+  return decodePayload(data, QBAY_GET_USER_CREATED_COLLECTION_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QbayGetUserCreatedCollectionOutput
+}
+
+export async function qbayGetUserCreatedCollection(
+  live: SmartContractCaller,
+  input: QbayGetUserCreatedCollectionInput,
+  options?: ContractCallOptions,
+): Promise<Result<QbayGetUserCreatedCollectionOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QBAY_CONTRACT_INDEX,
+    inputType: QBAY_GET_USER_CREATED_COLLECTION_INPUT_TYPE,
+    inputSize: QBAY_GET_USER_CREATED_COLLECTION_INPUT_SIZE,
+    inputFields: QBAY_GET_USER_CREATED_COLLECTION_INPUT_FIELDS,
+    outputFields: QBAY_GET_USER_CREATED_COLLECTION_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const QBAY_GET_USER_CREATED_NFT_INPUT_TYPE = 26
 export const QBAY_GET_USER_CREATED_NFT_INPUT_SIZE = 40
-export const QBAY_GET_USER_CREATED_NFT_OUTPUT_SIZE = 4096
 
 export interface QbayGetUserCreatedNFTInput {
   user: string
@@ -1858,7 +2021,7 @@ export interface QbayGetUserCreatedNFTInput {
   count: number
 }
 
-export const QBAY_GET_USER_CREATED_NFT_INPUT_FIELDS: BinaryField[] = [
+const QBAY_GET_USER_CREATED_NFT_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'user',
     type: 'id',
@@ -1890,7 +2053,7 @@ export interface QbayGetUserCreatedNFTOutput {
   NFTId: number[]
 }
 
-export const QBAY_GET_USER_CREATED_NFT_OUTPUT_FIELDS: BinaryField[] = [
+const QBAY_GET_USER_CREATED_NFT_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'NFTId',
     type: 'array',
@@ -1906,11 +2069,71 @@ export function decodeQbayGetUserCreatedNFTOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QbayGetUserCreatedNFTOutput {
-  return decodePayload(
-    data,
-    QBAY_GET_USER_CREATED_NFT_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QbayGetUserCreatedNFTOutput
+  return decodePayload(data, QBAY_GET_USER_CREATED_NFT_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QbayGetUserCreatedNFTOutput
+}
+
+export async function qbayGetUserCreatedNFT(
+  live: SmartContractCaller,
+  input: QbayGetUserCreatedNFTInput,
+  options?: ContractCallOptions,
+): Promise<Result<QbayGetUserCreatedNFTOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QBAY_CONTRACT_INDEX,
+    inputType: QBAY_GET_USER_CREATED_NFT_INPUT_TYPE,
+    inputSize: QBAY_GET_USER_CREATED_NFT_INPUT_SIZE,
+    inputFields: QBAY_GET_USER_CREATED_NFT_INPUT_FIELDS,
+    outputFields: QBAY_GET_USER_CREATED_NFT_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
+}
+
+export const qbay = {
+  contractIndex: QBAY_CONTRACT_INDEX,
+  getNumberOfNFTForUser: qbayGetNumberOfNFTForUser,
+  getInfoOfNFTUserPossessed: qbayGetInfoOfNFTUserPossessed,
+  getInfoOfMarketplace: qbayGetInfoOfMarketplace,
+  getInfoOfCollectionByCreator: qbayGetInfoOfCollectionByCreator,
+  getInfoOfCollectionById: qbayGetInfoOfCollectionById,
+  getIncomingAuctions: qbayGetIncomingAuctions,
+  getInfoOfNFTById: qbayGetInfoOfNFTById,
+  getUserCreatedCollection: qbayGetUserCreatedCollection,
+  getUserCreatedNFT: qbayGetUserCreatedNFT,
+  buildSettingCFBAndQubicPriceInput: buildQbaySettingCFBAndQubicPriceInput,
+  decodeSettingCFBAndQubicPriceOutput: decodeQbaySettingCFBAndQubicPriceOutput,
+  buildCreateCollectionInput: buildQbayCreateCollectionInput,
+  decodeCreateCollectionOutput: decodeQbayCreateCollectionOutput,
+  buildMintInput: buildQbayMintInput,
+  decodeMintOutput: decodeQbayMintOutput,
+  buildMintOfDropInput: buildQbayMintOfDropInput,
+  decodeMintOfDropOutput: decodeQbayMintOfDropOutput,
+  buildTransferInput: buildQbayTransferInput,
+  decodeTransferOutput: decodeQbayTransferOutput,
+  buildListInMarketInput: buildQbayListInMarketInput,
+  decodeListInMarketOutput: decodeQbayListInMarketOutput,
+  buildBuyInput: buildQbayBuyInput,
+  decodeBuyOutput: decodeQbayBuyOutput,
+  buildCancelSaleInput: buildQbayCancelSaleInput,
+  decodeCancelSaleOutput: decodeQbayCancelSaleOutput,
+  buildListInExchangeInput: buildQbayListInExchangeInput,
+  decodeListInExchangeOutput: decodeQbayListInExchangeOutput,
+  buildCancelExchangeInput: buildQbayCancelExchangeInput,
+  decodeCancelExchangeOutput: decodeQbayCancelExchangeOutput,
+  buildMakeOfferInput: buildQbayMakeOfferInput,
+  decodeMakeOfferOutput: decodeQbayMakeOfferOutput,
+  buildAcceptOfferInput: buildQbayAcceptOfferInput,
+  decodeAcceptOfferOutput: decodeQbayAcceptOfferOutput,
+  buildCancelOfferInput: buildQbayCancelOfferInput,
+  decodeCancelOfferOutput: decodeQbayCancelOfferOutput,
+  buildCreateTraditionalAuctionInput: buildQbayCreateTraditionalAuctionInput,
+  decodeCreateTraditionalAuctionOutput: decodeQbayCreateTraditionalAuctionOutput,
+  buildBidOnTraditionalAuctionInput: buildQbayBidOnTraditionalAuctionInput,
+  decodeBidOnTraditionalAuctionOutput: decodeQbayBidOnTraditionalAuctionOutput,
+  buildTransferShareManagementRightsInput: buildQbayTransferShareManagementRightsInput,
+  decodeTransferShareManagementRightsOutput: decodeQbayTransferShareManagementRightsOutput,
+  buildChangeStatusOfMarketPlaceInput: buildQbayChangeStatusOfMarketPlaceInput,
+  decodeChangeStatusOfMarketPlaceOutput: decodeQbayChangeStatusOfMarketPlaceOutput,
 }
 

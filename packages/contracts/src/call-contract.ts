@@ -9,6 +9,15 @@ export interface SmartContractCaller {
   querySmartContract(req: QuerySmartContractRequest): Promise<QuerySmartContractResponse>
 }
 
+export interface ContractCallOptions {
+  identityToPublicKey?: (identity: string) => Uint8Array
+  publicKeyToIdentity?: (pk: Uint8Array) => string
+}
+
+const _EMPTY_IDENTITY = 'A'.repeat(60)
+const _defaultIdToPk = (): Uint8Array => new Uint8Array(32)
+const _defaultPkToId = (): string => _EMPTY_IDENTITY
+
 function toBase64(bytes: Uint8Array): string {
   let s = ''
   for (let i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i] ?? 0)
@@ -31,19 +40,21 @@ export interface CallContractFunctionOptions<TInput extends Record<string, unkno
   outputFields: BinaryField[]
   structs: Record<string, NamedStruct>
   input: TInput
-  identityToPublicKey: (identity: string) => Uint8Array
-  publicKeyToIdentity: (pk: Uint8Array) => string
+  identityToPublicKey?: (identity: string) => Uint8Array
+  publicKeyToIdentity?: (pk: Uint8Array) => string
 }
 
 export async function callContractFunction<TInput extends Record<string, unknown>, TOutput>(
   options: CallContractFunctionOptions<TInput>,
 ): Promise<Result<TOutput, QubicRpcError>> {
+  const idToPk = options.identityToPublicKey ?? _defaultIdToPk
+  const pkToId = options.publicKeyToIdentity ?? _defaultPkToId
   try {
     const payload = buildPayload(
       options.inputFields,
       options.structs,
       options.input as Record<string, FieldValue | Uint8Array>,
-      options.identityToPublicKey,
+      idToPk,
     )
     const response = await options.live.querySmartContract({
       contractIndex: options.contractIndex,
@@ -52,12 +63,7 @@ export async function callContractFunction<TInput extends Record<string, unknown
       requestData: toBase64(payload),
     })
     const responseBytes = fromBase64(response.responseData ?? '')
-    const decoded = decodePayload(
-      responseBytes,
-      options.outputFields,
-      options.structs,
-      options.publicKeyToIdentity,
-    )
+    const decoded = decodePayload(responseBytes, options.outputFields, options.structs, pkToId)
     return ok(decoded as unknown as TOutput)
   } catch (cause) {
     if (cause instanceof QubicRpcError) return err(cause)

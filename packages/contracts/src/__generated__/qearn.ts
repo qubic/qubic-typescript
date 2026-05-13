@@ -1,20 +1,21 @@
 // @generated — do not edit by hand. Run `bun run generate` to regenerate.
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.ts/contract-registry'
 import { buildPayload, decodePayload } from '@qubic.ts/contract-registry'
+import type { QubicRpcError } from '@qubic.ts/rpc'
+import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import type { Result } from '../result.js'
 
 export const QEARN_CONTRACT_INDEX = 9
 
 const STRUCTS: Record<string, NamedStruct> = {}
 
 export const QEARN_LOCK_INPUT_TYPE = 6
-export const QEARN_LOCK_INPUT_SIZE = 0
-export const QEARN_LOCK_OUTPUT_SIZE = 4
 
 export interface QearnLockOutput {
   returnCode: number
 }
 
-export const QEARN_LOCK_OUTPUT_FIELDS: BinaryField[] = [
+const QEARN_LOCK_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'sint32',
@@ -27,24 +28,17 @@ export function decodeQearnLockOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QearnLockOutput {
-  return decodePayload(
-    data,
-    QEARN_LOCK_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QearnLockOutput
+  return decodePayload(data, QEARN_LOCK_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QearnLockOutput
 }
 
 export const QEARN_UNLOCK_INPUT_TYPE = 7
-export const QEARN_UNLOCK_INPUT_SIZE = 12
-export const QEARN_UNLOCK_OUTPUT_SIZE = 4
 
 export interface QearnUnlockInput {
   amount: bigint
   lockedEpoch: number
 }
 
-export const QEARN_UNLOCK_INPUT_FIELDS: BinaryField[] = [
+const QEARN_UNLOCK_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'amount',
     type: 'uint64',
@@ -70,7 +64,7 @@ export interface QearnUnlockOutput {
   returnCode: number
 }
 
-export const QEARN_UNLOCK_OUTPUT_FIELDS: BinaryField[] = [
+const QEARN_UNLOCK_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'sint32',
@@ -83,23 +77,17 @@ export function decodeQearnUnlockOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QearnUnlockOutput {
-  return decodePayload(
-    data,
-    QEARN_UNLOCK_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QearnUnlockOutput
+  return decodePayload(data, QEARN_UNLOCK_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QearnUnlockOutput
 }
 
 export const QEARN_GET_LOCK_INFO_PER_EPOCH_INPUT_TYPE = 1
 export const QEARN_GET_LOCK_INFO_PER_EPOCH_INPUT_SIZE = 4
-export const QEARN_GET_LOCK_INFO_PER_EPOCH_OUTPUT_SIZE = 40
 
 export interface QearnGetLockInfoPerEpochInput {
   Epoch: number
 }
 
-export const QEARN_GET_LOCK_INFO_PER_EPOCH_INPUT_FIELDS: BinaryField[] = [
+const QEARN_GET_LOCK_INFO_PER_EPOCH_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'Epoch',
     type: 'uint32',
@@ -123,7 +111,7 @@ export interface QearnGetLockInfoPerEpochOutput {
   yield: bigint
 }
 
-export const QEARN_GET_LOCK_INFO_PER_EPOCH_OUTPUT_FIELDS: BinaryField[] = [
+const QEARN_GET_LOCK_INFO_PER_EPOCH_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'lockedAmount',
     type: 'uint64',
@@ -160,24 +148,36 @@ export function decodeQearnGetLockInfoPerEpochOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QearnGetLockInfoPerEpochOutput {
-  return decodePayload(
-    data,
-    QEARN_GET_LOCK_INFO_PER_EPOCH_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QearnGetLockInfoPerEpochOutput
+  return decodePayload(data, QEARN_GET_LOCK_INFO_PER_EPOCH_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QearnGetLockInfoPerEpochOutput
+}
+
+export async function qearnGetLockInfoPerEpoch(
+  live: SmartContractCaller,
+  input: QearnGetLockInfoPerEpochInput,
+  options?: ContractCallOptions,
+): Promise<Result<QearnGetLockInfoPerEpochOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QEARN_CONTRACT_INDEX,
+    inputType: QEARN_GET_LOCK_INFO_PER_EPOCH_INPUT_TYPE,
+    inputSize: QEARN_GET_LOCK_INFO_PER_EPOCH_INPUT_SIZE,
+    inputFields: QEARN_GET_LOCK_INFO_PER_EPOCH_INPUT_FIELDS,
+    outputFields: QEARN_GET_LOCK_INFO_PER_EPOCH_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const QEARN_GET_USER_LOCKED_INFO_INPUT_TYPE = 2
 export const QEARN_GET_USER_LOCKED_INFO_INPUT_SIZE = 36
-export const QEARN_GET_USER_LOCKED_INFO_OUTPUT_SIZE = 8
 
 export interface QearnGetUserLockedInfoInput {
   user: string
   epoch: number
 }
 
-export const QEARN_GET_USER_LOCKED_INFO_INPUT_FIELDS: BinaryField[] = [
+const QEARN_GET_USER_LOCKED_INFO_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'user',
     type: 'id',
@@ -203,7 +203,7 @@ export interface QearnGetUserLockedInfoOutput {
   lockedAmount: bigint
 }
 
-export const QEARN_GET_USER_LOCKED_INFO_OUTPUT_FIELDS: BinaryField[] = [
+const QEARN_GET_USER_LOCKED_INFO_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'lockedAmount',
     type: 'uint64',
@@ -216,23 +216,35 @@ export function decodeQearnGetUserLockedInfoOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QearnGetUserLockedInfoOutput {
-  return decodePayload(
-    data,
-    QEARN_GET_USER_LOCKED_INFO_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QearnGetUserLockedInfoOutput
+  return decodePayload(data, QEARN_GET_USER_LOCKED_INFO_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QearnGetUserLockedInfoOutput
+}
+
+export async function qearnGetUserLockedInfo(
+  live: SmartContractCaller,
+  input: QearnGetUserLockedInfoInput,
+  options?: ContractCallOptions,
+): Promise<Result<QearnGetUserLockedInfoOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QEARN_CONTRACT_INDEX,
+    inputType: QEARN_GET_USER_LOCKED_INFO_INPUT_TYPE,
+    inputSize: QEARN_GET_USER_LOCKED_INFO_INPUT_SIZE,
+    inputFields: QEARN_GET_USER_LOCKED_INFO_INPUT_FIELDS,
+    outputFields: QEARN_GET_USER_LOCKED_INFO_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const QEARN_GET_STATE_OF_ROUND_INPUT_TYPE = 3
 export const QEARN_GET_STATE_OF_ROUND_INPUT_SIZE = 4
-export const QEARN_GET_STATE_OF_ROUND_OUTPUT_SIZE = 4
 
 export interface QearnGetStateOfRoundInput {
   epoch: number
 }
 
-export const QEARN_GET_STATE_OF_ROUND_INPUT_FIELDS: BinaryField[] = [
+const QEARN_GET_STATE_OF_ROUND_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'epoch',
     type: 'uint32',
@@ -252,7 +264,7 @@ export interface QearnGetStateOfRoundOutput {
   state: number
 }
 
-export const QEARN_GET_STATE_OF_ROUND_OUTPUT_FIELDS: BinaryField[] = [
+const QEARN_GET_STATE_OF_ROUND_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'state',
     type: 'uint32',
@@ -265,23 +277,35 @@ export function decodeQearnGetStateOfRoundOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QearnGetStateOfRoundOutput {
-  return decodePayload(
-    data,
-    QEARN_GET_STATE_OF_ROUND_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QearnGetStateOfRoundOutput
+  return decodePayload(data, QEARN_GET_STATE_OF_ROUND_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QearnGetStateOfRoundOutput
+}
+
+export async function qearnGetStateOfRound(
+  live: SmartContractCaller,
+  input: QearnGetStateOfRoundInput,
+  options?: ContractCallOptions,
+): Promise<Result<QearnGetStateOfRoundOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QEARN_CONTRACT_INDEX,
+    inputType: QEARN_GET_STATE_OF_ROUND_INPUT_TYPE,
+    inputSize: QEARN_GET_STATE_OF_ROUND_INPUT_SIZE,
+    inputFields: QEARN_GET_STATE_OF_ROUND_INPUT_FIELDS,
+    outputFields: QEARN_GET_STATE_OF_ROUND_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const QEARN_GET_USER_LOCK_STATUS_INPUT_TYPE = 4
 export const QEARN_GET_USER_LOCK_STATUS_INPUT_SIZE = 32
-export const QEARN_GET_USER_LOCK_STATUS_OUTPUT_SIZE = 8
 
 export interface QearnGetUserLockStatusInput {
   user: string
 }
 
-export const QEARN_GET_USER_LOCK_STATUS_INPUT_FIELDS: BinaryField[] = [
+const QEARN_GET_USER_LOCK_STATUS_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'user',
     type: 'id',
@@ -301,7 +325,7 @@ export interface QearnGetUserLockStatusOutput {
   status: bigint
 }
 
-export const QEARN_GET_USER_LOCK_STATUS_OUTPUT_FIELDS: BinaryField[] = [
+const QEARN_GET_USER_LOCK_STATUS_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'status',
     type: 'uint64',
@@ -314,23 +338,35 @@ export function decodeQearnGetUserLockStatusOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QearnGetUserLockStatusOutput {
-  return decodePayload(
-    data,
-    QEARN_GET_USER_LOCK_STATUS_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QearnGetUserLockStatusOutput
+  return decodePayload(data, QEARN_GET_USER_LOCK_STATUS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QearnGetUserLockStatusOutput
+}
+
+export async function qearnGetUserLockStatus(
+  live: SmartContractCaller,
+  input: QearnGetUserLockStatusInput,
+  options?: ContractCallOptions,
+): Promise<Result<QearnGetUserLockStatusOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QEARN_CONTRACT_INDEX,
+    inputType: QEARN_GET_USER_LOCK_STATUS_INPUT_TYPE,
+    inputSize: QEARN_GET_USER_LOCK_STATUS_INPUT_SIZE,
+    inputFields: QEARN_GET_USER_LOCK_STATUS_INPUT_FIELDS,
+    outputFields: QEARN_GET_USER_LOCK_STATUS_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const QEARN_GET_ENDED_STATUS_INPUT_TYPE = 5
 export const QEARN_GET_ENDED_STATUS_INPUT_SIZE = 32
-export const QEARN_GET_ENDED_STATUS_OUTPUT_SIZE = 32
 
 export interface QearnGetEndedStatusInput {
   user: string
 }
 
-export const QEARN_GET_ENDED_STATUS_INPUT_FIELDS: BinaryField[] = [
+const QEARN_GET_ENDED_STATUS_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'user',
     type: 'id',
@@ -353,7 +389,7 @@ export interface QearnGetEndedStatusOutput {
   earlyRewardedAmount: bigint
 }
 
-export const QEARN_GET_ENDED_STATUS_OUTPUT_FIELDS: BinaryField[] = [
+const QEARN_GET_ENDED_STATUS_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'fullyUnlockedAmount',
     type: 'uint64',
@@ -384,23 +420,35 @@ export function decodeQearnGetEndedStatusOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QearnGetEndedStatusOutput {
-  return decodePayload(
-    data,
-    QEARN_GET_ENDED_STATUS_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QearnGetEndedStatusOutput
+  return decodePayload(data, QEARN_GET_ENDED_STATUS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QearnGetEndedStatusOutput
+}
+
+export async function qearnGetEndedStatus(
+  live: SmartContractCaller,
+  input: QearnGetEndedStatusInput,
+  options?: ContractCallOptions,
+): Promise<Result<QearnGetEndedStatusOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QEARN_CONTRACT_INDEX,
+    inputType: QEARN_GET_ENDED_STATUS_INPUT_TYPE,
+    inputSize: QEARN_GET_ENDED_STATUS_INPUT_SIZE,
+    inputFields: QEARN_GET_ENDED_STATUS_INPUT_FIELDS,
+    outputFields: QEARN_GET_ENDED_STATUS_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const QEARN_GET_STATS_PER_EPOCH_INPUT_TYPE = 8
 export const QEARN_GET_STATS_PER_EPOCH_INPUT_SIZE = 4
-export const QEARN_GET_STATS_PER_EPOCH_OUTPUT_SIZE = 32
 
 export interface QearnGetStatsPerEpochInput {
   epoch: number
 }
 
-export const QEARN_GET_STATS_PER_EPOCH_INPUT_FIELDS: BinaryField[] = [
+const QEARN_GET_STATS_PER_EPOCH_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'epoch',
     type: 'uint32',
@@ -423,7 +471,7 @@ export interface QearnGetStatsPerEpochOutput {
   averageAPY: bigint
 }
 
-export const QEARN_GET_STATS_PER_EPOCH_OUTPUT_FIELDS: BinaryField[] = [
+const QEARN_GET_STATS_PER_EPOCH_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'earlyUnlockedAmount',
     type: 'uint64',
@@ -454,17 +502,29 @@ export function decodeQearnGetStatsPerEpochOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QearnGetStatsPerEpochOutput {
-  return decodePayload(
-    data,
-    QEARN_GET_STATS_PER_EPOCH_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QearnGetStatsPerEpochOutput
+  return decodePayload(data, QEARN_GET_STATS_PER_EPOCH_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QearnGetStatsPerEpochOutput
+}
+
+export async function qearnGetStatsPerEpoch(
+  live: SmartContractCaller,
+  input: QearnGetStatsPerEpochInput,
+  options?: ContractCallOptions,
+): Promise<Result<QearnGetStatsPerEpochOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QEARN_CONTRACT_INDEX,
+    inputType: QEARN_GET_STATS_PER_EPOCH_INPUT_TYPE,
+    inputSize: QEARN_GET_STATS_PER_EPOCH_INPUT_SIZE,
+    inputFields: QEARN_GET_STATS_PER_EPOCH_INPUT_FIELDS,
+    outputFields: QEARN_GET_STATS_PER_EPOCH_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const QEARN_GET_BURNED_AND_BOOSTED_STATS_INPUT_TYPE = 9
 export const QEARN_GET_BURNED_AND_BOOSTED_STATS_INPUT_SIZE = 0
-export const QEARN_GET_BURNED_AND_BOOSTED_STATS_OUTPUT_SIZE = 48
 
 export interface QearnGetBurnedAndBoostedStatsOutput {
   burnedAmount: bigint
@@ -475,7 +535,7 @@ export interface QearnGetBurnedAndBoostedStatsOutput {
   averageRewardedPercent: bigint
 }
 
-export const QEARN_GET_BURNED_AND_BOOSTED_STATS_OUTPUT_FIELDS: BinaryField[] = [
+const QEARN_GET_BURNED_AND_BOOSTED_STATS_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'burnedAmount',
     type: 'uint64',
@@ -518,23 +578,34 @@ export function decodeQearnGetBurnedAndBoostedStatsOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QearnGetBurnedAndBoostedStatsOutput {
-  return decodePayload(
-    data,
-    QEARN_GET_BURNED_AND_BOOSTED_STATS_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QearnGetBurnedAndBoostedStatsOutput
+  return decodePayload(data, QEARN_GET_BURNED_AND_BOOSTED_STATS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QearnGetBurnedAndBoostedStatsOutput
+}
+
+export async function qearnGetBurnedAndBoostedStats(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<QearnGetBurnedAndBoostedStatsOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QEARN_CONTRACT_INDEX,
+    inputType: QEARN_GET_BURNED_AND_BOOSTED_STATS_INPUT_TYPE,
+    inputSize: QEARN_GET_BURNED_AND_BOOSTED_STATS_INPUT_SIZE,
+    inputFields: [],
+    outputFields: QEARN_GET_BURNED_AND_BOOSTED_STATS_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
 }
 
 export const QEARN_GET_BURNED_AND_BOOSTED_STATS_PER_EPOCH_INPUT_TYPE = 10
 export const QEARN_GET_BURNED_AND_BOOSTED_STATS_PER_EPOCH_INPUT_SIZE = 4
-export const QEARN_GET_BURNED_AND_BOOSTED_STATS_PER_EPOCH_OUTPUT_SIZE = 48
 
 export interface QearnGetBurnedAndBoostedStatsPerEpochInput {
   epoch: number
 }
 
-export const QEARN_GET_BURNED_AND_BOOSTED_STATS_PER_EPOCH_INPUT_FIELDS: BinaryField[] = [
+const QEARN_GET_BURNED_AND_BOOSTED_STATS_PER_EPOCH_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'epoch',
     type: 'uint32',
@@ -559,7 +630,7 @@ export interface QearnGetBurnedAndBoostedStatsPerEpochOutput {
   rewardedPercent: bigint
 }
 
-export const QEARN_GET_BURNED_AND_BOOSTED_STATS_PER_EPOCH_OUTPUT_FIELDS: BinaryField[] = [
+const QEARN_GET_BURNED_AND_BOOSTED_STATS_PER_EPOCH_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'burnedAmount',
     type: 'uint64',
@@ -602,11 +673,39 @@ export function decodeQearnGetBurnedAndBoostedStatsPerEpochOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QearnGetBurnedAndBoostedStatsPerEpochOutput {
-  return decodePayload(
-    data,
-    QEARN_GET_BURNED_AND_BOOSTED_STATS_PER_EPOCH_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QearnGetBurnedAndBoostedStatsPerEpochOutput
+  return decodePayload(data, QEARN_GET_BURNED_AND_BOOSTED_STATS_PER_EPOCH_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QearnGetBurnedAndBoostedStatsPerEpochOutput
+}
+
+export async function qearnGetBurnedAndBoostedStatsPerEpoch(
+  live: SmartContractCaller,
+  input: QearnGetBurnedAndBoostedStatsPerEpochInput,
+  options?: ContractCallOptions,
+): Promise<Result<QearnGetBurnedAndBoostedStatsPerEpochOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QEARN_CONTRACT_INDEX,
+    inputType: QEARN_GET_BURNED_AND_BOOSTED_STATS_PER_EPOCH_INPUT_TYPE,
+    inputSize: QEARN_GET_BURNED_AND_BOOSTED_STATS_PER_EPOCH_INPUT_SIZE,
+    inputFields: QEARN_GET_BURNED_AND_BOOSTED_STATS_PER_EPOCH_INPUT_FIELDS,
+    outputFields: QEARN_GET_BURNED_AND_BOOSTED_STATS_PER_EPOCH_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
+}
+
+export const qearn = {
+  contractIndex: QEARN_CONTRACT_INDEX,
+  getLockInfoPerEpoch: qearnGetLockInfoPerEpoch,
+  getUserLockedInfo: qearnGetUserLockedInfo,
+  getStateOfRound: qearnGetStateOfRound,
+  getUserLockStatus: qearnGetUserLockStatus,
+  getEndedStatus: qearnGetEndedStatus,
+  getStatsPerEpoch: qearnGetStatsPerEpoch,
+  getBurnedAndBoostedStats: qearnGetBurnedAndBoostedStats,
+  getBurnedAndBoostedStatsPerEpoch: qearnGetBurnedAndBoostedStatsPerEpoch,
+  decodeLockOutput: decodeQearnLockOutput,
+  buildUnlockInput: buildQearnUnlockInput,
+  decodeUnlockOutput: decodeQearnUnlockOutput,
 }
 

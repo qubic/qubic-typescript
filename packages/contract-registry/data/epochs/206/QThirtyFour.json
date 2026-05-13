@@ -3,7 +3,7 @@
   "contractName": "QThirtyFour",
   "effectiveFromEpoch": 206,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T12:08:44.850Z",
+  "registeredAt": "2026-05-13T14:13:40.557Z",
   "structs": {
     "NextEpochData": {
       "name": "NextEpochData",
@@ -127,6 +127,21 @@
         }
       ],
       "byteLength": 36
+    },
+    "WinningCombination": {
+      "name": "WinningCombination",
+      "fields": [
+        {
+          "name": "values",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 4,
+          "arrayLength": 4,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        }
+      ],
+      "byteLength": 4
     }
   },
   "procedures": [
@@ -594,14 +609,23 @@
       "inputFields": [],
       "outputFields": [
         {
+          "name": "history",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 512,
+          "arrayLength": 128,
+          "arrayItemStructRef": "WinningCombination",
+          "arrayItemByteLength": 4
+        },
+        {
           "name": "returnCode",
           "type": "uint8",
-          "offset": 0,
+          "offset": 512,
           "byteLength": 1
         }
       ],
       "inputSize": 0,
-      "outputSize": 1
+      "outputSize": 513
     }
   ]
 }

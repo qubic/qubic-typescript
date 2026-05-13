@@ -3,8 +3,27 @@
   "contractName": "Qswap",
   "effectiveFromEpoch": 205,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T12:08:43.484Z",
-  "structs": {},
+  "registeredAt": "2026-05-13T14:13:39.072Z",
+  "structs": {
+    "Asset": {
+      "name": "Asset",
+      "byteLength": 40,
+      "fields": [
+        {
+          "name": "issuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        }
+      ]
+    }
+  },
   "procedures": [
     {
       "kind": "procedure",
@@ -404,15 +423,22 @@
       "name": "TransferShareManagementRights",
       "inputFields": [
         {
+          "name": "asset",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 40,
+          "structRef": "Asset"
+        },
+        {
           "name": "numberOfShares",
           "type": "sint64",
-          "offset": 0,
+          "offset": 40,
           "byteLength": 8
         },
         {
           "name": "newManagingContractIndex",
           "type": "uint32",
-          "offset": 8,
+          "offset": 48,
           "byteLength": 4
         }
       ],
@@ -424,7 +450,7 @@
           "byteLength": 8
         }
       ],
-      "inputSize": 12,
+      "inputSize": 52,
       "outputSize": 8
     }
   ],

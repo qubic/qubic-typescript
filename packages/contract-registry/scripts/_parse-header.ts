@@ -490,6 +490,21 @@ export function parseContractHeader(options: ParseHeaderOptions): ContractAbiVer
     const s = namedStructs.get(name)
     if (s) structs[name] = s
   }
+  // Recursively include structs referenced by struct fields (e.g. QtryOrder inside QtryOrderWithPrice)
+  let prevSize = -1
+  while (prevSize !== Object.keys(structs).length) {
+    prevSize = Object.keys(structs).length
+    for (const s of Object.values(structs)) {
+      for (const f of s.fields) {
+        for (const ref of [f.structRef, f.arrayItemStructRef]) {
+          if (ref && !structs[ref]) {
+            const nested = namedStructs.get(ref)
+            if (nested) structs[ref] = nested
+          }
+        }
+      }
+    }
+  }
 
   return {
     contractIndex,

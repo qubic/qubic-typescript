@@ -6,3 +6,7 @@ export const SUPPLY_WATCHER_CONTRACT_INDEX = 7
 
 const STRUCTS: Record<string, NamedStruct> = {}
 
+export const supplyWatcher = {
+  contractIndex: SUPPLY_WATCHER_CONTRACT_INDEX,
+}
+

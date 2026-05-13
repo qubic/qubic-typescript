@@ -3,8 +3,26 @@
   "contractName": "Nostromo",
   "effectiveFromEpoch": 192,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T12:08:12.729Z",
+  "registeredAt": "2026-05-13T14:13:07.221Z",
   "structs": {
+    "Asset": {
+      "name": "Asset",
+      "byteLength": 40,
+      "fields": [
+        {
+          "name": "issuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        }
+      ]
+    },
     "projectInfo": {
       "name": "projectInfo",
       "fields": [
@@ -49,9 +67,15 @@
           "type": "uint32",
           "offset": 60,
           "byteLength": 4
+        },
+        {
+          "name": "isCreatedFundarasing",
+          "type": "uint8",
+          "offset": 64,
+          "byteLength": 1
         }
       ],
-      "byteLength": 64
+      "byteLength": 65
     },
     "fundaraisingInfo": {
       "name": "fundaraisingInfo",
@@ -157,9 +181,15 @@
           "type": "uint8",
           "offset": 74,
           "byteLength": 1
+        },
+        {
+          "name": "isCreatedToken",
+          "type": "uint8",
+          "offset": 75,
+          "byteLength": 1
         }
       ],
-      "byteLength": 75
+      "byteLength": 76
     },
     "investInfo": {
       "name": "investInfo",
@@ -215,9 +245,16 @@
       "inputType": 2,
       "name": "logoutFromTier",
       "inputFields": [],
-      "outputFields": [],
+      "outputFields": [
+        {
+          "name": "result",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
       "inputSize": 0,
-      "outputSize": 0
+      "outputSize": 1
     },
     {
       "kind": "procedure",
@@ -306,10 +343,16 @@
           "type": "uint32",
           "offset": 0,
           "byteLength": 4
+        },
+        {
+          "name": "decision",
+          "type": "uint8",
+          "offset": 4,
+          "byteLength": 1
         }
       ],
       "outputFields": [],
-      "inputSize": 4,
+      "inputSize": 5,
       "outputSize": 0
     },
     {
@@ -647,15 +690,22 @@
       "name": "TransferShareManagementRights",
       "inputFields": [
         {
+          "name": "asset",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 40,
+          "structRef": "Asset"
+        },
+        {
           "name": "numberOfShares",
           "type": "sint64",
-          "offset": 0,
+          "offset": 40,
           "byteLength": 8
         },
         {
           "name": "newManagingContractIndex",
           "type": "uint32",
-          "offset": 8,
+          "offset": 48,
           "byteLength": 4
         }
       ],
@@ -667,7 +717,7 @@
           "byteLength": 8
         }
       ],
-      "inputSize": 12,
+      "inputSize": 52,
       "outputSize": 8
     }
   ],
@@ -761,9 +811,16 @@
           "byteLength": 8
         }
       ],
-      "outputFields": [],
+      "outputFields": [
+        {
+          "name": "result",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
       "inputSize": 8,
-      "outputSize": 0
+      "outputSize": 1
     },
     {
       "kind": "function",
@@ -805,12 +862,12 @@
           "name": "project",
           "type": "struct",
           "offset": 0,
-          "byteLength": 64,
+          "byteLength": 65,
           "structRef": "projectInfo"
         }
       ],
       "inputSize": 4,
-      "outputSize": 64
+      "outputSize": 65
     },
     {
       "kind": "function",
@@ -829,12 +886,12 @@
           "name": "fundarasing",
           "type": "struct",
           "offset": 0,
-          "byteLength": 75,
+          "byteLength": 76,
           "structRef": "fundaraisingInfo"
         }
       ],
       "inputSize": 4,
-      "outputSize": 75
+      "outputSize": 76
     },
     {
       "kind": "function",

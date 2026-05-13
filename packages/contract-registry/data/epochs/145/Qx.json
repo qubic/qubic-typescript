@@ -3,8 +3,33 @@
   "contractName": "Qx",
   "effectiveFromEpoch": 145,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T12:07:32.068Z",
-  "structs": {},
+  "registeredAt": "2026-05-13T14:12:25.032Z",
+  "structs": {
+    "Order": {
+      "name": "Order",
+      "fields": [
+        {
+          "name": "entity",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "price",
+          "type": "sint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "numberOfShares",
+          "type": "sint64",
+          "offset": 40,
+          "byteLength": 8
+        }
+      ],
+      "byteLength": 48
+    }
+  },
   "procedures": [
     {
       "kind": "procedure",
@@ -306,9 +331,19 @@
           "byteLength": 8
         }
       ],
-      "outputFields": [],
+      "outputFields": [
+        {
+          "name": "orders",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 12288,
+          "arrayLength": 256,
+          "arrayItemStructRef": "Order",
+          "arrayItemByteLength": 48
+        }
+      ],
       "inputSize": 48,
-      "outputSize": 0
+      "outputSize": 12288
     },
     {
       "kind": "function",
@@ -334,9 +369,19 @@
           "byteLength": 8
         }
       ],
-      "outputFields": [],
+      "outputFields": [
+        {
+          "name": "orders",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 12288,
+          "arrayLength": 256,
+          "arrayItemStructRef": "Order",
+          "arrayItemByteLength": 48
+        }
+      ],
       "inputSize": 48,
-      "outputSize": 0
+      "outputSize": 12288
     },
     {
       "kind": "function",
@@ -356,9 +401,19 @@
           "byteLength": 8
         }
       ],
-      "outputFields": [],
+      "outputFields": [
+        {
+          "name": "orders",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 12288,
+          "arrayLength": 256,
+          "arrayItemStructRef": "Order",
+          "arrayItemByteLength": 48
+        }
+      ],
       "inputSize": 40,
-      "outputSize": 0
+      "outputSize": 12288
     },
     {
       "kind": "function",
@@ -378,9 +433,19 @@
           "byteLength": 8
         }
       ],
-      "outputFields": [],
+      "outputFields": [
+        {
+          "name": "orders",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 12288,
+          "arrayLength": 256,
+          "arrayItemStructRef": "Order",
+          "arrayItemByteLength": 48
+        }
+      ],
       "inputSize": 40,
-      "outputSize": 0
+      "outputSize": 12288
     }
   ]
 }

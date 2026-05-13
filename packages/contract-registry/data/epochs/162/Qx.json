@@ -3,8 +3,51 @@
   "contractName": "Qx",
   "effectiveFromEpoch": 162,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T12:07:42.579Z",
-  "structs": {},
+  "registeredAt": "2026-05-13T14:12:35.741Z",
+  "structs": {
+    "Asset": {
+      "name": "Asset",
+      "byteLength": 40,
+      "fields": [
+        {
+          "name": "issuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        }
+      ]
+    },
+    "Order": {
+      "name": "Order",
+      "fields": [
+        {
+          "name": "entity",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "price",
+          "type": "sint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "numberOfShares",
+          "type": "sint64",
+          "offset": 40,
+          "byteLength": 8
+        }
+      ],
+      "byteLength": 48
+    }
+  },
   "procedures": [
     {
       "kind": "procedure",
@@ -258,15 +301,22 @@
       "name": "TransferShareManagementRights",
       "inputFields": [
         {
+          "name": "asset",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 40,
+          "structRef": "Asset"
+        },
+        {
           "name": "numberOfShares",
           "type": "sint64",
-          "offset": 0,
+          "offset": 40,
           "byteLength": 8
         },
         {
           "name": "newManagingContractIndex",
           "type": "uint32",
-          "offset": 8,
+          "offset": 48,
           "byteLength": 4
         }
       ],
@@ -278,7 +328,7 @@
           "byteLength": 8
         }
       ],
-      "inputSize": 12,
+      "inputSize": 52,
       "outputSize": 8
     }
   ],
@@ -335,9 +385,19 @@
           "byteLength": 8
         }
       ],
-      "outputFields": [],
+      "outputFields": [
+        {
+          "name": "orders",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 12288,
+          "arrayLength": 256,
+          "arrayItemStructRef": "Order",
+          "arrayItemByteLength": 48
+        }
+      ],
       "inputSize": 48,
-      "outputSize": 0
+      "outputSize": 12288
     },
     {
       "kind": "function",
@@ -363,9 +423,19 @@
           "byteLength": 8
         }
       ],
-      "outputFields": [],
+      "outputFields": [
+        {
+          "name": "orders",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 12288,
+          "arrayLength": 256,
+          "arrayItemStructRef": "Order",
+          "arrayItemByteLength": 48
+        }
+      ],
       "inputSize": 48,
-      "outputSize": 0
+      "outputSize": 12288
     },
     {
       "kind": "function",
@@ -385,9 +455,19 @@
           "byteLength": 8
         }
       ],
-      "outputFields": [],
+      "outputFields": [
+        {
+          "name": "orders",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 12288,
+          "arrayLength": 256,
+          "arrayItemStructRef": "Order",
+          "arrayItemByteLength": 48
+        }
+      ],
       "inputSize": 40,
-      "outputSize": 0
+      "outputSize": 12288
     },
     {
       "kind": "function",
@@ -407,9 +487,19 @@
           "byteLength": 8
         }
       ],
-      "outputFields": [],
+      "outputFields": [
+        {
+          "name": "orders",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 12288,
+          "arrayLength": 256,
+          "arrayItemStructRef": "Order",
+          "arrayItemByteLength": 48
+        }
+      ],
       "inputSize": 40,
-      "outputSize": 0
+      "outputSize": 12288
     }
   ]
 }

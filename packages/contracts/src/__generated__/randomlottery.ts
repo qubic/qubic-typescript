@@ -1,6 +1,9 @@
 // @generated — do not edit by hand. Run `bun run generate` to regenerate.
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.ts/contract-registry'
 import { buildPayload, decodePayload } from '@qubic.ts/contract-registry'
+import type { QubicRpcError } from '@qubic.ts/rpc'
+import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import type { Result } from '../result.js'
 
 export const RANDOM_LOTTERY_CONTRACT_INDEX = 16
 
@@ -75,14 +78,12 @@ const STRUCTS: Record<string, NamedStruct> = {
 }
 
 export const RANDOM_LOTTERY_BUY_TICKET_INPUT_TYPE = 1
-export const RANDOM_LOTTERY_BUY_TICKET_INPUT_SIZE = 0
-export const RANDOM_LOTTERY_BUY_TICKET_OUTPUT_SIZE = 1
 
 export interface RandomLotteryBuyTicketOutput {
   returnCode: number
 }
 
-export const RANDOM_LOTTERY_BUY_TICKET_OUTPUT_FIELDS: BinaryField[] = [
+const RANDOM_LOTTERY_BUY_TICKET_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'uint8',
@@ -95,23 +96,16 @@ export function decodeRandomLotteryBuyTicketOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): RandomLotteryBuyTicketOutput {
-  return decodePayload(
-    data,
-    RANDOM_LOTTERY_BUY_TICKET_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as RandomLotteryBuyTicketOutput
+  return decodePayload(data, RANDOM_LOTTERY_BUY_TICKET_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as RandomLotteryBuyTicketOutput
 }
 
 export const RANDOM_LOTTERY_SET_PRICE_INPUT_TYPE = 11
-export const RANDOM_LOTTERY_SET_PRICE_INPUT_SIZE = 8
-export const RANDOM_LOTTERY_SET_PRICE_OUTPUT_SIZE = 1
 
 export interface RandomLotterySetPriceInput {
   newPrice: bigint
 }
 
-export const RANDOM_LOTTERY_SET_PRICE_INPUT_FIELDS: BinaryField[] = [
+const RANDOM_LOTTERY_SET_PRICE_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'newPrice',
     type: 'uint64',
@@ -131,7 +125,7 @@ export interface RandomLotterySetPriceOutput {
   returnCode: number
 }
 
-export const RANDOM_LOTTERY_SET_PRICE_OUTPUT_FIELDS: BinaryField[] = [
+const RANDOM_LOTTERY_SET_PRICE_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'uint8',
@@ -144,23 +138,16 @@ export function decodeRandomLotterySetPriceOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): RandomLotterySetPriceOutput {
-  return decodePayload(
-    data,
-    RANDOM_LOTTERY_SET_PRICE_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as RandomLotterySetPriceOutput
+  return decodePayload(data, RANDOM_LOTTERY_SET_PRICE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as RandomLotterySetPriceOutput
 }
 
 export const RANDOM_LOTTERY_SET_SCHEDULE_INPUT_TYPE = 12
-export const RANDOM_LOTTERY_SET_SCHEDULE_INPUT_SIZE = 1
-export const RANDOM_LOTTERY_SET_SCHEDULE_OUTPUT_SIZE = 1
 
 export interface RandomLotterySetScheduleInput {
   newSchedule: number
 }
 
-export const RANDOM_LOTTERY_SET_SCHEDULE_INPUT_FIELDS: BinaryField[] = [
+const RANDOM_LOTTERY_SET_SCHEDULE_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'newSchedule',
     type: 'uint8',
@@ -180,7 +167,7 @@ export interface RandomLotterySetScheduleOutput {
   returnCode: number
 }
 
-export const RANDOM_LOTTERY_SET_SCHEDULE_OUTPUT_FIELDS: BinaryField[] = [
+const RANDOM_LOTTERY_SET_SCHEDULE_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'returnCode',
     type: 'uint8',
@@ -193,17 +180,11 @@ export function decodeRandomLotterySetScheduleOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): RandomLotterySetScheduleOutput {
-  return decodePayload(
-    data,
-    RANDOM_LOTTERY_SET_SCHEDULE_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as RandomLotterySetScheduleOutput
+  return decodePayload(data, RANDOM_LOTTERY_SET_SCHEDULE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as RandomLotterySetScheduleOutput
 }
 
 export const RANDOM_LOTTERY_GET_FEES_INPUT_TYPE = 2
 export const RANDOM_LOTTERY_GET_FEES_INPUT_SIZE = 0
-export const RANDOM_LOTTERY_GET_FEES_OUTPUT_SIZE = 5
 
 export interface RandomLotteryGetFeesOutput {
   teamFeePercent: number
@@ -213,7 +194,7 @@ export interface RandomLotteryGetFeesOutput {
   returnCode: number
 }
 
-export const RANDOM_LOTTERY_GET_FEES_OUTPUT_FIELDS: BinaryField[] = [
+const RANDOM_LOTTERY_GET_FEES_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'teamFeePercent',
     type: 'uint8',
@@ -250,17 +231,28 @@ export function decodeRandomLotteryGetFeesOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): RandomLotteryGetFeesOutput {
-  return decodePayload(
-    data,
-    RANDOM_LOTTERY_GET_FEES_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as RandomLotteryGetFeesOutput
+  return decodePayload(data, RANDOM_LOTTERY_GET_FEES_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as RandomLotteryGetFeesOutput
+}
+
+export async function randomLotteryGetFees(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<RandomLotteryGetFeesOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: RANDOM_LOTTERY_CONTRACT_INDEX,
+    inputType: RANDOM_LOTTERY_GET_FEES_INPUT_TYPE,
+    inputSize: RANDOM_LOTTERY_GET_FEES_INPUT_SIZE,
+    inputFields: [],
+    outputFields: RANDOM_LOTTERY_GET_FEES_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
 }
 
 export const RANDOM_LOTTERY_GET_PLAYERS_INPUT_TYPE = 3
 export const RANDOM_LOTTERY_GET_PLAYERS_INPUT_SIZE = 0
-export const RANDOM_LOTTERY_GET_PLAYERS_OUTPUT_SIZE = 32777
 
 export interface RandomLotteryGetPlayersOutput {
   players: string[]
@@ -268,7 +260,7 @@ export interface RandomLotteryGetPlayersOutput {
   returnCode: number
 }
 
-export const RANDOM_LOTTERY_GET_PLAYERS_OUTPUT_FIELDS: BinaryField[] = [
+const RANDOM_LOTTERY_GET_PLAYERS_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'players',
     type: 'array',
@@ -296,17 +288,28 @@ export function decodeRandomLotteryGetPlayersOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): RandomLotteryGetPlayersOutput {
-  return decodePayload(
-    data,
-    RANDOM_LOTTERY_GET_PLAYERS_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as RandomLotteryGetPlayersOutput
+  return decodePayload(data, RANDOM_LOTTERY_GET_PLAYERS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as RandomLotteryGetPlayersOutput
+}
+
+export async function randomLotteryGetPlayers(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<RandomLotteryGetPlayersOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: RANDOM_LOTTERY_CONTRACT_INDEX,
+    inputType: RANDOM_LOTTERY_GET_PLAYERS_INPUT_TYPE,
+    inputSize: RANDOM_LOTTERY_GET_PLAYERS_INPUT_SIZE,
+    inputFields: [],
+    outputFields: RANDOM_LOTTERY_GET_PLAYERS_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
 }
 
 export const RANDOM_LOTTERY_GET_WINNERS_INPUT_TYPE = 5
 export const RANDOM_LOTTERY_GET_WINNERS_INPUT_SIZE = 0
-export const RANDOM_LOTTERY_GET_WINNERS_OUTPUT_SIZE = 48137
 
 export interface RandomLotteryGetWinnersOutput {
   winners: number[]
@@ -314,7 +317,7 @@ export interface RandomLotteryGetWinnersOutput {
   returnCode: number
 }
 
-export const RANDOM_LOTTERY_GET_WINNERS_OUTPUT_FIELDS: BinaryField[] = [
+const RANDOM_LOTTERY_GET_WINNERS_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'winners',
     type: 'array',
@@ -342,23 +345,34 @@ export function decodeRandomLotteryGetWinnersOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): RandomLotteryGetWinnersOutput {
-  return decodePayload(
-    data,
-    RANDOM_LOTTERY_GET_WINNERS_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as RandomLotteryGetWinnersOutput
+  return decodePayload(data, RANDOM_LOTTERY_GET_WINNERS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as RandomLotteryGetWinnersOutput
+}
+
+export async function randomLotteryGetWinners(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<RandomLotteryGetWinnersOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: RANDOM_LOTTERY_CONTRACT_INDEX,
+    inputType: RANDOM_LOTTERY_GET_WINNERS_INPUT_TYPE,
+    inputSize: RANDOM_LOTTERY_GET_WINNERS_INPUT_SIZE,
+    inputFields: [],
+    outputFields: RANDOM_LOTTERY_GET_WINNERS_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
 }
 
 export const RANDOM_LOTTERY_GET_TICKET_PRICE_INPUT_TYPE = 6
 export const RANDOM_LOTTERY_GET_TICKET_PRICE_INPUT_SIZE = 0
-export const RANDOM_LOTTERY_GET_TICKET_PRICE_OUTPUT_SIZE = 8
 
 export interface RandomLotteryGetTicketPriceOutput {
   ticketPrice: bigint
 }
 
-export const RANDOM_LOTTERY_GET_TICKET_PRICE_OUTPUT_FIELDS: BinaryField[] = [
+const RANDOM_LOTTERY_GET_TICKET_PRICE_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'ticketPrice',
     type: 'uint64',
@@ -371,23 +385,34 @@ export function decodeRandomLotteryGetTicketPriceOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): RandomLotteryGetTicketPriceOutput {
-  return decodePayload(
-    data,
-    RANDOM_LOTTERY_GET_TICKET_PRICE_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as RandomLotteryGetTicketPriceOutput
+  return decodePayload(data, RANDOM_LOTTERY_GET_TICKET_PRICE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as RandomLotteryGetTicketPriceOutput
+}
+
+export async function randomLotteryGetTicketPrice(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<RandomLotteryGetTicketPriceOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: RANDOM_LOTTERY_CONTRACT_INDEX,
+    inputType: RANDOM_LOTTERY_GET_TICKET_PRICE_INPUT_TYPE,
+    inputSize: RANDOM_LOTTERY_GET_TICKET_PRICE_INPUT_SIZE,
+    inputFields: [],
+    outputFields: RANDOM_LOTTERY_GET_TICKET_PRICE_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
 }
 
 export const RANDOM_LOTTERY_GET_MAX_NUMBER_OF_PLAYERS_INPUT_TYPE = 7
 export const RANDOM_LOTTERY_GET_MAX_NUMBER_OF_PLAYERS_INPUT_SIZE = 0
-export const RANDOM_LOTTERY_GET_MAX_NUMBER_OF_PLAYERS_OUTPUT_SIZE = 8
 
 export interface RandomLotteryGetMaxNumberOfPlayersOutput {
   numberOfPlayers: bigint
 }
 
-export const RANDOM_LOTTERY_GET_MAX_NUMBER_OF_PLAYERS_OUTPUT_FIELDS: BinaryField[] = [
+const RANDOM_LOTTERY_GET_MAX_NUMBER_OF_PLAYERS_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'numberOfPlayers',
     type: 'uint64',
@@ -400,23 +425,34 @@ export function decodeRandomLotteryGetMaxNumberOfPlayersOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): RandomLotteryGetMaxNumberOfPlayersOutput {
-  return decodePayload(
-    data,
-    RANDOM_LOTTERY_GET_MAX_NUMBER_OF_PLAYERS_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as RandomLotteryGetMaxNumberOfPlayersOutput
+  return decodePayload(data, RANDOM_LOTTERY_GET_MAX_NUMBER_OF_PLAYERS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as RandomLotteryGetMaxNumberOfPlayersOutput
+}
+
+export async function randomLotteryGetMaxNumberOfPlayers(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<RandomLotteryGetMaxNumberOfPlayersOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: RANDOM_LOTTERY_CONTRACT_INDEX,
+    inputType: RANDOM_LOTTERY_GET_MAX_NUMBER_OF_PLAYERS_INPUT_TYPE,
+    inputSize: RANDOM_LOTTERY_GET_MAX_NUMBER_OF_PLAYERS_INPUT_SIZE,
+    inputFields: [],
+    outputFields: RANDOM_LOTTERY_GET_MAX_NUMBER_OF_PLAYERS_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
 }
 
 export const RANDOM_LOTTERY_GET_STATE_INPUT_TYPE = 8
 export const RANDOM_LOTTERY_GET_STATE_INPUT_SIZE = 0
-export const RANDOM_LOTTERY_GET_STATE_OUTPUT_SIZE = 1
 
 export interface RandomLotteryGetStateOutput {
   currentState: number
 }
 
-export const RANDOM_LOTTERY_GET_STATE_OUTPUT_FIELDS: BinaryField[] = [
+const RANDOM_LOTTERY_GET_STATE_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'currentState',
     type: 'uint8',
@@ -429,23 +465,34 @@ export function decodeRandomLotteryGetStateOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): RandomLotteryGetStateOutput {
-  return decodePayload(
-    data,
-    RANDOM_LOTTERY_GET_STATE_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as RandomLotteryGetStateOutput
+  return decodePayload(data, RANDOM_LOTTERY_GET_STATE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as RandomLotteryGetStateOutput
+}
+
+export async function randomLotteryGetState(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<RandomLotteryGetStateOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: RANDOM_LOTTERY_CONTRACT_INDEX,
+    inputType: RANDOM_LOTTERY_GET_STATE_INPUT_TYPE,
+    inputSize: RANDOM_LOTTERY_GET_STATE_INPUT_SIZE,
+    inputFields: [],
+    outputFields: RANDOM_LOTTERY_GET_STATE_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
 }
 
 export const RANDOM_LOTTERY_GET_BALANCE_INPUT_TYPE = 9
 export const RANDOM_LOTTERY_GET_BALANCE_INPUT_SIZE = 0
-export const RANDOM_LOTTERY_GET_BALANCE_OUTPUT_SIZE = 8
 
 export interface RandomLotteryGetBalanceOutput {
   balance: bigint
 }
 
-export const RANDOM_LOTTERY_GET_BALANCE_OUTPUT_FIELDS: BinaryField[] = [
+const RANDOM_LOTTERY_GET_BALANCE_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'balance',
     type: 'uint64',
@@ -458,23 +505,34 @@ export function decodeRandomLotteryGetBalanceOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): RandomLotteryGetBalanceOutput {
-  return decodePayload(
-    data,
-    RANDOM_LOTTERY_GET_BALANCE_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as RandomLotteryGetBalanceOutput
+  return decodePayload(data, RANDOM_LOTTERY_GET_BALANCE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as RandomLotteryGetBalanceOutput
+}
+
+export async function randomLotteryGetBalance(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<RandomLotteryGetBalanceOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: RANDOM_LOTTERY_CONTRACT_INDEX,
+    inputType: RANDOM_LOTTERY_GET_BALANCE_INPUT_TYPE,
+    inputSize: RANDOM_LOTTERY_GET_BALANCE_INPUT_SIZE,
+    inputFields: [],
+    outputFields: RANDOM_LOTTERY_GET_BALANCE_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
 }
 
 export const RANDOM_LOTTERY_GET_NEXT_EPOCH_DATA_INPUT_TYPE = 13
 export const RANDOM_LOTTERY_GET_NEXT_EPOCH_DATA_INPUT_SIZE = 0
-export const RANDOM_LOTTERY_GET_NEXT_EPOCH_DATA_OUTPUT_SIZE = 9
 
 export interface RandomLotteryGetNextEpochDataOutput {
   nextEpochData: RandomLotteryNextEpochDataStruct
 }
 
-export const RANDOM_LOTTERY_GET_NEXT_EPOCH_DATA_OUTPUT_FIELDS: BinaryField[] = [
+const RANDOM_LOTTERY_GET_NEXT_EPOCH_DATA_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'nextEpochData',
     type: 'struct',
@@ -488,23 +546,34 @@ export function decodeRandomLotteryGetNextEpochDataOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): RandomLotteryGetNextEpochDataOutput {
-  return decodePayload(
-    data,
-    RANDOM_LOTTERY_GET_NEXT_EPOCH_DATA_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as RandomLotteryGetNextEpochDataOutput
+  return decodePayload(data, RANDOM_LOTTERY_GET_NEXT_EPOCH_DATA_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as RandomLotteryGetNextEpochDataOutput
+}
+
+export async function randomLotteryGetNextEpochData(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<RandomLotteryGetNextEpochDataOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: RANDOM_LOTTERY_CONTRACT_INDEX,
+    inputType: RANDOM_LOTTERY_GET_NEXT_EPOCH_DATA_INPUT_TYPE,
+    inputSize: RANDOM_LOTTERY_GET_NEXT_EPOCH_DATA_INPUT_SIZE,
+    inputFields: [],
+    outputFields: RANDOM_LOTTERY_GET_NEXT_EPOCH_DATA_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
 }
 
 export const RANDOM_LOTTERY_GET_DRAW_HOUR_INPUT_TYPE = 14
 export const RANDOM_LOTTERY_GET_DRAW_HOUR_INPUT_SIZE = 0
-export const RANDOM_LOTTERY_GET_DRAW_HOUR_OUTPUT_SIZE = 1
 
 export interface RandomLotteryGetDrawHourOutput {
   drawHour: number
 }
 
-export const RANDOM_LOTTERY_GET_DRAW_HOUR_OUTPUT_FIELDS: BinaryField[] = [
+const RANDOM_LOTTERY_GET_DRAW_HOUR_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'drawHour',
     type: 'uint8',
@@ -517,23 +586,34 @@ export function decodeRandomLotteryGetDrawHourOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): RandomLotteryGetDrawHourOutput {
-  return decodePayload(
-    data,
-    RANDOM_LOTTERY_GET_DRAW_HOUR_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as RandomLotteryGetDrawHourOutput
+  return decodePayload(data, RANDOM_LOTTERY_GET_DRAW_HOUR_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as RandomLotteryGetDrawHourOutput
+}
+
+export async function randomLotteryGetDrawHour(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<RandomLotteryGetDrawHourOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: RANDOM_LOTTERY_CONTRACT_INDEX,
+    inputType: RANDOM_LOTTERY_GET_DRAW_HOUR_INPUT_TYPE,
+    inputSize: RANDOM_LOTTERY_GET_DRAW_HOUR_INPUT_SIZE,
+    inputFields: [],
+    outputFields: RANDOM_LOTTERY_GET_DRAW_HOUR_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
 }
 
 export const RANDOM_LOTTERY_GET_SCHEDULE_INPUT_TYPE = 15
 export const RANDOM_LOTTERY_GET_SCHEDULE_INPUT_SIZE = 0
-export const RANDOM_LOTTERY_GET_SCHEDULE_OUTPUT_SIZE = 1
 
 export interface RandomLotteryGetScheduleOutput {
   schedule: number
 }
 
-export const RANDOM_LOTTERY_GET_SCHEDULE_OUTPUT_FIELDS: BinaryField[] = [
+const RANDOM_LOTTERY_GET_SCHEDULE_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'schedule',
     type: 'uint8',
@@ -546,11 +626,42 @@ export function decodeRandomLotteryGetScheduleOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): RandomLotteryGetScheduleOutput {
-  return decodePayload(
-    data,
-    RANDOM_LOTTERY_GET_SCHEDULE_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as RandomLotteryGetScheduleOutput
+  return decodePayload(data, RANDOM_LOTTERY_GET_SCHEDULE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as RandomLotteryGetScheduleOutput
+}
+
+export async function randomLotteryGetSchedule(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<RandomLotteryGetScheduleOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: RANDOM_LOTTERY_CONTRACT_INDEX,
+    inputType: RANDOM_LOTTERY_GET_SCHEDULE_INPUT_TYPE,
+    inputSize: RANDOM_LOTTERY_GET_SCHEDULE_INPUT_SIZE,
+    inputFields: [],
+    outputFields: RANDOM_LOTTERY_GET_SCHEDULE_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
+}
+
+export const randomLottery = {
+  contractIndex: RANDOM_LOTTERY_CONTRACT_INDEX,
+  GetFees: randomLotteryGetFees,
+  GetPlayers: randomLotteryGetPlayers,
+  GetWinners: randomLotteryGetWinners,
+  GetTicketPrice: randomLotteryGetTicketPrice,
+  GetMaxNumberOfPlayers: randomLotteryGetMaxNumberOfPlayers,
+  GetState: randomLotteryGetState,
+  GetBalance: randomLotteryGetBalance,
+  GetNextEpochData: randomLotteryGetNextEpochData,
+  GetDrawHour: randomLotteryGetDrawHour,
+  GetSchedule: randomLotteryGetSchedule,
+  decodeBuyTicketOutput: decodeRandomLotteryBuyTicketOutput,
+  buildSetPriceInput: buildRandomLotterySetPriceInput,
+  decodeSetPriceOutput: decodeRandomLotterySetPriceOutput,
+  buildSetScheduleInput: buildRandomLotterySetScheduleInput,
+  decodeSetScheduleOutput: decodeRandomLotterySetScheduleOutput,
 }
 

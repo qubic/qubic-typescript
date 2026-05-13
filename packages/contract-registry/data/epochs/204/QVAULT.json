@@ -3,8 +3,26 @@
   "contractName": "QVAULT",
   "effectiveFromEpoch": 204,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T12:08:35.904Z",
+  "registeredAt": "2026-05-13T14:13:31.774Z",
   "structs": {
+    "Asset": {
+      "name": "Asset",
+      "byteLength": 40,
+      "fields": [
+        {
+          "name": "issuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        }
+      ]
+    },
     "GPInfo": {
       "name": "GPInfo",
       "fields": [
@@ -848,6 +866,12 @@
           "type": "uint32",
           "offset": 12,
           "byteLength": 4
+        },
+        {
+          "name": "yes",
+          "type": "uint8",
+          "offset": 16,
+          "byteLength": 1
         }
       ],
       "outputFields": [
@@ -858,7 +882,7 @@
           "byteLength": 4
         }
       ],
-      "inputSize": 16,
+      "inputSize": 17,
       "outputSize": 4
     },
     {
@@ -890,15 +914,22 @@
       "name": "TransferShareManagementRights",
       "inputFields": [
         {
+          "name": "asset",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 40,
+          "structRef": "Asset"
+        },
+        {
           "name": "numberOfShares",
           "type": "sint64",
-          "offset": 0,
+          "offset": 40,
           "byteLength": 8
         },
         {
           "name": "newManagingContractIndex",
           "type": "uint32",
-          "offset": 8,
+          "offset": 48,
           "byteLength": 4
         }
       ],
@@ -916,7 +947,7 @@
           "byteLength": 4
         }
       ],
-      "inputSize": 12,
+      "inputSize": 52,
       "outputSize": 12
     }
   ],
@@ -1433,10 +1464,16 @@
           "type": "sint32",
           "offset": 0,
           "byteLength": 4
+        },
+        {
+          "name": "status",
+          "type": "uint8",
+          "offset": 4,
+          "byteLength": 1
         }
       ],
       "inputSize": 32,
-      "outputSize": 4
+      "outputSize": 5
     },
     {
       "kind": "function",
@@ -1574,7 +1611,15 @@
       "kind": "function",
       "inputType": 29,
       "name": "getAmountOfShareQvaultHold",
-      "inputFields": [],
+      "inputFields": [
+        {
+          "name": "assetInfo",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 40,
+          "structRef": "Asset"
+        }
+      ],
       "outputFields": [
         {
           "name": "amount",
@@ -1583,7 +1628,7 @@
           "byteLength": 4
         }
       ],
-      "inputSize": 0,
+      "inputSize": 40,
       "outputSize": 4
     },
     {

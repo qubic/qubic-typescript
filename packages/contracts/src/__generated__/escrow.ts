@@ -1,6 +1,9 @@
 // @generated — do not edit by hand. Run `bun run generate` to regenerate.
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.ts/contract-registry'
 import { buildPayload, decodePayload } from '@qubic.ts/contract-registry'
+import type { QubicRpcError } from '@qubic.ts/rpc'
+import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import type { Result } from '../result.js'
 
 export const ESCROW_CONTRACT_INDEX = 27
 
@@ -8,6 +11,11 @@ export interface EscrowAssetWithAmountStruct {
   issuer: string
   name: bigint
   amount: bigint
+}
+
+export interface EscrowAssetStruct {
+  issuer: string
+  assetName: bigint
 }
 
 export interface EscrowDealStruct {
@@ -43,6 +51,24 @@ const STRUCTS: Record<string, NamedStruct> = {
       name: 'amount',
       type: 'uint64',
       offset: 40,
+      byteLength: 8,
+    },
+],
+},
+  Asset: {
+  name: 'Asset',
+  byteLength: 40,
+  fields: [
+    {
+      name: 'issuer',
+      type: 'id',
+      offset: 0,
+      byteLength: 32,
+    },
+    {
+      name: 'assetName',
+      type: 'uint64',
+      offset: 32,
       byteLength: 8,
     },
 ],
@@ -116,8 +142,6 @@ const STRUCTS: Record<string, NamedStruct> = {
 }
 
 export const ESCROW_CREATE_DEAL_INPUT_TYPE = 1
-export const ESCROW_CREATE_DEAL_INPUT_SIZE = 448
-export const ESCROW_CREATE_DEAL_OUTPUT_SIZE = 0
 
 export interface EscrowCreateDealInput {
   acceptorId: string
@@ -129,7 +153,7 @@ export interface EscrowCreateDealInput {
   requestedAssets: number[]
 }
 
-export const ESCROW_CREATE_DEAL_INPUT_FIELDS: BinaryField[] = [
+const ESCROW_CREATE_DEAL_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'acceptorId',
     type: 'id',
@@ -188,14 +212,12 @@ export function buildEscrowCreateDealInput(
 }
 
 export const ESCROW_ACCEPT_DEAL_INPUT_TYPE = 2
-export const ESCROW_ACCEPT_DEAL_INPUT_SIZE = 8
-export const ESCROW_ACCEPT_DEAL_OUTPUT_SIZE = 0
 
 export interface EscrowAcceptDealInput {
   index: bigint
 }
 
-export const ESCROW_ACCEPT_DEAL_INPUT_FIELDS: BinaryField[] = [
+const ESCROW_ACCEPT_DEAL_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'index',
     type: 'sint64',
@@ -212,14 +234,12 @@ export function buildEscrowAcceptDealInput(
 }
 
 export const ESCROW_MAKE_DEAL_PUBLIC_INPUT_TYPE = 3
-export const ESCROW_MAKE_DEAL_PUBLIC_INPUT_SIZE = 8
-export const ESCROW_MAKE_DEAL_PUBLIC_OUTPUT_SIZE = 0
 
 export interface EscrowMakeDealPublicInput {
   index: bigint
 }
 
-export const ESCROW_MAKE_DEAL_PUBLIC_INPUT_FIELDS: BinaryField[] = [
+const ESCROW_MAKE_DEAL_PUBLIC_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'index',
     type: 'sint64',
@@ -236,14 +256,12 @@ export function buildEscrowMakeDealPublicInput(
 }
 
 export const ESCROW_CANCEL_DEAL_INPUT_TYPE = 4
-export const ESCROW_CANCEL_DEAL_INPUT_SIZE = 8
-export const ESCROW_CANCEL_DEAL_OUTPUT_SIZE = 0
 
 export interface EscrowCancelDealInput {
   index: bigint
 }
 
-export const ESCROW_CANCEL_DEAL_INPUT_FIELDS: BinaryField[] = [
+const ESCROW_CANCEL_DEAL_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'index',
     type: 'sint64',
@@ -260,25 +278,31 @@ export function buildEscrowCancelDealInput(
 }
 
 export const ESCROW_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE = 5
-export const ESCROW_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_SIZE = 12
-export const ESCROW_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_SIZE = 8
 
 export interface EscrowTransferShareManagementRightsInput {
+  asset: EscrowAssetStruct
   amount: bigint
   newContractIndex: number
 }
 
-export const ESCROW_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
+const ESCROW_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'asset',
+    type: 'struct',
+    offset: 0,
+    byteLength: 40,
+    structRef: 'Asset',
+  },
   {
     name: 'amount',
     type: 'sint64',
-    offset: 0,
+    offset: 40,
     byteLength: 8,
   },
   {
     name: 'newContractIndex',
     type: 'uint32',
-    offset: 8,
+    offset: 48,
     byteLength: 4,
   },
 ]
@@ -294,7 +318,7 @@ export interface EscrowTransferShareManagementRightsOutput {
   transferredShares: bigint
 }
 
-export const ESCROW_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
+const ESCROW_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'transferredShares',
     type: 'sint64',
@@ -307,17 +331,11 @@ export function decodeEscrowTransferShareManagementRightsOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): EscrowTransferShareManagementRightsOutput {
-  return decodePayload(
-    data,
-    ESCROW_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as EscrowTransferShareManagementRightsOutput
+  return decodePayload(data, ESCROW_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as EscrowTransferShareManagementRightsOutput
 }
 
 export const ESCROW_GET_DEALS_INPUT_TYPE = 6
 export const ESCROW_GET_DEALS_INPUT_SIZE = 48
-export const ESCROW_GET_DEALS_OUTPUT_SIZE = 47656
 
 export interface EscrowGetDealsInput {
   owner: string
@@ -325,7 +343,7 @@ export interface EscrowGetDealsInput {
   publicDealsOffset: bigint
 }
 
-export const ESCROW_GET_DEALS_INPUT_FIELDS: BinaryField[] = [
+const ESCROW_GET_DEALS_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'owner',
     type: 'id',
@@ -362,7 +380,7 @@ export interface EscrowGetDealsOutput {
   publicDeals: number[]
 }
 
-export const ESCROW_GET_DEALS_OUTPUT_FIELDS: BinaryField[] = [
+const ESCROW_GET_DEALS_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'ownedDealsAmount',
     type: 'uint64',
@@ -414,28 +432,48 @@ export function decodeEscrowGetDealsOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): EscrowGetDealsOutput {
-  return decodePayload(
-    data,
-    ESCROW_GET_DEALS_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as EscrowGetDealsOutput
+  return decodePayload(data, ESCROW_GET_DEALS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as EscrowGetDealsOutput
+}
+
+export async function escrowGetDeals(
+  live: SmartContractCaller,
+  input: EscrowGetDealsInput,
+  options?: ContractCallOptions,
+): Promise<Result<EscrowGetDealsOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: ESCROW_CONTRACT_INDEX,
+    inputType: ESCROW_GET_DEALS_INPUT_TYPE,
+    inputSize: ESCROW_GET_DEALS_INPUT_SIZE,
+    inputFields: ESCROW_GET_DEALS_INPUT_FIELDS,
+    outputFields: ESCROW_GET_DEALS_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
 }
 
 export const ESCROW_GET_FREE_ASSET_AMOUNT_INPUT_TYPE = 7
-export const ESCROW_GET_FREE_ASSET_AMOUNT_INPUT_SIZE = 32
-export const ESCROW_GET_FREE_ASSET_AMOUNT_OUTPUT_SIZE = 8
+export const ESCROW_GET_FREE_ASSET_AMOUNT_INPUT_SIZE = 72
 
 export interface EscrowGetFreeAssetAmountInput {
   owner: string
+  asset: EscrowAssetStruct
 }
 
-export const ESCROW_GET_FREE_ASSET_AMOUNT_INPUT_FIELDS: BinaryField[] = [
+const ESCROW_GET_FREE_ASSET_AMOUNT_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'owner',
     type: 'id',
     offset: 0,
     byteLength: 32,
+  },
+  {
+    name: 'asset',
+    type: 'struct',
+    offset: 32,
+    byteLength: 40,
+    structRef: 'Asset',
   },
 ]
 
@@ -450,7 +488,7 @@ export interface EscrowGetFreeAssetAmountOutput {
   freeAmount: bigint
 }
 
-export const ESCROW_GET_FREE_ASSET_AMOUNT_OUTPUT_FIELDS: BinaryField[] = [
+const ESCROW_GET_FREE_ASSET_AMOUNT_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'freeAmount',
     type: 'sint64',
@@ -463,11 +501,36 @@ export function decodeEscrowGetFreeAssetAmountOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): EscrowGetFreeAssetAmountOutput {
-  return decodePayload(
-    data,
-    ESCROW_GET_FREE_ASSET_AMOUNT_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as EscrowGetFreeAssetAmountOutput
+  return decodePayload(data, ESCROW_GET_FREE_ASSET_AMOUNT_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as EscrowGetFreeAssetAmountOutput
+}
+
+export async function escrowGetFreeAssetAmount(
+  live: SmartContractCaller,
+  input: EscrowGetFreeAssetAmountInput,
+  options?: ContractCallOptions,
+): Promise<Result<EscrowGetFreeAssetAmountOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: ESCROW_CONTRACT_INDEX,
+    inputType: ESCROW_GET_FREE_ASSET_AMOUNT_INPUT_TYPE,
+    inputSize: ESCROW_GET_FREE_ASSET_AMOUNT_INPUT_SIZE,
+    inputFields: ESCROW_GET_FREE_ASSET_AMOUNT_INPUT_FIELDS,
+    outputFields: ESCROW_GET_FREE_ASSET_AMOUNT_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
+}
+
+export const escrow = {
+  contractIndex: ESCROW_CONTRACT_INDEX,
+  GetDeals: escrowGetDeals,
+  GetFreeAssetAmount: escrowGetFreeAssetAmount,
+  buildCreateDealInput: buildEscrowCreateDealInput,
+  buildAcceptDealInput: buildEscrowAcceptDealInput,
+  buildMakeDealPublicInput: buildEscrowMakeDealPublicInput,
+  buildCancelDealInput: buildEscrowCancelDealInput,
+  buildTransferShareManagementRightsInput: buildEscrowTransferShareManagementRightsInput,
+  decodeTransferShareManagementRightsOutput: decodeEscrowTransferShareManagementRightsOutput,
 }
 

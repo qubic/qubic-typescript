@@ -3,7 +3,7 @@
   "contractName": "QThirtyFour",
   "effectiveFromEpoch": 212,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T14:10:52.520Z",
+  "registeredAt": "2026-05-13T14:30:09.054Z",
   "structs": {
     "NextEpochData": {
       "name": "NextEpochData",
@@ -142,6 +142,33 @@
         }
       ],
       "byteLength": 4
+    },
+    "WinnerPlayerData": {
+      "name": "WinnerPlayerData",
+      "fields": [
+        {
+          "name": "player",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "randomValues",
+          "type": "array",
+          "offset": 32,
+          "byteLength": 4,
+          "arrayLength": 4,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        },
+        {
+          "name": "wonAmount",
+          "type": "uint32",
+          "offset": 36,
+          "byteLength": 4
+        }
+      ],
+      "byteLength": 40
     }
   },
   "procedures": [

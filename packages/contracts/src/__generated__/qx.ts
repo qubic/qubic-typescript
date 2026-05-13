@@ -1,14 +1,69 @@
 // @generated — do not edit by hand. Run `bun run generate` to regenerate.
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.ts/contract-registry'
 import { buildPayload, decodePayload } from '@qubic.ts/contract-registry'
+import type { QubicRpcError } from '@qubic.ts/rpc'
+import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import type { Result } from '../result.js'
 
 export const QX_CONTRACT_INDEX = 1
 
-const STRUCTS: Record<string, NamedStruct> = {}
+export interface QxAssetStruct {
+  issuer: string
+  assetName: bigint
+}
+
+export interface QxOrderStruct {
+  entity: string
+  price: bigint
+  numberOfShares: bigint
+}
+
+const STRUCTS: Record<string, NamedStruct> = {
+  Asset: {
+  name: 'Asset',
+  byteLength: 40,
+  fields: [
+    {
+      name: 'issuer',
+      type: 'id',
+      offset: 0,
+      byteLength: 32,
+    },
+    {
+      name: 'assetName',
+      type: 'uint64',
+      offset: 32,
+      byteLength: 8,
+    },
+],
+},
+  Order: {
+  name: 'Order',
+  byteLength: 48,
+  fields: [
+    {
+      name: 'entity',
+      type: 'id',
+      offset: 0,
+      byteLength: 32,
+    },
+    {
+      name: 'price',
+      type: 'sint64',
+      offset: 32,
+      byteLength: 8,
+    },
+    {
+      name: 'numberOfShares',
+      type: 'sint64',
+      offset: 40,
+      byteLength: 8,
+    },
+],
+},
+}
 
 export const QX_ISSUE_ASSET_INPUT_TYPE = 7
-export const QX_ISSUE_ASSET_INPUT_SIZE = 25
-export const QX_ISSUE_ASSET_OUTPUT_SIZE = 8
 
 export interface QxIssueAssetInput {
   assetName: bigint
@@ -17,7 +72,7 @@ export interface QxIssueAssetInput {
   numberOfDecimalPlaces: number
 }
 
-export const QX_ISSUE_ASSET_INPUT_FIELDS: BinaryField[] = [
+const QX_ISSUE_ASSET_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'assetName',
     type: 'uint64',
@@ -55,7 +110,7 @@ export interface QxIssueAssetOutput {
   issuedNumberOfShares: bigint
 }
 
-export const QX_ISSUE_ASSET_OUTPUT_FIELDS: BinaryField[] = [
+const QX_ISSUE_ASSET_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'issuedNumberOfShares',
     type: 'sint64',
@@ -68,17 +123,10 @@ export function decodeQxIssueAssetOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QxIssueAssetOutput {
-  return decodePayload(
-    data,
-    QX_ISSUE_ASSET_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QxIssueAssetOutput
+  return decodePayload(data, QX_ISSUE_ASSET_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QxIssueAssetOutput
 }
 
 export const QX_TRANSFER_SHARE_OWNERSHIP_AND_POSSESSION_INPUT_TYPE = 8
-export const QX_TRANSFER_SHARE_OWNERSHIP_AND_POSSESSION_INPUT_SIZE = 80
-export const QX_TRANSFER_SHARE_OWNERSHIP_AND_POSSESSION_OUTPUT_SIZE = 8
 
 export interface QxTransferShareOwnershipAndPossessionInput {
   issuer: string
@@ -87,7 +135,7 @@ export interface QxTransferShareOwnershipAndPossessionInput {
   numberOfShares: bigint
 }
 
-export const QX_TRANSFER_SHARE_OWNERSHIP_AND_POSSESSION_INPUT_FIELDS: BinaryField[] = [
+const QX_TRANSFER_SHARE_OWNERSHIP_AND_POSSESSION_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'issuer',
     type: 'id',
@@ -125,7 +173,7 @@ export interface QxTransferShareOwnershipAndPossessionOutput {
   transferredNumberOfShares: bigint
 }
 
-export const QX_TRANSFER_SHARE_OWNERSHIP_AND_POSSESSION_OUTPUT_FIELDS: BinaryField[] = [
+const QX_TRANSFER_SHARE_OWNERSHIP_AND_POSSESSION_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'transferredNumberOfShares',
     type: 'sint64',
@@ -138,17 +186,10 @@ export function decodeQxTransferShareOwnershipAndPossessionOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QxTransferShareOwnershipAndPossessionOutput {
-  return decodePayload(
-    data,
-    QX_TRANSFER_SHARE_OWNERSHIP_AND_POSSESSION_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QxTransferShareOwnershipAndPossessionOutput
+  return decodePayload(data, QX_TRANSFER_SHARE_OWNERSHIP_AND_POSSESSION_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QxTransferShareOwnershipAndPossessionOutput
 }
 
 export const QX_ADD_TO_ASK_ORDER_INPUT_TYPE = 9
-export const QX_ADD_TO_ASK_ORDER_INPUT_SIZE = 56
-export const QX_ADD_TO_ASK_ORDER_OUTPUT_SIZE = 8
 
 export interface QxAddToAskOrderInput {
   issuer: string
@@ -157,7 +198,7 @@ export interface QxAddToAskOrderInput {
   numberOfShares: bigint
 }
 
-export const QX_ADD_TO_ASK_ORDER_INPUT_FIELDS: BinaryField[] = [
+const QX_ADD_TO_ASK_ORDER_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'issuer',
     type: 'id',
@@ -195,7 +236,7 @@ export interface QxAddToAskOrderOutput {
   addedNumberOfShares: bigint
 }
 
-export const QX_ADD_TO_ASK_ORDER_OUTPUT_FIELDS: BinaryField[] = [
+const QX_ADD_TO_ASK_ORDER_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'addedNumberOfShares',
     type: 'sint64',
@@ -208,17 +249,10 @@ export function decodeQxAddToAskOrderOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QxAddToAskOrderOutput {
-  return decodePayload(
-    data,
-    QX_ADD_TO_ASK_ORDER_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QxAddToAskOrderOutput
+  return decodePayload(data, QX_ADD_TO_ASK_ORDER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QxAddToAskOrderOutput
 }
 
 export const QX_ADD_TO_BID_ORDER_INPUT_TYPE = 10
-export const QX_ADD_TO_BID_ORDER_INPUT_SIZE = 56
-export const QX_ADD_TO_BID_ORDER_OUTPUT_SIZE = 8
 
 export interface QxAddToBidOrderInput {
   issuer: string
@@ -227,7 +261,7 @@ export interface QxAddToBidOrderInput {
   numberOfShares: bigint
 }
 
-export const QX_ADD_TO_BID_ORDER_INPUT_FIELDS: BinaryField[] = [
+const QX_ADD_TO_BID_ORDER_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'issuer',
     type: 'id',
@@ -265,7 +299,7 @@ export interface QxAddToBidOrderOutput {
   addedNumberOfShares: bigint
 }
 
-export const QX_ADD_TO_BID_ORDER_OUTPUT_FIELDS: BinaryField[] = [
+const QX_ADD_TO_BID_ORDER_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'addedNumberOfShares',
     type: 'sint64',
@@ -278,17 +312,10 @@ export function decodeQxAddToBidOrderOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QxAddToBidOrderOutput {
-  return decodePayload(
-    data,
-    QX_ADD_TO_BID_ORDER_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QxAddToBidOrderOutput
+  return decodePayload(data, QX_ADD_TO_BID_ORDER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QxAddToBidOrderOutput
 }
 
 export const QX_REMOVE_FROM_ASK_ORDER_INPUT_TYPE = 11
-export const QX_REMOVE_FROM_ASK_ORDER_INPUT_SIZE = 56
-export const QX_REMOVE_FROM_ASK_ORDER_OUTPUT_SIZE = 8
 
 export interface QxRemoveFromAskOrderInput {
   issuer: string
@@ -297,7 +324,7 @@ export interface QxRemoveFromAskOrderInput {
   numberOfShares: bigint
 }
 
-export const QX_REMOVE_FROM_ASK_ORDER_INPUT_FIELDS: BinaryField[] = [
+const QX_REMOVE_FROM_ASK_ORDER_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'issuer',
     type: 'id',
@@ -335,7 +362,7 @@ export interface QxRemoveFromAskOrderOutput {
   removedNumberOfShares: bigint
 }
 
-export const QX_REMOVE_FROM_ASK_ORDER_OUTPUT_FIELDS: BinaryField[] = [
+const QX_REMOVE_FROM_ASK_ORDER_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'removedNumberOfShares',
     type: 'sint64',
@@ -348,17 +375,10 @@ export function decodeQxRemoveFromAskOrderOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QxRemoveFromAskOrderOutput {
-  return decodePayload(
-    data,
-    QX_REMOVE_FROM_ASK_ORDER_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QxRemoveFromAskOrderOutput
+  return decodePayload(data, QX_REMOVE_FROM_ASK_ORDER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QxRemoveFromAskOrderOutput
 }
 
 export const QX_REMOVE_FROM_BID_ORDER_INPUT_TYPE = 12
-export const QX_REMOVE_FROM_BID_ORDER_INPUT_SIZE = 56
-export const QX_REMOVE_FROM_BID_ORDER_OUTPUT_SIZE = 8
 
 export interface QxRemoveFromBidOrderInput {
   issuer: string
@@ -367,7 +387,7 @@ export interface QxRemoveFromBidOrderInput {
   numberOfShares: bigint
 }
 
-export const QX_REMOVE_FROM_BID_ORDER_INPUT_FIELDS: BinaryField[] = [
+const QX_REMOVE_FROM_BID_ORDER_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'issuer',
     type: 'id',
@@ -405,7 +425,7 @@ export interface QxRemoveFromBidOrderOutput {
   removedNumberOfShares: bigint
 }
 
-export const QX_REMOVE_FROM_BID_ORDER_OUTPUT_FIELDS: BinaryField[] = [
+const QX_REMOVE_FROM_BID_ORDER_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'removedNumberOfShares',
     type: 'sint64',
@@ -418,34 +438,35 @@ export function decodeQxRemoveFromBidOrderOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QxRemoveFromBidOrderOutput {
-  return decodePayload(
-    data,
-    QX_REMOVE_FROM_BID_ORDER_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QxRemoveFromBidOrderOutput
+  return decodePayload(data, QX_REMOVE_FROM_BID_ORDER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QxRemoveFromBidOrderOutput
 }
 
 export const QX_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE = 13
-export const QX_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_SIZE = 12
-export const QX_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_SIZE = 8
 
 export interface QxTransferShareManagementRightsInput {
+  asset: QxAssetStruct
   numberOfShares: bigint
   newManagingContractIndex: number
 }
 
-export const QX_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
+const QX_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'asset',
+    type: 'struct',
+    offset: 0,
+    byteLength: 40,
+    structRef: 'Asset',
+  },
   {
     name: 'numberOfShares',
     type: 'sint64',
-    offset: 0,
+    offset: 40,
     byteLength: 8,
   },
   {
     name: 'newManagingContractIndex',
     type: 'uint32',
-    offset: 8,
+    offset: 48,
     byteLength: 4,
   },
 ]
@@ -461,7 +482,7 @@ export interface QxTransferShareManagementRightsOutput {
   transferredNumberOfShares: bigint
 }
 
-export const QX_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
+const QX_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'transferredNumberOfShares',
     type: 'sint64',
@@ -474,17 +495,11 @@ export function decodeQxTransferShareManagementRightsOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QxTransferShareManagementRightsOutput {
-  return decodePayload(
-    data,
-    QX_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QxTransferShareManagementRightsOutput
+  return decodePayload(data, QX_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QxTransferShareManagementRightsOutput
 }
 
 export const QX_FEES_INPUT_TYPE = 2
 export const QX_FEES_INPUT_SIZE = 0
-export const QX_FEES_OUTPUT_SIZE = 12
 
 export interface QxFeesOutput {
   assetIssuanceFee: number
@@ -492,7 +507,7 @@ export interface QxFeesOutput {
   tradeFee: number
 }
 
-export const QX_FEES_OUTPUT_FIELDS: BinaryField[] = [
+const QX_FEES_OUTPUT_FIELDS: BinaryField[] = [
   {
     name: 'assetIssuanceFee',
     type: 'uint32',
@@ -517,17 +532,28 @@ export function decodeQxFeesOutput(
   data: Uint8Array,
   publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
 ): QxFeesOutput {
-  return decodePayload(
-    data,
-    QX_FEES_OUTPUT_FIELDS,
-    STRUCTS,
-    publicKeyToIdentity,
-  ) as unknown as QxFeesOutput
+  return decodePayload(data, QX_FEES_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QxFeesOutput
+}
+
+export async function qxFees(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<QxFeesOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QX_CONTRACT_INDEX,
+    inputType: QX_FEES_INPUT_TYPE,
+    inputSize: QX_FEES_INPUT_SIZE,
+    inputFields: [],
+    outputFields: QX_FEES_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
 }
 
 export const QX_ASSET_ASK_ORDERS_INPUT_TYPE = 3
 export const QX_ASSET_ASK_ORDERS_INPUT_SIZE = 48
-export const QX_ASSET_ASK_ORDERS_OUTPUT_SIZE = 0
 
 export interface QxAssetAskOrdersInput {
   issuer: string
@@ -535,7 +561,7 @@ export interface QxAssetAskOrdersInput {
   offset: bigint
 }
 
-export const QX_ASSET_ASK_ORDERS_INPUT_FIELDS: BinaryField[] = [
+const QX_ASSET_ASK_ORDERS_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'issuer',
     type: 'id',
@@ -563,9 +589,49 @@ export function buildQxAssetAskOrdersInput(
   return buildPayload(QX_ASSET_ASK_ORDERS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
 
+export interface QxAssetAskOrdersOutput {
+  orders: number[]
+}
+
+const QX_ASSET_ASK_ORDERS_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'orders',
+    type: 'array',
+    offset: 0,
+    byteLength: 12288,
+    arrayLength: 256,
+    arrayItemByteLength: 48,
+    arrayItemStructRef: 'Order',
+  },
+]
+
+export function decodeQxAssetAskOrdersOutput(
+  data: Uint8Array,
+  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+): QxAssetAskOrdersOutput {
+  return decodePayload(data, QX_ASSET_ASK_ORDERS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QxAssetAskOrdersOutput
+}
+
+export async function qxAssetAskOrders(
+  live: SmartContractCaller,
+  input: QxAssetAskOrdersInput,
+  options?: ContractCallOptions,
+): Promise<Result<QxAssetAskOrdersOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QX_CONTRACT_INDEX,
+    inputType: QX_ASSET_ASK_ORDERS_INPUT_TYPE,
+    inputSize: QX_ASSET_ASK_ORDERS_INPUT_SIZE,
+    inputFields: QX_ASSET_ASK_ORDERS_INPUT_FIELDS,
+    outputFields: QX_ASSET_ASK_ORDERS_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
+}
+
 export const QX_ASSET_BID_ORDERS_INPUT_TYPE = 4
 export const QX_ASSET_BID_ORDERS_INPUT_SIZE = 48
-export const QX_ASSET_BID_ORDERS_OUTPUT_SIZE = 0
 
 export interface QxAssetBidOrdersInput {
   issuer: string
@@ -573,7 +639,7 @@ export interface QxAssetBidOrdersInput {
   offset: bigint
 }
 
-export const QX_ASSET_BID_ORDERS_INPUT_FIELDS: BinaryField[] = [
+const QX_ASSET_BID_ORDERS_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'issuer',
     type: 'id',
@@ -601,16 +667,56 @@ export function buildQxAssetBidOrdersInput(
   return buildPayload(QX_ASSET_BID_ORDERS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
 
+export interface QxAssetBidOrdersOutput {
+  orders: number[]
+}
+
+const QX_ASSET_BID_ORDERS_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'orders',
+    type: 'array',
+    offset: 0,
+    byteLength: 12288,
+    arrayLength: 256,
+    arrayItemByteLength: 48,
+    arrayItemStructRef: 'Order',
+  },
+]
+
+export function decodeQxAssetBidOrdersOutput(
+  data: Uint8Array,
+  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+): QxAssetBidOrdersOutput {
+  return decodePayload(data, QX_ASSET_BID_ORDERS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QxAssetBidOrdersOutput
+}
+
+export async function qxAssetBidOrders(
+  live: SmartContractCaller,
+  input: QxAssetBidOrdersInput,
+  options?: ContractCallOptions,
+): Promise<Result<QxAssetBidOrdersOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QX_CONTRACT_INDEX,
+    inputType: QX_ASSET_BID_ORDERS_INPUT_TYPE,
+    inputSize: QX_ASSET_BID_ORDERS_INPUT_SIZE,
+    inputFields: QX_ASSET_BID_ORDERS_INPUT_FIELDS,
+    outputFields: QX_ASSET_BID_ORDERS_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
+}
+
 export const QX_ENTITY_ASK_ORDERS_INPUT_TYPE = 5
 export const QX_ENTITY_ASK_ORDERS_INPUT_SIZE = 40
-export const QX_ENTITY_ASK_ORDERS_OUTPUT_SIZE = 0
 
 export interface QxEntityAskOrdersInput {
   entity: string
   offset: bigint
 }
 
-export const QX_ENTITY_ASK_ORDERS_INPUT_FIELDS: BinaryField[] = [
+const QX_ENTITY_ASK_ORDERS_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'entity',
     type: 'id',
@@ -632,16 +738,56 @@ export function buildQxEntityAskOrdersInput(
   return buildPayload(QX_ENTITY_ASK_ORDERS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
 
+export interface QxEntityAskOrdersOutput {
+  orders: number[]
+}
+
+const QX_ENTITY_ASK_ORDERS_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'orders',
+    type: 'array',
+    offset: 0,
+    byteLength: 12288,
+    arrayLength: 256,
+    arrayItemByteLength: 48,
+    arrayItemStructRef: 'Order',
+  },
+]
+
+export function decodeQxEntityAskOrdersOutput(
+  data: Uint8Array,
+  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+): QxEntityAskOrdersOutput {
+  return decodePayload(data, QX_ENTITY_ASK_ORDERS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QxEntityAskOrdersOutput
+}
+
+export async function qxEntityAskOrders(
+  live: SmartContractCaller,
+  input: QxEntityAskOrdersInput,
+  options?: ContractCallOptions,
+): Promise<Result<QxEntityAskOrdersOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QX_CONTRACT_INDEX,
+    inputType: QX_ENTITY_ASK_ORDERS_INPUT_TYPE,
+    inputSize: QX_ENTITY_ASK_ORDERS_INPUT_SIZE,
+    inputFields: QX_ENTITY_ASK_ORDERS_INPUT_FIELDS,
+    outputFields: QX_ENTITY_ASK_ORDERS_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
+}
+
 export const QX_ENTITY_BID_ORDERS_INPUT_TYPE = 6
 export const QX_ENTITY_BID_ORDERS_INPUT_SIZE = 40
-export const QX_ENTITY_BID_ORDERS_OUTPUT_SIZE = 0
 
 export interface QxEntityBidOrdersInput {
   entity: string
   offset: bigint
 }
 
-export const QX_ENTITY_BID_ORDERS_INPUT_FIELDS: BinaryField[] = [
+const QX_ENTITY_BID_ORDERS_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'entity',
     type: 'id',
@@ -661,5 +807,69 @@ export function buildQxEntityBidOrdersInput(
   identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QX_ENTITY_BID_ORDERS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+}
+
+export interface QxEntityBidOrdersOutput {
+  orders: number[]
+}
+
+const QX_ENTITY_BID_ORDERS_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'orders',
+    type: 'array',
+    offset: 0,
+    byteLength: 12288,
+    arrayLength: 256,
+    arrayItemByteLength: 48,
+    arrayItemStructRef: 'Order',
+  },
+]
+
+export function decodeQxEntityBidOrdersOutput(
+  data: Uint8Array,
+  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+): QxEntityBidOrdersOutput {
+  return decodePayload(data, QX_ENTITY_BID_ORDERS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QxEntityBidOrdersOutput
+}
+
+export async function qxEntityBidOrders(
+  live: SmartContractCaller,
+  input: QxEntityBidOrdersInput,
+  options?: ContractCallOptions,
+): Promise<Result<QxEntityBidOrdersOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QX_CONTRACT_INDEX,
+    inputType: QX_ENTITY_BID_ORDERS_INPUT_TYPE,
+    inputSize: QX_ENTITY_BID_ORDERS_INPUT_SIZE,
+    inputFields: QX_ENTITY_BID_ORDERS_INPUT_FIELDS,
+    outputFields: QX_ENTITY_BID_ORDERS_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
+}
+
+export const qx = {
+  contractIndex: QX_CONTRACT_INDEX,
+  Fees: qxFees,
+  AssetAskOrders: qxAssetAskOrders,
+  AssetBidOrders: qxAssetBidOrders,
+  EntityAskOrders: qxEntityAskOrders,
+  EntityBidOrders: qxEntityBidOrders,
+  buildIssueAssetInput: buildQxIssueAssetInput,
+  decodeIssueAssetOutput: decodeQxIssueAssetOutput,
+  buildTransferShareOwnershipAndPossessionInput: buildQxTransferShareOwnershipAndPossessionInput,
+  decodeTransferShareOwnershipAndPossessionOutput: decodeQxTransferShareOwnershipAndPossessionOutput,
+  buildAddToAskOrderInput: buildQxAddToAskOrderInput,
+  decodeAddToAskOrderOutput: decodeQxAddToAskOrderOutput,
+  buildAddToBidOrderInput: buildQxAddToBidOrderInput,
+  decodeAddToBidOrderOutput: decodeQxAddToBidOrderOutput,
+  buildRemoveFromAskOrderInput: buildQxRemoveFromAskOrderInput,
+  decodeRemoveFromAskOrderOutput: decodeQxRemoveFromAskOrderOutput,
+  buildRemoveFromBidOrderInput: buildQxRemoveFromBidOrderInput,
+  decodeRemoveFromBidOrderOutput: decodeQxRemoveFromBidOrderOutput,
+  buildTransferShareManagementRightsInput: buildQxTransferShareManagementRightsInput,
+  decodeTransferShareManagementRightsOutput: decodeQxTransferShareManagementRightsOutput,
 }
 

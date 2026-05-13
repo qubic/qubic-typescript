@@ -9,6 +9,8 @@ import {
   decodeQearnGetStateOfRoundOutput,
   decodeQearnLockOutput,
   decodeQearnUnlockOutput,
+  qearn,
+  qearnGetStateOfRound,
 } from '../__generated__/qearn.js'
 import { callContractFunction } from '../call-contract.js'
 
@@ -74,6 +76,40 @@ describe('decodeQearnGetStateOfRoundOutput', () => {
     const data = new Uint8Array(4)
     new DataView(data.buffer).setUint32(0, 99, true)
     expect(decodeQearnGetStateOfRoundOutput(data).state).toBe(99)
+  })
+})
+
+describe('high-level function wrappers', () => {
+  function makeBase64(bytes: Uint8Array): string {
+    let s = ''
+    for (let i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i] ?? 0)
+    return btoa(s)
+  }
+
+  test('qearnGetStateOfRound returns decoded output', async () => {
+    const responseData = new Uint8Array(4)
+    new DataView(responseData.buffer).setUint32(0, 99, true)
+    const live = {
+      async querySmartContract() {
+        return { responseData: makeBase64(responseData) }
+      },
+    }
+    const result = await qearnGetStateOfRound(live, { epoch: 212 })
+    expect(result.ok).toBe(true)
+    if (result.ok) expect(result.value.state).toBe(99)
+  })
+
+  test('qearn.getStateOfRound is the same function via namespace', async () => {
+    expect(qearn.getStateOfRound).toBe(qearnGetStateOfRound)
+  })
+
+  test('qearn.contractIndex is 9', () => {
+    expect(qearn.contractIndex).toBe(9)
+  })
+
+  test('qearn.buildUnlockInput is the procedure builder', () => {
+    const payload = qearn.buildUnlockInput({ amount: 1000n, lockedEpoch: 212 })
+    expect(payload.byteLength).toBe(12)
   })
 })
 

@@ -6,3 +6,7 @@ export const MY_LAST_MATCH_CONTRACT_INDEX = 5
 
 const STRUCTS: Record<string, NamedStruct> = {}
 
+export const myLastMatch = {
+  contractIndex: MY_LAST_MATCH_CONTRACT_INDEX,
+}
+

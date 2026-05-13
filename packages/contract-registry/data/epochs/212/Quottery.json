@@ -3,7 +3,7 @@
   "contractName": "Quottery",
   "effectiveFromEpoch": 212,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T14:10:52.180Z",
+  "registeredAt": "2026-05-13T14:30:08.678Z",
   "structs": {
     "QtryEventInfo": {
       "name": "QtryEventInfo",
@@ -191,6 +191,36 @@
         }
       ],
       "byteLength": 80
+    },
+    "DateAndTime": {
+      "name": "DateAndTime",
+      "byteLength": 8,
+      "fields": [
+        {
+          "name": "value",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ]
+    },
+    "QtryOrder": {
+      "name": "QtryOrder",
+      "fields": [
+        {
+          "name": "entity",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "amount",
+          "type": "sint64",
+          "offset": 32,
+          "byteLength": 8
+        }
+      ],
+      "byteLength": 40
     }
   },
   "procedures": [

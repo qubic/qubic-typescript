@@ -3,8 +3,27 @@
   "contractName": "Qbay",
   "effectiveFromEpoch": 192,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T12:08:11.743Z",
-  "structs": {},
+  "registeredAt": "2026-05-13T14:13:06.194Z",
+  "structs": {
+    "Asset": {
+      "name": "Asset",
+      "byteLength": 40,
+      "fields": [
+        {
+          "name": "issuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        }
+      ]
+    }
+  },
   "procedures": [
     {
       "kind": "procedure",
@@ -72,6 +91,12 @@
           "arrayLength": 64,
           "arrayItemType": "uint8",
           "arrayItemByteLength": 1
+        },
+        {
+          "name": "typeOfCollection",
+          "type": "uint8",
+          "offset": 84,
+          "byteLength": 1
         }
       ],
       "outputFields": [
@@ -82,7 +107,7 @@
           "byteLength": 4
         }
       ],
-      "inputSize": 84,
+      "inputSize": 85,
       "outputSize": 4
     },
     {
@@ -110,6 +135,12 @@
           "arrayLength": 64,
           "arrayItemType": "uint8",
           "arrayItemByteLength": 1
+        },
+        {
+          "name": "typeOfMint",
+          "type": "uint8",
+          "offset": 72,
+          "byteLength": 1
         }
       ],
       "outputFields": [
@@ -120,7 +151,7 @@
           "byteLength": 4
         }
       ],
-      "inputSize": 72,
+      "inputSize": 73,
       "outputSize": 4
     },
     {
@@ -223,6 +254,12 @@
           "type": "uint32",
           "offset": 0,
           "byteLength": 4
+        },
+        {
+          "name": "methodOfPayment",
+          "type": "uint8",
+          "offset": 4,
+          "byteLength": 1
         }
       ],
       "outputFields": [
@@ -233,7 +270,7 @@
           "byteLength": 4
         }
       ],
-      "inputSize": 4,
+      "inputSize": 5,
       "outputSize": 4
     },
     {
@@ -333,6 +370,12 @@
           "type": "uint32",
           "offset": 8,
           "byteLength": 4
+        },
+        {
+          "name": "paymentMethod",
+          "type": "uint8",
+          "offset": 12,
+          "byteLength": 1
         }
       ],
       "outputFields": [
@@ -343,7 +386,7 @@
           "byteLength": 4
         }
       ],
-      "inputSize": 12,
+      "inputSize": 13,
       "outputSize": 4
     },
     {
@@ -456,6 +499,12 @@
           "type": "uint32",
           "offset": 40,
           "byteLength": 4
+        },
+        {
+          "name": "paymentMethodOfAuction",
+          "type": "uint8",
+          "offset": 44,
+          "byteLength": 1
         }
       ],
       "outputFields": [
@@ -466,7 +515,7 @@
           "byteLength": 4
         }
       ],
-      "inputSize": 44,
+      "inputSize": 45,
       "outputSize": 4
     },
     {
@@ -485,6 +534,12 @@
           "type": "uint32",
           "offset": 8,
           "byteLength": 4
+        },
+        {
+          "name": "paymentMethod",
+          "type": "uint8",
+          "offset": 12,
+          "byteLength": 1
         }
       ],
       "outputFields": [
@@ -495,7 +550,7 @@
           "byteLength": 4
         }
       ],
-      "inputSize": 12,
+      "inputSize": 13,
       "outputSize": 4
     },
     {
@@ -504,15 +559,22 @@
       "name": "TransferShareManagementRights",
       "inputFields": [
         {
+          "name": "asset",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 40,
+          "structRef": "Asset"
+        },
+        {
           "name": "numberOfShares",
           "type": "sint64",
-          "offset": 0,
+          "offset": 40,
           "byteLength": 8
         },
         {
           "name": "newManagingContractIndex",
           "type": "uint32",
-          "offset": 8,
+          "offset": 48,
           "byteLength": 4
         }
       ],
@@ -530,14 +592,21 @@
           "byteLength": 4
         }
       ],
-      "inputSize": 12,
+      "inputSize": 52,
       "outputSize": 12
     },
     {
       "kind": "procedure",
       "inputType": 17,
       "name": "changeStatusOfMarketPlace",
-      "inputFields": [],
+      "inputFields": [
+        {
+          "name": "status",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
       "outputFields": [
         {
           "name": "returnCode",
@@ -546,7 +615,7 @@
           "byteLength": 4
         }
       ],
-      "inputSize": 0,
+      "inputSize": 1,
       "outputSize": 4
     }
   ],
@@ -733,10 +802,40 @@
           "type": "uint8",
           "offset": 236,
           "byteLength": 1
+        },
+        {
+          "name": "statusOfSale",
+          "type": "uint8",
+          "offset": 237,
+          "byteLength": 1
+        },
+        {
+          "name": "statusOfAsk",
+          "type": "uint8",
+          "offset": 238,
+          "byteLength": 1
+        },
+        {
+          "name": "paymentMethodOfAsk",
+          "type": "uint8",
+          "offset": 239,
+          "byteLength": 1
+        },
+        {
+          "name": "statusOfExchange",
+          "type": "uint8",
+          "offset": 240,
+          "byteLength": 1
+        },
+        {
+          "name": "paymentMethodOfAuction",
+          "type": "uint8",
+          "offset": 241,
+          "byteLength": 1
         }
       ],
       "inputSize": 36,
-      "outputSize": 237
+      "outputSize": 242
     },
     {
       "kind": "function",
@@ -785,10 +884,16 @@
           "type": "uint32",
           "offset": 44,
           "byteLength": 4
+        },
+        {
+          "name": "statusOfMarketPlace",
+          "type": "uint8",
+          "offset": 48,
+          "byteLength": 1
         }
       ],
       "inputSize": 0,
-      "outputSize": 48
+      "outputSize": 49
     },
     {
       "kind": "function",
@@ -847,10 +952,16 @@
           "arrayLength": 64,
           "arrayItemType": "uint8",
           "arrayItemByteLength": 1
+        },
+        {
+          "name": "typeOfCollection",
+          "type": "uint8",
+          "offset": 88,
+          "byteLength": 1
         }
       ],
       "inputSize": 36,
-      "outputSize": 88
+      "outputSize": 89
     },
     {
       "kind": "function",
@@ -903,10 +1014,16 @@
           "arrayLength": 64,
           "arrayItemType": "uint8",
           "arrayItemByteLength": 1
+        },
+        {
+          "name": "typeOfCollection",
+          "type": "uint8",
+          "offset": 116,
+          "byteLength": 1
         }
       ],
       "inputSize": 4,
-      "outputSize": 116
+      "outputSize": 117
     },
     {
       "kind": "function",
@@ -1093,10 +1210,40 @@
           "type": "uint8",
           "offset": 236,
           "byteLength": 1
+        },
+        {
+          "name": "statusOfSale",
+          "type": "uint8",
+          "offset": 237,
+          "byteLength": 1
+        },
+        {
+          "name": "statusOfAsk",
+          "type": "uint8",
+          "offset": 238,
+          "byteLength": 1
+        },
+        {
+          "name": "paymentMethodOfAsk",
+          "type": "uint8",
+          "offset": 239,
+          "byteLength": 1
+        },
+        {
+          "name": "statusOfExchange",
+          "type": "uint8",
+          "offset": 240,
+          "byteLength": 1
+        },
+        {
+          "name": "paymentMethodOfAuction",
+          "type": "uint8",
+          "offset": 241,
+          "byteLength": 1
         }
       ],
       "inputSize": 4,
-      "outputSize": 237
+      "outputSize": 242
     },
     {
       "kind": "function",

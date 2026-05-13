@@ -3,7 +3,7 @@
   "contractName": "qRWA",
   "effectiveFromEpoch": 199,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T12:08:22.162Z",
+  "registeredAt": "2026-05-13T14:13:17.042Z",
   "structs": {
     "QRWAGovParams": {
       "name": "QRWAGovParams",
@@ -59,6 +59,24 @@
       ],
       "byteLength": 184
     },
+    "Asset": {
+      "name": "Asset",
+      "byteLength": 40,
+      "fields": [
+        {
+          "name": "issuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        }
+      ]
+    },
     "QRWAGovProposal": {
       "name": "QRWAGovProposal",
       "fields": [
@@ -106,37 +124,44 @@
           "byteLength": 32
         },
         {
-          "name": "amount",
-          "type": "uint64",
+          "name": "asset",
+          "type": "struct",
           "offset": 40,
-          "byteLength": 8
+          "byteLength": 40,
+          "structRef": "Asset"
         },
         {
-          "name": "destination",
-          "type": "id",
-          "offset": 48,
-          "byteLength": 32
-        },
-        {
-          "name": "status",
+          "name": "amount",
           "type": "uint64",
           "offset": 80,
           "byteLength": 8
         },
         {
+          "name": "destination",
+          "type": "id",
+          "offset": 88,
+          "byteLength": 32
+        },
+        {
+          "name": "status",
+          "type": "uint64",
+          "offset": 120,
+          "byteLength": 8
+        },
+        {
           "name": "votesYes",
           "type": "uint64",
-          "offset": 88,
+          "offset": 128,
           "byteLength": 8
         },
         {
           "name": "votesNo",
           "type": "uint64",
-          "offset": 96,
+          "offset": 136,
           "byteLength": 8
         }
       ],
-      "byteLength": 104
+      "byteLength": 144
     }
   },
   "procedures": [
@@ -199,15 +224,22 @@
           "byteLength": 32
         },
         {
+          "name": "asset",
+          "type": "struct",
+          "offset": 32,
+          "byteLength": 40,
+          "structRef": "Asset"
+        },
+        {
           "name": "amount",
           "type": "uint64",
-          "offset": 32,
+          "offset": 72,
           "byteLength": 8
         },
         {
           "name": "destination",
           "type": "id",
-          "offset": 40,
+          "offset": 80,
           "byteLength": 32
         }
       ],
@@ -225,7 +257,7 @@
           "byteLength": 8
         }
       ],
-      "inputSize": 72,
+      "inputSize": 112,
       "outputSize": 16
     },
     {
@@ -263,9 +295,16 @@
       "name": "DepositGeneralAsset",
       "inputFields": [
         {
+          "name": "asset",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 40,
+          "structRef": "Asset"
+        },
+        {
           "name": "amount",
           "type": "uint64",
-          "offset": 0,
+          "offset": 40,
           "byteLength": 8
         }
       ],
@@ -277,7 +316,7 @@
           "byteLength": 8
         }
       ],
-      "inputSize": 8,
+      "inputSize": 48,
       "outputSize": 8
     },
     {
@@ -286,9 +325,16 @@
       "name": "RevokeAssetManagementRights",
       "inputFields": [
         {
+          "name": "asset",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 40,
+          "structRef": "Asset"
+        },
+        {
           "name": "numberOfShares",
           "type": "sint64",
-          "offset": 0,
+          "offset": 40,
           "byteLength": 8
         }
       ],
@@ -306,7 +352,7 @@
           "byteLength": 8
         }
       ],
-      "inputSize": 8,
+      "inputSize": 48,
       "outputSize": 16
     }
   ],
@@ -375,18 +421,18 @@
           "name": "proposal",
           "type": "struct",
           "offset": 0,
-          "byteLength": 104,
+          "byteLength": 144,
           "structRef": "AssetReleaseProposal"
         },
         {
           "name": "status",
           "type": "uint64",
-          "offset": 104,
+          "offset": 144,
           "byteLength": 8
         }
       ],
       "inputSize": 8,
-      "outputSize": 112
+      "outputSize": 152
     },
     {
       "kind": "function",
@@ -514,7 +560,15 @@
       "kind": "function",
       "inputType": 15,
       "name": "GetGeneralAssetBalance",
-      "inputFields": [],
+      "inputFields": [
+        {
+          "name": "asset",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 40,
+          "structRef": "Asset"
+        }
+      ],
       "outputFields": [
         {
           "name": "balance",
@@ -529,7 +583,7 @@
           "byteLength": 8
         }
       ],
-      "inputSize": 0,
+      "inputSize": 40,
       "outputSize": 16
     },
     {
@@ -545,9 +599,18 @@
           "byteLength": 8
         },
         {
-          "name": "balances",
+          "name": "assets",
           "type": "array",
           "offset": 8,
+          "byteLength": 40960,
+          "arrayLength": 1024,
+          "arrayItemStructRef": "Asset",
+          "arrayItemByteLength": 40
+        },
+        {
+          "name": "balances",
+          "type": "array",
+          "offset": 40968,
           "byteLength": 8192,
           "arrayLength": 1024,
           "arrayItemType": "uint64",
@@ -555,7 +618,7 @@
         }
       ],
       "inputSize": 0,
-      "outputSize": 8200
+      "outputSize": 49160
     }
   ]
 }

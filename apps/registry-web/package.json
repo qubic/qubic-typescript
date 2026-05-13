@@ -1,0 +1,21 @@
+{
+  "name": "registry-web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun --hot src/server.ts",
+    "build": "bun build index.html --outdir dist",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "elysia": "latest",
+    "@elysiajs/cors": "latest",
+    "fflate": "latest",
+    "@qubic.ts/registry": "workspace:^",
+    "@qubic.ts/types": "workspace:^"
+  },
+  "devDependencies": {
+    "typescript": "*"
+  }
+}

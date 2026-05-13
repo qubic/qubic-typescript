@@ -1,0 +1,10 @@
+{
+  "contractIndex": 7,
+  "contractName": "SupplyWatcher",
+  "effectiveFromEpoch": 202,
+  "effectiveToEpoch": null,
+  "registeredAt": "2026-05-13T12:08:28.991Z",
+  "structs": {},
+  "procedures": [],
+  "functions": []
+}

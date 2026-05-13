@@ -1,0 +1,121 @@
+{
+  "contractIndex": 4,
+  "contractName": "QUtil",
+  "effectiveFromEpoch": 156,
+  "effectiveToEpoch": null,
+  "registeredAt": "2026-05-13T12:07:38.221Z",
+  "structs": {},
+  "procedures": [
+    {
+      "kind": "procedure",
+      "inputType": 1,
+      "name": "SendToManyV1",
+      "inputFields": [
+        {
+          "name": "dst0",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "amt0",
+          "type": "sint64",
+          "offset": 32,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 40,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 3,
+      "name": "SendToManyBenchmark",
+      "inputFields": [
+        {
+          "name": "dstCount",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "numTransfersEach",
+          "type": "sint64",
+          "offset": 8,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "dstCount",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 8,
+          "byteLength": 4
+        },
+        {
+          "name": "total",
+          "type": "sint64",
+          "offset": 12,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 16,
+      "outputSize": 20
+    },
+    {
+      "kind": "procedure",
+      "inputType": 4,
+      "name": "BurnQubic",
+      "inputFields": [
+        {
+          "name": "amount",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "amount",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 8
+    }
+  ],
+  "functions": [
+    {
+      "kind": "function",
+      "inputType": 2,
+      "name": "GetSendToManyV1Fee",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "fee",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 8
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "contractIndex": 15,
+  "contractName": "Qdraw",
+  "effectiveFromEpoch": 200,
+  "effectiveToEpoch": null,
+  "registeredAt": "2026-05-13T12:08:26.217Z",
+  "structs": {},
+  "procedures": [
+    {
+      "kind": "procedure",
+      "inputType": 1,
+      "name": "buyTicket",
+      "inputFields": [
+        {
+          "name": "ticketCount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [],
+      "inputSize": 8,
+      "outputSize": 0
+    }
+  ],
+  "functions": [
+    {
+      "kind": "function",
+      "inputType": 2,
+      "name": "getInfo",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "pot",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "participantCount",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "lastWinner",
+          "type": "id",
+          "offset": 16,
+          "byteLength": 32
+        },
+        {
+          "name": "lastWinAmount",
+          "type": "sint64",
+          "offset": 48,
+          "byteLength": 8
+        },
+        {
+          "name": "lastDrawHour",
+          "type": "uint8",
+          "offset": 56,
+          "byteLength": 1
+        },
+        {
+          "name": "currentHour",
+          "type": "uint8",
+          "offset": 57,
+          "byteLength": 1
+        },
+        {
+          "name": "nextDrawHour",
+          "type": "uint8",
+          "offset": 58,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 59
+    },
+    {
+      "kind": "function",
+      "inputType": 3,
+      "name": "getParticipants",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "participantCount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "uniqueParticipantCount",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "participants",
+          "type": "array",
+          "offset": 16,
+          "byteLength": 32768,
+          "arrayLength": 1024,
+          "arrayItemType": "id",
+          "arrayItemByteLength": 32
+        },
+        {
+          "name": "ticketCounts",
+          "type": "array",
+          "offset": 32784,
+          "byteLength": 8192,
+          "arrayLength": 1024,
+          "arrayItemType": "uint64",
+          "arrayItemByteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 40976
+    }
+  ]
+}

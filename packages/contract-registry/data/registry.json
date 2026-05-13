@@ -1,14 +1,57 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-05-13T11:39:53.578Z",
+  "updatedAt": "2026-05-13T14:10:52.598Z",
   "versions": [
     {
       "contractIndex": 1,
       "contractName": "Qx",
-      "effectiveFromEpoch": 66,
+      "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T11:39:53.134Z",
-      "structs": {},
+      "registeredAt": "2026-05-13T14:10:52.105Z",
+      "structs": {
+        "Asset": {
+          "name": "Asset",
+          "byteLength": 40,
+          "fields": [
+            {
+              "name": "issuer",
+              "type": "id",
+              "offset": 0,
+              "byteLength": 32
+            },
+            {
+              "name": "assetName",
+              "type": "uint64",
+              "offset": 32,
+              "byteLength": 8
+            }
+          ]
+        },
+        "Order": {
+          "name": "Order",
+          "fields": [
+            {
+              "name": "entity",
+              "type": "id",
+              "offset": 0,
+              "byteLength": 32
+            },
+            {
+              "name": "price",
+              "type": "sint64",
+              "offset": 32,
+              "byteLength": 8
+            },
+            {
+              "name": "numberOfShares",
+              "type": "sint64",
+              "offset": 40,
+              "byteLength": 8
+            }
+          ],
+          "byteLength": 48
+        }
+      },
       "procedures": [
         {
           "kind": "procedure",
@@ -262,15 +305,22 @@
           "name": "TransferShareManagementRights",
           "inputFields": [
             {
+              "name": "asset",
+              "type": "struct",
+              "offset": 0,
+              "byteLength": 40,
+              "structRef": "Asset"
+            },
+            {
               "name": "numberOfShares",
               "type": "sint64",
-              "offset": 0,
+              "offset": 40,
               "byteLength": 8
             },
             {
               "name": "newManagingContractIndex",
               "type": "uint32",
-              "offset": 8,
+              "offset": 48,
               "byteLength": 4
             }
           ],
@@ -282,7 +332,7 @@
               "byteLength": 8
             }
           ],
-          "inputSize": 12,
+          "inputSize": 52,
           "outputSize": 8
         }
       ],
@@ -339,9 +389,19 @@
               "byteLength": 8
             }
           ],
-          "outputFields": [],
+          "outputFields": [
+            {
+              "name": "orders",
+              "type": "array",
+              "offset": 0,
+              "byteLength": 12288,
+              "arrayLength": 256,
+              "arrayItemStructRef": "Order",
+              "arrayItemByteLength": 48
+            }
+          ],
           "inputSize": 48,
-          "outputSize": 0
+          "outputSize": 12288
         },
         {
           "kind": "function",
@@ -367,9 +427,19 @@
               "byteLength": 8
             }
           ],
-          "outputFields": [],
+          "outputFields": [
+            {
+              "name": "orders",
+              "type": "array",
+              "offset": 0,
+              "byteLength": 12288,
+              "arrayLength": 256,
+              "arrayItemStructRef": "Order",
+              "arrayItemByteLength": 48
+            }
+          ],
           "inputSize": 48,
-          "outputSize": 0
+          "outputSize": 12288
         },
         {
           "kind": "function",
@@ -389,9 +459,19 @@
               "byteLength": 8
             }
           ],
-          "outputFields": [],
+          "outputFields": [
+            {
+              "name": "orders",
+              "type": "array",
+              "offset": 0,
+              "byteLength": 12288,
+              "arrayLength": 256,
+              "arrayItemStructRef": "Order",
+              "arrayItemByteLength": 48
+            }
+          ],
           "inputSize": 40,
-          "outputSize": 0
+          "outputSize": 12288
         },
         {
           "kind": "function",
@@ -411,18 +491,28 @@
               "byteLength": 8
             }
           ],
-          "outputFields": [],
+          "outputFields": [
+            {
+              "name": "orders",
+              "type": "array",
+              "offset": 0,
+              "byteLength": 12288,
+              "arrayLength": 256,
+              "arrayItemStructRef": "Order",
+              "arrayItemByteLength": 48
+            }
+          ],
           "inputSize": 40,
-          "outputSize": 0
+          "outputSize": 12288
         }
       ]
     },
     {
       "contractIndex": 2,
       "contractName": "Quottery",
-      "effectiveFromEpoch": 72,
+      "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T11:39:53.189Z",
+      "registeredAt": "2026-05-13T14:10:52.180Z",
       "structs": {
         "QtryEventInfo": {
           "name": "QtryEventInfo",
@@ -434,9 +524,23 @@
               "byteLength": 8
             },
             {
+              "name": "openDate",
+              "type": "struct",
+              "offset": 8,
+              "byteLength": 8,
+              "structRef": "DateAndTime"
+            },
+            {
+              "name": "endDate",
+              "type": "struct",
+              "offset": 16,
+              "byteLength": 8,
+              "structRef": "DateAndTime"
+            },
+            {
               "name": "desc",
               "type": "array",
-              "offset": 8,
+              "offset": 24,
               "byteLength": 128,
               "arrayLength": 4,
               "arrayItemType": "id",
@@ -445,7 +549,7 @@
             {
               "name": "option0Desc",
               "type": "array",
-              "offset": 136,
+              "offset": 152,
               "byteLength": 64,
               "arrayLength": 2,
               "arrayItemType": "id",
@@ -454,14 +558,14 @@
             {
               "name": "option1Desc",
               "type": "array",
-              "offset": 200,
+              "offset": 216,
               "byteLength": 64,
               "arrayLength": 2,
               "arrayItemType": "id",
               "arrayItemByteLength": 32
             }
           ],
-          "byteLength": 264
+          "byteLength": 280
         },
         "QtryGOV": {
           "name": "QtryGOV",
@@ -505,6 +609,24 @@
           ],
           "byteLength": 72
         },
+        "Asset": {
+          "name": "Asset",
+          "byteLength": 40,
+          "fields": [
+            {
+              "name": "issuer",
+              "type": "id",
+              "offset": 0,
+              "byteLength": 32
+            },
+            {
+              "name": "assetName",
+              "type": "uint64",
+              "offset": 32,
+              "byteLength": 8
+            }
+          ]
+        },
         "DepositInfo": {
           "name": "DepositInfo",
           "fields": [
@@ -522,6 +644,62 @@
             }
           ],
           "byteLength": 40
+        },
+        "PositionInfo": {
+          "name": "PositionInfo",
+          "fields": [
+            {
+              "name": "eo",
+              "type": "uint64",
+              "offset": 0,
+              "byteLength": 8
+            },
+            {
+              "name": "amount",
+              "type": "sint64",
+              "offset": 8,
+              "byteLength": 8
+            }
+          ],
+          "byteLength": 16
+        },
+        "QtryOrderWithPrice": {
+          "name": "QtryOrderWithPrice",
+          "fields": [
+            {
+              "name": "qo",
+              "type": "struct",
+              "offset": 0,
+              "byteLength": 40,
+              "structRef": "QtryOrder"
+            },
+            {
+              "name": "price",
+              "type": "sint64",
+              "offset": 40,
+              "byteLength": 8
+            }
+          ],
+          "byteLength": 48
+        },
+        "ProposalInfo": {
+          "name": "ProposalInfo",
+          "fields": [
+            {
+              "name": "proposed",
+              "type": "struct",
+              "offset": 0,
+              "byteLength": 72,
+              "structRef": "QtryGOV"
+            },
+            {
+              "name": "totalVotes",
+              "type": "sint64",
+              "offset": 72,
+              "byteLength": 8
+            }
+          ],
+          "byteLength": 80
         }
       },
       "procedures": [
@@ -802,12 +980,12 @@
               "name": "qei",
               "type": "struct",
               "offset": 0,
-              "byteLength": 264,
+              "byteLength": 280,
               "structRef": "QtryEventInfo"
             }
           ],
           "outputFields": [],
-          "inputSize": 264,
+          "inputSize": 280,
           "outputSize": 0
         },
         {
@@ -941,15 +1119,22 @@
           "name": "TransferShareManagementRights",
           "inputFields": [
             {
+              "name": "asset",
+              "type": "struct",
+              "offset": 0,
+              "byteLength": 40,
+              "structRef": "Asset"
+            },
+            {
               "name": "numberOfShares",
               "type": "sint64",
-              "offset": 0,
+              "offset": 40,
               "byteLength": 8
             },
             {
               "name": "newManagingContractIndex",
               "type": "uint32",
-              "offset": 8,
+              "offset": 48,
               "byteLength": 4
             }
           ],
@@ -961,7 +1146,7 @@
               "byteLength": 8
             }
           ],
-          "inputSize": 12,
+          "inputSize": 52,
           "outputSize": 8
         }
       ],
@@ -1059,43 +1244,43 @@
               "name": "qei",
               "type": "struct",
               "offset": 0,
-              "byteLength": 264,
+              "byteLength": 280,
               "structRef": "QtryEventInfo"
             },
             {
               "name": "resultByGO",
               "type": "sint32",
-              "offset": 264,
+              "offset": 280,
               "byteLength": 4
             },
             {
               "name": "publishTickTime",
               "type": "uint32",
-              "offset": 268,
+              "offset": 284,
               "byteLength": 4
             },
             {
               "name": "disputerInfo",
               "type": "struct",
-              "offset": 272,
+              "offset": 288,
               "byteLength": 40,
               "structRef": "DepositInfo"
             },
             {
               "name": "computorsVote0",
               "type": "uint32",
-              "offset": 312,
+              "offset": 328,
               "byteLength": 4
             },
             {
               "name": "computorsVote1",
               "type": "uint32",
-              "offset": 316,
+              "offset": 332,
               "byteLength": 4
             }
           ],
           "inputSize": 8,
-          "outputSize": 320
+          "outputSize": 336
         },
         {
           "kind": "function",
@@ -1117,14 +1302,14 @@
               "name": "aqei",
               "type": "array",
               "offset": 0,
-              "byteLength": 16896,
+              "byteLength": 17920,
               "arrayLength": 64,
               "arrayItemStructRef": "QtryEventInfo",
-              "arrayItemByteLength": 264
+              "arrayItemByteLength": 280
             }
           ],
           "inputSize": 512,
-          "outputSize": 16896
+          "outputSize": 17920
         },
         {
           "kind": "function",
@@ -1163,10 +1348,19 @@
               "type": "sint64",
               "offset": 0,
               "byteLength": 8
+            },
+            {
+              "name": "p",
+              "type": "array",
+              "offset": 8,
+              "byteLength": 16384,
+              "arrayLength": 1024,
+              "arrayItemStructRef": "PositionInfo",
+              "arrayItemByteLength": 16
             }
           ],
           "inputSize": 32,
-          "outputSize": 8
+          "outputSize": 16392
         },
         {
           "kind": "function",
@@ -1198,9 +1392,19 @@
               "byteLength": 8
             }
           ],
-          "outputFields": [],
+          "outputFields": [
+            {
+              "name": "orders",
+              "type": "array",
+              "offset": 0,
+              "byteLength": 12288,
+              "arrayLength": 256,
+              "arrayItemStructRef": "QtryOrderWithPrice",
+              "arrayItemByteLength": 48
+            }
+          ],
           "inputSize": 32,
-          "outputSize": 0
+          "outputSize": 12288
         },
         {
           "kind": "function",
@@ -1209,14 +1413,23 @@
           "inputFields": [],
           "outputFields": [
             {
+              "name": "top",
+              "type": "array",
+              "offset": 0,
+              "byteLength": 320,
+              "arrayLength": 4,
+              "arrayItemStructRef": "ProposalInfo",
+              "arrayItemByteLength": 80
+            },
+            {
               "name": "uniqueCount",
               "type": "sint32",
-              "offset": 0,
+              "offset": 320,
               "byteLength": 4
             }
           ],
           "inputSize": 0,
-          "outputSize": 4
+          "outputSize": 324
         },
         {
           "kind": "function",
@@ -1246,9 +1459,9 @@
     {
       "contractIndex": 3,
       "contractName": "Random",
-      "effectiveFromEpoch": 88,
+      "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T11:39:53.198Z",
+      "registeredAt": "2026-05-13T14:10:52.193Z",
       "structs": {},
       "procedures": [
         {
@@ -1273,10 +1486,28 @@
     {
       "contractIndex": 4,
       "contractName": "QUtil",
-      "effectiveFromEpoch": 99,
+      "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T11:39:53.242Z",
+      "registeredAt": "2026-05-13T14:10:52.236Z",
       "structs": {
+        "Asset": {
+          "name": "Asset",
+          "byteLength": 40,
+          "fields": [
+            {
+              "name": "issuer",
+              "type": "id",
+              "offset": 0,
+              "byteLength": 32
+            },
+            {
+              "name": "assetName",
+              "type": "uint64",
+              "offset": 32,
+              "byteLength": 8
+            }
+          ]
+        },
         "Poll": {
           "name": "Poll",
           "fields": [
@@ -1311,13 +1542,22 @@
               "byteLength": 32
             },
             {
+              "name": "allowed_assets",
+              "type": "array",
+              "offset": 88,
+              "byteLength": 640,
+              "arrayLength": 16,
+              "arrayItemStructRef": "Asset",
+              "arrayItemByteLength": 40
+            },
+            {
               "name": "num_assets",
               "type": "uint64",
-              "offset": 88,
+              "offset": 728,
               "byteLength": 8
             }
           ],
-          "byteLength": 96
+          "byteLength": 736
         }
       },
       "procedures": [
@@ -1397,15 +1637,22 @@
           "name": "TransferSharesManagementRights",
           "inputFields": [
             {
+              "name": "asset",
+              "type": "struct",
+              "offset": 0,
+              "byteLength": 40,
+              "structRef": "Asset"
+            },
+            {
               "name": "numberOfShares",
               "type": "sint64",
-              "offset": 0,
+              "offset": 40,
               "byteLength": 8
             },
             {
               "name": "newManagingContractIndex",
               "type": "uint32",
-              "offset": 8,
+              "offset": 48,
               "byteLength": 4
             }
           ],
@@ -1417,7 +1664,7 @@
               "byteLength": 8
             }
           ],
-          "inputSize": 12,
+          "inputSize": 52,
           "outputSize": 8
         },
         {
@@ -1540,9 +1787,18 @@
               "arrayItemByteLength": 1
             },
             {
+              "name": "allowed_assets",
+              "type": "array",
+              "offset": 304,
+              "byteLength": 640,
+              "arrayLength": 16,
+              "arrayItemStructRef": "Asset",
+              "arrayItemByteLength": 40
+            },
+            {
               "name": "num_assets",
               "type": "uint64",
-              "offset": 304,
+              "offset": 944,
               "byteLength": 8
             }
           ],
@@ -1554,7 +1810,7 @@
               "byteLength": 8
             }
           ],
-          "inputSize": 312,
+          "inputSize": 952,
           "outputSize": 8
         },
         {
@@ -1587,9 +1843,16 @@
               "byteLength": 8
             }
           ],
-          "outputFields": [],
+          "outputFields": [
+            {
+              "name": "success",
+              "type": "uint8",
+              "offset": 0,
+              "byteLength": 1
+            }
+          ],
           "inputSize": 56,
-          "outputSize": 0
+          "outputSize": 1
         },
         {
           "kind": "procedure",
@@ -1603,15 +1866,30 @@
               "byteLength": 8
             }
           ],
-          "outputFields": [],
+          "outputFields": [
+            {
+              "name": "success",
+              "type": "uint8",
+              "offset": 0,
+              "byteLength": 1
+            }
+          ],
           "inputSize": 8,
-          "outputSize": 0
+          "outputSize": 1
         },
         {
           "kind": "procedure",
           "inputType": 20,
           "name": "DistributeQuToShareholders",
-          "inputFields": [],
+          "inputFields": [
+            {
+              "name": "asset",
+              "type": "struct",
+              "offset": 0,
+              "byteLength": 40,
+              "structRef": "Asset"
+            }
+          ],
           "outputFields": [
             {
               "name": "shareholders",
@@ -1638,7 +1916,7 @@
               "byteLength": 8
             }
           ],
-          "inputSize": 0,
+          "inputSize": 40,
           "outputSize": 32
         },
         {
@@ -1674,6 +1952,12 @@
               "type": "uint32",
               "offset": 0,
               "byteLength": 4
+            },
+            {
+              "name": "notifyPreviousValue",
+              "type": "uint8",
+              "offset": 4,
+              "byteLength": 1
             }
           ],
           "outputFields": [
@@ -1684,7 +1968,7 @@
               "byteLength": 4
             }
           ],
-          "inputSize": 4,
+          "inputSize": 5,
           "outputSize": 4
         },
         {
@@ -1699,9 +1983,16 @@
               "byteLength": 4
             }
           ],
-          "outputFields": [],
+          "outputFields": [
+            {
+              "name": "success",
+              "type": "uint8",
+              "offset": 0,
+              "byteLength": 1
+            }
+          ],
           "inputSize": 4,
-          "outputSize": 0
+          "outputSize": 1
         }
       ],
       "functions": [
@@ -1920,13 +2211,13 @@
               "name": "poll_info",
               "type": "struct",
               "offset": 8,
-              "byteLength": 96,
+              "byteLength": 736,
               "structRef": "Poll"
             },
             {
               "name": "poll_link",
               "type": "array",
-              "offset": 104,
+              "offset": 744,
               "byteLength": 256,
               "arrayLength": 256,
               "arrayItemType": "uint8",
@@ -1934,7 +2225,7 @@
             }
           ],
           "inputSize": 8,
-          "outputSize": 360
+          "outputSize": 1000
         },
         {
           "kind": "function",
@@ -1970,9 +2261,9 @@
     {
       "contractIndex": 5,
       "contractName": "MyLastMatch",
-      "effectiveFromEpoch": 112,
+      "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T11:39:53.243Z",
+      "registeredAt": "2026-05-13T14:10:52.237Z",
       "structs": {},
       "procedures": [],
       "functions": []
@@ -1980,10 +2271,122 @@
     {
       "contractIndex": 6,
       "contractName": "GeneralQuorumProposal",
-      "effectiveFromEpoch": 123,
+      "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T11:39:53.251Z",
-      "structs": {},
+      "registeredAt": "2026-05-13T14:10:52.245Z",
+      "structs": {
+        "ProposalDataT": {
+          "name": "ProposalDataT",
+          "byteLength": 328,
+          "fields": [
+            {
+              "name": "url",
+              "type": "bytes",
+              "offset": 0,
+              "byteLength": 256
+            },
+            {
+              "name": "epoch",
+              "type": "uint16",
+              "offset": 256,
+              "byteLength": 2
+            },
+            {
+              "name": "type",
+              "type": "uint16",
+              "offset": 258,
+              "byteLength": 2
+            },
+            {
+              "name": "tick",
+              "type": "uint32",
+              "offset": 260,
+              "byteLength": 4
+            },
+            {
+              "name": "data",
+              "type": "bytes",
+              "offset": 264,
+              "byteLength": 64
+            }
+          ]
+        },
+        "ProposalSingleVoteDataV1": {
+          "name": "ProposalSingleVoteDataV1",
+          "byteLength": 16,
+          "fields": [
+            {
+              "name": "proposalIndex",
+              "type": "uint16",
+              "offset": 0,
+              "byteLength": 2
+            },
+            {
+              "name": "proposalType",
+              "type": "uint16",
+              "offset": 2,
+              "byteLength": 2
+            },
+            {
+              "name": "proposalTick",
+              "type": "uint32",
+              "offset": 4,
+              "byteLength": 4
+            },
+            {
+              "name": "voteValue",
+              "type": "sint64",
+              "offset": 8,
+              "byteLength": 8
+            }
+          ]
+        },
+        "ProposalSummarizedVotingDataV1": {
+          "name": "ProposalSummarizedVotingDataV1",
+          "byteLength": 48,
+          "fields": [
+            {
+              "name": "proposalIndex",
+              "type": "uint16",
+              "offset": 0,
+              "byteLength": 2
+            },
+            {
+              "name": "optionCount",
+              "type": "uint16",
+              "offset": 2,
+              "byteLength": 2
+            },
+            {
+              "name": "proposalTick",
+              "type": "uint32",
+              "offset": 4,
+              "byteLength": 4
+            },
+            {
+              "name": "totalVotesAuthorized",
+              "type": "uint32",
+              "offset": 8,
+              "byteLength": 4
+            },
+            {
+              "name": "totalVotesCasted",
+              "type": "uint32",
+              "offset": 12,
+              "byteLength": 4
+            },
+            {
+              "name": "optionVoteCount",
+              "type": "array",
+              "offset": 16,
+              "byteLength": 32,
+              "arrayLength": 8,
+              "arrayItemType": "uint32",
+              "arrayItemByteLength": 4
+            }
+          ]
+        }
+      },
       "procedures": [
         {
           "kind": "procedure",
@@ -2033,9 +2436,15 @@
           "name": "GetProposalIndices",
           "inputFields": [
             {
+              "name": "activeProposals",
+              "type": "uint8",
+              "offset": 0,
+              "byteLength": 1
+            },
+            {
               "name": "prevProposalIndex",
               "type": "sint32",
-              "offset": 0,
+              "offset": 1,
               "byteLength": 4
             }
           ],
@@ -2056,7 +2465,7 @@
               "arrayItemByteLength": 2
             }
           ],
-          "inputSize": 4,
+          "inputSize": 5,
           "outputSize": 130
         },
         {
@@ -2073,14 +2482,27 @@
           ],
           "outputFields": [
             {
+              "name": "okay",
+              "type": "uint8",
+              "offset": 0,
+              "byteLength": 1
+            },
+            {
               "name": "proposerPubicKey",
               "type": "id",
-              "offset": 0,
+              "offset": 1,
               "byteLength": 32
+            },
+            {
+              "name": "proposal",
+              "type": "struct",
+              "offset": 33,
+              "byteLength": 328,
+              "structRef": "ProposalDataT"
             }
           ],
           "inputSize": 2,
-          "outputSize": 32
+          "outputSize": 361
         },
         {
           "kind": "function",
@@ -2100,9 +2522,23 @@
               "byteLength": 2
             }
           ],
-          "outputFields": [],
+          "outputFields": [
+            {
+              "name": "okay",
+              "type": "uint8",
+              "offset": 0,
+              "byteLength": 1
+            },
+            {
+              "name": "vote",
+              "type": "struct",
+              "offset": 1,
+              "byteLength": 16,
+              "structRef": "ProposalSingleVoteDataV1"
+            }
+          ],
           "inputSize": 34,
-          "outputSize": 0
+          "outputSize": 17
         },
         {
           "kind": "function",
@@ -2116,18 +2552,32 @@
               "byteLength": 2
             }
           ],
-          "outputFields": [],
+          "outputFields": [
+            {
+              "name": "okay",
+              "type": "uint8",
+              "offset": 0,
+              "byteLength": 1
+            },
+            {
+              "name": "results",
+              "type": "struct",
+              "offset": 1,
+              "byteLength": 48,
+              "structRef": "ProposalSummarizedVotingDataV1"
+            }
+          ],
           "inputSize": 2,
-          "outputSize": 0
+          "outputSize": 49
         }
       ]
     },
     {
       "contractIndex": 7,
       "contractName": "SupplyWatcher",
-      "effectiveFromEpoch": 123,
+      "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T11:39:53.253Z",
+      "registeredAt": "2026-05-13T14:10:52.248Z",
       "structs": {},
       "procedures": [],
       "functions": []
@@ -2135,10 +2585,46 @@
     {
       "contractIndex": 8,
       "contractName": "ComputorControlledFund",
-      "effectiveFromEpoch": 127,
+      "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T11:39:53.264Z",
+      "registeredAt": "2026-05-13T14:10:52.256Z",
       "structs": {
+        "ProposalDataT": {
+          "name": "ProposalDataT",
+          "byteLength": 304,
+          "fields": [
+            {
+              "name": "url",
+              "type": "bytes",
+              "offset": 0,
+              "byteLength": 256
+            },
+            {
+              "name": "epoch",
+              "type": "uint16",
+              "offset": 256,
+              "byteLength": 2
+            },
+            {
+              "name": "type",
+              "type": "uint16",
+              "offset": 258,
+              "byteLength": 2
+            },
+            {
+              "name": "tick",
+              "type": "uint32",
+              "offset": 260,
+              "byteLength": 4
+            },
+            {
+              "name": "data",
+              "type": "bytes",
+              "offset": 264,
+              "byteLength": 40
+            }
+          ]
+        },
         "SubscriptionData": {
           "name": "SubscriptionData",
           "fields": [
@@ -2240,6 +2726,81 @@
             }
           ],
           "byteLength": 337
+        },
+        "ProposalSingleVoteDataV1": {
+          "name": "ProposalSingleVoteDataV1",
+          "byteLength": 16,
+          "fields": [
+            {
+              "name": "proposalIndex",
+              "type": "uint16",
+              "offset": 0,
+              "byteLength": 2
+            },
+            {
+              "name": "proposalType",
+              "type": "uint16",
+              "offset": 2,
+              "byteLength": 2
+            },
+            {
+              "name": "proposalTick",
+              "type": "uint32",
+              "offset": 4,
+              "byteLength": 4
+            },
+            {
+              "name": "voteValue",
+              "type": "sint64",
+              "offset": 8,
+              "byteLength": 8
+            }
+          ]
+        },
+        "ProposalSummarizedVotingDataV1": {
+          "name": "ProposalSummarizedVotingDataV1",
+          "byteLength": 48,
+          "fields": [
+            {
+              "name": "proposalIndex",
+              "type": "uint16",
+              "offset": 0,
+              "byteLength": 2
+            },
+            {
+              "name": "optionCount",
+              "type": "uint16",
+              "offset": 2,
+              "byteLength": 2
+            },
+            {
+              "name": "proposalTick",
+              "type": "uint32",
+              "offset": 4,
+              "byteLength": 4
+            },
+            {
+              "name": "totalVotesAuthorized",
+              "type": "uint32",
+              "offset": 8,
+              "byteLength": 4
+            },
+            {
+              "name": "totalVotesCasted",
+              "type": "uint32",
+              "offset": 12,
+              "byteLength": 4
+            },
+            {
+              "name": "optionVoteCount",
+              "type": "array",
+              "offset": 16,
+              "byteLength": 32,
+              "arrayLength": 8,
+              "arrayItemType": "uint32",
+              "arrayItemByteLength": 4
+            }
+          ]
         }
       },
       "procedures": [
@@ -2258,27 +2819,40 @@
           "name": "SetProposal",
           "inputFields": [
             {
+              "name": "proposal",
+              "type": "struct",
+              "offset": 0,
+              "byteLength": 304,
+              "structRef": "ProposalDataT"
+            },
+            {
+              "name": "isSubscription",
+              "type": "uint8",
+              "offset": 304,
+              "byteLength": 1
+            },
+            {
               "name": "weeksPerPeriod",
               "type": "uint8",
-              "offset": 0,
+              "offset": 305,
               "byteLength": 1
             },
             {
               "name": "startEpoch",
               "type": "uint32",
-              "offset": 1,
+              "offset": 306,
               "byteLength": 4
             },
             {
               "name": "amountPerPeriod",
               "type": "uint64",
-              "offset": 5,
+              "offset": 310,
               "byteLength": 8
             },
             {
               "name": "numberOfPeriods",
               "type": "uint32",
-              "offset": 13,
+              "offset": 318,
               "byteLength": 4
             }
           ],
@@ -2290,7 +2864,7 @@
               "byteLength": 2
             }
           ],
-          "inputSize": 17,
+          "inputSize": 322,
           "outputSize": 2
         }
       ],
@@ -2335,9 +2909,15 @@
           "name": "GetProposalIndices",
           "inputFields": [
             {
+              "name": "activeProposals",
+              "type": "uint8",
+              "offset": 0,
+              "byteLength": 1
+            },
+            {
               "name": "prevProposalIndex",
               "type": "sint32",
-              "offset": 0,
+              "offset": 1,
               "byteLength": 4
             }
           ],
@@ -2358,7 +2938,7 @@
               "arrayItemByteLength": 2
             }
           ],
-          "inputSize": 4,
+          "inputSize": 5,
           "outputSize": 130
         },
         {
@@ -2381,28 +2961,53 @@
           ],
           "outputFields": [
             {
+              "name": "okay",
+              "type": "uint8",
+              "offset": 0,
+              "byteLength": 1
+            },
+            {
+              "name": "hasSubscriptionProposal",
+              "type": "uint8",
+              "offset": 1,
+              "byteLength": 1
+            },
+            {
+              "name": "hasActiveSubscription",
+              "type": "uint8",
+              "offset": 2,
+              "byteLength": 1
+            },
+            {
               "name": "proposerPublicKey",
               "type": "id",
-              "offset": 0,
+              "offset": 3,
               "byteLength": 32
+            },
+            {
+              "name": "proposal",
+              "type": "struct",
+              "offset": 35,
+              "byteLength": 304,
+              "structRef": "ProposalDataT"
             },
             {
               "name": "subscription",
               "type": "struct",
-              "offset": 32,
+              "offset": 339,
               "byteLength": 309,
               "structRef": "SubscriptionData"
             },
             {
               "name": "subscriptionProposal",
               "type": "struct",
-              "offset": 341,
+              "offset": 648,
               "byteLength": 337,
               "structRef": "SubscriptionProposalData"
             }
           ],
           "inputSize": 34,
-          "outputSize": 678
+          "outputSize": 985
         },
         {
           "kind": "function",
@@ -2422,9 +3027,23 @@
               "byteLength": 2
             }
           ],
-          "outputFields": [],
+          "outputFields": [
+            {
+              "name": "okay",
+              "type": "uint8",
+              "offset": 0,
+              "byteLength": 1
+            },
+            {
+              "name": "vote",
+              "type": "struct",
+              "offset": 1,
+              "byteLength": 16,
+              "structRef": "ProposalSingleVoteDataV1"
+            }
+          ],
           "inputSize": 34,
-          "outputSize": 0
+          "outputSize": 17
         },
         {
           "kind": "function",
@@ -2438,18 +3057,32 @@
               "byteLength": 2
             }
           ],
-          "outputFields": [],
+          "outputFields": [
+            {
+              "name": "okay",
+              "type": "uint8",
+              "offset": 0,
+              "byteLength": 1
+            },
+            {
+              "name": "results",
+              "type": "struct",
+              "offset": 1,
+              "byteLength": 48,
+              "structRef": "ProposalSummarizedVotingDataV1"
+            }
+          ],
           "inputSize": 2,
-          "outputSize": 0
+          "outputSize": 49
         }
       ]
     },
     {
       "contractIndex": 9,
       "contractName": "Qearn",
-      "effectiveFromEpoch": 137,
+      "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T11:39:53.281Z",
+      "registeredAt": "2026-05-13T14:10:52.277Z",
       "structs": {},
       "procedures": [
         {
@@ -2807,10 +3440,28 @@
     {
       "contractIndex": 10,
       "contractName": "QVAULT",
-      "effectiveFromEpoch": 138,
+      "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T11:39:53.327Z",
+      "registeredAt": "2026-05-13T14:10:52.318Z",
       "structs": {
+        "Asset": {
+          "name": "Asset",
+          "byteLength": 40,
+          "fields": [
+            {
+              "name": "issuer",
+              "type": "id",
+              "offset": 0,
+              "byteLength": 32
+            },
+            {
+              "name": "assetName",
+              "type": "uint64",
+              "offset": 32,
+              "byteLength": 8
+            }
+          ]
+        },
         "GPInfo": {
           "name": "GPInfo",
           "fields": [
@@ -3654,6 +4305,12 @@
               "type": "uint32",
               "offset": 12,
               "byteLength": 4
+            },
+            {
+              "name": "yes",
+              "type": "uint8",
+              "offset": 16,
+              "byteLength": 1
             }
           ],
           "outputFields": [
@@ -3664,7 +4321,7 @@
               "byteLength": 4
             }
           ],
-          "inputSize": 16,
+          "inputSize": 17,
           "outputSize": 4
         },
         {
@@ -3696,15 +4353,22 @@
           "name": "TransferShareManagementRights",
           "inputFields": [
             {
+              "name": "asset",
+              "type": "struct",
+              "offset": 0,
+              "byteLength": 40,
+              "structRef": "Asset"
+            },
+            {
               "name": "numberOfShares",
               "type": "sint64",
-              "offset": 0,
+              "offset": 40,
               "byteLength": 8
             },
             {
               "name": "newManagingContractIndex",
               "type": "uint32",
-              "offset": 8,
+              "offset": 48,
               "byteLength": 4
             }
           ],
@@ -3722,7 +4386,7 @@
               "byteLength": 4
             }
           ],
-          "inputSize": 12,
+          "inputSize": 52,
           "outputSize": 12
         }
       ],
@@ -4239,10 +4903,16 @@
               "type": "sint32",
               "offset": 0,
               "byteLength": 4
+            },
+            {
+              "name": "status",
+              "type": "uint8",
+              "offset": 4,
+              "byteLength": 1
             }
           ],
           "inputSize": 32,
-          "outputSize": 4
+          "outputSize": 5
         },
         {
           "kind": "function",
@@ -4380,7 +5050,15 @@
           "kind": "function",
           "inputType": 29,
           "name": "getAmountOfShareQvaultHold",
-          "inputFields": [],
+          "inputFields": [
+            {
+              "name": "assetInfo",
+              "type": "struct",
+              "offset": 0,
+              "byteLength": 40,
+              "structRef": "Asset"
+            }
+          ],
           "outputFields": [
             {
               "name": "amount",
@@ -4389,7 +5067,7 @@
               "byteLength": 4
             }
           ],
-          "inputSize": 0,
+          "inputSize": 40,
           "outputSize": 4
         },
         {
@@ -4501,21 +5179,46 @@
     {
       "contractIndex": 11,
       "contractName": "MsVault",
-      "effectiveFromEpoch": 149,
+      "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T11:39:53.347Z",
+      "registeredAt": "2026-05-13T14:10:52.348Z",
       "structs": {
+        "Asset": {
+          "name": "Asset",
+          "byteLength": 40,
+          "fields": [
+            {
+              "name": "issuer",
+              "type": "id",
+              "offset": 0,
+              "byteLength": 32
+            },
+            {
+              "name": "assetName",
+              "type": "uint64",
+              "offset": 32,
+              "byteLength": 8
+            }
+          ]
+        },
         "AssetBalance": {
           "name": "AssetBalance",
           "fields": [
             {
+              "name": "asset",
+              "type": "struct",
+              "offset": 0,
+              "byteLength": 40,
+              "structRef": "Asset"
+            },
+            {
               "name": "balance",
               "type": "uint64",
-              "offset": 0,
+              "offset": 40,
               "byteLength": 8
             }
           ],
-          "byteLength": 8
+          "byteLength": 48
         },
         "MsVaultFeeVote": {
           "name": "MsVaultFeeVote",
@@ -4745,9 +5448,16 @@
               "byteLength": 8
             },
             {
+              "name": "asset",
+              "type": "struct",
+              "offset": 8,
+              "byteLength": 40,
+              "structRef": "Asset"
+            },
+            {
               "name": "amount",
               "type": "uint64",
-              "offset": 8,
+              "offset": 48,
               "byteLength": 8
             }
           ],
@@ -4759,7 +5469,7 @@
               "byteLength": 8
             }
           ],
-          "inputSize": 16,
+          "inputSize": 56,
           "outputSize": 8
         },
         {
@@ -4768,9 +5478,16 @@
           "name": "revokeAssetManagementRights",
           "inputFields": [
             {
+              "name": "asset",
+              "type": "struct",
+              "offset": 0,
+              "byteLength": 40,
+              "structRef": "Asset"
+            },
+            {
               "name": "numberOfShares",
               "type": "sint64",
-              "offset": 0,
+              "offset": 40,
               "byteLength": 8
             }
           ],
@@ -4788,7 +5505,7 @@
               "byteLength": 8
             }
           ],
-          "inputSize": 8,
+          "inputSize": 48,
           "outputSize": 16
         },
         {
@@ -4803,15 +5520,22 @@
               "byteLength": 8
             },
             {
+              "name": "asset",
+              "type": "struct",
+              "offset": 8,
+              "byteLength": 40,
+              "structRef": "Asset"
+            },
+            {
               "name": "amount",
               "type": "uint64",
-              "offset": 8,
+              "offset": 48,
               "byteLength": 8
             },
             {
               "name": "destination",
               "type": "id",
-              "offset": 16,
+              "offset": 56,
               "byteLength": 32
             }
           ],
@@ -4823,7 +5547,7 @@
               "byteLength": 8
             }
           ],
-          "inputSize": 48,
+          "inputSize": 88,
           "outputSize": 8
         },
         {
@@ -4880,9 +5604,16 @@
           "name": "getManagedAssetBalance",
           "inputFields": [
             {
+              "name": "asset",
+              "type": "struct",
+              "offset": 0,
+              "byteLength": 40,
+              "structRef": "Asset"
+            },
+            {
               "name": "owner",
               "type": "id",
-              "offset": 0,
+              "offset": 40,
               "byteLength": 32
             }
           ],
@@ -4894,7 +5625,7 @@
               "byteLength": 8
             }
           ],
-          "inputSize": 32,
+          "inputSize": 72,
           "outputSize": 8
         },
         {
@@ -5336,9 +6067,18 @@
               "byteLength": 8
             },
             {
-              "name": "amounts",
+              "name": "assets",
               "type": "array",
               "offset": 8,
+              "byteLength": 640,
+              "arrayLength": 16,
+              "arrayItemStructRef": "Asset",
+              "arrayItemByteLength": 40
+            },
+            {
+              "name": "amounts",
+              "type": "array",
+              "offset": 648,
               "byteLength": 128,
               "arrayLength": 16,
               "arrayItemType": "uint64",
@@ -5347,7 +6087,7 @@
             {
               "name": "destinations",
               "type": "array",
-              "offset": 136,
+              "offset": 776,
               "byteLength": 512,
               "arrayLength": 16,
               "arrayItemType": "id",
@@ -5355,7 +6095,7 @@
             }
           ],
           "inputSize": 8,
-          "outputSize": 648
+          "outputSize": 1288
         },
         {
           "kind": "function",
@@ -5386,24 +6126,43 @@
               "name": "assetBalances",
               "type": "array",
               "offset": 16,
-              "byteLength": 64,
+              "byteLength": 384,
               "arrayLength": 8,
               "arrayItemStructRef": "AssetBalance",
-              "arrayItemByteLength": 8
+              "arrayItemByteLength": 48
             }
           ],
           "inputSize": 8,
-          "outputSize": 80
+          "outputSize": 400
         }
       ]
     },
     {
       "contractIndex": 12,
       "contractName": "Qbay",
-      "effectiveFromEpoch": 154,
+      "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T11:39:53.369Z",
-      "structs": {},
+      "registeredAt": "2026-05-13T14:10:52.384Z",
+      "structs": {
+        "Asset": {
+          "name": "Asset",
+          "byteLength": 40,
+          "fields": [
+            {
+              "name": "issuer",
+              "type": "id",
+              "offset": 0,
+              "byteLength": 32
+            },
+            {
+              "name": "assetName",
+              "type": "uint64",
+              "offset": 32,
+              "byteLength": 8
+            }
+          ]
+        }
+      },
       "procedures": [
         {
           "kind": "procedure",
@@ -5471,6 +6230,12 @@
               "arrayLength": 64,
               "arrayItemType": "uint8",
               "arrayItemByteLength": 1
+            },
+            {
+              "name": "typeOfCollection",
+              "type": "uint8",
+              "offset": 84,
+              "byteLength": 1
             }
           ],
           "outputFields": [
@@ -5481,7 +6246,7 @@
               "byteLength": 4
             }
           ],
-          "inputSize": 84,
+          "inputSize": 85,
           "outputSize": 4
         },
         {
@@ -5509,6 +6274,12 @@
               "arrayLength": 64,
               "arrayItemType": "uint8",
               "arrayItemByteLength": 1
+            },
+            {
+              "name": "typeOfMint",
+              "type": "uint8",
+              "offset": 72,
+              "byteLength": 1
             }
           ],
           "outputFields": [
@@ -5519,7 +6290,7 @@
               "byteLength": 4
             }
           ],
-          "inputSize": 72,
+          "inputSize": 73,
           "outputSize": 4
         },
         {
@@ -5622,6 +6393,12 @@
               "type": "uint32",
               "offset": 0,
               "byteLength": 4
+            },
+            {
+              "name": "methodOfPayment",
+              "type": "uint8",
+              "offset": 4,
+              "byteLength": 1
             }
           ],
           "outputFields": [
@@ -5632,7 +6409,7 @@
               "byteLength": 4
             }
           ],
-          "inputSize": 4,
+          "inputSize": 5,
           "outputSize": 4
         },
         {
@@ -5732,6 +6509,12 @@
               "type": "uint32",
               "offset": 8,
               "byteLength": 4
+            },
+            {
+              "name": "paymentMethod",
+              "type": "uint8",
+              "offset": 12,
+              "byteLength": 1
             }
           ],
           "outputFields": [
@@ -5742,7 +6525,7 @@
               "byteLength": 4
             }
           ],
-          "inputSize": 12,
+          "inputSize": 13,
           "outputSize": 4
         },
         {
@@ -5855,6 +6638,12 @@
               "type": "uint32",
               "offset": 40,
               "byteLength": 4
+            },
+            {
+              "name": "paymentMethodOfAuction",
+              "type": "uint8",
+              "offset": 44,
+              "byteLength": 1
             }
           ],
           "outputFields": [
@@ -5865,7 +6654,7 @@
               "byteLength": 4
             }
           ],
-          "inputSize": 44,
+          "inputSize": 45,
           "outputSize": 4
         },
         {
@@ -5884,6 +6673,12 @@
               "type": "uint32",
               "offset": 8,
               "byteLength": 4
+            },
+            {
+              "name": "paymentMethod",
+              "type": "uint8",
+              "offset": 12,
+              "byteLength": 1
             }
           ],
           "outputFields": [
@@ -5894,7 +6689,7 @@
               "byteLength": 4
             }
           ],
-          "inputSize": 12,
+          "inputSize": 13,
           "outputSize": 4
         },
         {
@@ -5903,15 +6698,22 @@
           "name": "TransferShareManagementRights",
           "inputFields": [
             {
+              "name": "asset",
+              "type": "struct",
+              "offset": 0,
+              "byteLength": 40,
+              "structRef": "Asset"
+            },
+            {
               "name": "numberOfShares",
               "type": "sint64",
-              "offset": 0,
+              "offset": 40,
               "byteLength": 8
             },
             {
               "name": "newManagingContractIndex",
               "type": "uint32",
-              "offset": 8,
+              "offset": 48,
               "byteLength": 4
             }
           ],
@@ -5929,14 +6731,21 @@
               "byteLength": 4
             }
           ],
-          "inputSize": 12,
+          "inputSize": 52,
           "outputSize": 12
         },
         {
           "kind": "procedure",
           "inputType": 17,
           "name": "changeStatusOfMarketPlace",
-          "inputFields": [],
+          "inputFields": [
+            {
+              "name": "status",
+              "type": "uint8",
+              "offset": 0,
+              "byteLength": 1
+            }
+          ],
           "outputFields": [
             {
               "name": "returnCode",
@@ -5945,7 +6754,7 @@
               "byteLength": 4
             }
           ],
-          "inputSize": 0,
+          "inputSize": 1,
           "outputSize": 4
         }
       ],
@@ -6132,10 +6941,40 @@
               "type": "uint8",
               "offset": 236,
               "byteLength": 1
+            },
+            {
+              "name": "statusOfSale",
+              "type": "uint8",
+              "offset": 237,
+              "byteLength": 1
+            },
+            {
+              "name": "statusOfAsk",
+              "type": "uint8",
+              "offset": 238,
+              "byteLength": 1
+            },
+            {
+              "name": "paymentMethodOfAsk",
+              "type": "uint8",
+              "offset": 239,
+              "byteLength": 1
+            },
+            {
+              "name": "statusOfExchange",
+              "type": "uint8",
+              "offset": 240,
+              "byteLength": 1
+            },
+            {
+              "name": "paymentMethodOfAuction",
+              "type": "uint8",
+              "offset": 241,
+              "byteLength": 1
             }
           ],
           "inputSize": 36,
-          "outputSize": 237
+          "outputSize": 242
         },
         {
           "kind": "function",
@@ -6184,10 +7023,16 @@
               "type": "uint32",
               "offset": 44,
               "byteLength": 4
+            },
+            {
+              "name": "statusOfMarketPlace",
+              "type": "uint8",
+              "offset": 48,
+              "byteLength": 1
             }
           ],
           "inputSize": 0,
-          "outputSize": 48
+          "outputSize": 49
         },
         {
           "kind": "function",
@@ -6246,10 +7091,16 @@
               "arrayLength": 64,
               "arrayItemType": "uint8",
               "arrayItemByteLength": 1
+            },
+            {
+              "name": "typeOfCollection",
+              "type": "uint8",
+              "offset": 88,
+              "byteLength": 1
             }
           ],
           "inputSize": 36,
-          "outputSize": 88
+          "outputSize": 89
         },
         {
           "kind": "function",
@@ -6302,10 +7153,16 @@
               "arrayLength": 64,
               "arrayItemType": "uint8",
               "arrayItemByteLength": 1
+            },
+            {
+              "name": "typeOfCollection",
+              "type": "uint8",
+              "offset": 116,
+              "byteLength": 1
             }
           ],
           "inputSize": 4,
-          "outputSize": 116
+          "outputSize": 117
         },
         {
           "kind": "function",
@@ -6492,10 +7349,40 @@
               "type": "uint8",
               "offset": 236,
               "byteLength": 1
+            },
+            {
+              "name": "statusOfSale",
+              "type": "uint8",
+              "offset": 237,
+              "byteLength": 1
+            },
+            {
+              "name": "statusOfAsk",
+              "type": "uint8",
+              "offset": 238,
+              "byteLength": 1
+            },
+            {
+              "name": "paymentMethodOfAsk",
+              "type": "uint8",
+              "offset": 239,
+              "byteLength": 1
+            },
+            {
+              "name": "statusOfExchange",
+              "type": "uint8",
+              "offset": 240,
+              "byteLength": 1
+            },
+            {
+              "name": "paymentMethodOfAuction",
+              "type": "uint8",
+              "offset": 241,
+              "byteLength": 1
             }
           ],
           "inputSize": 4,
-          "outputSize": 237
+          "outputSize": 242
         },
         {
           "kind": "function",
@@ -6578,10 +7465,29 @@
     {
       "contractIndex": 13,
       "contractName": "Qswap",
-      "effectiveFromEpoch": 171,
+      "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T11:39:53.385Z",
-      "structs": {},
+      "registeredAt": "2026-05-13T14:10:52.402Z",
+      "structs": {
+        "Asset": {
+          "name": "Asset",
+          "byteLength": 40,
+          "fields": [
+            {
+              "name": "issuer",
+              "type": "id",
+              "offset": 0,
+              "byteLength": 32
+            },
+            {
+              "name": "assetName",
+              "type": "uint64",
+              "offset": 32,
+              "byteLength": 8
+            }
+          ]
+        }
+      },
       "procedures": [
         {
           "kind": "procedure",
@@ -6987,15 +7893,22 @@
           "name": "TransferShareManagementRights",
           "inputFields": [
             {
+              "name": "asset",
+              "type": "struct",
+              "offset": 0,
+              "byteLength": 40,
+              "structRef": "Asset"
+            },
+            {
               "name": "numberOfShares",
               "type": "sint64",
-              "offset": 0,
+              "offset": 40,
               "byteLength": 8
             },
             {
               "name": "newManagingContractIndex",
               "type": "uint32",
-              "offset": 8,
+              "offset": 48,
               "byteLength": 4
             }
           ],
@@ -7007,7 +7920,7 @@
               "byteLength": 8
             }
           ],
-          "inputSize": 12,
+          "inputSize": 52,
           "outputSize": 8
         }
       ],
@@ -7319,10 +8232,28 @@
     {
       "contractIndex": 14,
       "contractName": "Nostromo",
-      "effectiveFromEpoch": 172,
+      "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T11:39:53.410Z",
+      "registeredAt": "2026-05-13T14:10:52.420Z",
       "structs": {
+        "Asset": {
+          "name": "Asset",
+          "byteLength": 40,
+          "fields": [
+            {
+              "name": "issuer",
+              "type": "id",
+              "offset": 0,
+              "byteLength": 32
+            },
+            {
+              "name": "assetName",
+              "type": "uint64",
+              "offset": 32,
+              "byteLength": 8
+            }
+          ]
+        },
         "projectInfo": {
           "name": "projectInfo",
           "fields": [
@@ -7367,9 +8298,15 @@
               "type": "uint32",
               "offset": 60,
               "byteLength": 4
+            },
+            {
+              "name": "isCreatedFundarasing",
+              "type": "uint8",
+              "offset": 64,
+              "byteLength": 1
             }
           ],
-          "byteLength": 64
+          "byteLength": 65
         },
         "fundaraisingInfo": {
           "name": "fundaraisingInfo",
@@ -7475,9 +8412,15 @@
               "type": "uint8",
               "offset": 74,
               "byteLength": 1
+            },
+            {
+              "name": "isCreatedToken",
+              "type": "uint8",
+              "offset": 75,
+              "byteLength": 1
             }
           ],
-          "byteLength": 75
+          "byteLength": 76
         },
         "investInfo": {
           "name": "investInfo",
@@ -7533,9 +8476,16 @@
           "inputType": 2,
           "name": "logoutFromTier",
           "inputFields": [],
-          "outputFields": [],
+          "outputFields": [
+            {
+              "name": "result",
+              "type": "uint8",
+              "offset": 0,
+              "byteLength": 1
+            }
+          ],
           "inputSize": 0,
-          "outputSize": 0
+          "outputSize": 1
         },
         {
           "kind": "procedure",
@@ -7624,10 +8574,16 @@
               "type": "uint32",
               "offset": 0,
               "byteLength": 4
+            },
+            {
+              "name": "decision",
+              "type": "uint8",
+              "offset": 4,
+              "byteLength": 1
             }
           ],
           "outputFields": [],
-          "inputSize": 4,
+          "inputSize": 5,
           "outputSize": 0
         },
         {
@@ -7965,15 +8921,22 @@
           "name": "TransferShareManagementRights",
           "inputFields": [
             {
+              "name": "asset",
+              "type": "struct",
+              "offset": 0,
+              "byteLength": 40,
+              "structRef": "Asset"
+            },
+            {
               "name": "numberOfShares",
               "type": "sint64",
-              "offset": 0,
+              "offset": 40,
               "byteLength": 8
             },
             {
               "name": "newManagingContractIndex",
               "type": "uint32",
-              "offset": 8,
+              "offset": 48,
               "byteLength": 4
             }
           ],
@@ -7985,7 +8948,7 @@
               "byteLength": 8
             }
           ],
-          "inputSize": 12,
+          "inputSize": 52,
           "outputSize": 8
         }
       ],
@@ -8079,9 +9042,16 @@
               "byteLength": 8
             }
           ],
-          "outputFields": [],
+          "outputFields": [
+            {
+              "name": "result",
+              "type": "uint8",
+              "offset": 0,
+              "byteLength": 1
+            }
+          ],
           "inputSize": 8,
-          "outputSize": 0
+          "outputSize": 1
         },
         {
           "kind": "function",
@@ -8123,12 +9093,12 @@
               "name": "project",
               "type": "struct",
               "offset": 0,
-              "byteLength": 64,
+              "byteLength": 65,
               "structRef": "projectInfo"
             }
           ],
           "inputSize": 4,
-          "outputSize": 64
+          "outputSize": 65
         },
         {
           "kind": "function",
@@ -8147,12 +9117,12 @@
               "name": "fundarasing",
               "type": "struct",
               "offset": 0,
-              "byteLength": 75,
+              "byteLength": 76,
               "structRef": "fundaraisingInfo"
             }
           ],
           "inputSize": 4,
-          "outputSize": 75
+          "outputSize": 76
         },
         {
           "kind": "function",
@@ -8240,9 +9210,9 @@
     {
       "contractIndex": 15,
       "contractName": "Qdraw",
-      "effectiveFromEpoch": 179,
+      "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T11:39:53.412Z",
+      "registeredAt": "2026-05-13T14:10:52.422Z",
       "structs": {},
       "procedures": [
         {
@@ -8360,9 +9330,9 @@
     {
       "contractIndex": 16,
       "contractName": "RandomLottery",
-      "effectiveFromEpoch": 182,
+      "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T11:39:53.419Z",
+      "registeredAt": "2026-05-13T14:10:52.429Z",
       "structs": {
         "WinnerInfo": {
           "name": "WinnerInfo",
@@ -8704,9 +9674,9 @@
     {
       "contractIndex": 17,
       "contractName": "QBond",
-      "effectiveFromEpoch": 182,
+      "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T11:39:53.433Z",
+      "registeredAt": "2026-05-13T14:10:52.444Z",
       "structs": {
         "Order": {
           "name": "Order",
@@ -8731,6 +9701,60 @@
             }
           ],
           "byteLength": 48
+        },
+        "TableEntry": {
+          "name": "TableEntry",
+          "fields": [
+            {
+              "name": "epoch",
+              "type": "sint64",
+              "offset": 0,
+              "byteLength": 8
+            },
+            {
+              "name": "totalStakedQBond",
+              "type": "sint64",
+              "offset": 8,
+              "byteLength": 8
+            },
+            {
+              "name": "totalStakedQEarn",
+              "type": "sint64",
+              "offset": 16,
+              "byteLength": 8
+            },
+            {
+              "name": "apy",
+              "type": "uint64",
+              "offset": 24,
+              "byteLength": 8
+            }
+          ],
+          "byteLength": 32
+        },
+        "MBondEntity": {
+          "name": "MBondEntity",
+          "fields": [
+            {
+              "name": "epoch",
+              "type": "sint64",
+              "offset": 0,
+              "byteLength": 8
+            },
+            {
+              "name": "amount",
+              "type": "sint64",
+              "offset": 8,
+              "byteLength": 8
+            },
+            {
+              "name": "apy",
+              "type": "uint64",
+              "offset": 16,
+              "byteLength": 8
+            }
+          ],
+          "byteLength": 24
         }
       },
       "procedures": [
@@ -8958,11 +9982,24 @@
               "type": "id",
               "offset": 0,
               "byteLength": 32
+            },
+            {
+              "name": "operation",
+              "type": "uint8",
+              "offset": 32,
+              "byteLength": 1
             }
           ],
-          "outputFields": [],
-          "inputSize": 32,
-          "outputSize": 0
+          "outputFields": [
+            {
+              "name": "result",
+              "type": "uint8",
+              "offset": 0,
+              "byteLength": 1
+            }
+          ],
+          "inputSize": 33,
+          "outputSize": 1
         }
       ],
       "functions": [
@@ -9150,9 +10187,19 @@
           "inputType": 15,
           "name": "GetMBondsTable",
           "inputFields": [],
-          "outputFields": [],
+          "outputFields": [
+            {
+              "name": "info",
+              "type": "array",
+              "offset": 0,
+              "byteLength": 16384,
+              "arrayLength": 512,
+              "arrayItemStructRef": "TableEntry",
+              "arrayItemByteLength": 32
+            }
+          ],
           "inputSize": 0,
-          "outputSize": 0
+          "outputSize": 16384
         },
         {
           "kind": "function",
@@ -9172,10 +10219,19 @@
               "type": "sint64",
               "offset": 0,
               "byteLength": 8
+            },
+            {
+              "name": "mbonds",
+              "type": "array",
+              "offset": 8,
+              "byteLength": 6144,
+              "arrayLength": 256,
+              "arrayItemStructRef": "MBondEntity",
+              "arrayItemByteLength": 24
             }
           ],
           "inputSize": 32,
-          "outputSize": 8
+          "outputSize": 6152
         },
         {
           "kind": "function",
@@ -9201,10 +10257,29 @@
     {
       "contractIndex": 18,
       "contractName": "QIP",
-      "effectiveFromEpoch": 189,
+      "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T11:39:53.439Z",
-      "structs": {},
+      "registeredAt": "2026-05-13T14:10:52.450Z",
+      "structs": {
+        "Asset": {
+          "name": "Asset",
+          "byteLength": 40,
+          "fields": [
+            {
+              "name": "issuer",
+              "type": "id",
+              "offset": 0,
+              "byteLength": 32
+            },
+            {
+              "name": "assetName",
+              "type": "uint64",
+              "offset": 32,
+              "byteLength": 8
+            }
+          ]
+        }
+      },
       "procedures": [
         {
           "kind": "procedure",
@@ -9324,15 +10399,22 @@
           "name": "TransferShareManagementRights",
           "inputFields": [
             {
+              "name": "asset",
+              "type": "struct",
+              "offset": 0,
+              "byteLength": 40,
+              "structRef": "Asset"
+            },
+            {
               "name": "numberOfShares",
               "type": "sint64",
-              "offset": 0,
+              "offset": 40,
               "byteLength": 8
             },
             {
               "name": "newManagingContractIndex",
               "type": "uint32",
-              "offset": 8,
+              "offset": 48,
               "byteLength": 4
             }
           ],
@@ -9344,7 +10426,7 @@
               "byteLength": 8
             }
           ],
-          "inputSize": 12,
+          "inputSize": 52,
           "outputSize": 8
         }
       ],
@@ -9461,16 +10543,23 @@
     {
       "contractIndex": 19,
       "contractName": "QRaffle",
-      "effectiveFromEpoch": 192,
+      "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T11:39:53.459Z",
+      "registeredAt": "2026-05-13T14:10:52.466Z",
       "structs": {},
       "procedures": [
         {
           "kind": "procedure",
           "inputType": 1,
           "name": "registerInSystem",
-          "inputFields": [],
+          "inputFields": [
+            {
+              "name": "useQXMR",
+              "type": "uint8",
+              "offset": 0,
+              "byteLength": 1
+            }
+          ],
           "outputFields": [
             {
               "name": "returnCode",
@@ -9479,7 +10568,7 @@
               "byteLength": 4
             }
           ],
-          "inputSize": 0,
+          "inputSize": 1,
           "outputSize": 4
         },
         {
@@ -9566,6 +10655,12 @@
               "type": "uint32",
               "offset": 0,
               "byteLength": 4
+            },
+            {
+              "name": "yes",
+              "type": "uint8",
+              "offset": 4,
+              "byteLength": 1
             }
           ],
           "outputFields": [
@@ -9576,7 +10671,7 @@
               "byteLength": 4
             }
           ],
-          "inputSize": 4,
+          "inputSize": 5,
           "outputSize": 4
         },
         {
@@ -10117,9 +11212,9 @@
     {
       "contractIndex": 20,
       "contractName": "qRWA",
-      "effectiveFromEpoch": 197,
+      "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T11:39:53.493Z",
+      "registeredAt": "2026-05-13T14:10:52.497Z",
       "structs": {
         "QRWAGovParams": {
           "name": "QRWAGovParams",
@@ -10174,6 +11269,24 @@
             }
           ],
           "byteLength": 184
+        },
+        "Asset": {
+          "name": "Asset",
+          "byteLength": 40,
+          "fields": [
+            {
+              "name": "issuer",
+              "type": "id",
+              "offset": 0,
+              "byteLength": 32
+            },
+            {
+              "name": "assetName",
+              "type": "uint64",
+              "offset": 32,
+              "byteLength": 8
+            }
+          ]
         },
         "QRWAGovProposal": {
           "name": "QRWAGovProposal",
@@ -10309,9 +11422,16 @@
           "name": "DepositGeneralAsset",
           "inputFields": [
             {
+              "name": "asset",
+              "type": "struct",
+              "offset": 0,
+              "byteLength": 40,
+              "structRef": "Asset"
+            },
+            {
               "name": "amount",
               "type": "uint64",
-              "offset": 0,
+              "offset": 40,
               "byteLength": 8
             }
           ],
@@ -10323,7 +11443,7 @@
               "byteLength": 8
             }
           ],
-          "inputSize": 8,
+          "inputSize": 48,
           "outputSize": 8
         },
         {
@@ -10332,9 +11452,16 @@
           "name": "RevokeAssetManagementRights",
           "inputFields": [
             {
+              "name": "asset",
+              "type": "struct",
+              "offset": 0,
+              "byteLength": 40,
+              "structRef": "Asset"
+            },
+            {
               "name": "numberOfShares",
               "type": "sint64",
-              "offset": 0,
+              "offset": 40,
               "byteLength": 8
             }
           ],
@@ -10352,7 +11479,7 @@
               "byteLength": 8
             }
           ],
-          "inputSize": 8,
+          "inputSize": 48,
           "outputSize": 16
         },
         {
@@ -10657,7 +11784,15 @@
           "kind": "function",
           "inputType": 14,
           "name": "GetGeneralAssetBalance",
-          "inputFields": [],
+          "inputFields": [
+            {
+              "name": "asset",
+              "type": "struct",
+              "offset": 0,
+              "byteLength": 40,
+              "structRef": "Asset"
+            }
+          ],
           "outputFields": [
             {
               "name": "balance",
@@ -10672,7 +11807,7 @@
               "byteLength": 8
             }
           ],
-          "inputSize": 0,
+          "inputSize": 40,
           "outputSize": 16
         },
         {
@@ -10688,9 +11823,18 @@
               "byteLength": 8
             },
             {
-              "name": "balances",
+              "name": "assets",
               "type": "array",
               "offset": 8,
+              "byteLength": 40960,
+              "arrayLength": 1024,
+              "arrayItemStructRef": "Asset",
+              "arrayItemByteLength": 40
+            },
+            {
+              "name": "balances",
+              "type": "array",
+              "offset": 40968,
               "byteLength": 8192,
               "arrayLength": 1024,
               "arrayItemType": "uint64",
@@ -10698,7 +11842,7 @@
             }
           ],
           "inputSize": 0,
-          "outputSize": 8200
+          "outputSize": 49160
         },
         {
           "kind": "function",
@@ -10939,9 +12083,9 @@
     {
       "contractIndex": 21,
       "contractName": "QReservePool",
-      "effectiveFromEpoch": 199,
+      "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T11:39:53.495Z",
+      "registeredAt": "2026-05-13T14:10:52.499Z",
       "structs": {},
       "procedures": [
         {
@@ -11090,9 +12234,9 @@
     {
       "contractIndex": 22,
       "contractName": "QThirtyFour",
-      "effectiveFromEpoch": 199,
+      "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T11:39:53.514Z",
+      "registeredAt": "2026-05-13T14:10:52.520Z",
       "structs": {
         "NextEpochData": {
           "name": "NextEpochData",
@@ -11216,6 +12360,21 @@
             }
           ],
           "byteLength": 36
+        },
+        "WinningCombination": {
+          "name": "WinningCombination",
+          "fields": [
+            {
+              "name": "values",
+              "type": "array",
+              "offset": 0,
+              "byteLength": 4,
+              "arrayLength": 4,
+              "arrayItemType": "uint8",
+              "arrayItemByteLength": 1
+            }
+          ],
+          "byteLength": 4
         }
       },
       "procedures": [
@@ -11683,23 +12842,32 @@
           "inputFields": [],
           "outputFields": [
             {
+              "name": "history",
+              "type": "array",
+              "offset": 0,
+              "byteLength": 512,
+              "arrayLength": 128,
+              "arrayItemStructRef": "WinningCombination",
+              "arrayItemByteLength": 4
+            },
+            {
               "name": "returnCode",
               "type": "uint8",
-              "offset": 0,
+              "offset": 512,
               "byteLength": 1
             }
           ],
           "inputSize": 0,
-          "outputSize": 1
+          "outputSize": 513
         }
       ]
     },
     {
       "contractIndex": 23,
       "contractName": "QDuel",
-      "effectiveFromEpoch": 199,
+      "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T11:39:53.525Z",
+      "registeredAt": "2026-05-13T14:10:52.532Z",
       "structs": {
         "RoomInfo": {
           "name": "RoomInfo",
@@ -11733,9 +12901,16 @@
               "type": "uint64",
               "offset": 104,
               "byteLength": 8
+            },
+            {
+              "name": "lastUpdate",
+              "type": "struct",
+              "offset": 112,
+              "byteLength": 8,
+              "structRef": "DateAndTime"
             }
           ],
-          "byteLength": 112
+          "byteLength": 120
         },
         "WinnerData": {
           "name": "WinnerData",
@@ -12051,20 +13226,20 @@
               "name": "rooms",
               "type": "array",
               "offset": 0,
-              "byteLength": 57344,
+              "byteLength": 61440,
               "arrayLength": 512,
               "arrayItemStructRef": "RoomInfo",
-              "arrayItemByteLength": 112
+              "arrayItemByteLength": 120
             },
             {
               "name": "returnCode",
               "type": "uint8",
-              "offset": 57344,
+              "offset": 61440,
               "byteLength": 1
             }
           ],
           "inputSize": 0,
-          "outputSize": 57345
+          "outputSize": 61441
         },
         {
           "kind": "function",
@@ -12177,9 +13352,9 @@
     {
       "contractIndex": 24,
       "contractName": "Pulse",
-      "effectiveFromEpoch": 204,
+      "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T11:39:53.546Z",
+      "registeredAt": "2026-05-13T14:10:52.552Z",
       "structs": {
         "Ticket": {
           "name": "Ticket",
@@ -12317,6 +13492,12 @@
               "type": "sint16",
               "offset": 8,
               "byteLength": 2
+            },
+            {
+              "name": "buyNow",
+              "type": "uint8",
+              "offset": 10,
+              "byteLength": 1
             }
           ],
           "outputFields": [
@@ -12327,7 +13508,7 @@
               "byteLength": 1
             }
           ],
-          "inputSize": 10,
+          "inputSize": 11,
           "outputSize": 1
         },
         {
@@ -12595,9 +13776,16 @@
               "arrayItemByteLength": 1
             }
           ],
-          "outputFields": [],
+          "outputFields": [
+            {
+              "name": "isValid",
+              "type": "uint8",
+              "offset": 0,
+              "byteLength": 1
+            }
+          ],
           "inputSize": 0,
-          "outputSize": 0
+          "outputSize": 1
         },
         {
           "kind": "function",
@@ -12949,14 +14137,20 @@
               "byteLength": 1
             },
             {
-              "name": "returnCode",
+              "name": "sellingOpen",
               "type": "uint8",
               "offset": 17,
+              "byteLength": 1
+            },
+            {
+              "name": "returnCode",
+              "type": "uint8",
+              "offset": 18,
               "byteLength": 1
             }
           ],
           "inputSize": 0,
-          "outputSize": 18
+          "outputSize": 19
         },
         {
           "kind": "function",
@@ -12994,9 +14188,9 @@
     {
       "contractIndex": 25,
       "contractName": "VottunBridge",
-      "effectiveFromEpoch": 206,
+      "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T11:39:53.559Z",
+      "registeredAt": "2026-05-13T14:10:52.575Z",
       "structs": {
         "OrderResponse": {
           "name": "OrderResponse",
@@ -13105,9 +14299,21 @@
               "type": "uint8",
               "offset": 593,
               "byteLength": 1
+            },
+            {
+              "name": "executed",
+              "type": "uint8",
+              "offset": 594,
+              "byteLength": 1
+            },
+            {
+              "name": "active",
+              "type": "uint8",
+              "offset": 595,
+              "byteLength": 1
             }
           ],
-          "byteLength": 594
+          "byteLength": 596
         },
         "BridgeOrder": {
           "name": "BridgeOrder",
@@ -13156,9 +14362,27 @@
               "type": "uint8",
               "offset": 145,
               "byteLength": 1
+            },
+            {
+              "name": "fromQubicToEthereum",
+              "type": "uint8",
+              "offset": 146,
+              "byteLength": 1
+            },
+            {
+              "name": "tokensReceived",
+              "type": "uint8",
+              "offset": 147,
+              "byteLength": 1
+            },
+            {
+              "name": "tokensLocked",
+              "type": "uint8",
+              "offset": 148,
+              "byteLength": 1
             }
           ],
-          "byteLength": 146
+          "byteLength": 149
         }
       },
       "procedures": [
@@ -13187,6 +14411,12 @@
               "arrayLength": 64,
               "arrayItemType": "uint8",
               "arrayItemByteLength": 1
+            },
+            {
+              "name": "fromQubicToEthereum",
+              "type": "uint8",
+              "offset": 104,
+              "byteLength": 1
             }
           ],
           "outputFields": [
@@ -13203,7 +14433,7 @@
               "byteLength": 8
             }
           ],
-          "inputSize": 104,
+          "inputSize": 105,
           "outputSize": 9
         },
         {
@@ -13346,10 +14576,16 @@
               "type": "uint8",
               "offset": 0,
               "byteLength": 1
+            },
+            {
+              "name": "executed",
+              "type": "uint8",
+              "offset": 1,
+              "byteLength": 1
             }
           ],
           "inputSize": 8,
-          "outputSize": 1
+          "outputSize": 2
         },
         {
           "kind": "procedure",
@@ -13542,27 +14778,27 @@
               "name": "firstOrders",
               "type": "array",
               "offset": 552,
-              "byteLength": 2336,
+              "byteLength": 2384,
               "arrayLength": 16,
               "arrayItemStructRef": "BridgeOrder",
-              "arrayItemByteLength": 146
+              "arrayItemByteLength": 149
             },
             {
               "name": "totalOrdersFound",
               "type": "uint64",
-              "offset": 2888,
+              "offset": 2936,
               "byteLength": 8
             },
             {
               "name": "emptySlots",
               "type": "uint64",
-              "offset": 2896,
+              "offset": 2944,
               "byteLength": 8
             },
             {
               "name": "multisigAdmins",
               "type": "array",
-              "offset": 2904,
+              "offset": 2952,
               "byteLength": 512,
               "arrayLength": 16,
               "arrayItemType": "id",
@@ -13571,24 +14807,24 @@
             {
               "name": "numberOfAdmins",
               "type": "uint8",
-              "offset": 3416,
+              "offset": 3464,
               "byteLength": 1
             },
             {
               "name": "requiredApprovals",
               "type": "uint8",
-              "offset": 3417,
+              "offset": 3465,
               "byteLength": 1
             },
             {
               "name": "totalProposals",
               "type": "uint64",
-              "offset": 3418,
+              "offset": 3466,
               "byteLength": 8
             }
           ],
           "inputSize": 0,
-          "outputSize": 3426
+          "outputSize": 3474
         },
         {
           "kind": "function",
@@ -13629,12 +14865,12 @@
               "name": "proposal",
               "type": "struct",
               "offset": 1,
-              "byteLength": 594,
+              "byteLength": 596,
               "structRef": "AdminProposal"
             }
           ],
           "inputSize": 8,
-          "outputSize": 595
+          "outputSize": 597
         },
         {
           "kind": "function",
@@ -13691,10 +14927,28 @@
     {
       "contractIndex": 26,
       "contractName": "Qusino",
-      "effectiveFromEpoch": 208,
+      "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T11:39:53.568Z",
+      "registeredAt": "2026-05-13T14:10:52.586Z",
       "structs": {
+        "Asset": {
+          "name": "Asset",
+          "byteLength": 40,
+          "fields": [
+            {
+              "name": "issuer",
+              "type": "id",
+              "offset": 0,
+              "byteLength": 32
+            },
+            {
+              "name": "assetName",
+              "type": "uint64",
+              "offset": 32,
+              "byteLength": 8
+            }
+          ]
+        },
         "GameInfo": {
           "name": "GameInfo",
           "fields": [
@@ -13926,15 +15180,22 @@
           "name": "TransferShareManagementRights",
           "inputFields": [
             {
+              "name": "asset",
+              "type": "struct",
+              "offset": 0,
+              "byteLength": 40,
+              "structRef": "Asset"
+            },
+            {
               "name": "numberOfShares",
               "type": "sint64",
-              "offset": 0,
+              "offset": 40,
               "byteLength": 8
             },
             {
               "name": "newManagingContractIndex",
               "type": "uint32",
-              "offset": 8,
+              "offset": 48,
               "byteLength": 4
             }
           ],
@@ -13946,7 +15207,7 @@
               "byteLength": 8
             }
           ],
-          "inputSize": 12,
+          "inputSize": 52,
           "outputSize": 8
         }
       ],
@@ -14121,9 +15382,9 @@
     {
       "contractIndex": 27,
       "contractName": "Escrow",
-      "effectiveFromEpoch": 210,
+      "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T11:39:53.578Z",
+      "registeredAt": "2026-05-13T14:10:52.598Z",
       "structs": {
         "AssetWithAmount": {
           "name": "AssetWithAmount",
@@ -14148,6 +15409,24 @@
             }
           ],
           "byteLength": 48
+        },
+        "Asset": {
+          "name": "Asset",
+          "byteLength": 40,
+          "fields": [
+            {
+              "name": "issuer",
+              "type": "id",
+              "offset": 0,
+              "byteLength": 32
+            },
+            {
+              "name": "assetName",
+              "type": "uint64",
+              "offset": 32,
+              "byteLength": 8
+            }
+          ]
         },
         "Deal": {
           "name": "Deal",
@@ -14329,15 +15608,22 @@
           "name": "TransferShareManagementRights",
           "inputFields": [
             {
+              "name": "asset",
+              "type": "struct",
+              "offset": 0,
+              "byteLength": 40,
+              "structRef": "Asset"
+            },
+            {
               "name": "amount",
               "type": "sint64",
-              "offset": 0,
+              "offset": 40,
               "byteLength": 8
             },
             {
               "name": "newContractIndex",
               "type": "uint32",
-              "offset": 8,
+              "offset": 48,
               "byteLength": 4
             }
           ],
@@ -14349,7 +15635,7 @@
               "byteLength": 8
             }
           ],
-          "inputSize": 12,
+          "inputSize": 52,
           "outputSize": 8
         }
       ],
@@ -14438,6 +15724,13 @@
               "type": "id",
               "offset": 0,
               "byteLength": 32
+            },
+            {
+              "name": "asset",
+              "type": "struct",
+              "offset": 32,
+              "byteLength": 40,
+              "structRef": "Asset"
             }
           ],
           "outputFields": [
@@ -14448,7 +15741,7 @@
               "byteLength": 8
             }
           ],
-          "inputSize": 32,
+          "inputSize": 72,
           "outputSize": 8
         }
       ]

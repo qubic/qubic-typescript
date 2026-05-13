@@ -1,0 +1,10 @@
+{
+  "contractIndex": 5,
+  "contractName": "MyLastMatch",
+  "effectiveFromEpoch": 180,
+  "effectiveToEpoch": null,
+  "registeredAt": "2026-05-13T12:07:55.933Z",
+  "structs": {},
+  "procedures": [],
+  "functions": []
+}

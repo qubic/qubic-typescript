@@ -1,0 +1,561 @@
+{
+  "contractIndex": 20,
+  "contractName": "qRWA",
+  "effectiveFromEpoch": 202,
+  "effectiveToEpoch": null,
+  "registeredAt": "2026-05-13T12:08:29.597Z",
+  "structs": {
+    "QRWAGovParams": {
+      "name": "QRWAGovParams",
+      "fields": [
+        {
+          "name": "mAdminAddress",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "electricityAddress",
+          "type": "id",
+          "offset": 32,
+          "byteLength": 32
+        },
+        {
+          "name": "maintenanceAddress",
+          "type": "id",
+          "offset": 64,
+          "byteLength": 32
+        },
+        {
+          "name": "reinvestmentAddress",
+          "type": "id",
+          "offset": 96,
+          "byteLength": 32
+        },
+        {
+          "name": "qmineDevAddress",
+          "type": "id",
+          "offset": 128,
+          "byteLength": 32
+        },
+        {
+          "name": "electricityPercent",
+          "type": "uint64",
+          "offset": 160,
+          "byteLength": 8
+        },
+        {
+          "name": "maintenancePercent",
+          "type": "uint64",
+          "offset": 168,
+          "byteLength": 8
+        },
+        {
+          "name": "reinvestmentPercent",
+          "type": "uint64",
+          "offset": 176,
+          "byteLength": 8
+        }
+      ],
+      "byteLength": 184
+    },
+    "QRWAGovProposal": {
+      "name": "QRWAGovProposal",
+      "fields": [
+        {
+          "name": "proposalId",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "status",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "score",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "params",
+          "type": "struct",
+          "offset": 24,
+          "byteLength": 184,
+          "structRef": "QRWAGovParams"
+        }
+      ],
+      "byteLength": 208
+    },
+    "AssetReleaseProposal": {
+      "name": "AssetReleaseProposal",
+      "fields": [
+        {
+          "name": "proposalId",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "proposalName",
+          "type": "id",
+          "offset": 8,
+          "byteLength": 32
+        },
+        {
+          "name": "amount",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "destination",
+          "type": "id",
+          "offset": 48,
+          "byteLength": 32
+        },
+        {
+          "name": "status",
+          "type": "uint64",
+          "offset": 80,
+          "byteLength": 8
+        },
+        {
+          "name": "votesYes",
+          "type": "uint64",
+          "offset": 88,
+          "byteLength": 8
+        },
+        {
+          "name": "votesNo",
+          "type": "uint64",
+          "offset": 96,
+          "byteLength": 8
+        }
+      ],
+      "byteLength": 104
+    }
+  },
+  "procedures": [
+    {
+      "kind": "procedure",
+      "inputType": 1,
+      "name": "DonateToTreasury",
+      "inputFields": [
+        {
+          "name": "amount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "status",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 8
+    },
+    {
+      "kind": "procedure",
+      "inputType": 2,
+      "name": "VoteGovParams",
+      "inputFields": [
+        {
+          "name": "proposal",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 184,
+          "structRef": "QRWAGovParams"
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "status",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 184,
+      "outputSize": 8
+    },
+    {
+      "kind": "procedure",
+      "inputType": 3,
+      "name": "CreateAssetReleasePoll",
+      "inputFields": [
+        {
+          "name": "proposalName",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "amount",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "destination",
+          "type": "id",
+          "offset": 40,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "status",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "proposalId",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 72,
+      "outputSize": 16
+    },
+    {
+      "kind": "procedure",
+      "inputType": 4,
+      "name": "VoteAssetRelease",
+      "inputFields": [
+        {
+          "name": "proposalId",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "option",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "status",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 16,
+      "outputSize": 8
+    },
+    {
+      "kind": "procedure",
+      "inputType": 5,
+      "name": "DepositGeneralAsset",
+      "inputFields": [
+        {
+          "name": "amount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "status",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 8
+    },
+    {
+      "kind": "procedure",
+      "inputType": 6,
+      "name": "RevokeAssetManagementRights",
+      "inputFields": [
+        {
+          "name": "numberOfShares",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "transferredNumberOfShares",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "status",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 16
+    }
+  ],
+  "functions": [
+    {
+      "kind": "function",
+      "inputType": 7,
+      "name": "GetGovParams",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "params",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 184,
+          "structRef": "QRWAGovParams"
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 184
+    },
+    {
+      "kind": "function",
+      "inputType": 8,
+      "name": "GetGovPoll",
+      "inputFields": [
+        {
+          "name": "proposalId",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "proposal",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 208,
+          "structRef": "QRWAGovProposal"
+        },
+        {
+          "name": "status",
+          "type": "uint64",
+          "offset": 208,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 216
+    },
+    {
+      "kind": "function",
+      "inputType": 9,
+      "name": "GetAssetReleasePoll",
+      "inputFields": [
+        {
+          "name": "proposalId",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "proposal",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 104,
+          "structRef": "AssetReleaseProposal"
+        },
+        {
+          "name": "status",
+          "type": "uint64",
+          "offset": 104,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 112
+    },
+    {
+      "kind": "function",
+      "inputType": 10,
+      "name": "GetTreasuryBalance",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "balance",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 8
+    },
+    {
+      "kind": "function",
+      "inputType": 11,
+      "name": "GetDividendBalances",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "revenuePoolA",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "revenuePoolB",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "qmineDividendPool",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "qrwaDividendPool",
+          "type": "uint64",
+          "offset": 24,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 32
+    },
+    {
+      "kind": "function",
+      "inputType": 12,
+      "name": "GetTotalDistributed",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "totalQmineDistributed",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "totalQRWADistributed",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 16
+    },
+    {
+      "kind": "function",
+      "inputType": 13,
+      "name": "GetActiveAssetReleasePollIds",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "count",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "ids",
+          "type": "array",
+          "offset": 8,
+          "byteLength": 512,
+          "arrayLength": 64,
+          "arrayItemType": "uint64",
+          "arrayItemByteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 520
+    },
+    {
+      "kind": "function",
+      "inputType": 14,
+      "name": "GetActiveGovPollIds",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "count",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "ids",
+          "type": "array",
+          "offset": 8,
+          "byteLength": 512,
+          "arrayLength": 64,
+          "arrayItemType": "uint64",
+          "arrayItemByteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 520
+    },
+    {
+      "kind": "function",
+      "inputType": 15,
+      "name": "GetGeneralAssetBalance",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "balance",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "status",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 16
+    },
+    {
+      "kind": "function",
+      "inputType": 16,
+      "name": "GetGeneralAssets",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "count",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "balances",
+          "type": "array",
+          "offset": 8,
+          "byteLength": 8192,
+          "arrayLength": 1024,
+          "arrayItemType": "uint64",
+          "arrayItemByteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 8200
+    }
+  ]
+}

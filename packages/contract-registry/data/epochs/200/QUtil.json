@@ -1,0 +1,486 @@
+{
+  "contractIndex": 4,
+  "contractName": "QUtil",
+  "effectiveFromEpoch": 200,
+  "effectiveToEpoch": null,
+  "registeredAt": "2026-05-13T12:08:24.241Z",
+  "structs": {},
+  "procedures": [
+    {
+      "kind": "procedure",
+      "inputType": 5,
+      "name": "SendToManyV1",
+      "inputFields": [
+        {
+          "name": "dst0",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "amt0",
+          "type": "sint64",
+          "offset": 32,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 40,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 7,
+      "name": "SendToManyBenchmark",
+      "inputFields": [
+        {
+          "name": "dstCount",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "numTransfersEach",
+          "type": "sint64",
+          "offset": 8,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "dstCount",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 8,
+          "byteLength": 4
+        },
+        {
+          "name": "total",
+          "type": "sint64",
+          "offset": 12,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 16,
+      "outputSize": 20
+    },
+    {
+      "kind": "procedure",
+      "inputType": 8,
+      "name": "BurnQubic",
+      "inputFields": [
+        {
+          "name": "amount",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "amount",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 8
+    },
+    {
+      "kind": "procedure",
+      "inputType": 9,
+      "name": "BurnQubicForContract",
+      "inputFields": [
+        {
+          "name": "contractIndexBurnedFor",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "amount",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 8
+    },
+    {
+      "kind": "procedure",
+      "inputType": 11,
+      "name": "CreatePoll",
+      "inputFields": [
+        {
+          "name": "poll_name",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "poll_type",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "min_amount",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "github_link",
+          "type": "array",
+          "offset": 48,
+          "byteLength": 256,
+          "arrayLength": 256,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        },
+        {
+          "name": "num_assets",
+          "type": "uint64",
+          "offset": 304,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "poll_id",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 312,
+      "outputSize": 8
+    },
+    {
+      "kind": "procedure",
+      "inputType": 12,
+      "name": "Vote",
+      "inputFields": [
+        {
+          "name": "poll_id",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "address",
+          "type": "id",
+          "offset": 8,
+          "byteLength": 32
+        },
+        {
+          "name": "amount",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "chosen_option",
+          "type": "uint64",
+          "offset": 48,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [],
+      "inputSize": 56,
+      "outputSize": 0
+    },
+    {
+      "kind": "procedure",
+      "inputType": 13,
+      "name": "CancelPoll",
+      "inputFields": [
+        {
+          "name": "poll_id",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [],
+      "inputSize": 8,
+      "outputSize": 0
+    },
+    {
+      "kind": "procedure",
+      "inputType": 18,
+      "name": "DistributeQuToShareholders",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "shareholders",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "totalShares",
+          "type": "sint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "amountPerShare",
+          "type": "sint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "fees",
+          "type": "sint64",
+          "offset": 24,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 32
+    }
+  ],
+  "functions": [
+    {
+      "kind": "function",
+      "inputType": 0,
+      "name": "GetFees",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "smt1InvocationFee",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "pollCreationFee",
+          "type": "sint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "pollVoteFee",
+          "type": "sint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "distributeQuToShareholderFeePerShareholder",
+          "type": "sint64",
+          "offset": 24,
+          "byteLength": 8
+        },
+        {
+          "name": "shareholderProposalFee",
+          "type": "sint64",
+          "offset": 32,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 40
+    },
+    {
+      "kind": "function",
+      "inputType": 0,
+      "name": "GetTotalNumberOfAssetShares",
+      "inputFields": [],
+      "outputFields": [],
+      "inputSize": 0,
+      "outputSize": 0
+    },
+    {
+      "kind": "function",
+      "inputType": 6,
+      "name": "GetSendToManyV1Fee",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "fee",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 8
+    },
+    {
+      "kind": "function",
+      "inputType": 10,
+      "name": "QueryFeeReserve",
+      "inputFields": [
+        {
+          "name": "contractIndex",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "reserveAmount",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 8
+    },
+    {
+      "kind": "function",
+      "inputType": 14,
+      "name": "GetCurrentResult",
+      "inputFields": [
+        {
+          "name": "poll_id",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "result",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 512,
+          "arrayLength": 64,
+          "arrayItemType": "uint64",
+          "arrayItemByteLength": 8
+        },
+        {
+          "name": "voter_count",
+          "type": "array",
+          "offset": 512,
+          "byteLength": 512,
+          "arrayLength": 64,
+          "arrayItemType": "uint64",
+          "arrayItemByteLength": 8
+        },
+        {
+          "name": "is_active",
+          "type": "uint64",
+          "offset": 1024,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 1032
+    },
+    {
+      "kind": "function",
+      "inputType": 15,
+      "name": "GetPollsByCreator",
+      "inputFields": [
+        {
+          "name": "creator",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "poll_ids",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 512,
+          "arrayLength": 64,
+          "arrayItemType": "uint64",
+          "arrayItemByteLength": 8
+        },
+        {
+          "name": "count",
+          "type": "uint64",
+          "offset": 512,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 32,
+      "outputSize": 520
+    },
+    {
+      "kind": "function",
+      "inputType": 16,
+      "name": "GetCurrentPollId",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "current_poll_id",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "active_poll_ids",
+          "type": "array",
+          "offset": 8,
+          "byteLength": 512,
+          "arrayLength": 64,
+          "arrayItemType": "uint64",
+          "arrayItemByteLength": 8
+        },
+        {
+          "name": "active_count",
+          "type": "uint64",
+          "offset": 520,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 528
+    },
+    {
+      "kind": "function",
+      "inputType": 17,
+      "name": "GetPollInfo",
+      "inputFields": [
+        {
+          "name": "poll_id",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "found",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "poll_link",
+          "type": "array",
+          "offset": 8,
+          "byteLength": 256,
+          "arrayLength": 256,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 264
+    }
+  ]
+}

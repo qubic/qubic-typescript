@@ -1,0 +1,729 @@
+{
+  "contractIndex": 13,
+  "contractName": "Qswap",
+  "effectiveFromEpoch": 181,
+  "effectiveToEpoch": null,
+  "registeredAt": "2026-05-13T12:07:58.137Z",
+  "structs": {},
+  "procedures": [
+    {
+      "kind": "procedure",
+      "inputType": 3,
+      "name": "SetTeamInfo",
+      "inputFields": [
+        {
+          "name": "newTeamId",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "success",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 32,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 10,
+      "name": "IssueAsset",
+      "inputFields": [
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "numberOfShares",
+          "type": "sint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "unitOfMeasurement",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "numberOfDecimalPlaces",
+          "type": "sint8",
+          "offset": 24,
+          "byteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "issuedNumberOfShares",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 25,
+      "outputSize": 8
+    },
+    {
+      "kind": "procedure",
+      "inputType": 11,
+      "name": "CreatePool",
+      "inputFields": [
+        {
+          "name": "assetIssuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "success",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 40,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 12,
+      "name": "TransferShareOwnershipAndPossession",
+      "inputFields": [
+        {
+          "name": "assetIssuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "newOwnerAndPossessor",
+          "type": "id",
+          "offset": 40,
+          "byteLength": 32
+        },
+        {
+          "name": "amount",
+          "type": "sint64",
+          "offset": 72,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "transferredAmount",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 80,
+      "outputSize": 8
+    },
+    {
+      "kind": "procedure",
+      "inputType": 13,
+      "name": "AddLiquidity",
+      "inputFields": [
+        {
+          "name": "assetIssuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "assetAmountDesired",
+          "type": "sint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "quAmountMin",
+          "type": "sint64",
+          "offset": 48,
+          "byteLength": 8
+        },
+        {
+          "name": "assetAmountMin",
+          "type": "sint64",
+          "offset": 56,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "userIncreaseLiquidity",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "quAmount",
+          "type": "sint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "assetAmount",
+          "type": "sint64",
+          "offset": 16,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 64,
+      "outputSize": 24
+    },
+    {
+      "kind": "procedure",
+      "inputType": 14,
+      "name": "RemoveLiquidity",
+      "inputFields": [
+        {
+          "name": "assetIssuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "burnLiquidity",
+          "type": "sint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "quAmountMin",
+          "type": "sint64",
+          "offset": 48,
+          "byteLength": 8
+        },
+        {
+          "name": "assetAmountMin",
+          "type": "sint64",
+          "offset": 56,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "quAmount",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "assetAmount",
+          "type": "sint64",
+          "offset": 8,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 64,
+      "outputSize": 16
+    },
+    {
+      "kind": "procedure",
+      "inputType": 15,
+      "name": "SwapExactQuForAsset",
+      "inputFields": [
+        {
+          "name": "assetIssuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "assetAmountOutMin",
+          "type": "sint64",
+          "offset": 40,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "assetAmountOut",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 48,
+      "outputSize": 8
+    },
+    {
+      "kind": "procedure",
+      "inputType": 16,
+      "name": "SwapQuForExactAsset",
+      "inputFields": [
+        {
+          "name": "assetIssuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "assetAmountOut",
+          "type": "sint64",
+          "offset": 40,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "quAmountIn",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 48,
+      "outputSize": 8
+    },
+    {
+      "kind": "procedure",
+      "inputType": 17,
+      "name": "SwapExactAssetForQu",
+      "inputFields": [
+        {
+          "name": "assetIssuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "assetAmountIn",
+          "type": "sint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "quAmountOutMin",
+          "type": "sint64",
+          "offset": 48,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "quAmountOut",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 56,
+      "outputSize": 8
+    },
+    {
+      "kind": "procedure",
+      "inputType": 18,
+      "name": "SwapAssetForExactQu",
+      "inputFields": [
+        {
+          "name": "assetIssuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "assetAmountInMax",
+          "type": "sint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "quAmountOut",
+          "type": "sint64",
+          "offset": 48,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "assetAmountIn",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 56,
+      "outputSize": 8
+    },
+    {
+      "kind": "procedure",
+      "inputType": 19,
+      "name": "TransferShareManagementRights",
+      "inputFields": [
+        {
+          "name": "numberOfShares",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "newManagingContractIndex",
+          "type": "uint32",
+          "offset": 8,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "transferredNumberOfShares",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 12,
+      "outputSize": 8
+    }
+  ],
+  "functions": [
+    {
+      "kind": "function",
+      "inputType": 1,
+      "name": "Fees",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "assetIssuanceFee",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "poolCreationFee",
+          "type": "uint32",
+          "offset": 4,
+          "byteLength": 4
+        },
+        {
+          "name": "transferFee",
+          "type": "uint32",
+          "offset": 8,
+          "byteLength": 4
+        },
+        {
+          "name": "swapFee",
+          "type": "uint32",
+          "offset": 12,
+          "byteLength": 4
+        },
+        {
+          "name": "protocolFee",
+          "type": "uint32",
+          "offset": 16,
+          "byteLength": 4
+        },
+        {
+          "name": "teamFee",
+          "type": "uint32",
+          "offset": 20,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 24
+    },
+    {
+      "kind": "function",
+      "inputType": 2,
+      "name": "TeamInfo",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "teamFee",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "teamId",
+          "type": "id",
+          "offset": 4,
+          "byteLength": 32
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 36
+    },
+    {
+      "kind": "function",
+      "inputType": 4,
+      "name": "GetPoolBasicState",
+      "inputFields": [
+        {
+          "name": "assetIssuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "poolExists",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "reservedQuAmount",
+          "type": "sint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "reservedAssetAmount",
+          "type": "sint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "totalLiquidity",
+          "type": "sint64",
+          "offset": 24,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 40,
+      "outputSize": 32
+    },
+    {
+      "kind": "function",
+      "inputType": 5,
+      "name": "GetLiquidityOf",
+      "inputFields": [
+        {
+          "name": "assetIssuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "account",
+          "type": "id",
+          "offset": 40,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "liquidity",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 72,
+      "outputSize": 8
+    },
+    {
+      "kind": "function",
+      "inputType": 6,
+      "name": "QuoteExactQuInput",
+      "inputFields": [
+        {
+          "name": "assetIssuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "quAmountIn",
+          "type": "sint64",
+          "offset": 40,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "assetAmountOut",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 48,
+      "outputSize": 8
+    },
+    {
+      "kind": "function",
+      "inputType": 7,
+      "name": "QuoteExactQuOutput",
+      "inputFields": [
+        {
+          "name": "assetIssuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "quAmountOut",
+          "type": "sint64",
+          "offset": 40,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "assetAmountIn",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 48,
+      "outputSize": 8
+    },
+    {
+      "kind": "function",
+      "inputType": 8,
+      "name": "QuoteExactAssetInput",
+      "inputFields": [
+        {
+          "name": "assetIssuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "assetAmountIn",
+          "type": "sint64",
+          "offset": 40,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "quAmountOut",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 48,
+      "outputSize": 8
+    },
+    {
+      "kind": "function",
+      "inputType": 9,
+      "name": "QuoteExactAssetOutput",
+      "inputFields": [
+        {
+          "name": "assetIssuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "assetAmountOut",
+          "type": "sint64",
+          "offset": 40,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "quAmountIn",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 48,
+      "outputSize": 8
+    }
+  ]
+}

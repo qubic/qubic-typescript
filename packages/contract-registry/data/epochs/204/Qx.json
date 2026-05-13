@@ -1,0 +1,415 @@
+{
+  "contractIndex": 1,
+  "contractName": "Qx",
+  "effectiveFromEpoch": 204,
+  "effectiveToEpoch": null,
+  "registeredAt": "2026-05-13T12:08:32.394Z",
+  "structs": {},
+  "procedures": [
+    {
+      "kind": "procedure",
+      "inputType": 7,
+      "name": "IssueAsset",
+      "inputFields": [
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "numberOfShares",
+          "type": "sint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "unitOfMeasurement",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "numberOfDecimalPlaces",
+          "type": "sint8",
+          "offset": 24,
+          "byteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "issuedNumberOfShares",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 25,
+      "outputSize": 8
+    },
+    {
+      "kind": "procedure",
+      "inputType": 8,
+      "name": "TransferShareOwnershipAndPossession",
+      "inputFields": [
+        {
+          "name": "issuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "newOwnerAndPossessor",
+          "type": "id",
+          "offset": 32,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 64,
+          "byteLength": 8
+        },
+        {
+          "name": "numberOfShares",
+          "type": "sint64",
+          "offset": 72,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "transferredNumberOfShares",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 80,
+      "outputSize": 8
+    },
+    {
+      "kind": "procedure",
+      "inputType": 9,
+      "name": "AddToAskOrder",
+      "inputFields": [
+        {
+          "name": "issuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "price",
+          "type": "sint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "numberOfShares",
+          "type": "sint64",
+          "offset": 48,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "addedNumberOfShares",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 56,
+      "outputSize": 8
+    },
+    {
+      "kind": "procedure",
+      "inputType": 10,
+      "name": "AddToBidOrder",
+      "inputFields": [
+        {
+          "name": "issuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "price",
+          "type": "sint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "numberOfShares",
+          "type": "sint64",
+          "offset": 48,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "addedNumberOfShares",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 56,
+      "outputSize": 8
+    },
+    {
+      "kind": "procedure",
+      "inputType": 11,
+      "name": "RemoveFromAskOrder",
+      "inputFields": [
+        {
+          "name": "issuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "price",
+          "type": "sint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "numberOfShares",
+          "type": "sint64",
+          "offset": 48,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "removedNumberOfShares",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 56,
+      "outputSize": 8
+    },
+    {
+      "kind": "procedure",
+      "inputType": 12,
+      "name": "RemoveFromBidOrder",
+      "inputFields": [
+        {
+          "name": "issuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "price",
+          "type": "sint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "numberOfShares",
+          "type": "sint64",
+          "offset": 48,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "removedNumberOfShares",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 56,
+      "outputSize": 8
+    },
+    {
+      "kind": "procedure",
+      "inputType": 13,
+      "name": "TransferShareManagementRights",
+      "inputFields": [
+        {
+          "name": "numberOfShares",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "newManagingContractIndex",
+          "type": "uint32",
+          "offset": 8,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "transferredNumberOfShares",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 12,
+      "outputSize": 8
+    }
+  ],
+  "functions": [
+    {
+      "kind": "function",
+      "inputType": 2,
+      "name": "Fees",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "assetIssuanceFee",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "transferFee",
+          "type": "uint32",
+          "offset": 4,
+          "byteLength": 4
+        },
+        {
+          "name": "tradeFee",
+          "type": "uint32",
+          "offset": 8,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 12
+    },
+    {
+      "kind": "function",
+      "inputType": 3,
+      "name": "AssetAskOrders",
+      "inputFields": [
+        {
+          "name": "issuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "offset",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [],
+      "inputSize": 48,
+      "outputSize": 0
+    },
+    {
+      "kind": "function",
+      "inputType": 4,
+      "name": "AssetBidOrders",
+      "inputFields": [
+        {
+          "name": "issuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "offset",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [],
+      "inputSize": 48,
+      "outputSize": 0
+    },
+    {
+      "kind": "function",
+      "inputType": 5,
+      "name": "EntityAskOrders",
+      "inputFields": [
+        {
+          "name": "entity",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "offset",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [],
+      "inputSize": 40,
+      "outputSize": 0
+    },
+    {
+      "kind": "function",
+      "inputType": 6,
+      "name": "EntityBidOrders",
+      "inputFields": [
+        {
+          "name": "entity",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "offset",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [],
+      "inputSize": 40,
+      "outputSize": 0
+    }
+  ]
+}

@@ -1,0 +1,145 @@
+{
+  "contractIndex": 6,
+  "contractName": "GeneralQuorumProposal",
+  "effectiveFromEpoch": 194,
+  "effectiveToEpoch": null,
+  "registeredAt": "2026-05-13T12:08:15.030Z",
+  "structs": {},
+  "procedures": [
+    {
+      "kind": "procedure",
+      "inputType": 0,
+      "name": "SetProposal",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "proposalIndex",
+          "type": "uint16",
+          "offset": 0,
+          "byteLength": 2
+        },
+        {
+          "name": "okay",
+          "type": "uint8",
+          "offset": 2,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 3
+    },
+    {
+      "kind": "procedure",
+      "inputType": 0,
+      "name": "Vote",
+      "inputFields": [],
+      "outputFields": [],
+      "inputSize": 0,
+      "outputSize": 0
+    }
+  ],
+  "functions": [
+    {
+      "kind": "function",
+      "inputType": 0,
+      "name": "GetRevenueDonation",
+      "inputFields": [],
+      "outputFields": [],
+      "inputSize": 0,
+      "outputSize": 0
+    },
+    {
+      "kind": "function",
+      "inputType": 1,
+      "name": "GetProposalIndices",
+      "inputFields": [
+        {
+          "name": "prevProposalIndex",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "numOfIndices",
+          "type": "uint16",
+          "offset": 0,
+          "byteLength": 2
+        },
+        {
+          "name": "indices",
+          "type": "array",
+          "offset": 2,
+          "byteLength": 128,
+          "arrayLength": 64,
+          "arrayItemType": "uint16",
+          "arrayItemByteLength": 2
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 130
+    },
+    {
+      "kind": "function",
+      "inputType": 2,
+      "name": "GetProposal",
+      "inputFields": [
+        {
+          "name": "proposalIndex",
+          "type": "uint16",
+          "offset": 0,
+          "byteLength": 2
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "proposerPubicKey",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        }
+      ],
+      "inputSize": 2,
+      "outputSize": 32
+    },
+    {
+      "kind": "function",
+      "inputType": 3,
+      "name": "GetVote",
+      "inputFields": [
+        {
+          "name": "voter",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "proposalIndex",
+          "type": "uint16",
+          "offset": 32,
+          "byteLength": 2
+        }
+      ],
+      "outputFields": [],
+      "inputSize": 34,
+      "outputSize": 0
+    },
+    {
+      "kind": "function",
+      "inputType": 4,
+      "name": "GetVotingResults",
+      "inputFields": [
+        {
+          "name": "proposalIndex",
+          "type": "uint16",
+          "offset": 0,
+          "byteLength": 2
+        }
+      ],
+      "outputFields": [],
+      "inputSize": 2,
+      "outputSize": 0
+    }
+  ]
+}

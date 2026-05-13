@@ -1,0 +1,1178 @@
+{
+  "contractIndex": 12,
+  "contractName": "Qbay",
+  "effectiveFromEpoch": 188,
+  "effectiveToEpoch": null,
+  "registeredAt": "2026-05-13T12:08:06.212Z",
+  "structs": {},
+  "procedures": [
+    {
+      "kind": "procedure",
+      "inputType": 1,
+      "name": "settingCFBAndQubicPrice",
+      "inputFields": [
+        {
+          "name": "CFBPrice",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "QubicPrice",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 16,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 2,
+      "name": "createCollection",
+      "inputFields": [
+        {
+          "name": "priceForDropMint",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "volume",
+          "type": "uint32",
+          "offset": 8,
+          "byteLength": 4
+        },
+        {
+          "name": "royalty",
+          "type": "uint32",
+          "offset": 12,
+          "byteLength": 4
+        },
+        {
+          "name": "maxSizePerOneId",
+          "type": "uint32",
+          "offset": 16,
+          "byteLength": 4
+        },
+        {
+          "name": "URI",
+          "type": "array",
+          "offset": 20,
+          "byteLength": 64,
+          "arrayLength": 64,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 84,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 3,
+      "name": "mint",
+      "inputFields": [
+        {
+          "name": "royalty",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "collectionId",
+          "type": "uint32",
+          "offset": 4,
+          "byteLength": 4
+        },
+        {
+          "name": "URI",
+          "type": "array",
+          "offset": 8,
+          "byteLength": 64,
+          "arrayLength": 64,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 72,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 4,
+      "name": "mintOfDrop",
+      "inputFields": [
+        {
+          "name": "collectionId",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "URI",
+          "type": "array",
+          "offset": 4,
+          "byteLength": 64,
+          "arrayLength": 64,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 68,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 5,
+      "name": "transfer",
+      "inputFields": [
+        {
+          "name": "receiver",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "NFTid",
+          "type": "uint32",
+          "offset": 32,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 36,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 6,
+      "name": "listInMarket",
+      "inputFields": [
+        {
+          "name": "price",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "NFTid",
+          "type": "uint32",
+          "offset": 8,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 12,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 7,
+      "name": "buy",
+      "inputFields": [
+        {
+          "name": "NFTid",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 8,
+      "name": "cancelSale",
+      "inputFields": [
+        {
+          "name": "NFTid",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 9,
+      "name": "listInExchange",
+      "inputFields": [
+        {
+          "name": "possessedNFT",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "anotherNFT",
+          "type": "uint32",
+          "offset": 4,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 10,
+      "name": "cancelExchange",
+      "inputFields": [
+        {
+          "name": "possessedNFT",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "anotherNFT",
+          "type": "uint32",
+          "offset": 4,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 11,
+      "name": "makeOffer",
+      "inputFields": [
+        {
+          "name": "askPrice",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "NFTid",
+          "type": "uint32",
+          "offset": 8,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 12,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 12,
+      "name": "acceptOffer",
+      "inputFields": [
+        {
+          "name": "NFTid",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 13,
+      "name": "cancelOffer",
+      "inputFields": [
+        {
+          "name": "NFTid",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 14,
+      "name": "createTraditionalAuction",
+      "inputFields": [
+        {
+          "name": "minPrice",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "NFTId",
+          "type": "uint32",
+          "offset": 8,
+          "byteLength": 4
+        },
+        {
+          "name": "startYear",
+          "type": "uint32",
+          "offset": 12,
+          "byteLength": 4
+        },
+        {
+          "name": "startMonth",
+          "type": "uint32",
+          "offset": 16,
+          "byteLength": 4
+        },
+        {
+          "name": "startDay",
+          "type": "uint32",
+          "offset": 20,
+          "byteLength": 4
+        },
+        {
+          "name": "startHour",
+          "type": "uint32",
+          "offset": 24,
+          "byteLength": 4
+        },
+        {
+          "name": "endYear",
+          "type": "uint32",
+          "offset": 28,
+          "byteLength": 4
+        },
+        {
+          "name": "endMonth",
+          "type": "uint32",
+          "offset": 32,
+          "byteLength": 4
+        },
+        {
+          "name": "endDay",
+          "type": "uint32",
+          "offset": 36,
+          "byteLength": 4
+        },
+        {
+          "name": "endHour",
+          "type": "uint32",
+          "offset": 40,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 44,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 15,
+      "name": "bidOnTraditionalAuction",
+      "inputFields": [
+        {
+          "name": "price",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "NFTId",
+          "type": "uint32",
+          "offset": 8,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 12,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 16,
+      "name": "TransferShareManagementRights",
+      "inputFields": [
+        {
+          "name": "numberOfShares",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "newManagingContractIndex",
+          "type": "uint32",
+          "offset": 8,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "transferredNumberOfShares",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "returnCode",
+          "type": "uint32",
+          "offset": 8,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 12,
+      "outputSize": 12
+    },
+    {
+      "kind": "procedure",
+      "inputType": 17,
+      "name": "changeStatusOfMarketPlace",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 4
+    }
+  ],
+  "functions": [
+    {
+      "kind": "function",
+      "inputType": 18,
+      "name": "getNumberOfNFTForUser",
+      "inputFields": [
+        {
+          "name": "user",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "numberOfNFT",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 32,
+      "outputSize": 4
+    },
+    {
+      "kind": "function",
+      "inputType": 19,
+      "name": "getInfoOfNFTUserPossessed",
+      "inputFields": [
+        {
+          "name": "user",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "NFTNumber",
+          "type": "uint32",
+          "offset": 32,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "creator",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "possessor",
+          "type": "id",
+          "offset": 32,
+          "byteLength": 32
+        },
+        {
+          "name": "askUser",
+          "type": "id",
+          "offset": 64,
+          "byteLength": 32
+        },
+        {
+          "name": "creatorOfAuction",
+          "type": "id",
+          "offset": 96,
+          "byteLength": 32
+        },
+        {
+          "name": "salePrice",
+          "type": "sint64",
+          "offset": 128,
+          "byteLength": 8
+        },
+        {
+          "name": "askMaxPrice",
+          "type": "sint64",
+          "offset": 136,
+          "byteLength": 8
+        },
+        {
+          "name": "currentPriceOfAuction",
+          "type": "uint64",
+          "offset": 144,
+          "byteLength": 8
+        },
+        {
+          "name": "royalty",
+          "type": "uint32",
+          "offset": 152,
+          "byteLength": 4
+        },
+        {
+          "name": "NFTidForExchange",
+          "type": "uint32",
+          "offset": 156,
+          "byteLength": 4
+        },
+        {
+          "name": "URI",
+          "type": "array",
+          "offset": 160,
+          "byteLength": 64,
+          "arrayLength": 64,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        },
+        {
+          "name": "statusOfAuction",
+          "type": "uint8",
+          "offset": 224,
+          "byteLength": 1
+        },
+        {
+          "name": "yearAuctionStarted",
+          "type": "uint8",
+          "offset": 225,
+          "byteLength": 1
+        },
+        {
+          "name": "monthAuctionStarted",
+          "type": "uint8",
+          "offset": 226,
+          "byteLength": 1
+        },
+        {
+          "name": "dayAuctionStarted",
+          "type": "uint8",
+          "offset": 227,
+          "byteLength": 1
+        },
+        {
+          "name": "hourAuctionStarted",
+          "type": "uint8",
+          "offset": 228,
+          "byteLength": 1
+        },
+        {
+          "name": "minuteAuctionStarted",
+          "type": "uint8",
+          "offset": 229,
+          "byteLength": 1
+        },
+        {
+          "name": "secondAuctionStarted",
+          "type": "uint8",
+          "offset": 230,
+          "byteLength": 1
+        },
+        {
+          "name": "yearAuctionEnded",
+          "type": "uint8",
+          "offset": 231,
+          "byteLength": 1
+        },
+        {
+          "name": "monthAuctionEnded",
+          "type": "uint8",
+          "offset": 232,
+          "byteLength": 1
+        },
+        {
+          "name": "dayAuctionEnded",
+          "type": "uint8",
+          "offset": 233,
+          "byteLength": 1
+        },
+        {
+          "name": "hourAuctionEnded",
+          "type": "uint8",
+          "offset": 234,
+          "byteLength": 1
+        },
+        {
+          "name": "minuteAuctionEnded",
+          "type": "uint8",
+          "offset": 235,
+          "byteLength": 1
+        },
+        {
+          "name": "secondAuctionEnded",
+          "type": "uint8",
+          "offset": 236,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 36,
+      "outputSize": 237
+    },
+    {
+      "kind": "function",
+      "inputType": 20,
+      "name": "getInfoOfMarketplace",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "priceOfCFB",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "priceOfQubic",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "numberOfNFTIncoming",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "earnedQubic",
+          "type": "uint64",
+          "offset": 24,
+          "byteLength": 8
+        },
+        {
+          "name": "earnedCFB",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "numberOfCollection",
+          "type": "uint32",
+          "offset": 40,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfNFT",
+          "type": "uint32",
+          "offset": 44,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 48
+    },
+    {
+      "kind": "function",
+      "inputType": 21,
+      "name": "getInfoOfCollectionByCreator",
+      "inputFields": [
+        {
+          "name": "creator",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "orderOfCollection",
+          "type": "uint32",
+          "offset": 32,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "priceForDropMint",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "idOfCollection",
+          "type": "uint32",
+          "offset": 8,
+          "byteLength": 4
+        },
+        {
+          "name": "royalty",
+          "type": "uint32",
+          "offset": 12,
+          "byteLength": 4
+        },
+        {
+          "name": "currentSize",
+          "type": "sint32",
+          "offset": 16,
+          "byteLength": 4
+        },
+        {
+          "name": "maxSizeHoldingPerOneId",
+          "type": "uint32",
+          "offset": 20,
+          "byteLength": 4
+        },
+        {
+          "name": "URI",
+          "type": "array",
+          "offset": 24,
+          "byteLength": 64,
+          "arrayLength": 64,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        }
+      ],
+      "inputSize": 36,
+      "outputSize": 88
+    },
+    {
+      "kind": "function",
+      "inputType": 22,
+      "name": "getInfoOfCollectionById",
+      "inputFields": [
+        {
+          "name": "idOfCollection",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "creator",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "priceForDropMint",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "royalty",
+          "type": "uint32",
+          "offset": 40,
+          "byteLength": 4
+        },
+        {
+          "name": "currentSize",
+          "type": "sint32",
+          "offset": 44,
+          "byteLength": 4
+        },
+        {
+          "name": "maxSizeHoldingPerOneId",
+          "type": "uint32",
+          "offset": 48,
+          "byteLength": 4
+        },
+        {
+          "name": "URI",
+          "type": "array",
+          "offset": 52,
+          "byteLength": 64,
+          "arrayLength": 64,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 116
+    },
+    {
+      "kind": "function",
+      "inputType": 23,
+      "name": "getIncomingAuctions",
+      "inputFields": [
+        {
+          "name": "offset",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "count",
+          "type": "uint32",
+          "offset": 4,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "NFTId",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 4096,
+          "arrayLength": 1024,
+          "arrayItemType": "uint32",
+          "arrayItemByteLength": 4
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 4096
+    },
+    {
+      "kind": "function",
+      "inputType": 24,
+      "name": "getInfoOfNFTById",
+      "inputFields": [
+        {
+          "name": "NFTId",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "creator",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "possessor",
+          "type": "id",
+          "offset": 32,
+          "byteLength": 32
+        },
+        {
+          "name": "askUser",
+          "type": "id",
+          "offset": 64,
+          "byteLength": 32
+        },
+        {
+          "name": "creatorOfAuction",
+          "type": "id",
+          "offset": 96,
+          "byteLength": 32
+        },
+        {
+          "name": "salePrice",
+          "type": "sint64",
+          "offset": 128,
+          "byteLength": 8
+        },
+        {
+          "name": "askMaxPrice",
+          "type": "sint64",
+          "offset": 136,
+          "byteLength": 8
+        },
+        {
+          "name": "currentPriceOfAuction",
+          "type": "uint64",
+          "offset": 144,
+          "byteLength": 8
+        },
+        {
+          "name": "royalty",
+          "type": "uint32",
+          "offset": 152,
+          "byteLength": 4
+        },
+        {
+          "name": "NFTidForExchange",
+          "type": "uint32",
+          "offset": 156,
+          "byteLength": 4
+        },
+        {
+          "name": "URI",
+          "type": "array",
+          "offset": 160,
+          "byteLength": 64,
+          "arrayLength": 64,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        },
+        {
+          "name": "statusOfAuction",
+          "type": "uint8",
+          "offset": 224,
+          "byteLength": 1
+        },
+        {
+          "name": "yearAuctionStarted",
+          "type": "uint8",
+          "offset": 225,
+          "byteLength": 1
+        },
+        {
+          "name": "monthAuctionStarted",
+          "type": "uint8",
+          "offset": 226,
+          "byteLength": 1
+        },
+        {
+          "name": "dayAuctionStarted",
+          "type": "uint8",
+          "offset": 227,
+          "byteLength": 1
+        },
+        {
+          "name": "hourAuctionStarted",
+          "type": "uint8",
+          "offset": 228,
+          "byteLength": 1
+        },
+        {
+          "name": "minuteAuctionStarted",
+          "type": "uint8",
+          "offset": 229,
+          "byteLength": 1
+        },
+        {
+          "name": "secondAuctionStarted",
+          "type": "uint8",
+          "offset": 230,
+          "byteLength": 1
+        },
+        {
+          "name": "yearAuctionEnded",
+          "type": "uint8",
+          "offset": 231,
+          "byteLength": 1
+        },
+        {
+          "name": "monthAuctionEnded",
+          "type": "uint8",
+          "offset": 232,
+          "byteLength": 1
+        },
+        {
+          "name": "dayAuctionEnded",
+          "type": "uint8",
+          "offset": 233,
+          "byteLength": 1
+        },
+        {
+          "name": "hourAuctionEnded",
+          "type": "uint8",
+          "offset": 234,
+          "byteLength": 1
+        },
+        {
+          "name": "minuteAuctionEnded",
+          "type": "uint8",
+          "offset": 235,
+          "byteLength": 1
+        },
+        {
+          "name": "secondAuctionEnded",
+          "type": "uint8",
+          "offset": 236,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 237
+    },
+    {
+      "kind": "function",
+      "inputType": 25,
+      "name": "getUserCreatedCollection",
+      "inputFields": [
+        {
+          "name": "user",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "offset",
+          "type": "uint32",
+          "offset": 32,
+          "byteLength": 4
+        },
+        {
+          "name": "count",
+          "type": "uint32",
+          "offset": 36,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "collectionId",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 4096,
+          "arrayLength": 1024,
+          "arrayItemType": "uint32",
+          "arrayItemByteLength": 4
+        }
+      ],
+      "inputSize": 40,
+      "outputSize": 4096
+    },
+    {
+      "kind": "function",
+      "inputType": 26,
+      "name": "getUserCreatedNFT",
+      "inputFields": [
+        {
+          "name": "user",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "offset",
+          "type": "uint32",
+          "offset": 32,
+          "byteLength": 4
+        },
+        {
+          "name": "count",
+          "type": "uint32",
+          "offset": 36,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "NFTId",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 4096,
+          "arrayLength": 1024,
+          "arrayItemType": "uint32",
+          "arrayItemByteLength": 4
+        }
+      ],
+      "inputSize": 40,
+      "outputSize": 4096
+    }
+  ]
+}

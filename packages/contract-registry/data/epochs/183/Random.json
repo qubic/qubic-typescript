@@ -1,0 +1,27 @@
+{
+  "contractIndex": 3,
+  "contractName": "Random",
+  "effectiveFromEpoch": 183,
+  "effectiveToEpoch": null,
+  "registeredAt": "2026-05-13T12:07:59.774Z",
+  "structs": {},
+  "procedures": [
+    {
+      "kind": "procedure",
+      "inputType": 1,
+      "name": "RevealAndCommit",
+      "inputFields": [
+        {
+          "name": "committedDigest",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [],
+      "inputSize": 32,
+      "outputSize": 0
+    }
+  ],
+  "functions": []
+}

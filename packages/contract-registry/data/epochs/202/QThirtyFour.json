@@ -1,0 +1,537 @@
+{
+  "contractIndex": 22,
+  "contractName": "QThirtyFour",
+  "effectiveFromEpoch": 202,
+  "effectiveToEpoch": null,
+  "registeredAt": "2026-05-13T12:08:30.677Z",
+  "structs": {
+    "NextEpochData": {
+      "name": "NextEpochData",
+      "fields": [
+        {
+          "name": "newTicketPrice",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "newTargetJackpot",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "newSchedule",
+          "type": "uint8",
+          "offset": 16,
+          "byteLength": 1
+        },
+        {
+          "name": "newDrawHour",
+          "type": "uint8",
+          "offset": 17,
+          "byteLength": 1
+        }
+      ],
+      "byteLength": 18
+    },
+    "WinnerData": {
+      "name": "WinnerData",
+      "fields": [
+        {
+          "name": "winners",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 40960,
+          "arrayLength": 1024,
+          "arrayItemStructRef": "WinnerPlayerData",
+          "arrayItemByteLength": 40
+        },
+        {
+          "name": "winnerValues",
+          "type": "array",
+          "offset": 40960,
+          "byteLength": 4,
+          "arrayLength": 4,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        },
+        {
+          "name": "winnerCounter",
+          "type": "uint64",
+          "offset": 40964,
+          "byteLength": 8
+        },
+        {
+          "name": "epoch",
+          "type": "uint16",
+          "offset": 40972,
+          "byteLength": 2
+        }
+      ],
+      "byteLength": 40974
+    },
+    "PoolsSnapshot": {
+      "name": "PoolsSnapshot",
+      "fields": [
+        {
+          "name": "jackpot",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "reserve",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "targetJackpot",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "frActive",
+          "type": "uint8",
+          "offset": 24,
+          "byteLength": 1
+        },
+        {
+          "name": "roundsSinceK4",
+          "type": "uint16",
+          "offset": 25,
+          "byteLength": 2
+        }
+      ],
+      "byteLength": 27
+    },
+    "PlayerData": {
+      "name": "PlayerData",
+      "fields": [
+        {
+          "name": "player",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "randomValues",
+          "type": "array",
+          "offset": 32,
+          "byteLength": 4,
+          "arrayLength": 4,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        }
+      ],
+      "byteLength": 36
+    }
+  },
+  "procedures": [
+    {
+      "kind": "procedure",
+      "inputType": 3,
+      "name": "BuyTicket",
+      "inputFields": [
+        {
+          "name": "randomValues",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 4,
+          "arrayLength": 4,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 4,
+      "name": "SetPrice",
+      "inputFields": [
+        {
+          "name": "newPrice",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 5,
+      "name": "SetSchedule",
+      "inputFields": [
+        {
+          "name": "newSchedule",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 1,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 6,
+      "name": "SetDrawHour",
+      "inputFields": [
+        {
+          "name": "newDrawHour",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 1,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 7,
+      "name": "SetTargetJackpot",
+      "inputFields": [
+        {
+          "name": "newTargetJackpot",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 32,
+      "name": "SyncJackpot",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 1
+    }
+  ],
+  "functions": [
+    {
+      "kind": "function",
+      "inputType": 17,
+      "name": "GetTicketPrice",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "ticketPrice",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 8
+    },
+    {
+      "kind": "function",
+      "inputType": 18,
+      "name": "GetNextEpochData",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "nextEpochData",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 18,
+          "structRef": "NextEpochData"
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 18
+    },
+    {
+      "kind": "function",
+      "inputType": 19,
+      "name": "GetSchedule",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "schedule",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 1
+    },
+    {
+      "kind": "function",
+      "inputType": 20,
+      "name": "GetWinnerData",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "winnerData",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 40974,
+          "structRef": "WinnerData"
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 40974
+    },
+    {
+      "kind": "function",
+      "inputType": 21,
+      "name": "GetPools",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "pools",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 27,
+          "structRef": "PoolsSnapshot"
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 27
+    },
+    {
+      "kind": "function",
+      "inputType": 22,
+      "name": "GetDrawHour",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "drawHour",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 1
+    },
+    {
+      "kind": "function",
+      "inputType": 23,
+      "name": "GetState",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "currentState",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 1
+    },
+    {
+      "kind": "function",
+      "inputType": 26,
+      "name": "GetFees",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "teamFeePercent",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        },
+        {
+          "name": "distributionFeePercent",
+          "type": "uint8",
+          "offset": 1,
+          "byteLength": 1
+        },
+        {
+          "name": "winnerFeePercent",
+          "type": "uint8",
+          "offset": 2,
+          "byteLength": 1
+        },
+        {
+          "name": "burnPercent",
+          "type": "uint8",
+          "offset": 3,
+          "byteLength": 1
+        },
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 4,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 5
+    },
+    {
+      "kind": "function",
+      "inputType": 29,
+      "name": "EstimatePrizePayouts",
+      "inputFields": [
+        {
+          "name": "k2WinnerCount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "k3WinnerCount",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "k2PayoutPerWinner",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "k3PayoutPerWinner",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "k2MinFloor",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "k3MinFloor",
+          "type": "uint64",
+          "offset": 24,
+          "byteLength": 8
+        },
+        {
+          "name": "perWinnerCap",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "totalRevenue",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "k2Pool",
+          "type": "uint64",
+          "offset": 48,
+          "byteLength": 8
+        },
+        {
+          "name": "k3Pool",
+          "type": "uint64",
+          "offset": 56,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 16,
+      "outputSize": 64
+    },
+    {
+      "kind": "function",
+      "inputType": 30,
+      "name": "GetPlayers",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "players",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 36864,
+          "arrayLength": 1024,
+          "arrayItemStructRef": "PlayerData",
+          "arrayItemByteLength": 36
+        },
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 36864,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 36865
+    },
+    {
+      "kind": "function",
+      "inputType": 31,
+      "name": "GetWinningCombinationsHistory",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 1
+    }
+  ]
+}

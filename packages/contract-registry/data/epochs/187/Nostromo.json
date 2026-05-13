@@ -1,0 +1,921 @@
+{
+  "contractIndex": 14,
+  "contractName": "Nostromo",
+  "effectiveFromEpoch": 187,
+  "effectiveToEpoch": null,
+  "registeredAt": "2026-05-13T12:08:05.618Z",
+  "structs": {
+    "projectInfo": {
+      "name": "projectInfo",
+      "fields": [
+        {
+          "name": "creator",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "tokenName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "supplyOfToken",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "startDate",
+          "type": "uint32",
+          "offset": 48,
+          "byteLength": 4
+        },
+        {
+          "name": "endDate",
+          "type": "uint32",
+          "offset": 52,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfYes",
+          "type": "uint32",
+          "offset": 56,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfNo",
+          "type": "uint32",
+          "offset": 60,
+          "byteLength": 4
+        }
+      ],
+      "byteLength": 64
+    },
+    "fundaraisingInfo": {
+      "name": "fundaraisingInfo",
+      "fields": [
+        {
+          "name": "tokenPrice",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "soldAmount",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "requiredFunds",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "raisedFunds",
+          "type": "uint64",
+          "offset": 24,
+          "byteLength": 8
+        },
+        {
+          "name": "indexOfProject",
+          "type": "uint32",
+          "offset": 32,
+          "byteLength": 4
+        },
+        {
+          "name": "firstPhaseStartDate",
+          "type": "uint32",
+          "offset": 36,
+          "byteLength": 4
+        },
+        {
+          "name": "firstPhaseEndDate",
+          "type": "uint32",
+          "offset": 40,
+          "byteLength": 4
+        },
+        {
+          "name": "secondPhaseStartDate",
+          "type": "uint32",
+          "offset": 44,
+          "byteLength": 4
+        },
+        {
+          "name": "secondPhaseEndDate",
+          "type": "uint32",
+          "offset": 48,
+          "byteLength": 4
+        },
+        {
+          "name": "thirdPhaseStartDate",
+          "type": "uint32",
+          "offset": 52,
+          "byteLength": 4
+        },
+        {
+          "name": "thirdPhaseEndDate",
+          "type": "uint32",
+          "offset": 56,
+          "byteLength": 4
+        },
+        {
+          "name": "listingStartDate",
+          "type": "uint32",
+          "offset": 60,
+          "byteLength": 4
+        },
+        {
+          "name": "cliffEndDate",
+          "type": "uint32",
+          "offset": 64,
+          "byteLength": 4
+        },
+        {
+          "name": "vestingEndDate",
+          "type": "uint32",
+          "offset": 68,
+          "byteLength": 4
+        },
+        {
+          "name": "threshold",
+          "type": "uint8",
+          "offset": 72,
+          "byteLength": 1
+        },
+        {
+          "name": "TGE",
+          "type": "uint8",
+          "offset": 73,
+          "byteLength": 1
+        },
+        {
+          "name": "stepOfVesting",
+          "type": "uint8",
+          "offset": 74,
+          "byteLength": 1
+        }
+      ],
+      "byteLength": 75
+    },
+    "investInfo": {
+      "name": "investInfo",
+      "fields": [
+        {
+          "name": "investedAmount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "claimedAmount",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "indexOfFundraising",
+          "type": "uint32",
+          "offset": 16,
+          "byteLength": 4
+        }
+      ],
+      "byteLength": 20
+    }
+  },
+  "procedures": [
+    {
+      "kind": "procedure",
+      "inputType": 1,
+      "name": "registerInTier",
+      "inputFields": [
+        {
+          "name": "tierLevel",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "tierLevel",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 2,
+      "name": "logoutFromTier",
+      "inputFields": [],
+      "outputFields": [],
+      "inputSize": 0,
+      "outputSize": 0
+    },
+    {
+      "kind": "procedure",
+      "inputType": 3,
+      "name": "createProject",
+      "inputFields": [
+        {
+          "name": "tokenName",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "supply",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "startYear",
+          "type": "uint32",
+          "offset": 16,
+          "byteLength": 4
+        },
+        {
+          "name": "startMonth",
+          "type": "uint32",
+          "offset": 20,
+          "byteLength": 4
+        },
+        {
+          "name": "startDay",
+          "type": "uint32",
+          "offset": 24,
+          "byteLength": 4
+        },
+        {
+          "name": "startHour",
+          "type": "uint32",
+          "offset": 28,
+          "byteLength": 4
+        },
+        {
+          "name": "endYear",
+          "type": "uint32",
+          "offset": 32,
+          "byteLength": 4
+        },
+        {
+          "name": "endMonth",
+          "type": "uint32",
+          "offset": 36,
+          "byteLength": 4
+        },
+        {
+          "name": "endDay",
+          "type": "uint32",
+          "offset": 40,
+          "byteLength": 4
+        },
+        {
+          "name": "endHour",
+          "type": "uint32",
+          "offset": 44,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "indexOfProject",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 48,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 4,
+      "name": "voteInProject",
+      "inputFields": [
+        {
+          "name": "indexOfProject",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [],
+      "inputSize": 4,
+      "outputSize": 0
+    },
+    {
+      "kind": "procedure",
+      "inputType": 5,
+      "name": "createFundraising",
+      "inputFields": [
+        {
+          "name": "tokenPrice",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "soldAmount",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "requiredFunds",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "indexOfProject",
+          "type": "uint32",
+          "offset": 24,
+          "byteLength": 4
+        },
+        {
+          "name": "firstPhaseStartYear",
+          "type": "uint32",
+          "offset": 28,
+          "byteLength": 4
+        },
+        {
+          "name": "firstPhaseStartMonth",
+          "type": "uint32",
+          "offset": 32,
+          "byteLength": 4
+        },
+        {
+          "name": "firstPhaseStartDay",
+          "type": "uint32",
+          "offset": 36,
+          "byteLength": 4
+        },
+        {
+          "name": "firstPhaseStartHour",
+          "type": "uint32",
+          "offset": 40,
+          "byteLength": 4
+        },
+        {
+          "name": "firstPhaseEndYear",
+          "type": "uint32",
+          "offset": 44,
+          "byteLength": 4
+        },
+        {
+          "name": "firstPhaseEndMonth",
+          "type": "uint32",
+          "offset": 48,
+          "byteLength": 4
+        },
+        {
+          "name": "firstPhaseEndDay",
+          "type": "uint32",
+          "offset": 52,
+          "byteLength": 4
+        },
+        {
+          "name": "firstPhaseEndHour",
+          "type": "uint32",
+          "offset": 56,
+          "byteLength": 4
+        },
+        {
+          "name": "secondPhaseStartYear",
+          "type": "uint32",
+          "offset": 60,
+          "byteLength": 4
+        },
+        {
+          "name": "secondPhaseStartMonth",
+          "type": "uint32",
+          "offset": 64,
+          "byteLength": 4
+        },
+        {
+          "name": "secondPhaseStartDay",
+          "type": "uint32",
+          "offset": 68,
+          "byteLength": 4
+        },
+        {
+          "name": "secondPhaseStartHour",
+          "type": "uint32",
+          "offset": 72,
+          "byteLength": 4
+        },
+        {
+          "name": "secondPhaseEndYear",
+          "type": "uint32",
+          "offset": 76,
+          "byteLength": 4
+        },
+        {
+          "name": "secondPhaseEndMonth",
+          "type": "uint32",
+          "offset": 80,
+          "byteLength": 4
+        },
+        {
+          "name": "secondPhaseEndDay",
+          "type": "uint32",
+          "offset": 84,
+          "byteLength": 4
+        },
+        {
+          "name": "secondPhaseEndHour",
+          "type": "uint32",
+          "offset": 88,
+          "byteLength": 4
+        },
+        {
+          "name": "thirdPhaseStartYear",
+          "type": "uint32",
+          "offset": 92,
+          "byteLength": 4
+        },
+        {
+          "name": "thirdPhaseStartMonth",
+          "type": "uint32",
+          "offset": 96,
+          "byteLength": 4
+        },
+        {
+          "name": "thirdPhaseStartDay",
+          "type": "uint32",
+          "offset": 100,
+          "byteLength": 4
+        },
+        {
+          "name": "thirdPhaseStartHour",
+          "type": "uint32",
+          "offset": 104,
+          "byteLength": 4
+        },
+        {
+          "name": "thirdPhaseEndYear",
+          "type": "uint32",
+          "offset": 108,
+          "byteLength": 4
+        },
+        {
+          "name": "thirdPhaseEndMonth",
+          "type": "uint32",
+          "offset": 112,
+          "byteLength": 4
+        },
+        {
+          "name": "thirdPhaseEndDay",
+          "type": "uint32",
+          "offset": 116,
+          "byteLength": 4
+        },
+        {
+          "name": "thirdPhaseEndHour",
+          "type": "uint32",
+          "offset": 120,
+          "byteLength": 4
+        },
+        {
+          "name": "listingStartYear",
+          "type": "uint32",
+          "offset": 124,
+          "byteLength": 4
+        },
+        {
+          "name": "listingStartMonth",
+          "type": "uint32",
+          "offset": 128,
+          "byteLength": 4
+        },
+        {
+          "name": "listingStartDay",
+          "type": "uint32",
+          "offset": 132,
+          "byteLength": 4
+        },
+        {
+          "name": "listingStartHour",
+          "type": "uint32",
+          "offset": 136,
+          "byteLength": 4
+        },
+        {
+          "name": "cliffEndYear",
+          "type": "uint32",
+          "offset": 140,
+          "byteLength": 4
+        },
+        {
+          "name": "cliffEndMonth",
+          "type": "uint32",
+          "offset": 144,
+          "byteLength": 4
+        },
+        {
+          "name": "cliffEndDay",
+          "type": "uint32",
+          "offset": 148,
+          "byteLength": 4
+        },
+        {
+          "name": "cliffEndHour",
+          "type": "uint32",
+          "offset": 152,
+          "byteLength": 4
+        },
+        {
+          "name": "vestingEndYear",
+          "type": "uint32",
+          "offset": 156,
+          "byteLength": 4
+        },
+        {
+          "name": "vestingEndMonth",
+          "type": "uint32",
+          "offset": 160,
+          "byteLength": 4
+        },
+        {
+          "name": "vestingEndDay",
+          "type": "uint32",
+          "offset": 164,
+          "byteLength": 4
+        },
+        {
+          "name": "vestingEndHour",
+          "type": "uint32",
+          "offset": 168,
+          "byteLength": 4
+        },
+        {
+          "name": "threshold",
+          "type": "uint8",
+          "offset": 172,
+          "byteLength": 1
+        },
+        {
+          "name": "TGE",
+          "type": "uint8",
+          "offset": 173,
+          "byteLength": 1
+        },
+        {
+          "name": "stepOfVesting",
+          "type": "uint8",
+          "offset": 174,
+          "byteLength": 1
+        }
+      ],
+      "outputFields": [],
+      "inputSize": 175,
+      "outputSize": 0
+    },
+    {
+      "kind": "procedure",
+      "inputType": 6,
+      "name": "investInProject",
+      "inputFields": [
+        {
+          "name": "indexOfFundraising",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [],
+      "inputSize": 4,
+      "outputSize": 0
+    },
+    {
+      "kind": "procedure",
+      "inputType": 7,
+      "name": "claimToken",
+      "inputFields": [
+        {
+          "name": "amount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "indexOfFundraising",
+          "type": "uint32",
+          "offset": 8,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "claimedAmount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 12,
+      "outputSize": 8
+    },
+    {
+      "kind": "procedure",
+      "inputType": 8,
+      "name": "upgradeTier",
+      "inputFields": [
+        {
+          "name": "newTierLevel",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [],
+      "inputSize": 4,
+      "outputSize": 0
+    },
+    {
+      "kind": "procedure",
+      "inputType": 9,
+      "name": "TransferShareManagementRights",
+      "inputFields": [
+        {
+          "name": "numberOfShares",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "newManagingContractIndex",
+          "type": "uint32",
+          "offset": 8,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "transferredNumberOfShares",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 12,
+      "outputSize": 8
+    }
+  ],
+  "functions": [
+    {
+      "kind": "function",
+      "inputType": 10,
+      "name": "getStats",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "epochRevenue",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "numberOfRegister",
+          "type": "uint32",
+          "offset": 8,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 12
+    },
+    {
+      "kind": "function",
+      "inputType": 11,
+      "name": "getTierLevelByUser",
+      "inputFields": [
+        {
+          "name": "userId",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "tierLevel",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 32,
+      "outputSize": 1
+    },
+    {
+      "kind": "function",
+      "inputType": 12,
+      "name": "getUserVoteStatus",
+      "inputFields": [
+        {
+          "name": "userId",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "numberOfVotedProjects",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "projectIndexList",
+          "type": "array",
+          "offset": 4,
+          "byteLength": 512,
+          "arrayLength": 128,
+          "arrayItemType": "uint32",
+          "arrayItemByteLength": 4
+        }
+      ],
+      "inputSize": 32,
+      "outputSize": 516
+    },
+    {
+      "kind": "function",
+      "inputType": 13,
+      "name": "checkTokenCreatability",
+      "inputFields": [
+        {
+          "name": "tokenName",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [],
+      "inputSize": 8,
+      "outputSize": 0
+    },
+    {
+      "kind": "function",
+      "inputType": 14,
+      "name": "getNumberOfInvestedProjects",
+      "inputFields": [
+        {
+          "name": "userId",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "numberOfInvestedProjects",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 32,
+      "outputSize": 4
+    },
+    {
+      "kind": "function",
+      "inputType": 15,
+      "name": "getProjectByIndex",
+      "inputFields": [
+        {
+          "name": "indexOfProject",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "project",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 64,
+          "structRef": "projectInfo"
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 64
+    },
+    {
+      "kind": "function",
+      "inputType": 16,
+      "name": "getFundarasingByIndex",
+      "inputFields": [
+        {
+          "name": "indexOfFundarasing",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "fundarasing",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 75,
+          "structRef": "fundaraisingInfo"
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 75
+    },
+    {
+      "kind": "function",
+      "inputType": 17,
+      "name": "getProjectIndexListByCreator",
+      "inputFields": [
+        {
+          "name": "creator",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "indexListForProjects",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 512,
+          "arrayLength": 128,
+          "arrayItemType": "uint32",
+          "arrayItemByteLength": 4
+        }
+      ],
+      "inputSize": 32,
+      "outputSize": 512
+    },
+    {
+      "kind": "function",
+      "inputType": 18,
+      "name": "getInfoUserInvested",
+      "inputFields": [
+        {
+          "name": "investorId",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "listUserInvested",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 2560,
+          "arrayLength": 128,
+          "arrayItemStructRef": "investInfo",
+          "arrayItemByteLength": 20
+        }
+      ],
+      "inputSize": 32,
+      "outputSize": 2560
+    },
+    {
+      "kind": "function",
+      "inputType": 19,
+      "name": "getMaxClaimAmount",
+      "inputFields": [
+        {
+          "name": "investorId",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "indexOfFundraising",
+          "type": "uint32",
+          "offset": 32,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "amount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 36,
+      "outputSize": 8
+    }
+  ]
+}

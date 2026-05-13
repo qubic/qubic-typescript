@@ -27,6 +27,7 @@ const QPI_TYPE_MAP: Record<string, MappedType> = {
   uint8_t: { type: 'uint8', byteLength: 1 },
   char: { type: 'uint8', byteLength: 1 },
   bool: { type: 'uint8', byteLength: 1 },
+  bit: { type: 'uint8', byteLength: 1 }, // QPI::bit wraps a char
   sint8: { type: 'sint8', byteLength: 1 },
   int8_t: { type: 'sint8', byteLength: 1 },
   uint16: { type: 'uint16', byteLength: 2 },
@@ -48,6 +49,99 @@ const QPI_TYPE_MAP: Record<string, MappedType> = {
   id: { type: 'id', byteLength: 32 },
   m256i: { type: 'id', byteLength: 32 },
 }
+
+// Built-in QPI structs from qpi.h that appear as field types in contracts.
+// Sizes verified against static_assert statements in qpi.h.
+const QPI_NAMED_STRUCTS: NamedStruct[] = [
+  {
+    name: 'Entity',
+    byteLength: 64,
+    fields: [
+      { name: 'publicKey', type: 'id', offset: 0, byteLength: 32 },
+      { name: 'incomingAmount', type: 'sint64', offset: 32, byteLength: 8 },
+      { name: 'outgoingAmount', type: 'sint64', offset: 40, byteLength: 8 },
+      { name: 'numberOfIncomingTransfers', type: 'uint32', offset: 48, byteLength: 4 },
+      { name: 'numberOfOutgoingTransfers', type: 'uint32', offset: 52, byteLength: 4 },
+      { name: 'latestIncomingTransferTick', type: 'uint32', offset: 56, byteLength: 4 },
+      { name: 'latestOutgoingTransferTick', type: 'uint32', offset: 60, byteLength: 4 },
+    ],
+  },
+  // ProposalSingleVoteDataV1: static_assert(sizeof == 16)
+  {
+    name: 'ProposalSingleVoteDataV1',
+    byteLength: 16,
+    fields: [
+      { name: 'proposalIndex', type: 'uint16', offset: 0, byteLength: 2 },
+      { name: 'proposalType', type: 'uint16', offset: 2, byteLength: 2 },
+      { name: 'proposalTick', type: 'uint32', offset: 4, byteLength: 4 },
+      { name: 'voteValue', type: 'sint64', offset: 8, byteLength: 8 },
+    ],
+  },
+  { name: 'NoData', byteLength: 0, fields: [] },
+  // Asset: id issuer (32) + uint64 assetName (8) = 40
+  {
+    name: 'Asset',
+    byteLength: 40,
+    fields: [
+      { name: 'issuer', type: 'id', offset: 0, byteLength: 32 },
+      { name: 'assetName', type: 'uint64', offset: 32, byteLength: 8 },
+    ],
+  },
+  // DateAndTime: single uint64 value encoding year/month/day/hour/min/sec/ms = 8
+  {
+    name: 'DateAndTime',
+    byteLength: 8,
+    fields: [{ name: 'value', type: 'uint64', offset: 0, byteLength: 8 }],
+  },
+  // ProposalSummarizedVotingDataV1: static_assert(sizeof == 16 + 8*4 = 48)
+  // union { Array<uint32,8>; sint64 } occupies 32 bytes at offset 16
+  {
+    name: 'ProposalSummarizedVotingDataV1',
+    byteLength: 48,
+    fields: [
+      { name: 'proposalIndex', type: 'uint16', offset: 0, byteLength: 2 },
+      { name: 'optionCount', type: 'uint16', offset: 2, byteLength: 2 },
+      { name: 'proposalTick', type: 'uint32', offset: 4, byteLength: 4 },
+      { name: 'totalVotesAuthorized', type: 'uint32', offset: 8, byteLength: 4 },
+      { name: 'totalVotesCasted', type: 'uint32', offset: 12, byteLength: 4 },
+      {
+        name: 'optionVoteCount',
+        type: 'array',
+        offset: 16,
+        byteLength: 32,
+        arrayLength: 8,
+        arrayItemType: 'uint32',
+        arrayItemByteLength: 4,
+      },
+    ],
+  },
+  // ProposalDataV1<T>: static_assert(sizeof(ProposalDataV1<true>) == 256+8+64 = 328)
+  // Template param only controls constexpr bool, not struct layout — both <true> and <false> are 328 bytes.
+  {
+    name: 'ProposalDataV1',
+    byteLength: 328,
+    fields: [
+      { name: 'url', type: 'bytes', offset: 0, byteLength: 256 },
+      { name: 'epoch', type: 'uint16', offset: 256, byteLength: 2 },
+      { name: 'type', type: 'uint16', offset: 258, byteLength: 2 },
+      { name: 'tick', type: 'uint32', offset: 260, byteLength: 4 },
+      { name: 'data', type: 'bytes', offset: 264, byteLength: 64 },
+    ],
+  },
+  // ProposalDataYesNo: static_assert(sizeof == 256+8+40 = 304)
+  // union Data = max(Transfer: id(32)+sint64(8)=40, VariableOptions: uint64(8)+sint64(8)=16) = 40
+  {
+    name: 'ProposalDataYesNo',
+    byteLength: 304,
+    fields: [
+      { name: 'url', type: 'bytes', offset: 0, byteLength: 256 },
+      { name: 'epoch', type: 'uint16', offset: 256, byteLength: 2 },
+      { name: 'type', type: 'uint16', offset: 258, byteLength: 2 },
+      { name: 'tick', type: 'uint32', offset: 260, byteLength: 4 },
+      { name: 'data', type: 'bytes', offset: 264, byteLength: 40 },
+    ],
+  },
+]
 
 // ── Tree-sitter helpers ───────────────────────────────────────────────────────
 
@@ -146,6 +240,28 @@ function extractFields(
   const fields: BinaryField[] = []
   let offset = 0
 
+  // Pre-pass: register any inline struct definitions so they can be referenced as field types.
+  // Handles both bare `struct Foo { ... };` and `field_declaration` whose type is a struct.
+  for (const child of body.children as TsNode[]) {
+    let structNode: TsNode | null = null
+    if (child.type === 'struct_specifier') {
+      structNode = child
+    } else if (child.type === 'field_declaration') {
+      const typeNode = child.childForFieldName('type') as TsNode | null
+      if (typeNode?.type === 'struct_specifier') structNode = typeNode
+    }
+    if (!structNode) continue
+    const nameNode = structNode.childForFieldName('name') as TsNode | null
+    const bodyNode = structNode.childForFieldName('body') as TsNode | null
+    if (!nameNode || !bodyNode || namedStructs.has(nameNode.text)) continue
+    const inlineFields = extractFields(bodyNode, namedStructs, resolveSize)
+    namedStructs.set(nameNode.text, {
+      name: nameNode.text,
+      fields: inlineFields,
+      byteLength: inlineFields.reduce((s, f) => s + f.byteLength, 0),
+    })
+  }
+
   for (const child of body.children as TsNode[]) {
     if (child.type !== 'field_declaration') continue
 
@@ -156,7 +272,14 @@ function extractFields(
     const fieldName = declNode.text.trim()
     if (fieldName.startsWith('_')) continue
 
-    const typeName = typeNode.text.trim()
+    // When the type node is an inline struct_specifier, use the struct's name for lookup
+    // (the pre-pass should have already registered it in namedStructs).
+    const rawTypeName =
+      typeNode.type === 'struct_specifier'
+        ? ((typeNode.childForFieldName('name') as TsNode | null)?.text ?? typeNode.text)
+        : typeNode.text
+    // Strip known namespace qualifiers (QPI::, QPI::QPI::) that are transparent aliases
+    const typeName = rawTypeName.replace(/^(?:QPI::)+/, '')
 
     if (typeNode.type === 'template_type') {
       const templateName = findChildByType(typeNode, 'type_identifier')?.text
@@ -251,10 +374,46 @@ export function parseContractHeader(options: ParseHeaderOptions): ContractAbiVer
 
   const directStructs = collectDirectStructs(contractBody)
 
-  // Build named helper structs (two-pass so later structs can reference earlier ones)
+  // Pre-populate with QPI built-ins and global-scope structs from this header.
+  // Global structs (defined outside the contract body, e.g. QEARNLogger) are
+  // collected by scanning all top-level struct_specifiers that aren't the contract itself.
   const namedStructs = new Map<string, NamedStruct>()
+  for (const s of QPI_NAMED_STRUCTS) namedStructs.set(s.name, s)
+
+  for (const s of findAllByType(tree.rootNode, 'struct_specifier')) {
+    const nameNode = s.childForFieldName('name') as TsNode | null
+    const body = s.childForFieldName('body') as TsNode | null
+    if (!nameNode || !body) continue
+    const name = nameNode.text
+    if (namedStructs.has(name)) continue // already known
+    // Only collect top-level or file-scope structs (not inside the contract body)
+    if (contractBody.text.includes(body.text) && body.text.length > 20) continue
+    const fields = extractFields(body, namedStructs, resolveSize)
+    namedStructs.set(name, {
+      name,
+      fields,
+      byteLength: fields.reduce((s, f) => s + f.byteLength, 0),
+    })
+  }
+
+  // Resolve typedef aliases before building directStructs so that types like
+  // ProposalDataT (= ProposalDataV1<false>) are available when we extractFields on
+  // _output structs that reference them.
+  // Handles plain typedefs and template instantiation typedefs:
+  //   typedef NoData GetRevenueDonation_input;
+  //   typedef ProposalDataV1<false> ProposalDataT;  ← strip angle brackets, look up base name
+  for (const m of headerSource.matchAll(/typedef\s+(\w+)(?:<[^>]*>)?\s+(\w+)\s*;/g)) {
+    const [, src, alias] = m
+    if (!src || !alias) continue
+    if (namedStructs.has(alias)) continue
+    const resolved = namedStructs.get(src)
+    if (resolved) namedStructs.set(alias, { ...resolved, name: alias })
+  }
+
+  // Build struct map from direct children — includes _input/_output so they
+  // can be used as field types inside other structs (e.g. _RemoveGapsInLockerArray_input)
   for (const { name, node } of directStructs) {
-    if (name.endsWith('_input') || name.endsWith('_output')) continue
+    if (namedStructs.has(name)) continue
     const body = node.childForFieldName('body') as TsNode | null
     if (!body) continue
     const fields = extractFields(body, namedStructs, resolveSize)

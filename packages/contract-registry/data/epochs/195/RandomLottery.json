@@ -1,0 +1,344 @@
+{
+  "contractIndex": 16,
+  "contractName": "RandomLottery",
+  "effectiveFromEpoch": 195,
+  "effectiveToEpoch": null,
+  "registeredAt": "2026-05-13T12:08:15.896Z",
+  "structs": {
+    "WinnerInfo": {
+      "name": "WinnerInfo",
+      "fields": [
+        {
+          "name": "winnerAddress",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "revenue",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "tick",
+          "type": "uint32",
+          "offset": 40,
+          "byteLength": 4
+        },
+        {
+          "name": "epoch",
+          "type": "uint16",
+          "offset": 44,
+          "byteLength": 2
+        },
+        {
+          "name": "dayOfWeek",
+          "type": "uint8",
+          "offset": 46,
+          "byteLength": 1
+        }
+      ],
+      "byteLength": 47
+    },
+    "NextEpochData": {
+      "name": "NextEpochData",
+      "fields": [
+        {
+          "name": "newPrice",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "schedule",
+          "type": "uint8",
+          "offset": 8,
+          "byteLength": 1
+        }
+      ],
+      "byteLength": 9
+    }
+  },
+  "procedures": [
+    {
+      "kind": "procedure",
+      "inputType": 1,
+      "name": "BuyTicket",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 11,
+      "name": "SetPrice",
+      "inputFields": [
+        {
+          "name": "newPrice",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 12,
+      "name": "SetSchedule",
+      "inputFields": [
+        {
+          "name": "newSchedule",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 1,
+      "outputSize": 1
+    }
+  ],
+  "functions": [
+    {
+      "kind": "function",
+      "inputType": 2,
+      "name": "GetFees",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "teamFeePercent",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        },
+        {
+          "name": "distributionFeePercent",
+          "type": "uint8",
+          "offset": 1,
+          "byteLength": 1
+        },
+        {
+          "name": "winnerFeePercent",
+          "type": "uint8",
+          "offset": 2,
+          "byteLength": 1
+        },
+        {
+          "name": "burnPercent",
+          "type": "uint8",
+          "offset": 3,
+          "byteLength": 1
+        },
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 4,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 5
+    },
+    {
+      "kind": "function",
+      "inputType": 3,
+      "name": "GetPlayers",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "players",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 32768,
+          "arrayLength": 1024,
+          "arrayItemType": "id",
+          "arrayItemByteLength": 32
+        },
+        {
+          "name": "playerCounter",
+          "type": "uint64",
+          "offset": 32768,
+          "byteLength": 8
+        },
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 32776,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 32777
+    },
+    {
+      "kind": "function",
+      "inputType": 5,
+      "name": "GetWinners",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "winners",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 48128,
+          "arrayLength": 1024,
+          "arrayItemStructRef": "WinnerInfo",
+          "arrayItemByteLength": 47
+        },
+        {
+          "name": "winnersCounter",
+          "type": "uint64",
+          "offset": 48128,
+          "byteLength": 8
+        },
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 48136,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 48137
+    },
+    {
+      "kind": "function",
+      "inputType": 6,
+      "name": "GetTicketPrice",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "ticketPrice",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 8
+    },
+    {
+      "kind": "function",
+      "inputType": 7,
+      "name": "GetMaxNumberOfPlayers",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "numberOfPlayers",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 8
+    },
+    {
+      "kind": "function",
+      "inputType": 8,
+      "name": "GetState",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "currentState",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 1
+    },
+    {
+      "kind": "function",
+      "inputType": 9,
+      "name": "GetBalance",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "balance",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 8
+    },
+    {
+      "kind": "function",
+      "inputType": 13,
+      "name": "GetNextEpochData",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "nextEpochData",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 9,
+          "structRef": "NextEpochData"
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 9
+    },
+    {
+      "kind": "function",
+      "inputType": 14,
+      "name": "GetDrawHour",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "drawHour",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 1
+    },
+    {
+      "kind": "function",
+      "inputType": 15,
+      "name": "GetSchedule",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "schedule",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 1
+    }
+  ]
+}

@@ -1,0 +1,480 @@
+{
+  "contractIndex": 23,
+  "contractName": "QDuel",
+  "effectiveFromEpoch": 208,
+  "effectiveToEpoch": null,
+  "registeredAt": "2026-05-13T12:08:46.883Z",
+  "structs": {
+    "RoomInfo": {
+      "name": "RoomInfo",
+      "fields": [
+        {
+          "name": "roomId",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "owner",
+          "type": "id",
+          "offset": 32,
+          "byteLength": 32
+        },
+        {
+          "name": "allowedPlayer",
+          "type": "id",
+          "offset": 64,
+          "byteLength": 32
+        },
+        {
+          "name": "amount",
+          "type": "sint64",
+          "offset": 96,
+          "byteLength": 8
+        },
+        {
+          "name": "closeTimer",
+          "type": "uint64",
+          "offset": 104,
+          "byteLength": 8
+        }
+      ],
+      "byteLength": 112
+    },
+    "WinnerData": {
+      "name": "WinnerData",
+      "fields": [
+        {
+          "name": "player1",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "player2",
+          "type": "id",
+          "offset": 32,
+          "byteLength": 32
+        },
+        {
+          "name": "winner",
+          "type": "id",
+          "offset": 64,
+          "byteLength": 32
+        },
+        {
+          "name": "revenue",
+          "type": "uint64",
+          "offset": 96,
+          "byteLength": 8
+        }
+      ],
+      "byteLength": 104
+    }
+  },
+  "procedures": [
+    {
+      "kind": "procedure",
+      "inputType": 3,
+      "name": "CreateRoom",
+      "inputFields": [
+        {
+          "name": "allowedPlayer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "stake",
+          "type": "sint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "raiseStep",
+          "type": "sint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "maxStake",
+          "type": "sint64",
+          "offset": 48,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 56,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 10,
+      "name": "ConnectToRoom",
+      "inputFields": [
+        {
+          "name": "roomId",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "winner",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 32,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 32,
+      "outputSize": 33
+    },
+    {
+      "kind": "procedure",
+      "inputType": 11,
+      "name": "CloseRoom",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 13,
+      "name": "SetPercentFees",
+      "inputFields": [
+        {
+          "name": "devFeePercentBps",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        },
+        {
+          "name": "burnFeePercentBps",
+          "type": "uint8",
+          "offset": 1,
+          "byteLength": 1
+        },
+        {
+          "name": "shareholdersFeePercentBps",
+          "type": "uint8",
+          "offset": 2,
+          "byteLength": 1
+        },
+        {
+          "name": "percentScale",
+          "type": "uint16",
+          "offset": 3,
+          "byteLength": 2
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 5,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 15,
+      "name": "SetTTLHours",
+      "inputFields": [
+        {
+          "name": "ttlHours",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 1,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 18,
+      "name": "Deposit",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 19,
+      "name": "Withdraw",
+      "inputFields": [
+        {
+          "name": "amount",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 1
+    }
+  ],
+  "functions": [
+    {
+      "kind": "function",
+      "inputType": 7,
+      "name": "CalculateRevenue",
+      "inputFields": [
+        {
+          "name": "amount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "devFee",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "burnFee",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "shareholdersFee",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "winner",
+          "type": "uint64",
+          "offset": 24,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 32
+    },
+    {
+      "kind": "function",
+      "inputType": 12,
+      "name": "GetPercentFees",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "devFeePercentBps",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        },
+        {
+          "name": "burnFeePercentBps",
+          "type": "uint8",
+          "offset": 1,
+          "byteLength": 1
+        },
+        {
+          "name": "shareholdersFeePercentBps",
+          "type": "uint8",
+          "offset": 2,
+          "byteLength": 1
+        },
+        {
+          "name": "percentScale",
+          "type": "uint16",
+          "offset": 3,
+          "byteLength": 2
+        },
+        {
+          "name": "returnCode",
+          "type": "uint64",
+          "offset": 5,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 13
+    },
+    {
+      "kind": "function",
+      "inputType": 14,
+      "name": "GetRooms",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "rooms",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 57344,
+          "arrayLength": 512,
+          "arrayItemStructRef": "RoomInfo",
+          "arrayItemByteLength": 112
+        },
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 57344,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 57345
+    },
+    {
+      "kind": "function",
+      "inputType": 16,
+      "name": "GetTTLHours",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "ttlHours",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        },
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 1,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 2
+    },
+    {
+      "kind": "function",
+      "inputType": 17,
+      "name": "GetUserProfile",
+      "inputFields": [
+        {
+          "name": "userId",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "roomId",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "depositedAmount",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "locked",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "stake",
+          "type": "uint64",
+          "offset": 48,
+          "byteLength": 8
+        },
+        {
+          "name": "raiseStep",
+          "type": "uint64",
+          "offset": 56,
+          "byteLength": 8
+        },
+        {
+          "name": "maxStake",
+          "type": "uint64",
+          "offset": 64,
+          "byteLength": 8
+        },
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 72,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 32,
+      "outputSize": 73
+    },
+    {
+      "kind": "function",
+      "inputType": 20,
+      "name": "GetLastWinners",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "winners",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 13312,
+          "arrayLength": 128,
+          "arrayItemStructRef": "WinnerData",
+          "arrayItemByteLength": 104
+        },
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 13312,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 13313
+    }
+  ]
+}

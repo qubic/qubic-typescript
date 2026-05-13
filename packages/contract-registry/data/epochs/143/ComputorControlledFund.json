@@ -1,0 +1,105 @@
+{
+  "contractIndex": 8,
+  "contractName": "ComputorControlledFund",
+  "effectiveFromEpoch": 143,
+  "effectiveToEpoch": null,
+  "registeredAt": "2026-05-13T12:07:28.520Z",
+  "structs": {},
+  "procedures": [
+    {
+      "kind": "procedure",
+      "inputType": 0,
+      "name": "SetProposal",
+      "inputFields": [],
+      "outputFields": [],
+      "inputSize": 0,
+      "outputSize": 0
+    },
+    {
+      "kind": "procedure",
+      "inputType": 0,
+      "name": "Vote",
+      "inputFields": [],
+      "outputFields": [],
+      "inputSize": 0,
+      "outputSize": 0
+    }
+  ],
+  "functions": [
+    {
+      "kind": "function",
+      "inputType": 0,
+      "name": "GetProposalIndices",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "numOfIndices",
+          "type": "uint16",
+          "offset": 0,
+          "byteLength": 2
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 2
+    },
+    {
+      "kind": "function",
+      "inputType": 0,
+      "name": "GetProposal",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "proposerPubicKey",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 32
+    },
+    {
+      "kind": "function",
+      "inputType": 0,
+      "name": "GetVote",
+      "inputFields": [],
+      "outputFields": [],
+      "inputSize": 0,
+      "outputSize": 0
+    },
+    {
+      "kind": "function",
+      "inputType": 0,
+      "name": "GetVotingResults",
+      "inputFields": [],
+      "outputFields": [],
+      "inputSize": 0,
+      "outputSize": 0
+    },
+    {
+      "kind": "function",
+      "inputType": 0,
+      "name": "GetLatestTransfers",
+      "inputFields": [],
+      "outputFields": [],
+      "inputSize": 0,
+      "outputSize": 0
+    },
+    {
+      "kind": "function",
+      "inputType": 0,
+      "name": "GetProposalFee",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "proposalFee",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 4
+    }
+  ]
+}

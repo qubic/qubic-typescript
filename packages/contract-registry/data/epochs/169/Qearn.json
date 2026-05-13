@@ -1,0 +1,360 @@
+{
+  "contractIndex": 9,
+  "contractName": "Qearn",
+  "effectiveFromEpoch": 169,
+  "effectiveToEpoch": null,
+  "registeredAt": "2026-05-13T12:07:45.545Z",
+  "structs": {},
+  "procedures": [
+    {
+      "kind": "procedure",
+      "inputType": 6,
+      "name": "lock",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 7,
+      "name": "unlock",
+      "inputFields": [
+        {
+          "name": "amount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "lockedEpoch",
+          "type": "uint32",
+          "offset": 8,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 12,
+      "outputSize": 4
+    }
+  ],
+  "functions": [
+    {
+      "kind": "function",
+      "inputType": 1,
+      "name": "getLockInfoPerEpoch",
+      "inputFields": [
+        {
+          "name": "Epoch",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "lockedAmount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "bonusAmount",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "currentLockedAmount",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "currentBonusAmount",
+          "type": "uint64",
+          "offset": 24,
+          "byteLength": 8
+        },
+        {
+          "name": "yield",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 40
+    },
+    {
+      "kind": "function",
+      "inputType": 2,
+      "name": "getUserLockedInfo",
+      "inputFields": [
+        {
+          "name": "user",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "epoch",
+          "type": "uint32",
+          "offset": 32,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "lockedAmount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 36,
+      "outputSize": 8
+    },
+    {
+      "kind": "function",
+      "inputType": 3,
+      "name": "getStateOfRound",
+      "inputFields": [
+        {
+          "name": "epoch",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "state",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 4
+    },
+    {
+      "kind": "function",
+      "inputType": 4,
+      "name": "getUserLockStatus",
+      "inputFields": [
+        {
+          "name": "user",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "status",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 32,
+      "outputSize": 8
+    },
+    {
+      "kind": "function",
+      "inputType": 5,
+      "name": "getEndedStatus",
+      "inputFields": [
+        {
+          "name": "user",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "fullyUnlockedAmount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "fullyRewardedAmount",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "earlyUnlockedAmount",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "earlyRewardedAmount",
+          "type": "uint64",
+          "offset": 24,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 32,
+      "outputSize": 32
+    },
+    {
+      "kind": "function",
+      "inputType": 8,
+      "name": "getStatsPerEpoch",
+      "inputFields": [
+        {
+          "name": "epoch",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "earlyUnlockedAmount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "earlyUnlockedPercent",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "totalLockedAmount",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "averageAPY",
+          "type": "uint64",
+          "offset": 24,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 32
+    },
+    {
+      "kind": "function",
+      "inputType": 9,
+      "name": "getBurnedAndBoostedStats",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "burnedAmount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "averageBurnedPercent",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "boostedAmount",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "averageBoostedPercent",
+          "type": "uint64",
+          "offset": 24,
+          "byteLength": 8
+        },
+        {
+          "name": "rewardedAmount",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "averageRewardedPercent",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 48
+    },
+    {
+      "kind": "function",
+      "inputType": 10,
+      "name": "getBurnedAndBoostedStatsPerEpoch",
+      "inputFields": [
+        {
+          "name": "epoch",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "burnedAmount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "burnedPercent",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "boostedAmount",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "boostedPercent",
+          "type": "uint64",
+          "offset": 24,
+          "byteLength": 8
+        },
+        {
+          "name": "rewardedAmount",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "rewardedPercent",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 48
+    }
+  ]
+}

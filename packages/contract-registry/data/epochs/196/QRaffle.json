@@ -1,0 +1,650 @@
+{
+  "contractIndex": 19,
+  "contractName": "QRaffle",
+  "effectiveFromEpoch": 196,
+  "effectiveToEpoch": null,
+  "registeredAt": "2026-05-13T12:08:17.100Z",
+  "structs": {},
+  "procedures": [
+    {
+      "kind": "procedure",
+      "inputType": 1,
+      "name": "registerInSystem",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 2,
+      "name": "logoutInSystem",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 3,
+      "name": "submitEntryAmount",
+      "inputFields": [
+        {
+          "name": "amount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 4,
+      "name": "submitProposal",
+      "inputFields": [
+        {
+          "name": "tokenIssuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "tokenName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "entryAmount",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 48,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 5,
+      "name": "voteInProposal",
+      "inputFields": [
+        {
+          "name": "indexOfProposal",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 6,
+      "name": "depositInQuRaffle",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 7,
+      "name": "depositInTokenRaffle",
+      "inputFields": [
+        {
+          "name": "indexOfTokenRaffle",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 8,
+      "name": "TransferShareManagementRights",
+      "inputFields": [
+        {
+          "name": "tokenIssuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "tokenName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "numberOfShares",
+          "type": "sint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "newManagingContractIndex",
+          "type": "uint32",
+          "offset": 48,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "transferredNumberOfShares",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 52,
+      "outputSize": 8
+    }
+  ],
+  "functions": [
+    {
+      "kind": "function",
+      "inputType": 9,
+      "name": "getRegisters",
+      "inputFields": [
+        {
+          "name": "offset",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "limit",
+          "type": "uint32",
+          "offset": 4,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "register1",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 32,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 36
+    },
+    {
+      "kind": "function",
+      "inputType": 10,
+      "name": "getAnalytics",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "currentQuRaffleAmount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "totalBurnAmount",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "totalCharityAmount",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "totalShareholderAmount",
+          "type": "uint64",
+          "offset": 24,
+          "byteLength": 8
+        },
+        {
+          "name": "totalRegisterAmount",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "totalFeeAmount",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "totalWinnerAmount",
+          "type": "uint64",
+          "offset": 48,
+          "byteLength": 8
+        },
+        {
+          "name": "largestWinnerAmount",
+          "type": "uint64",
+          "offset": 56,
+          "byteLength": 8
+        },
+        {
+          "name": "numberOfRegisters",
+          "type": "uint32",
+          "offset": 64,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfProposals",
+          "type": "uint32",
+          "offset": 68,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfQuRaffleMembers",
+          "type": "uint32",
+          "offset": 72,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfActiveTokenRaffle",
+          "type": "uint32",
+          "offset": 76,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfEndedTokenRaffle",
+          "type": "uint32",
+          "offset": 80,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfEntryAmountSubmitted",
+          "type": "uint32",
+          "offset": 84,
+          "byteLength": 4
+        },
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 88,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 92
+    },
+    {
+      "kind": "function",
+      "inputType": 11,
+      "name": "getActiveProposal",
+      "inputFields": [
+        {
+          "name": "indexOfProposal",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "tokenIssuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "proposer",
+          "type": "id",
+          "offset": 32,
+          "byteLength": 32
+        },
+        {
+          "name": "tokenName",
+          "type": "uint64",
+          "offset": 64,
+          "byteLength": 8
+        },
+        {
+          "name": "entryAmount",
+          "type": "uint64",
+          "offset": 72,
+          "byteLength": 8
+        },
+        {
+          "name": "nYes",
+          "type": "uint32",
+          "offset": 80,
+          "byteLength": 4
+        },
+        {
+          "name": "nNo",
+          "type": "uint32",
+          "offset": 84,
+          "byteLength": 4
+        },
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 88,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 92
+    },
+    {
+      "kind": "function",
+      "inputType": 12,
+      "name": "getEndedTokenRaffle",
+      "inputFields": [
+        {
+          "name": "indexOfRaffle",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "epochWinner",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "tokenIssuer",
+          "type": "id",
+          "offset": 32,
+          "byteLength": 32
+        },
+        {
+          "name": "tokenName",
+          "type": "uint64",
+          "offset": 64,
+          "byteLength": 8
+        },
+        {
+          "name": "entryAmount",
+          "type": "uint64",
+          "offset": 72,
+          "byteLength": 8
+        },
+        {
+          "name": "numberOfMembers",
+          "type": "uint32",
+          "offset": 80,
+          "byteLength": 4
+        },
+        {
+          "name": "winnerIndex",
+          "type": "uint32",
+          "offset": 84,
+          "byteLength": 4
+        },
+        {
+          "name": "epoch",
+          "type": "uint32",
+          "offset": 88,
+          "byteLength": 4
+        },
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 92,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 96
+    },
+    {
+      "kind": "function",
+      "inputType": 13,
+      "name": "getEpochRaffleIndexes",
+      "inputFields": [
+        {
+          "name": "epoch",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "StartIndex",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "EndIndex",
+          "type": "uint32",
+          "offset": 4,
+          "byteLength": 4
+        },
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 8,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 12
+    },
+    {
+      "kind": "function",
+      "inputType": 14,
+      "name": "getEndedQuRaffle",
+      "inputFields": [
+        {
+          "name": "epoch",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "epochWinner",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "receivedAmount",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "entryAmount",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "numberOfMembers",
+          "type": "uint32",
+          "offset": 48,
+          "byteLength": 4
+        },
+        {
+          "name": "winnerIndex",
+          "type": "uint32",
+          "offset": 52,
+          "byteLength": 4
+        },
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 56,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 60
+    },
+    {
+      "kind": "function",
+      "inputType": 15,
+      "name": "getActiveTokenRaffle",
+      "inputFields": [
+        {
+          "name": "indexOfTokenRaffle",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "tokenIssuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "tokenName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "entryAmount",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "numberOfMembers",
+          "type": "uint32",
+          "offset": 48,
+          "byteLength": 4
+        },
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 52,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 56
+    },
+    {
+      "kind": "function",
+      "inputType": 16,
+      "name": "getQuRaffleEntryAmountPerUser",
+      "inputFields": [
+        {
+          "name": "user",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "entryAmount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 8,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 32,
+      "outputSize": 12
+    },
+    {
+      "kind": "function",
+      "inputType": 17,
+      "name": "getQuRaffleEntryAverageAmount",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "entryAverageAmount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 8,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 12
+    }
+  ]
+}

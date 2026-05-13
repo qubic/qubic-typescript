@@ -1,0 +1,571 @@
+{
+  "contractIndex": 24,
+  "contractName": "Pulse",
+  "effectiveFromEpoch": 205,
+  "effectiveToEpoch": null,
+  "registeredAt": "2026-05-13T12:08:43.608Z",
+  "structs": {
+    "WinnerInfo": {
+      "name": "WinnerInfo",
+      "fields": [
+        {
+          "name": "winnerAddress",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "revenue",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "epoch",
+          "type": "uint16",
+          "offset": 40,
+          "byteLength": 2
+        }
+      ],
+      "byteLength": 42
+    }
+  },
+  "procedures": [
+    {
+      "kind": "procedure",
+      "inputType": 2,
+      "name": "BuyTicket",
+      "inputFields": [
+        {
+          "name": "digits",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 0,
+          "arrayLength": 0,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 7,
+      "name": "BuyRandomTickets",
+      "inputFields": [
+        {
+          "name": "count",
+          "type": "uint16",
+          "offset": 0,
+          "byteLength": 2
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 2,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 11,
+      "name": "DepositAutoParticipation",
+      "inputFields": [
+        {
+          "name": "amount",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "desiredTickets",
+          "type": "sint16",
+          "offset": 8,
+          "byteLength": 2
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 10,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 12,
+      "name": "WithdrawAutoParticipation",
+      "inputFields": [
+        {
+          "name": "amount",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 13,
+      "name": "SetAutoConfig",
+      "inputFields": [
+        {
+          "name": "desiredTickets",
+          "type": "sint16",
+          "offset": 0,
+          "byteLength": 2
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 2,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 14,
+      "name": "SetAutoLimits",
+      "inputFields": [
+        {
+          "name": "maxTicketsPerUser",
+          "type": "uint16",
+          "offset": 0,
+          "byteLength": 2
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 2,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 25,
+      "name": "SetPrice",
+      "inputFields": [
+        {
+          "name": "newPrice",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 26,
+      "name": "SetSchedule",
+      "inputFields": [
+        {
+          "name": "newSchedule",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 1,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 27,
+      "name": "SetDrawHour",
+      "inputFields": [
+        {
+          "name": "newDrawHour",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 1,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 28,
+      "name": "SetFees",
+      "inputFields": [
+        {
+          "name": "devPercent",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        },
+        {
+          "name": "burnPercent",
+          "type": "uint8",
+          "offset": 1,
+          "byteLength": 1
+        },
+        {
+          "name": "shareholdersPercent",
+          "type": "uint8",
+          "offset": 2,
+          "byteLength": 1
+        },
+        {
+          "name": "rlShareholdersPercent",
+          "type": "uint8",
+          "offset": 3,
+          "byteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 29,
+      "name": "SetQHeartHoldLimit",
+      "inputFields": [
+        {
+          "name": "newQHeartHoldLimit",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 1
+    }
+  ],
+  "functions": [
+    {
+      "kind": "function",
+      "inputType": 9,
+      "name": "GetAutoParticipation",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "deposit",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "desiredTickets",
+          "type": "uint16",
+          "offset": 8,
+          "byteLength": 2
+        },
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 10,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 11
+    },
+    {
+      "kind": "function",
+      "inputType": 10,
+      "name": "GetAutoStats",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "autoParticipantsCounter",
+          "type": "uint16",
+          "offset": 0,
+          "byteLength": 2
+        },
+        {
+          "name": "totalAutoDeposits",
+          "type": "uint64",
+          "offset": 2,
+          "byteLength": 8
+        },
+        {
+          "name": "autoStartIndex",
+          "type": "sint64",
+          "offset": 10,
+          "byteLength": 8
+        },
+        {
+          "name": "maxAutoTicketsPerUser",
+          "type": "uint16",
+          "offset": 18,
+          "byteLength": 2
+        },
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 20,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 21
+    },
+    {
+      "kind": "function",
+      "inputType": 15,
+      "name": "GetTicketPrice",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "ticketPrice",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 8
+    },
+    {
+      "kind": "function",
+      "inputType": 16,
+      "name": "GetSchedule",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "schedule",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 1
+    },
+    {
+      "kind": "function",
+      "inputType": 17,
+      "name": "GetDrawHour",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "drawHour",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 1
+    },
+    {
+      "kind": "function",
+      "inputType": 18,
+      "name": "GetFees",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "devPercent",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        },
+        {
+          "name": "burnPercent",
+          "type": "uint8",
+          "offset": 1,
+          "byteLength": 1
+        },
+        {
+          "name": "shareholdersPercent",
+          "type": "uint8",
+          "offset": 2,
+          "byteLength": 1
+        },
+        {
+          "name": "rlShareholdersPercent",
+          "type": "uint8",
+          "offset": 3,
+          "byteLength": 1
+        },
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 4,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 5
+    },
+    {
+      "kind": "function",
+      "inputType": 19,
+      "name": "GetQHeartHoldLimit",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "qheartHoldLimit",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 8
+    },
+    {
+      "kind": "function",
+      "inputType": 20,
+      "name": "GetQHeartWallet",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "wallet",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 32
+    },
+    {
+      "kind": "function",
+      "inputType": 21,
+      "name": "GetWinningDigits",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "digits",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 0,
+          "arrayLength": 0,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 0
+    },
+    {
+      "kind": "function",
+      "inputType": 22,
+      "name": "GetBalance",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "balance",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 8
+    },
+    {
+      "kind": "function",
+      "inputType": 24,
+      "name": "GetWinners",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "winners",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 43008,
+          "arrayLength": 1024,
+          "arrayItemStructRef": "WinnerInfo",
+          "arrayItemByteLength": 42
+        },
+        {
+          "name": "winnersCounter",
+          "type": "uint64",
+          "offset": 43008,
+          "byteLength": 8
+        },
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 43016,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 43017
+    }
+  ]
+}

@@ -1,0 +1,697 @@
+{
+  "contractIndex": 25,
+  "contractName": "VottunBridge",
+  "effectiveFromEpoch": 207,
+  "effectiveToEpoch": null,
+  "registeredAt": "2026-05-13T12:08:46.094Z",
+  "structs": {
+    "OrderResponse": {
+      "name": "OrderResponse",
+      "fields": [
+        {
+          "name": "originAccount",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "destinationAccount",
+          "type": "array",
+          "offset": 32,
+          "byteLength": 64,
+          "arrayLength": 64,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        },
+        {
+          "name": "orderId",
+          "type": "uint64",
+          "offset": 96,
+          "byteLength": 8
+        },
+        {
+          "name": "amount",
+          "type": "uint64",
+          "offset": 104,
+          "byteLength": 8
+        },
+        {
+          "name": "memo",
+          "type": "array",
+          "offset": 112,
+          "byteLength": 64,
+          "arrayLength": 64,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        },
+        {
+          "name": "sourceChain",
+          "type": "uint32",
+          "offset": 176,
+          "byteLength": 4
+        },
+        {
+          "name": "qubicDestination",
+          "type": "id",
+          "offset": 180,
+          "byteLength": 32
+        },
+        {
+          "name": "status",
+          "type": "uint8",
+          "offset": 212,
+          "byteLength": 1
+        }
+      ],
+      "byteLength": 213
+    },
+    "AdminProposal": {
+      "name": "AdminProposal",
+      "fields": [
+        {
+          "name": "proposalId",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "proposalType",
+          "type": "uint8",
+          "offset": 8,
+          "byteLength": 1
+        },
+        {
+          "name": "targetAddress",
+          "type": "id",
+          "offset": 9,
+          "byteLength": 32
+        },
+        {
+          "name": "oldAddress",
+          "type": "id",
+          "offset": 41,
+          "byteLength": 32
+        },
+        {
+          "name": "amount",
+          "type": "uint64",
+          "offset": 73,
+          "byteLength": 8
+        },
+        {
+          "name": "approvals",
+          "type": "array",
+          "offset": 81,
+          "byteLength": 512,
+          "arrayLength": 16,
+          "arrayItemType": "id",
+          "arrayItemByteLength": 32
+        },
+        {
+          "name": "approvalsCount",
+          "type": "uint8",
+          "offset": 593,
+          "byteLength": 1
+        }
+      ],
+      "byteLength": 594
+    },
+    "BridgeOrder": {
+      "name": "BridgeOrder",
+      "fields": [
+        {
+          "name": "qubicSender",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "qubicDestination",
+          "type": "id",
+          "offset": 32,
+          "byteLength": 32
+        },
+        {
+          "name": "ethAddress",
+          "type": "array",
+          "offset": 64,
+          "byteLength": 64,
+          "arrayLength": 64,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        },
+        {
+          "name": "orderId",
+          "type": "uint64",
+          "offset": 128,
+          "byteLength": 8
+        },
+        {
+          "name": "amount",
+          "type": "uint64",
+          "offset": 136,
+          "byteLength": 8
+        },
+        {
+          "name": "orderType",
+          "type": "uint8",
+          "offset": 144,
+          "byteLength": 1
+        },
+        {
+          "name": "status",
+          "type": "uint8",
+          "offset": 145,
+          "byteLength": 1
+        }
+      ],
+      "byteLength": 146
+    }
+  },
+  "procedures": [
+    {
+      "kind": "procedure",
+      "inputType": 1,
+      "name": "createOrder",
+      "inputFields": [
+        {
+          "name": "qubicDestination",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "amount",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "ethAddress",
+          "type": "array",
+          "offset": 40,
+          "byteLength": 64,
+          "arrayLength": 64,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "status",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        },
+        {
+          "name": "orderId",
+          "type": "uint64",
+          "offset": 1,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 104,
+      "outputSize": 9
+    },
+    {
+      "kind": "procedure",
+      "inputType": 3,
+      "name": "completeOrder",
+      "inputFields": [
+        {
+          "name": "orderId",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "status",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 4,
+      "name": "refundOrder",
+      "inputFields": [
+        {
+          "name": "orderId",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "status",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 5,
+      "name": "transferToContract",
+      "inputFields": [
+        {
+          "name": "amount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "orderId",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "status",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 16,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 10,
+      "name": "createProposal",
+      "inputFields": [
+        {
+          "name": "proposalType",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        },
+        {
+          "name": "targetAddress",
+          "type": "id",
+          "offset": 1,
+          "byteLength": 32
+        },
+        {
+          "name": "oldAddress",
+          "type": "id",
+          "offset": 33,
+          "byteLength": 32
+        },
+        {
+          "name": "amount",
+          "type": "uint64",
+          "offset": 65,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "status",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        },
+        {
+          "name": "proposalId",
+          "type": "uint64",
+          "offset": 1,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 73,
+      "outputSize": 9
+    },
+    {
+      "kind": "procedure",
+      "inputType": 11,
+      "name": "approveProposal",
+      "inputFields": [
+        {
+          "name": "proposalId",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "status",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 13,
+      "name": "cancelProposal",
+      "inputFields": [
+        {
+          "name": "proposalId",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "status",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 15,
+      "name": "addLiquidity",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "status",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        },
+        {
+          "name": "addedAmount",
+          "type": "uint64",
+          "offset": 1,
+          "byteLength": 8
+        },
+        {
+          "name": "totalLocked",
+          "type": "uint64",
+          "offset": 9,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 17
+    }
+  ],
+  "functions": [
+    {
+      "kind": "function",
+      "inputType": 2,
+      "name": "getTotalReceivedTokens",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "totalTokens",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 8
+    },
+    {
+      "kind": "function",
+      "inputType": 6,
+      "name": "getAvailableFees",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "availableFees",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "totalEarnedFees",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "totalDistributedFees",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 24
+    },
+    {
+      "kind": "function",
+      "inputType": 7,
+      "name": "getOrder",
+      "inputFields": [
+        {
+          "name": "orderId",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "status",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        },
+        {
+          "name": "order",
+          "type": "struct",
+          "offset": 1,
+          "byteLength": 213,
+          "structRef": "OrderResponse"
+        },
+        {
+          "name": "message",
+          "type": "array",
+          "offset": 214,
+          "byteLength": 32,
+          "arrayLength": 32,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 246
+    },
+    {
+      "kind": "function",
+      "inputType": 8,
+      "name": "getContractInfo",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "managers",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 512,
+          "arrayLength": 16,
+          "arrayItemType": "id",
+          "arrayItemByteLength": 32
+        },
+        {
+          "name": "nextOrderId",
+          "type": "uint64",
+          "offset": 512,
+          "byteLength": 8
+        },
+        {
+          "name": "lockedTokens",
+          "type": "uint64",
+          "offset": 520,
+          "byteLength": 8
+        },
+        {
+          "name": "totalReceivedTokens",
+          "type": "uint64",
+          "offset": 528,
+          "byteLength": 8
+        },
+        {
+          "name": "earnedFees",
+          "type": "uint64",
+          "offset": 536,
+          "byteLength": 8
+        },
+        {
+          "name": "tradeFeeBillionths",
+          "type": "uint32",
+          "offset": 544,
+          "byteLength": 4
+        },
+        {
+          "name": "sourceChain",
+          "type": "uint32",
+          "offset": 548,
+          "byteLength": 4
+        },
+        {
+          "name": "firstOrders",
+          "type": "array",
+          "offset": 552,
+          "byteLength": 2336,
+          "arrayLength": 16,
+          "arrayItemStructRef": "BridgeOrder",
+          "arrayItemByteLength": 146
+        },
+        {
+          "name": "totalOrdersFound",
+          "type": "uint64",
+          "offset": 2888,
+          "byteLength": 8
+        },
+        {
+          "name": "emptySlots",
+          "type": "uint64",
+          "offset": 2896,
+          "byteLength": 8
+        },
+        {
+          "name": "multisigAdmins",
+          "type": "array",
+          "offset": 2904,
+          "byteLength": 512,
+          "arrayLength": 16,
+          "arrayItemType": "id",
+          "arrayItemByteLength": 32
+        },
+        {
+          "name": "numberOfAdmins",
+          "type": "uint8",
+          "offset": 3416,
+          "byteLength": 1
+        },
+        {
+          "name": "requiredApprovals",
+          "type": "uint8",
+          "offset": 3417,
+          "byteLength": 1
+        },
+        {
+          "name": "totalProposals",
+          "type": "uint64",
+          "offset": 3418,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 3426
+    },
+    {
+      "kind": "function",
+      "inputType": 9,
+      "name": "getTotalLockedTokens",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "totalLockedTokens",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 8
+    },
+    {
+      "kind": "function",
+      "inputType": 12,
+      "name": "getProposal",
+      "inputFields": [
+        {
+          "name": "proposalId",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "status",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        },
+        {
+          "name": "proposal",
+          "type": "struct",
+          "offset": 1,
+          "byteLength": 594,
+          "structRef": "AdminProposal"
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 595
+    },
+    {
+      "kind": "function",
+      "inputType": 14,
+      "name": "getOrderByDetails",
+      "inputFields": [
+        {
+          "name": "ethAddress",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 64,
+          "arrayLength": 64,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        },
+        {
+          "name": "amount",
+          "type": "uint64",
+          "offset": 64,
+          "byteLength": 8
+        },
+        {
+          "name": "status",
+          "type": "uint8",
+          "offset": 72,
+          "byteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "status",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        },
+        {
+          "name": "orderId",
+          "type": "uint64",
+          "offset": 1,
+          "byteLength": 8
+        },
+        {
+          "name": "qubicDestination",
+          "type": "id",
+          "offset": 9,
+          "byteLength": 32
+        }
+      ],
+      "inputSize": 73,
+      "outputSize": 41
+    }
+  ]
+}

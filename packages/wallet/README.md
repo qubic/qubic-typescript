@@ -22,12 +22,17 @@ bun add @qubic.ts/wallet
 
 ## Relationship to other packages
 
-```
-@qubic.ts/types
-      │
-@qubic.ts/crypto   @qubic.ts/tx
-      │                  │
-      └──── @qubic.ts/wallet ────┘
+```mermaid
+graph TD
+  types["@qubic.ts/types"]
+  crypto["@qubic.ts/crypto"]
+  tx["@qubic.ts/tx"]
+  wallet["@qubic.ts/wallet"]
+
+  types --> crypto
+  types --> tx
+  crypto --> wallet
+  tx --> wallet
 ```
 
 The wallet layer consumes `@qubic.ts/crypto` for key operations and `@qubic.ts/tx` for constructing transactions, providing a unified interface for application code.

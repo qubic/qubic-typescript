@@ -155,12 +155,16 @@ console.log('64-byte digest:', digest64)
 **Why is `sign` async?** The `async` marker is intentional forward-compatibility: future runtime targets (e.g. browser WebCrypto, hardware security modules) may provide native SchnorrQ primitives via a `Promise`-based API. The current implementation resolves synchronously.
 
 **Key derivation pipeline:**
-```
-seed (55 lowercase chars)
-  → seedBytes (subtract 'a'=97 from each char code)
-  → subseed = k12(seedBytes, 32)
-  → privateKey = k12(subseed, 32)
-  → point = FourQ.scalarBaseMult(privateKey)
-  → publicKey = FourQ.pointMarshal(point)   // 32 bytes
-  → identity = publicKeyToIdentity(publicKey) // 60 chars
+
+```mermaid
+graph LR
+  seed["seed<br/><sub>55 lowercase chars</sub>"]
+  seedBytes["seedBytes<br/><sub>char − 'a' per byte</sub>"]
+  subseed["subseed<br/><sub>k12(seedBytes, 32)</sub>"]
+  privateKey["privateKey<br/><sub>k12(subseed, 32)</sub>"]
+  point["point<br/><sub>FourQ.scalarBaseMult</sub>"]
+  publicKey["publicKey<br/><sub>32 bytes</sub>"]
+  identity["identity<br/><sub>60 chars</sub>"]
+
+  seed --> seedBytes --> subseed --> privateKey --> point --> publicKey --> identity
 ```

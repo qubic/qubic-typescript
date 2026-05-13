@@ -30,20 +30,32 @@ bun run lint      # lint + format (biome)
 
 ## Package dependency graph
 
-```
-@qubic.ts/types          (no deps — install anywhere)
-       │
-       ├── @qubic.ts/crypto      (K12, SchnorrQ, FourQ)
-       │        │
-       │        └── @qubic.ts/tx         (transaction builder/signer)
-       │
-       ├── @qubic.ts/rpc         (REST gateway client)
-       │
-       ├── @qubic.ts/registry    (ABI registry + binary codec)
-       │        │
-       │        └── @qubic.ts/contracts  (generated contract wrappers)
-       │
-       └── @qubic.ts/bob         (live node client)
+```mermaid
+graph TD
+  types["@qubic.ts/types<br/><sub>no deps — install anywhere</sub>"]
+  crypto["@qubic.ts/crypto<br/><sub>K12 · SchnorrQ · FourQ</sub>"]
+  tx["@qubic.ts/tx<br/><sub>transaction builder/signer</sub>"]
+  rpc["@qubic.ts/rpc<br/><sub>REST gateway client</sub>"]
+  registry["@qubic.ts/registry<br/><sub>ABI registry + binary codec</sub>"]
+  contracts["@qubic.ts/contracts<br/><sub>generated contract wrappers</sub>"]
+  bob["@qubic.ts/bob<br/><sub>live node client</sub>"]
+  wallet["@qubic.ts/wallet<br/><sub>key management</sub>"]
+  events["@qubic.ts/events<br/><sub>typed event bus</sub>"]
+  react["@qubic.ts/react<br/><sub>React hooks</sub>"]
+
+  types --> crypto
+  types --> rpc
+  types --> registry
+  types --> bob
+  crypto --> tx
+  crypto --> wallet
+  tx --> wallet
+  registry --> contracts
+  rpc --> contracts
+  rpc --> events
+  bob --> events
+  wallet --> react
+  events --> react
 ```
 
 ## End-to-end example: build and broadcast a contract call
@@ -171,25 +183,28 @@ const payload = qx.buildAddToAskOrderInput({
 
 ## Monorepo structure
 
-```
-packages/
-  types/             @qubic.ts/types      — branded primitives, protocol constants
-  crypto/            @qubic.ts/crypto     — K12, SchnorrQ, FourQ key derivation
-  tx/                @qubic.ts/tx         — transaction builder and signer
-  rpc/               @qubic.ts/rpc        — RPC gateway REST client
-  bob/               @qubic.ts/bob        — live node JSON-RPC + WebSocket client
-  registry/          @qubic.ts/registry   — ABI registry + binary codec
-  contracts/         @qubic.ts/contracts  — generated typed contract wrappers
-  wallet/            @qubic.ts/wallet     — wallet and key management
-  events/            @qubic.ts/events     — typed event bus
-  tcp/               @qubic.ts/tcp        — raw TCP transport
-  react/             @qubic.ts/react      — React hooks and context providers
-apps/
-  registry-cli/      CLI tool for the ABI registry
-planning/            Architecture and design documents
-resources/
-  core/              qubic/core reference (C++ contracts, OpenAPI schemas)
-  static/            Static data (contract list, etc.)
+```mermaid
+graph LR
+  subgraph packages
+    types["types/\n@qubic.ts/types"]
+    crypto["crypto/\n@qubic.ts/crypto"]
+    tx["tx/\n@qubic.ts/tx"]
+    rpc["rpc/\n@qubic.ts/rpc"]
+    bob["bob/\n@qubic.ts/bob"]
+    registry["registry/\n@qubic.ts/registry"]
+    contracts["contracts/\n@qubic.ts/contracts"]
+    wallet["wallet/\n@qubic.ts/wallet"]
+    events["events/\n@qubic.ts/events"]
+    tcp["tcp/\n@qubic.ts/tcp"]
+    react["react/\n@qubic.ts/react"]
+  end
+  subgraph apps
+    cli["registry-cli/"]
+  end
+  subgraph resources
+    core["core/ — C++ contracts & OpenAPI schemas"]
+    static["static/ — contract list & metadata"]
+  end
 ```
 
 ## Tooling

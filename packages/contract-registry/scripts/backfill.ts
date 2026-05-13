@@ -14,7 +14,7 @@ import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { parseArgs } from 'node:util'
 import type { ContractAbiVersion, ContractRegistry } from '../src/types.js'
-import { cloneAtRef, fetchCoreTags, tagToEpoch } from './_git-utils.js'
+import { cloneAtRef, fetchCoreTags } from './_git-utils.js'
 import { parseContractHeader } from './_parse-header.js'
 
 const { values: args } = parseArgs({
@@ -111,28 +111,20 @@ async function runLocal() {
 
 // ── Mode: --from-epoch ────────────────────────────────────────────────────────
 
+function readEpochFromDir(dir: string): number | null {
+  try {
+    const settings = readFileSync(join(dir, 'src/public_settings.h'), 'utf-8')
+    const m = settings.match(/^#define\s+EPOCH\s+(\d+)/m)
+    return m ? Number(m[1]) : null
+  } catch {
+    return null
+  }
+}
+
 async function runFromEpoch(fromEpoch: number, toEpoch: number) {
   console.log('Fetching qubic/core tags…')
   const allTags = await fetchCoreTags(args.token !== undefined ? { token: args.token } : undefined)
-
-  // Group tags by epoch: keep only the last patch per epoch
-  const tagByEpoch = new Map<number, string>()
-  for (const tag of allTags) {
-    const epoch = tagToEpoch(tag)
-    if (epoch !== null) tagByEpoch.set(epoch, tag) // later tags overwrite earlier patches
-  }
-
-  // Build sorted list of epochs in range
-  const epochs = [...tagByEpoch.keys()]
-    .filter((e) => e >= fromEpoch && e <= toEpoch)
-    .sort((a, b) => a - b)
-
-  if (epochs.length === 0) {
-    console.warn(`No tags found for epochs ${fromEpoch}–${toEpoch}`)
-    return
-  }
-
-  console.log(`Processing ${epochs.length} epochs (${epochs[0]}–${epochs[epochs.length - 1]})…`)
+  console.log(`Found ${allTags.length} tags. Scanning for epoch range ${fromEpoch}–${toEpoch}…`)
 
   // Registry accumulation: start from existing registry or fresh
   let existing: ContractRegistry = {
@@ -155,27 +147,36 @@ async function runFromEpoch(fromEpoch: number, toEpoch: number) {
   const current = new Map<number, { fingerprint: string; version: ContractAbiVersion }>()
   const newVersions: ContractAbiVersion[] = []
 
-  for (const epoch of epochs) {
-    const tag = tagByEpoch.get(epoch)
-    if (!tag) continue
+  // Track the last seen epoch so we can skip duplicate-epoch tags efficiently.
+  // Tags are in semver order; multiple tags can map to the same epoch (patch releases).
+  // We process each tag, read the actual epoch from public_settings.h, and deduplicate.
+  const processedEpochs = new Set<number>()
 
-    // Filter to contracts active at this epoch
-    const activeContracts = contracts.filter((sc) => sc.firstUseEpoch <= epoch)
-    if (activeContracts.length === 0) continue
-
-    process.stdout.write(`  Epoch ${epoch} (${tag}): `)
-
+  for (const tag of allTags) {
     let dir: string | null = null
     let cleanup: (() => Promise<void>) | null = null
+
     try {
-      ;({ dir, cleanup } = await cloneAtRef({ ref: tag, paths: ['src/contracts'] }))
+      ;({ dir, cleanup } = await cloneAtRef({
+        ref: tag,
+        paths: ['src/public_settings.h', 'src/contracts'],
+      }))
     } catch (e) {
-      console.warn(`clone failed: ${e instanceof Error ? e.message : e}`)
+      console.warn(`  ${tag}: clone failed: ${e instanceof Error ? e.message : e}`)
       continue
     }
 
-    let changes = 0
     try {
+      const epoch = readEpochFromDir(dir)
+      if (epoch === null || epoch < fromEpoch || epoch > toEpoch) continue
+
+      // Filter to contracts active at this epoch
+      const activeContracts = contracts.filter((sc) => sc.firstUseEpoch <= epoch)
+      if (activeContracts.length === 0) continue
+
+      process.stdout.write(`  Epoch ${epoch} (${tag}): `)
+
+      let changes = 0
       for (const sc of activeContracts) {
         let headerSource: string
         try {
@@ -200,23 +201,23 @@ async function runFromEpoch(fromEpoch: number, toEpoch: number) {
         const prev = current.get(sc.contractIndex)
 
         if (prev === undefined) {
-          // First time seeing this contract
           current.set(sc.contractIndex, { fingerprint: fp, version })
           newVersions.push(version)
           changes++
         } else if (fp !== prev.fingerprint) {
-          // ABI changed — close previous, open new
+          // ABI changed — close previous version, open new
           prev.version.effectiveToEpoch = epoch - 1
           current.set(sc.contractIndex, { fingerprint: fp, version })
           newVersions.push(version)
           changes++
         }
-        // No change: do nothing (version range stays open)
       }
+
+      processedEpochs.add(epoch)
+      console.log(`${changes} change(s)`)
     } finally {
       await cleanup?.()
     }
-    console.log(`${changes} change(s)`)
   }
 
   // Merge new versions with existing
@@ -224,7 +225,9 @@ async function runFromEpoch(fromEpoch: number, toEpoch: number) {
     (a, b) => a.contractIndex - b.contractIndex || a.effectiveFromEpoch - b.effectiveFromEpoch,
   )
 
-  console.log(`\nTotal new version entries: ${newVersions.length}`)
+  console.log(
+    `\nProcessed ${processedEpochs.size} unique epochs. New version entries: ${newVersions.length}`,
+  )
   writeRegistry({ schemaVersion: 1, updatedAt: new Date().toISOString(), versions: allVersions })
 }
 

@@ -1,6 +1,6 @@
 // @generated — do not edit by hand. Run `bun run generate` to regenerate.
-import type { BinaryField, FieldValue, NamedStruct } from '@qubic.ts/contract-registry'
-import { buildPayload, decodePayload } from '@qubic.ts/contract-registry'
+import type { BinaryField, FieldValue, NamedStruct } from '@qubic.ts/registry'
+import { buildPayload, decodePayload } from '@qubic.ts/registry'
 import type { QubicRpcError } from '@qubic.ts/rpc'
 import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
 import type { Result } from '../result.js'

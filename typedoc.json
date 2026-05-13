@@ -8,7 +8,7 @@
     "packages/rpc",
     "packages/bob",
     "packages/contracts",
-    "packages/contract-registry",
+    "packages/registry",
     "packages/events",
     "packages/wallet",
     "packages/tcp",

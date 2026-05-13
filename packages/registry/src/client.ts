@@ -40,7 +40,7 @@ export function createRegistryClient(options: RegistryClientOptions = {}): Regis
   const ttlMs = options.ttlMs ?? DEFAULT_TTL
   const fetchFn = options.fetch ?? globalThis.fetch
 
-  const STORAGE_KEY = `@qubic.ts/contract-registry:${url}`
+  const STORAGE_KEY = `@qubic.ts/registry:${url}`
 
   async function fetchRegistry(): Promise<ContractRegistry> {
     const res = await fetchFn(url)

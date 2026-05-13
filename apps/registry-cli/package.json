@@ -9,7 +9,7 @@
     "start": "bun src/index.ts"
   },
   "dependencies": {
-    "@qubic.ts/contract-registry": "workspace:^"
+    "@qubic.ts/registry": "workspace:^"
   },
   "devDependencies": {
     "typescript": "*"

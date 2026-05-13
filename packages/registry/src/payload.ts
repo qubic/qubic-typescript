@@ -237,7 +237,15 @@ function encodeField(
             )
           }
         } else {
-          encodeScalar(itemType, field.name, value[i] as FieldValue, buf, view, itemOffset, identityToPublicKey)
+          encodeScalar(
+            itemType,
+            field.name,
+            value[i] as FieldValue,
+            buf,
+            view,
+            itemOffset,
+            identityToPublicKey,
+          )
         }
       }
       break

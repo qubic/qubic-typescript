@@ -1,6 +1,6 @@
 // @generated — do not edit by hand. Run `bun run generate` to regenerate.
-import type { BinaryField, FieldValue, NamedStruct } from '@qubic.ts/contract-registry'
-import { buildPayload, decodePayload } from '@qubic.ts/contract-registry'
+import type { BinaryField, FieldValue, NamedStruct } from '@qubic.ts/registry'
+import { buildPayload, decodePayload } from '@qubic.ts/registry'
 
 export const MULTI_SIGN_VAULT_CONTRACT_INDEX = 11
 

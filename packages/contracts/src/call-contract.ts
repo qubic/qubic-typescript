@@ -1,5 +1,5 @@
-import type { BinaryField, FieldValue, NamedStruct } from '@qubic.ts/contract-registry'
-import { buildPayload, decodePayload } from '@qubic.ts/contract-registry'
+import type { BinaryField, FieldValue, NamedStruct } from '@qubic.ts/registry'
+import { buildPayload, decodePayload } from '@qubic.ts/registry'
 import { QubicRpcError } from '@qubic.ts/rpc'
 import type { QuerySmartContractRequest, QuerySmartContractResponse } from '@qubic.ts/rpc'
 import { err, ok } from './result.js'

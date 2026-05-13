@@ -1,13 +1,8 @@
 import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import type {
-  BinaryField,
-  ContractAbiVersion,
-  FieldType,
-  NamedStruct,
-} from '@qubic.ts/contract-registry'
+import type { BinaryField, ContractAbiVersion, FieldType, NamedStruct } from '@qubic.ts/registry'
 
-const epochsDir = join(import.meta.dir, '../../contract-registry/data/epochs')
+const epochsDir = join(import.meta.dir, '../../registry/data/epochs')
 
 // Find the highest-numbered epoch folder
 const epochDirs = readdirSync(epochsDir, { withFileTypes: true })
@@ -160,8 +155,8 @@ for (const version of versions) {
 
   const lines: string[] = [
     '// @generated — do not edit by hand. Run `bun run generate` to regenerate.',
-    "import type { BinaryField, FieldValue, NamedStruct } from '@qubic.ts/contract-registry'",
-    "import { buildPayload, decodePayload } from '@qubic.ts/contract-registry'",
+    "import type { BinaryField, FieldValue, NamedStruct } from '@qubic.ts/registry'",
+    "import { buildPayload, decodePayload } from '@qubic.ts/registry'",
     ...(needsCallRuntime
       ? [
           "import type { QubicRpcError } from '@qubic.ts/rpc'",

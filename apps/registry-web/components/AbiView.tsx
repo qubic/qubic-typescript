@@ -1,10 +1,111 @@
 'use client'
-import type { ContractAbiVersion, ContractCallBase, NamedStruct } from '@qubic.ts/registry'
+import type {
+  BinaryField,
+  ContractAbiVersion,
+  ContractCallBase,
+  NamedStruct,
+} from '@qubic.ts/registry'
 import { useState } from 'react'
 import { CopyButton } from './CopyButton'
 import { FieldTable } from './FieldTable'
 
-function MethodBlock({ call, kind }: { call: ContractCallBase; kind: 'procedure' | 'function' }) {
+// ── Type helpers ─────────────────────────────────────────
+
+function tsTypeFor(f: BinaryField): string {
+  switch (f.type) {
+    case 'uint64':
+    case 'uint128':
+    case 'sint64':
+      return 'bigint'
+    case 'id':
+      return 'string'
+    case 'bytes':
+      return 'Uint8Array'
+    case 'array': {
+      const ref = f.arrayItemStructRef
+      const base = f.arrayItemType
+      let inner: string
+      if (ref) {
+        inner = ref
+      } else if (base === 'uint64' || base === 'sint64' || base === 'uint128') {
+        inner = 'bigint'
+      } else if (base === 'id') {
+        inner = 'string'
+      } else {
+        inner = 'number'
+      }
+      return f.arrayLength ? `${inner}[${f.arrayLength}]` : `${inner}[]`
+    }
+    case 'struct':
+      return f.structRef ?? 'object'
+    default:
+      return 'number'
+  }
+}
+
+function buildSnippet(call: ContractCallBase, contractIndex: number): string {
+  const ins = call.inputFields ?? []
+  const outs = call.outputFields ?? []
+  const cap = call.name.charAt(0).toUpperCase() + call.name.slice(1)
+  const lines: string[] = []
+
+  lines.push(`// ${call.name}  ·  inputType: ${call.inputType}  ·  ${call.kind}`)
+  if (call.description) lines.push(`// ${call.description}`)
+
+  if (ins.length > 0) {
+    lines.push(`\ninterface ${cap}Input {`)
+    for (const f of ins) {
+      lines.push(`  ${f.name}: ${tsTypeFor(f).padEnd(12)}// ${f.type} · ${f.byteLength}B`)
+    }
+    lines.push('}')
+  }
+
+  if (outs.length > 0) {
+    lines.push(`\ninterface ${cap}Output {`)
+    for (const f of outs) {
+      lines.push(`  ${f.name}: ${tsTypeFor(f).padEnd(12)}// ${f.type} · ${f.byteLength}B`)
+    }
+    lines.push('}')
+  }
+
+  if (call.kind === 'function') {
+    const body =
+      ins.length > 0
+        ? `{"contractIndex":${contractIndex},"inputType":${call.inputType},"requestData":"<base64 input>"}`
+        : `{"contractIndex":${contractIndex},"inputType":${call.inputType}}`
+    lines.push(
+      '\n// query via RPC:',
+      `curl -s 'https://rpc.qubic.org/v1/querySmartContract' \\`,
+      `  -H 'Content-Type: application/json' \\`,
+      `  -d '${body}'`,
+    )
+  } else {
+    lines.push(
+      '\n// invoke via @qubic.ts/rpc (requires signed transaction):',
+      'rpc.sendTransaction({',
+      `  destId: CONTRACT_IDS[${contractIndex}],`,
+      `  inputType: ${call.inputType},`,
+      ins.length > 0 ? `  input: encode${cap}Input({...})` : '  // no input fields',
+      '})',
+    )
+    if (call.requiresAmount) {
+      lines.push('\n// Note: requiresAmount — tx.amount is used as the invocation reward')
+    }
+  }
+
+  return lines.join('\n')
+}
+
+// ── Method block ─────────────────────────────────────────
+
+function MethodBlock({
+  call,
+  contractIndex,
+}: {
+  call: ContractCallBase
+  contractIndex: number
+}) {
+  const [showCode, setShowCode] = useState(false)
   const ins = call.inputFields ?? []
   const outs = call.outputFields ?? []
   const hasIn = ins.length > 0
@@ -12,13 +113,15 @@ function MethodBlock({ call, kind }: { call: ContractCallBase; kind: 'procedure'
   const bodyClass = !hasIn && !hasOut ? 'empty' : !hasIn || !hasOut ? 'solo' : ''
 
   return (
-    <div className="method" id={`${kind}-${call.name}`}>
+    <div className="method" id={`${call.kind}-${call.name}`}>
       <div className="method-head">
-        <span className={`kind ${kind === 'procedure' ? 'proc' : 'func'}`}>
-          {kind === 'procedure' ? 'proc' : 'func'}
+        <span className={`kind ${call.kind === 'procedure' ? 'proc' : 'func'}`}>
+          {call.kind === 'procedure' ? 'proc' : 'func'}
         </span>
         <span className="name">{call.name}</span>
-        <span className="iotype">inputType {call.inputType}</span>
+        <span className="iotype" title={`inputType: ${call.inputType}`}>
+          #{call.inputType}
+        </span>
         <div className="sizes">
           <span className="pill">
             in <b>{call.inputSize}</b>B
@@ -26,9 +129,18 @@ function MethodBlock({ call, kind }: { call: ContractCallBase; kind: 'procedure'
           <span className="pill">
             out <b>{call.outputSize}</b>B
           </span>
+          <button
+            type="button"
+            className={`code-toggle${showCode ? ' on' : ''}`}
+            onClick={() => setShowCode((v) => !v)}
+          >
+            {showCode ? '× code' : '</> code'}
+          </button>
           <CopyButton value={call.name} />
         </div>
       </div>
+
+      {call.description && <div className="method-desc">{call.description}</div>}
 
       {!hasIn && !hasOut && <div className="method-empty">— no input or output fields —</div>}
 
@@ -39,7 +151,7 @@ function MethodBlock({ call, kind }: { call: ContractCallBase; kind: 'procedure'
               <span className="arrow in">→</span>
               <span>input</span>
               <span className="size">
-                {ins.length} · {call.inputSize}B
+                {ins.length} field{ins.length !== 1 ? 's' : ''} · {call.inputSize}B
               </span>
             </div>
             <FieldTable fields={ins} totalSize={call.inputSize} />
@@ -51,16 +163,25 @@ function MethodBlock({ call, kind }: { call: ContractCallBase; kind: 'procedure'
               <span className="arrow out">←</span>
               <span>output</span>
               <span className="size">
-                {outs.length} · {call.outputSize}B
+                {outs.length} field{outs.length !== 1 ? 's' : ''} · {call.outputSize}B
               </span>
             </div>
             <FieldTable fields={outs} totalSize={call.outputSize} />
           </div>
         )}
       </div>
+
+      {showCode && (
+        <div className="method-code">
+          <pre>{buildSnippet(call, contractIndex)}</pre>
+          <CopyButton value={buildSnippet(call, contractIndex)} />
+        </div>
+      )}
     </div>
   )
 }
+
+// ── Struct block ─────────────────────────────────────────
 
 function StructBlock({ struct }: { struct: NamedStruct }) {
   const fields = struct.fields ?? []
@@ -90,6 +211,8 @@ function StructBlock({ struct }: { struct: NamedStruct }) {
     </div>
   )
 }
+
+// ── AbiView ───────────────────────────────────────────────
 
 type Tab = 'all' | 'procs' | 'funcs' | 'structs' | 'raw'
 
@@ -163,7 +286,7 @@ export function AbiView({
                 <span className="meta">State-changing</span>
               </div>
               {procs.map((p) => (
-                <MethodBlock key={p.name} call={p} kind="procedure" />
+                <MethodBlock key={p.name} call={p} contractIndex={version.contractIndex} />
               ))}
             </section>
           )}
@@ -176,7 +299,7 @@ export function AbiView({
                 <span className="meta">Read-only</span>
               </div>
               {funcs.map((f) => (
-                <MethodBlock key={f.name} call={f} kind="function" />
+                <MethodBlock key={f.name} call={f} contractIndex={version.contractIndex} />
               ))}
             </section>
           )}
@@ -210,6 +333,8 @@ export function AbiView({
     </div>
   )
 }
+
+// ── JSON viewer ───────────────────────────────────────────
 
 type Token = { text: string; cls: string | null }
 

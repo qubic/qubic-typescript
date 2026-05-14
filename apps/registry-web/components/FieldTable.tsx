@@ -1,6 +1,15 @@
 import type { BinaryField } from '@qubic.ts/registry'
 import { TypeChip } from './type-chip'
 
+function fieldTypeDisplay(f: BinaryField): string {
+  if (f.type === 'array') {
+    const item = f.arrayItemStructRef ?? f.arrayItemType ?? 'unknown'
+    return f.arrayLength ? `${item}[${f.arrayLength}]` : `${item}[]`
+  }
+  if (f.type === 'struct') return f.structRef ?? 'struct'
+  return f.type
+}
+
 export function FieldTable({
   fields,
   totalSize,
@@ -18,15 +27,15 @@ export function FieldTable({
     <table className="ft">
       <thead>
         <tr>
-          <th style={{ width: '38%' }}>name</th>
-          <th style={{ width: '24%' }}>type</th>
-          <th className="right" style={{ width: '12%' }}>
+          <th style={{ width: '36%' }}>name</th>
+          <th style={{ width: '26%' }}>type</th>
+          <th className="right" style={{ width: '11%' }}>
             offset
           </th>
-          <th className="right" style={{ width: '12%' }}>
+          <th className="right" style={{ width: '11%' }}>
             bytes
           </th>
-          <th className="offbar-cell" style={{ width: '14%' }}>
+          <th className="offbar-cell" style={{ width: '16%' }}>
             layout
           </th>
         </tr>
@@ -39,9 +48,12 @@ export function FieldTable({
           const pctLen = total > 0 ? (len / total) * 100 : 0
           return (
             <tr key={f.name}>
-              <td className="fname">{f.name}</td>
+              <td className="fname">
+                {f.name}
+                {f.description && <div className="fdesc">{f.description}</div>}
+              </td>
               <td>
-                <TypeChip type={f.type} />
+                <TypeChip type={fieldTypeDisplay(f)} />
               </td>
               <td className="right fmuted">{off}</td>
               <td className="right">{len}</td>

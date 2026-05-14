@@ -1,11 +1,11 @@
 'use client'
 import { Search } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { ContractSummary } from '../lib/api'
 import { Sigil } from './sigil'
 
-type SortKey = 'idx' | 'name' | 'procs' | 'funcs'
+type SortKey = 'idx' | 'name' | 'procs' | 'funcs' | 'structs'
 
 function NumBar({
   value,
@@ -27,6 +27,19 @@ export function SearchFilter({ contracts }: { contracts: ContractSummary[] }) {
   const [q, setQ] = useState('')
   const [sort, setSort] = useState<SortKey>('idx')
   const router = useRouter()
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      const tag = (e.target as HTMLElement).tagName
+      if (e.key === '/' && tag !== 'INPUT' && tag !== 'TEXTAREA') {
+        e.preventDefault()
+        inputRef.current?.focus()
+      }
+    }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [])
 
   const filtered = useMemo(() => {
     const s = q.toLowerCase().trim()
@@ -40,12 +53,18 @@ export function SearchFilter({ contracts }: { contracts: ContractSummary[] }) {
       if (sort === 'name') return a.contractName.localeCompare(b.contractName)
       if (sort === 'procs') return b.procedureCount - a.procedureCount
       if (sort === 'funcs') return b.functionCount - a.functionCount
+      if (sort === 'structs') return b.structCount - a.structCount
       return a.contractIndex - b.contractIndex
     })
   }, [q, sort, contracts])
 
   const maxProc = useMemo(() => Math.max(...contracts.map((c) => c.procedureCount), 1), [contracts])
   const maxFunc = useMemo(() => Math.max(...contracts.map((c) => c.functionCount), 1), [contracts])
+  const maxStruct = useMemo(() => Math.max(...contracts.map((c) => c.structCount), 1), [contracts])
+
+  function nav(idx: number) {
+    router.push(`/contract/${idx}`)
+  }
 
   return (
     <>
@@ -53,11 +72,14 @@ export function SearchFilter({ contracts }: { contracts: ContractSummary[] }) {
         <div className="search">
           <Search size={14} />
           <input
+            ref={inputRef}
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Filter by name or index…"
           />
-          <span className="kbd">/</span>
+          <span className="kbd" title="Press / to focus">
+            /
+          </span>
         </div>
         <span className="toolbar-lbl">Sort</span>
         <div className="seg">
@@ -67,6 +89,7 @@ export function SearchFilter({ contracts }: { contracts: ContractSummary[] }) {
               { k: 'name', l: 'Name' },
               { k: 'procs', l: 'Procs' },
               { k: 'funcs', l: 'Funcs' },
+              { k: 'structs', l: 'Structs' },
             ] as { k: SortKey; l: string }[]
           ).map((o) => (
             <button
@@ -79,35 +102,40 @@ export function SearchFilter({ contracts }: { contracts: ContractSummary[] }) {
             </button>
           ))}
         </div>
+        {q && (
+          <span className="toolbar-lbl">
+            {filtered.length}/{contracts.length}
+          </span>
+        )}
       </div>
 
       <div className="tbl-wrap">
         <table className="tbl">
           <thead>
             <tr>
-              <th style={{ width: 44 }}>Idx</th>
+              <th style={{ width: 44 }}>#</th>
               <th>Contract</th>
-              <th style={{ width: 80 }}>Since</th>
               <th className="right" style={{ width: 90 }}>
-                Proc
+                Procs
               </th>
               <th className="right" style={{ width: 90 }}>
-                Func
+                Funcs
               </th>
               <th className="right" style={{ width: 70 }}>
-                Struct
+                Structs
               </th>
-              <th className="right" style={{ width: 140 }} />
+              <th className="right" style={{ width: 130 }} />
             </tr>
           </thead>
           <tbody>
             {filtered.map((c, i) => (
               <tr
                 key={c.contractIndex}
-                className="row-stagger"
+                className="row-stagger clickable"
                 style={{ animationDelay: `${i * 18}ms` }}
-                onClick={() => router.push(`/contract/${c.contractIndex}`)}
-                onKeyDown={(e) => e.key === 'Enter' && router.push(`/contract/${c.contractIndex}`)}
+                tabIndex={0}
+                onClick={() => nav(c.contractIndex)}
+                onKeyDown={(e) => e.key === 'Enter' && nav(c.contractIndex)}
               >
                 <td>
                   <span className="idx-col">{String(c.contractIndex).padStart(2, '0')}</span>
@@ -118,13 +146,11 @@ export function SearchFilter({ contracts }: { contracts: ContractSummary[] }) {
                     <div>
                       <div className="name">{c.contractName}</div>
                       <div className="sub">
-                        e{c.currentFromEpoch} · v{c.versionCount}
+                        since e{c.currentFromEpoch} · {c.versionCount} ABI version
+                        {c.versionCount !== 1 ? 's' : ''}
                       </div>
                     </div>
                   </div>
-                </td>
-                <td>
-                  <span className="since-col">e{c.currentFromEpoch}</span>
                 </td>
                 <td className="right">
                   <NumBar value={c.procedureCount} max={maxProc} kind="proc" />
@@ -133,9 +159,7 @@ export function SearchFilter({ contracts }: { contracts: ContractSummary[] }) {
                   <NumBar value={c.functionCount} max={maxFunc} kind="func" />
                 </td>
                 <td className="right">
-                  <span className={`num${c.structCount === 0 ? ' zero' : ''}`}>
-                    {c.structCount}
-                  </span>
+                  <NumBar value={c.structCount} max={maxStruct} kind="struct" />
                 </td>
                 <td className="right">
                   <div
@@ -159,12 +183,14 @@ export function SearchFilter({ contracts }: { contracts: ContractSummary[] }) {
             ))}
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={7}>
+                <td colSpan={6}>
                   <div className="empty">
                     <span>
                       No contracts match <span className="mono">&ldquo;{q}&rdquo;</span>
                     </span>
-                    <span className="mono">Try an index (1–27) or a name fragment</span>
+                    <span className="mono" style={{ fontSize: 11 }}>
+                      Try an index (1–{contracts.length}) or a partial name
+                    </span>
                   </div>
                 </td>
               </tr>

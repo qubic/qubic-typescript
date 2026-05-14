@@ -1113,9 +1113,11 @@ button:focus-visible {
   border-bottom: 0;
 }
 .tbl tbody tr {
-  cursor: default;
   transition: background-color 100ms ease;
   position: relative;
+}
+.tbl tbody tr.clickable {
+  cursor: pointer;
 }
 .tbl tbody tr:hover td {
   background: rgba(94, 234, 212, 0.025);
@@ -1537,6 +1539,56 @@ button:focus-visible {
   font-family: var(--font-mono);
   text-align: center;
 }
+.method-desc {
+  padding: 8px 14px;
+  font-size: 12.5px;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--line-soft);
+  line-height: 1.5;
+}
+.code-toggle {
+  padding: 3px 8px;
+  border-radius: var(--r-1);
+  border: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-faint);
+  cursor: pointer;
+  transition: color 120ms, border-color 120ms, background 120ms;
+  white-space: nowrap;
+  flex: none;
+}
+.code-toggle:hover {
+  color: var(--accent);
+  border-color: var(--accent-line);
+  background: var(--accent-dim);
+}
+.code-toggle.on {
+  color: var(--accent);
+  border-color: var(--accent-line);
+  background: var(--accent-dim);
+}
+.method-code {
+  border-top: 1px solid var(--line);
+  background: var(--bg-inset);
+  position: relative;
+}
+.method-code pre {
+  margin: 0;
+  padding: 14px 18px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--text-muted);
+  white-space: pre;
+  overflow-x: auto;
+  tab-size: 2;
+}
+.method-code .copy {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+}
 
 /* ── Field table ─────────────────────────────────────── */
 .ft {
@@ -1581,6 +1633,14 @@ button:focus-visible {
 .ft .fmuted {
   color: var(--text-faint);
 }
+.ft .fdesc {
+  font-size: 10.5px;
+  color: var(--text-faint);
+  font-family: var(--font-sans);
+  margin-top: 2px;
+  font-weight: 400;
+  font-style: italic;
+}
 
 .offbar {
   display: inline-block;
@@ -1601,11 +1661,7 @@ button:focus-visible {
   box-shadow: 0 0 8px var(--accent-glow);
 }
 .offbar-cell {
-  display: none;
-}
-[data-density="verbose"] .ft th.offbar-cell,
-[data-density="verbose"] .ft td.offbar-cell {
-  display: table-cell;
+  min-width: 60px;
 }
 [data-density="verbose"] .ft tbody td {
   padding: 9px var(--s-4);

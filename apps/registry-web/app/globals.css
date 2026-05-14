@@ -263,6 +263,13 @@ button:focus-visible {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 40%);
   pointer-events: none;
 }
+.brand-logo {
+  height: 20px;
+  width: auto;
+  display: block;
+  flex: none;
+  opacity: 0.92;
+}
 .brand-text {
   font-size: 14px;
   font-weight: 500;
@@ -1570,24 +1577,16 @@ button:focus-visible {
 }
 .method-code {
   border-top: 1px solid var(--line);
-  background: var(--bg-inset);
-  position: relative;
+  border-radius: 0 !important;
+  border-left: 0 !important;
+  border-right: 0 !important;
+  border-bottom: 0 !important;
+  box-shadow: none !important;
 }
 .method-code pre {
-  margin: 0;
-  padding: 14px 18px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  line-height: 1.65;
-  color: var(--text-muted);
-  white-space: pre;
+  max-height: 420px;
   overflow-x: auto;
-  tab-size: 2;
-}
-.method-code .copy {
-  position: absolute;
-  top: 8px;
-  right: 10px;
+  overflow-y: auto;
 }
 
 /* ── Field table ─────────────────────────────────────── */
@@ -1663,6 +1662,10 @@ button:focus-visible {
 .offbar-cell {
   min-width: 60px;
 }
+/* hide layout bar when both input+output halves are shown side-by-side — no room */
+.method-body:not(.solo) .offbar-cell {
+  display: none;
+}
 [data-density="verbose"] .ft tbody td {
   padding: 9px var(--s-4);
 }
@@ -1725,12 +1728,13 @@ button:focus-visible {
   background: var(--bg-soft);
   border: 1px solid var(--line-strong);
   color: var(--text-strong);
-  padding: 5px 8px;
+  padding: 5px 10px;
   border-radius: var(--r-2);
-  width: 88px;
+  width: 72px;
   text-align: center;
   font-family: var(--font-mono);
-  font-size: 14px;
+  font-size: 12.5px;
+  line-height: 1.4;
   font-variant-numeric: tabular-nums;
   outline: 0;
   transition: border-color 120ms ease, box-shadow 120ms ease;

@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import { EpochNav } from '../../../components/EpochNav'
 import { Crumbs } from '../../../components/crumbs'
 import { Sigil } from '../../../components/sigil'
@@ -13,13 +13,20 @@ export default async function EpochPage({ params }: { params: Promise<{ epoch: s
     api.epoch(ep).catch(() => null),
     api.epochs().catch(() => []),
   ])
-  if (!contracts) notFound()
 
   const epochNums = epochs.map((e) => e.epoch)
   const minEpoch = epochNums.length > 0 ? Math.min(...epochNums) : ep
   const maxEpoch = epochNums.length > 0 ? Math.max(...epochNums) : ep
-  const isCurrentEpoch = ep === maxEpoch
 
+  if (!contracts) {
+    // redirect to the most recent available snapshot at or before this epoch
+    const sorted = [...epochNums].sort((a, b) => b - a)
+    const nearest = sorted.find((e) => e <= ep) ?? sorted[0]
+    if (nearest !== undefined) redirect(`/epoch/${nearest}`)
+    notFound()
+  }
+
+  const isCurrentEpoch = ep === maxEpoch
   const totalProcs = contracts.reduce((s, c) => s + c.procedures.length, 0)
   const totalFuncs = contracts.reduce((s, c) => s + c.functions.length, 0)
   const totalStructs = contracts.reduce((s, c) => s + Object.keys(c.structs ?? {}).length, 0)
@@ -47,7 +54,13 @@ export default async function EpochPage({ params }: { params: Promise<{ epoch: s
         )}
       </div>
 
-      <EpochNav epoch={ep} min={minEpoch} max={maxEpoch} contractCount={contracts.length} />
+      <EpochNav
+        epoch={ep}
+        min={minEpoch}
+        max={maxEpoch}
+        contractCount={contracts.length}
+        availableEpochs={epochNums}
+      />
 
       <div className="epoch-cards">
         {contracts.map((c, i) => {

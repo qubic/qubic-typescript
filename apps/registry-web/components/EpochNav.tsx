@@ -7,11 +7,13 @@ export function EpochNav({
   min,
   max,
   contractCount,
+  availableEpochs,
 }: {
   epoch: number
   min: number
   max: number
   contractCount?: number
+  availableEpochs?: number[]
 }) {
   const router = useRouter()
   const [val, setVal] = useState(String(epoch))
@@ -25,16 +27,25 @@ export function EpochNav({
     }
   }
 
-  const hasPrev = epoch > min
-  const hasNext = epoch < max
+  const sorted = availableEpochs ? [...availableEpochs].sort((a, b) => a - b) : null
+  const prevEpoch = sorted
+    ? (sorted.filter((e) => e < epoch).at(-1) ?? null)
+    : epoch > min
+      ? epoch - 1
+      : null
+  const nextEpoch = sorted
+    ? (sorted.find((e) => e > epoch) ?? null)
+    : epoch < max
+      ? epoch + 1
+      : null
 
   return (
     <div className="epoch-nav">
       <div className="epoch-pager">
         <a
-          className={`btn sm${hasPrev ? '' : ' disabled'}`}
-          href={hasPrev ? `/epoch/${epoch - 1}` : '#'}
-          onClick={(e) => !hasPrev && e.preventDefault()}
+          className={`btn sm${prevEpoch !== null ? '' : ' disabled'}`}
+          href={prevEpoch !== null ? `/epoch/${prevEpoch}` : '#'}
+          onClick={(e) => prevEpoch === null && e.preventDefault()}
         >
           ← Prev
         </a>
@@ -49,9 +60,9 @@ export function EpochNav({
           aria-label="jump to epoch"
         />
         <a
-          className={`btn sm${hasNext ? '' : ' disabled'}`}
-          href={hasNext ? `/epoch/${epoch + 1}` : '#'}
-          onClick={(e) => !hasNext && e.preventDefault()}
+          className={`btn sm${nextEpoch !== null ? '' : ' disabled'}`}
+          href={nextEpoch !== null ? `/epoch/${nextEpoch}` : '#'}
+          onClick={(e) => nextEpoch === null && e.preventDefault()}
         >
           Next →
         </a>

@@ -33,6 +33,10 @@ export default async function ContractPage({ params }: { params: Promise<{ index
             </span>
             <span className="pipe">·</span>
             <span>Since e{current.effectiveFromEpoch}</span>
+            <span className="pipe">·</span>
+            <span>
+              {history.length} ABI version{history.length !== 1 ? 's' : ''}
+            </span>
           </div>
         </div>
         <div className="actions">
@@ -70,63 +74,16 @@ export default async function ContractPage({ params }: { params: Promise<{ index
         ))}
       </section>
 
-      {/* ── Layout: ABI + Timeline ─────────────────── */}
-      <div className="contract-layout-side">
-        <div>
-          <div className="section-title">
-            <h2>Current ABI</h2>
-            <span className="count">e{current.effectiveFromEpoch}</span>
-            <span className="grow" />
-            <Link className="btn sm" href={`/contract/${idx}/epoch/${current.effectiveFromEpoch}`}>
-              Open Snapshot →
-            </Link>
-          </div>
-          <AbiView version={current} compact />
-        </div>
-
-        <div>
-          <div className="card">
-            <div className="card-head">
-              <h3>Version Timeline</h3>
-              <span className="grow" />
-              <span className="muted" style={{ fontSize: 11, fontFamily: 'var(--font-mono)' }}>
-                {history.length} version{history.length === 1 ? '' : 's'}
-              </span>
-            </div>
-            <div className="card-body" style={{ padding: 6 }}>
-              <div className="timeline">
-                {[...history].reverse().map((v) => {
-                  const isCurrent = v.effectiveToEpoch === null
-                  return (
-                    <Link
-                      key={v.effectiveFromEpoch}
-                      href={`/contract/${idx}/epoch/${v.effectiveFromEpoch}`}
-                      className={`timeline-row${isCurrent ? ' cur' : ''}`}
-                    >
-                      <div className="dot-col">
-                        <span className="tdot" />
-                        <span className="line" />
-                      </div>
-                      <div className="info">
-                        <div>
-                          <span className="epoch">
-                            e{v.effectiveFromEpoch}
-                            {isCurrent ? ' → now' : ` – e${v.effectiveToEpoch}`}
-                          </span>
-                        </div>
-                        <div className="when">
-                          {v.procedures.length} proc · {v.functions.length} func
-                        </div>
-                      </div>
-                      <span className="badge">{isCurrent ? 'Current' : 'Archived'}</span>
-                    </Link>
-                  )
-                })}
-              </div>
-            </div>
-          </div>
-        </div>
+      {/* ── ABI ──────────────────────────────────────── */}
+      <div className="section-title">
+        <h2>Current ABI</h2>
+        <span className="count">e{current.effectiveFromEpoch}</span>
+        <span className="grow" />
+        <Link className="btn sm" href={`/contract/${idx}/epoch/${current.effectiveFromEpoch}`}>
+          Open Snapshot →
+        </Link>
       </div>
+      <AbiView version={current} compact />
     </main>
   )
 }

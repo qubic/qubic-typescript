@@ -9,7 +9,183 @@ import { useState } from 'react'
 import { CopyButton } from './CopyButton'
 import { FieldTable } from './FieldTable'
 
-// ── Type helpers ─────────────────────────────────────────
+// ── Snippet generation ────────────────────────────────────
+
+function payloadTypeFor(f: BinaryField): string {
+  switch (f.type) {
+    case 'uint64':
+      return 'uint64'
+    case 'sint64':
+      return 'sint64'
+    case 'uint32':
+    case 'sint32':
+      return 'uint32'
+    case 'uint16':
+    case 'sint16':
+      return 'uint16'
+    case 'uint8':
+    case 'sint8':
+      return 'uint8'
+    case 'id':
+      return 'id'
+    default:
+      return 'bytes'
+  }
+}
+
+function defaultValFor(f: BinaryField): string {
+  switch (f.type) {
+    case 'uint64':
+    case 'sint64':
+    case 'uint128':
+      return '0n'
+    case 'id':
+      return "'YOUR_IDENTITY' as Identity"
+    case 'bytes':
+    case 'array':
+    case 'struct':
+      return `new Uint8Array(${f.byteLength})`
+    default:
+      return '0'
+  }
+}
+
+function readCallFor(f: BinaryField): string {
+  switch (f.type) {
+    case 'uint8':
+    case 'sint8':
+      return 'out.readUint8()'
+    case 'uint16':
+    case 'sint16':
+      return 'out.readUint16()'
+    case 'uint32':
+    case 'sint32':
+      return 'out.readUint32()'
+    case 'uint64':
+      return 'out.readUint64()'
+    case 'sint64':
+      return 'out.readInt64()'
+    case 'uint128':
+      return 'out.readBytes(16)'
+    case 'id':
+      return 'out.readBytes(32)'
+    default:
+      return `out.readBytes(${f.byteLength})`
+  }
+}
+
+function buildSnippet(call: ContractCallBase, contractIndex: number): string {
+  const ins = call.inputFields ?? []
+  const outs = call.outputFields ?? []
+  const hasIn = ins.length > 0
+  const hasOut = outs.length > 0
+  const L: string[] = []
+
+  L.push(`// ${call.name}  ·  inputType: ${call.inputType}  ·  ${call.kind}`)
+
+  if (call.kind === 'function') {
+    L.push('')
+    L.push("import { createRpcClient } from '@qubic.ts/rpc'")
+    if (hasIn) L.push("import { BinaryReader, buildPayload } from '@qubic.ts/tx'")
+    else if (hasOut) L.push("import { BinaryReader } from '@qubic.ts/tx'")
+    L.push("import type { Base64 } from '@qubic.ts/types'")
+    L.push('')
+    L.push("const rpc = createRpcClient({ endpoint: 'http://localhost:40420' })")
+
+    if (hasIn) {
+      L.push('')
+      L.push(`// 1. encode input (${call.inputSize}B)`)
+      L.push('const input = buildPayload([')
+      for (const f of ins) {
+        const pt = payloadTypeFor(f)
+        const dv = defaultValFor(f)
+        L.push(
+          `${`  { type: '${pt}', value: ${dv} },`.padEnd(40)}// ${f.name}: ${f.type} · ${f.byteLength}B`,
+        )
+      }
+      L.push('])')
+      L.push('')
+      L.push('// 2. query smart contract (read-only, no signing needed)')
+      L.push(
+        `const res = await rpc.querySmartContract(${contractIndex}, ${call.inputType}, btoa(String.fromCharCode(...input)) as Base64)`,
+      )
+    } else {
+      L.push('')
+      L.push('// query smart contract (no input fields)')
+      L.push(
+        `const res = await rpc.querySmartContract(${contractIndex}, ${call.inputType}, '' as Base64)`,
+      )
+    }
+
+    L.push('if (!res.ok) throw res.error')
+
+    if (hasOut) {
+      L.push('')
+      L.push(`// ${hasIn ? '3' : '2'}. decode output (${call.outputSize}B)`)
+      L.push('const out = new BinaryReader(Uint8Array.from(atob(res.value), c => c.charCodeAt(0)))')
+      for (const f of outs) {
+        const rc = readCallFor(f)
+        L.push(`${`const ${f.name} = ${rc}`.padEnd(40)}// ${f.type} · ${f.byteLength}B`)
+      }
+    }
+  } else {
+    // procedure
+    L.push('')
+    L.push("import { createRpcClient } from '@qubic.ts/rpc'")
+    L.push("import { createWallet } from '@qubic.ts/wallet'")
+    if (hasIn) L.push("import { buildPayload } from '@qubic.ts/tx'")
+    L.push("import type { Identity, Seed } from '@qubic.ts/types'")
+    L.push('')
+    L.push("const CONTRACT_ID = 'CONTRACT_IDENTITY_HERE' as Identity")
+    L.push("const rpc    = createRpcClient({ endpoint: 'http://localhost:40420' })")
+    L.push('const wallet = createWallet(process.env.SEED as Seed)')
+    L.push('')
+    L.push('// 1. get current tick')
+    L.push('const tick = await rpc.getTickNumber()')
+    L.push('if (!tick.ok) throw tick.error')
+
+    if (hasIn) {
+      L.push('')
+      L.push(`// 2. encode payload (${call.inputSize}B)`)
+      L.push('const payload = buildPayload([')
+      for (const f of ins) {
+        const pt = payloadTypeFor(f)
+        const dv = defaultValFor(f)
+        L.push(
+          `${`  { type: '${pt}', value: ${dv} },`.padEnd(40)}// ${f.name}: ${f.type} · ${f.byteLength}B`,
+        )
+      }
+      L.push('])')
+      L.push('')
+      L.push('// 3. build + sign transaction')
+    } else {
+      L.push('')
+      L.push('// 2. build + sign transaction (no input fields)')
+    }
+
+    const broadcastStep = hasIn ? 4 : 3
+    L.push('const { encoded, hash } = await wallet.buildScTransaction({')
+    L.push('  destination: CONTRACT_ID,')
+    if (call.requiresAmount) {
+      L.push('  amount: 1000n,    // requiresAmount: include invocation reward')
+    } else {
+      L.push('  amount: 0n,')
+    }
+    L.push('  targetTick: tick.value + 5,')
+    L.push(`  inputType: ${call.inputType},`)
+    if (hasIn) L.push('  payload,')
+    L.push('})')
+    L.push('')
+    L.push(`// ${broadcastStep}. broadcast`)
+    L.push('const broadcast = await rpc.broadcastTransaction(encoded)')
+    L.push('if (!broadcast.ok) throw broadcast.error')
+    L.push("console.log('tx hash:', hash)")
+  }
+
+  return L.join('\n')
+}
+
+// ── TypeScript interface helpers ──────────────────────────
 
 function tsTypeFor(f: BinaryField): string {
   switch (f.type) {
@@ -43,58 +219,8 @@ function tsTypeFor(f: BinaryField): string {
   }
 }
 
-function buildSnippet(call: ContractCallBase, contractIndex: number): string {
-  const ins = call.inputFields ?? []
-  const outs = call.outputFields ?? []
-  const cap = call.name.charAt(0).toUpperCase() + call.name.slice(1)
-  const lines: string[] = []
-
-  lines.push(`// ${call.name}  ·  inputType: ${call.inputType}  ·  ${call.kind}`)
-  if (call.description) lines.push(`// ${call.description}`)
-
-  if (ins.length > 0) {
-    lines.push(`\ninterface ${cap}Input {`)
-    for (const f of ins) {
-      lines.push(`  ${f.name}: ${tsTypeFor(f).padEnd(12)}// ${f.type} · ${f.byteLength}B`)
-    }
-    lines.push('}')
-  }
-
-  if (outs.length > 0) {
-    lines.push(`\ninterface ${cap}Output {`)
-    for (const f of outs) {
-      lines.push(`  ${f.name}: ${tsTypeFor(f).padEnd(12)}// ${f.type} · ${f.byteLength}B`)
-    }
-    lines.push('}')
-  }
-
-  if (call.kind === 'function') {
-    const body =
-      ins.length > 0
-        ? `{"contractIndex":${contractIndex},"inputType":${call.inputType},"requestData":"<base64 input>"}`
-        : `{"contractIndex":${contractIndex},"inputType":${call.inputType}}`
-    lines.push(
-      '\n// query via RPC:',
-      `curl -s 'https://rpc.qubic.org/v1/querySmartContract' \\`,
-      `  -H 'Content-Type: application/json' \\`,
-      `  -d '${body}'`,
-    )
-  } else {
-    lines.push(
-      '\n// invoke via @qubic.ts/rpc (requires signed transaction):',
-      'rpc.sendTransaction({',
-      `  destId: CONTRACT_IDS[${contractIndex}],`,
-      `  inputType: ${call.inputType},`,
-      ins.length > 0 ? `  input: encode${cap}Input({...})` : '  // no input fields',
-      '})',
-    )
-    if (call.requiresAmount) {
-      lines.push('\n// Note: requiresAmount — tx.amount is used as the invocation reward')
-    }
-  }
-
-  return lines.join('\n')
-}
+// suppress unused warning — tsTypeFor is used by FieldTable indirectly via type display
+void tsTypeFor
 
 // ── Method block ─────────────────────────────────────────
 
@@ -172,9 +298,22 @@ function MethodBlock({
       </div>
 
       {showCode && (
-        <div className="method-code">
+        <div className="method-code code">
+          <div className="code-bar">
+            <span className="dots">
+              <i />
+              <i />
+              <i />
+            </span>
+            <span className="lbl">
+              {call.kind === 'function'
+                ? 'TypeScript · @qubic.ts/rpc'
+                : 'TypeScript · @qubic.ts/wallet'}
+            </span>
+            <span className="grow" />
+            <CopyButton value={buildSnippet(call, contractIndex)} />
+          </div>
           <pre>{buildSnippet(call, contractIndex)}</pre>
-          <CopyButton value={buildSnippet(call, contractIndex)} />
         </div>
       )}
     </div>

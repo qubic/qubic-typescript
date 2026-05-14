@@ -2,11 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "ContractRegistry",
   "type": "object",
-  "required": [
-    "schemaVersion",
-    "updatedAt",
-    "versions"
-  ],
+  "required": ["schemaVersion", "updatedAt", "versions"],
   "properties": {
     "schemaVersion": {
       "type": "integer",
@@ -41,12 +37,7 @@
     },
     "BinaryField": {
       "type": "object",
-      "required": [
-        "name",
-        "type",
-        "offset",
-        "byteLength"
-      ],
+      "required": ["name", "type", "offset", "byteLength"],
       "properties": {
         "name": {
           "type": "string"
@@ -82,11 +73,7 @@
     },
     "NamedStruct": {
       "type": "object",
-      "required": [
-        "name",
-        "fields",
-        "byteLength"
-      ],
+      "required": ["name", "fields", "byteLength"],
       "properties": {
         "name": {
           "type": "string"
@@ -116,10 +103,7 @@
       "properties": {
         "kind": {
           "type": "string",
-          "enum": [
-            "procedure",
-            "function"
-          ]
+          "enum": ["procedure", "function"]
         },
         "inputType": {
           "type": "integer"
@@ -178,10 +162,7 @@
           "type": "integer"
         },
         "effectiveToEpoch": {
-          "type": [
-            "integer",
-            "null"
-          ]
+          "type": ["integer", "null"]
         },
         "coreVersion": {
           "type": "string"

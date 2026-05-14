@@ -334,7 +334,7 @@ function extractFields(
       if (templateName === 'BitArray') {
         // BitArray<N>: storage = ceil(N/64) * 8 bytes. Treat as opaque bytes.
         const argList = findChildByType(typeNode, 'template_argument_list')
-        const sizeToken = argList ? namedChildren(argList)[0]?.text?.trim() ?? '0' : '0'
+        const sizeToken = argList ? (namedChildren(argList)[0]?.text?.trim() ?? '0') : '0'
         const bits = resolveSize(sizeToken)
         const byteLength = Math.ceil(bits / 64) * 8
         fields.push({ name: fieldName, type: 'bytes', offset, byteLength })
@@ -444,7 +444,13 @@ function resolveTypedefs(
               { name: 'status', type: 'uint8', offset: 12, byteLength: 1 },
               { name: '__reserved0', type: 'uint8', offset: 13, byteLength: 1 },
               { name: '__reserved1', type: 'uint16', offset: 14, byteLength: 2 },
-              { name: 'reply', type: 'struct', offset: 16, byteLength: reply.byteLength, structRef: replyRef },
+              {
+                name: 'reply',
+                type: 'struct',
+                offset: 16,
+                byteLength: reply.byteLength,
+                structRef: replyRef,
+              },
             ],
           })
         }
@@ -510,7 +516,14 @@ function resolveTypedefs(
         namedStructs.set(alias, {
           name: alias,
           byteLength: primitiveType.byteLength,
-          fields: [{ name: 'value', type: primitiveType.type, offset: 0, byteLength: primitiveType.byteLength }],
+          fields: [
+            {
+              name: 'value',
+              type: primitiveType.type,
+              offset: 0,
+              byteLength: primitiveType.byteLength,
+            },
+          ],
         })
       }
     }
@@ -631,10 +644,20 @@ export function parseContractHeader(options: ParseHeaderOptions): ContractAbiVer
     // Re-extract from tree-sitter node when available (captures warnOnUnknown warnings).
     // Fall back to namedStructs for typedef-aliased structs (e.g. typedef NoData Foo_input).
     const inputFields = inNode
-      ? extractFields(inNode.node.childForFieldName('body') as TsNode, namedStructs, resolveSize, true)
+      ? extractFields(
+          inNode.node.childForFieldName('body') as TsNode,
+          namedStructs,
+          resolveSize,
+          true,
+        )
       : (namedStructs.get(`${name}_input`)?.fields ?? [])
     const outputFields = outNode
-      ? extractFields(outNode.node.childForFieldName('body') as TsNode, namedStructs, resolveSize, true)
+      ? extractFields(
+          outNode.node.childForFieldName('body') as TsNode,
+          namedStructs,
+          resolveSize,
+          true,
+        )
       : (namedStructs.get(`${name}_output`)?.fields ?? [])
     collectUsed(inputFields)
     collectUsed(outputFields)

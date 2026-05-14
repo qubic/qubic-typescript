@@ -57,7 +57,14 @@ export function CommandPalette() {
           onKeyDown={(e) => e.key === 'Escape' && setOpen(false)}
         />
       )}
-      <Command.Dialog open={open} onOpenChange={setOpen} label="Command palette" className="cmd">
+      <Command.Dialog
+        open={open}
+        onOpenChange={setOpen}
+        label="Command palette"
+        className="cmd"
+        title="Command palette"
+      >
+        <span className="sr-only">Command palette</span>
         <div className="cmd-input-wrap">
           <Search size={14} className="cmd-icon" />
           <Command.Input placeholder="Search contracts, navigate…" className="cmd-input" />

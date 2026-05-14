@@ -65,8 +65,6 @@ export interface ContractAbiVersion {
   procedures: ContractCallBase[]
   functions: ContractCallBase[]
   changelog?: string
-  registeredAt: string
-  registeredBy?: string
 }
 
 export interface ContractRegistry {

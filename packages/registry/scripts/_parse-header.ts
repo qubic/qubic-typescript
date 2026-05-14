@@ -18,6 +18,19 @@ function makeParser() {
   return p
 }
 
+// ── Known opaque QPI types ────────────────────────────────────────────────────
+
+// These types are valid in contract STATE and _locals but are not serializable
+// as ABI fields — silently skip them in all contexts.
+const OPAQUE_QPI_TYPES = new Set([
+  'HashMap',
+  'HashSet',
+  'Collection',
+  'BitArray',
+  'Locals',
+  'StateData',
+])
+
 // ── Type map ──────────────────────────────────────────────────────────────────
 
 type MappedType = { type: FieldType; byteLength: number }
@@ -236,6 +249,7 @@ function extractFields(
   body: TsNode,
   namedStructs: Map<string, NamedStruct>,
   resolveSize: (token: string) => number,
+  warnOnUnknown = false,
 ): BinaryField[] {
   const fields: BinaryField[] = []
   let offset = 0
@@ -254,7 +268,7 @@ function extractFields(
     const nameNode = structNode.childForFieldName('name') as TsNode | null
     const bodyNode = structNode.childForFieldName('body') as TsNode | null
     if (!nameNode || !bodyNode || namedStructs.has(nameNode.text)) continue
-    const inlineFields = extractFields(bodyNode, namedStructs, resolveSize)
+    const inlineFields = extractFields(bodyNode, namedStructs, resolveSize, warnOnUnknown)
     namedStructs.set(nameNode.text, {
       name: nameNode.text,
       fields: inlineFields,
@@ -316,7 +330,7 @@ function extractFields(
               arrayItemByteLength: itemLen,
             })
             offset += arrayLength * itemLen
-          } else {
+          } else if (warnOnUnknown && !OPAQUE_QPI_TYPES.has(itemTypeName)) {
             console.warn(`  ⚠ Unknown Array item type "${itemTypeName}" for field "${fieldName}"`)
           }
           continue
@@ -338,7 +352,9 @@ function extractFields(
       continue
     }
 
-    console.warn(`  ⚠ Unknown field type "${typeName}" for "${fieldName}" — skipping`)
+    if (warnOnUnknown && !OPAQUE_QPI_TYPES.has(typeName)) {
+      console.warn(`  ⚠ Unknown field type "${typeName}" for "${fieldName}" — skipping`)
+    }
   }
 
   return fields
@@ -461,10 +477,10 @@ export function parseContractHeader(options: ParseHeaderOptions): ContractAbiVer
     const inNode = directStructs.find((s) => s.name === `${name}_input`)
     const outNode = directStructs.find((s) => s.name === `${name}_output`)
     const inputFields = inNode
-      ? extractFields(inNode.node.childForFieldName('body') as TsNode, namedStructs, resolveSize)
+      ? extractFields(inNode.node.childForFieldName('body') as TsNode, namedStructs, resolveSize, true)
       : []
     const outputFields = outNode
-      ? extractFields(outNode.node.childForFieldName('body') as TsNode, namedStructs, resolveSize)
+      ? extractFields(outNode.node.childForFieldName('body') as TsNode, namedStructs, resolveSize, true)
       : []
     collectUsed(inputFields)
     collectUsed(outputFields)
@@ -511,7 +527,6 @@ export function parseContractHeader(options: ParseHeaderOptions): ContractAbiVer
     contractName,
     effectiveFromEpoch,
     effectiveToEpoch: null,
-    registeredAt: new Date().toISOString(),
     structs,
     procedures,
     functions,

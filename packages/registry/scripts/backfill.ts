@@ -2,21 +2,25 @@
 /**
  * Populates per-epoch ABI snapshots and registry.json for all known contracts.
  *
- * Two modes:
- *   --local        Read from resources/core/src/contracts/ (current epoch only, fast)
- *   --from-epoch N Clone qubic/core once, scan tags since epoch N, write one snapshot
- *                  folder per epoch and a version-range registry.json
+ * Modes:
+ *   --local             Read from resources/core/src/contracts/ (current epoch only, fast)
+ *   --from-epoch N      Clone qubic/core once, scan tags since epoch N, write one snapshot
+ *                       folder per epoch and a version-range registry.json
+ *   --fill-gaps         Re-scan all epoch/contract combinations that have no snapshot yet,
+ *                       using resources/core git (requires tags to be present locally)
+ *
+ * Options:
+ *   --use-local-git     Source files from resources/core via git-show instead of cloning
+ *   --contracts A,B     Process only these contracts (filename stem or label, comma-separated)
+ *   --token GH_TOKEN    GitHub API token for fetching tags (--from-epoch only)
+ *   --dry-run           Print what would be written without writing anything
  *
  * Outputs:
  *   data/epoch-refs.json              — saved epoch→tag map (reused on next run)
  *   data/epochs/{epoch}/{name}.json   — ABI snapshot per epoch per contract
  *   data/registry.json                — version-range index for client.ts
- *
- * Usage:
- *   bun scripts/backfill.ts --local [--dry-run]
- *   bun scripts/backfill.ts --from-epoch 104 [--to-epoch 220] [--contracts Qearn,Qx] [--token GH_TOKEN] [--dry-run]
  */
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { parseArgs } from 'node:util'
 import type { ContractAbiVersion, ContractRegistry } from '../src/types.js'
@@ -27,6 +31,8 @@ const { values: args } = parseArgs({
   args: process.argv.slice(2),
   options: {
     local: { type: 'boolean', default: false },
+    'fill-gaps': { type: 'boolean', default: false },
+    'use-local-git': { type: 'boolean', default: false },
     'from-epoch': { type: 'string' },
     'to-epoch': { type: 'string' },
     contracts: { type: 'string' },
@@ -35,8 +41,9 @@ const { values: args } = parseArgs({
   },
 })
 
-const CONTRACTS_DIR = join(import.meta.dir, '../../../resources/core/src/contracts')
-const LOCAL_SETTINGS = join(import.meta.dir, '../../../resources/core/src/public_settings.h')
+const CORE_DIR = join(import.meta.dir, '../../../resources/core')
+const CONTRACTS_DIR = join(CORE_DIR, 'src/contracts')
+const LOCAL_SETTINGS = join(CORE_DIR, 'src/public_settings.h')
 const SMART_CONTRACTS_JSON = join(
   import.meta.dir,
   '../../../resources/static/data/smart_contracts.json',
@@ -89,6 +96,16 @@ function writeEpochSnapshot(epoch: number, version: ContractAbiVersion) {
     join(epochDir, `${version.contractName}.json`),
     `${JSON.stringify(version, null, 2)}\n`,
   )
+}
+
+async function showFileFromLocalGit(ref: string, path: string): Promise<string | null> {
+  const proc = Bun.spawn(['git', '-C', CORE_DIR, 'show', `${ref}:${path}`], {
+    stdout: 'pipe',
+    stderr: 'pipe',
+  })
+  const exit = await proc.exited
+  if (exit !== 0) return null
+  return new Response(proc.stdout).text()
 }
 
 // ── Mode: --local ─────────────────────────────────────────────────────────────
@@ -252,7 +269,10 @@ async function runFromEpoch(fromEpoch: number, toEpoch: number) {
             contractIndex: sc.contractIndex,
             effectiveFromEpoch: epoch,
           })
-        } catch {
+        } catch (e) {
+          console.warn(
+            `  ✗ [${sc.contractIndex}] ${sc.label} @epoch ${epoch}: ${e instanceof Error ? e.message : e}`,
+          )
           continue
         }
 
@@ -288,6 +308,60 @@ async function runFromEpoch(fromEpoch: number, toEpoch: number) {
   }
 }
 
+// ── Mode: --fill-gaps ─────────────────────────────────────────────────────────
+
+async function runFillGaps(showFile: (ref: string, path: string) => Promise<string | null>) {
+  const epochRefs = JSON.parse(readFileSync(EPOCH_REFS_PATH, 'utf-8')) as Record<string, string>
+  const epochs = Object.keys(epochRefs)
+    .map(Number)
+    .sort((a, b) => a - b)
+
+  let filled = 0
+  let skipped = 0
+  let failed = 0
+
+  for (const epoch of epochs) {
+    const tag = epochRefs[String(epoch)]
+    if (!tag) continue
+    const activeContracts = contracts.filter((sc) => sc.firstUseEpoch <= epoch)
+
+    for (const sc of activeContracts) {
+      const snapshotPath = join(EPOCHS_DIR, String(epoch), `${sc.label}.json`)
+      if (existsSync(snapshotPath)) {
+        skipped++
+        continue
+      }
+
+      const headerSource = await showFile(tag, `src/contracts/${sc.filename}`)
+      if (!headerSource) {
+        console.warn(`  ⚠ [${sc.contractIndex}] ${sc.label} @epoch ${epoch}: file not found in ${tag}`)
+        failed++
+        continue
+      }
+
+      const filenameStem = sc.filename.replace(/\.h$/, '')
+      try {
+        const version = parseContractHeader({
+          headerSource,
+          contractName: filenameStem,
+          contractIndex: sc.contractIndex,
+          effectiveFromEpoch: epoch,
+        })
+        writeEpochSnapshot(epoch, version)
+        console.log(`  ✓ [${sc.contractIndex}] ${sc.label} @epoch ${epoch}`)
+        filled++
+      } catch (e) {
+        console.warn(
+          `  ✗ [${sc.contractIndex}] ${sc.label} @epoch ${epoch}: ${e instanceof Error ? e.message : e}`,
+        )
+        failed++
+      }
+    }
+  }
+
+  console.log(`\nFilled ${filled}, skipped ${skipped} existing, ${failed} failed.`)
+}
+
 // ── Output ────────────────────────────────────────────────────────────────────
 
 function writeRegistry(registry: ContractRegistry) {
@@ -303,6 +377,18 @@ function writeRegistry(registry: ContractRegistry) {
 
 if (args.local) {
   await runLocal()
+} else if (args['fill-gaps']) {
+  if (args['use-local-git']) {
+    await runFillGaps(showFileFromLocalGit)
+  } else {
+    console.log('Cloning qubic/core (treeless, sparse — blobs fetched on demand)…')
+    const { showFile, cleanup } = await cloneForBackfill()
+    try {
+      await runFillGaps(showFile)
+    } finally {
+      await cleanup()
+    }
+  }
 } else if (args['from-epoch'] !== undefined) {
   const fromEpoch = Number(args['from-epoch'])
   const toEpoch = args['to-epoch'] !== undefined ? Number(args['to-epoch']) : 9999
@@ -311,6 +397,7 @@ if (args.local) {
   console.error(
     'Usage:\n' +
       '  bun scripts/backfill.ts --local [--dry-run]\n' +
+      '  bun scripts/backfill.ts --fill-gaps [--use-local-git] [--contracts A,B] [--dry-run]\n' +
       '  bun scripts/backfill.ts --from-epoch <N> [--to-epoch <M>] [--contracts A,B] [--token GH_TOKEN] [--dry-run]',
   )
   process.exit(1)

@@ -818,6 +818,17 @@ button:focus-visible {
   font-style: italic;
 }
 
+/* TypeScript syntax tokens */
+.tok-kw  { color: #ff7b72; }           /* keywords: import, const, await … */
+.tok-s   { color: #a5d6ff; }           /* strings */
+.tok-tpl { color: #a5d6ff; }           /* template literals */
+.tok-n   { color: #ffa657; }           /* numbers / bigint */
+.tok-c   { color: var(--text-faint); font-style: italic; }
+.tok-fn  { color: #d2a8ff; }           /* function calls */
+.tok-type { color: #ffa657; }          /* PascalCase types */
+.tok-prop { color: var(--text-muted); }/* .property access */
+.tok-op  { color: var(--j-punct); }    /* operators / dots */
+
 /* ── Copy button ──────────────────────────────────────── */
 .copy {
   font-family: var(--font-mono);

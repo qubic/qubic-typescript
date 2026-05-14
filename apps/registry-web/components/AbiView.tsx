@@ -8,6 +8,7 @@ import type {
 import { useState } from 'react'
 import { CopyButton } from './CopyButton'
 import { FieldTable } from './FieldTable'
+import { TsHighlight } from './ts-highlight'
 
 // ── Snippet generation ────────────────────────────────────
 
@@ -315,7 +316,9 @@ function MethodBlock({
             <span className="grow" />
             <CopyButton value={buildSnippet(call, contractIndex)} />
           </div>
-          <pre>{buildSnippet(call, contractIndex)}</pre>
+          <pre>
+            <TsHighlight code={buildSnippet(call, contractIndex)} />
+          </pre>
         </div>
       )}
     </div>

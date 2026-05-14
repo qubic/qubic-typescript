@@ -1,6 +1,6 @@
 import createClient from 'openapi-fetch'
-import type { components, paths } from './live-schema.d.ts'
 import { sig, unwrap } from './_utils.js'
+import type { components, paths } from './live-schema.d.ts'
 
 export type LiveClientOptions = {
   baseUrl?: string

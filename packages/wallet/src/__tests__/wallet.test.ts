@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'bun:test'
 import { deriveIdentityFromSeed } from '@qubic.ts/crypto'
 import { verifyTransactionSignature } from '@qubic.ts/tx'
-import type { Identity, Seed } from '@qubic.ts/types'
+import type { Seed } from '@qubic.ts/types'
 import { createWallet } from '../wallet.js'
 
 const SEED = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' as Seed

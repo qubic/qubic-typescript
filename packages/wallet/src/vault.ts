@@ -27,7 +27,7 @@ function fromHex(hex: string): Uint8Array<ArrayBuffer> {
   if (hex.length % 2 !== 0) throw new InvalidVaultError('odd-length hex string')
   const out = new Uint8Array(hex.length / 2)
   for (let i = 0; i < out.length; i++) {
-    out[i] = parseInt(hex.slice(i * 2, i * 2 + 2), 16)
+    out[i] = Number.parseInt(hex.slice(i * 2, i * 2 + 2), 16)
   }
   return out
 }
@@ -60,7 +60,9 @@ async function encryptPayload(
 
   const payload: VaultPayload = { seeds: seeds as string[] }
   const plaintext = new TextEncoder().encode(JSON.stringify(payload))
-  const ciphertext = new Uint8Array(await globalThis.crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, plaintext))
+  const ciphertext = new Uint8Array(
+    await globalThis.crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, plaintext),
+  )
 
   return { salt, iv, ciphertext }
 }
@@ -164,14 +166,22 @@ export function importVault(json: string): VaultData {
   } catch {
     throw new InvalidVaultError('invalid JSON')
   }
+  type MaybeVault = {
+    version?: unknown
+    salt?: unknown
+    iv?: unknown
+    ciphertext?: unknown
+    iterations?: unknown
+  }
+  const r = parsed as MaybeVault
   if (
     typeof parsed !== 'object' ||
     parsed === null ||
-    typeof (parsed as Record<string, unknown>)['version'] !== 'number' ||
-    typeof (parsed as Record<string, unknown>)['salt'] !== 'string' ||
-    typeof (parsed as Record<string, unknown>)['iv'] !== 'string' ||
-    typeof (parsed as Record<string, unknown>)['ciphertext'] !== 'string' ||
-    typeof (parsed as Record<string, unknown>)['iterations'] !== 'number'
+    typeof r.version !== 'number' ||
+    typeof r.salt !== 'string' ||
+    typeof r.iv !== 'string' ||
+    typeof r.ciphertext !== 'string' ||
+    typeof r.iterations !== 'number'
   ) {
     throw new InvalidVaultError('missing required fields')
   }

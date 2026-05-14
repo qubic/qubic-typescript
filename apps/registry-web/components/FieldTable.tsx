@@ -34,8 +34,7 @@ export function FieldTable({ fields }: { fields: BinaryField[] }) {
     return <p style={{ color: 'var(--text-muted)', fontSize: 13 }}>No fields</p>
 
   const sorted = [...fields].sort((a, b) => {
-    const cmp =
-      sortKey === 'offset' ? a.offset - b.offset : a.name.localeCompare(b.name)
+    const cmp = sortKey === 'offset' ? a.offset - b.offset : a.name.localeCompare(b.name)
     return asc ? cmp : -cmp
   })
 

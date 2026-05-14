@@ -12,6 +12,8 @@ export async function unwrap<T>(
 }
 
 /** Spreads `signal` only when defined, avoiding `exactOptionalPropertyTypes` conflict. */
-export function sig(signal: AbortSignal | undefined): { signal: AbortSignal } | Record<never, never> {
+export function sig(
+  signal: AbortSignal | undefined,
+): { signal: AbortSignal } | Record<never, never> {
   return signal ? { signal } : {}
 }

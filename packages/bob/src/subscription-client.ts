@@ -252,11 +252,13 @@ export function createBobSubscriptionClient(
       tick?: unknown
     }
   } {
+    const params = (msg as { params?: unknown }).params
     return (
       typeof msg === 'object' &&
       msg !== null &&
       (msg as { method?: unknown }).method === 'qubic_subscription' &&
-      typeof (msg as { params?: unknown }).params === 'object'
+      params !== null &&
+      typeof params === 'object'
     )
   }
 

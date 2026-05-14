@@ -1,3 +1,4 @@
+export { generateSeed, validateSeed, toSeed } from './seed-utils.js'
 export { createWallet } from './wallet.js'
 export type { SignedTransaction, TransferParams, ScTransactionParams, Wallet } from './wallet.js'
 export {

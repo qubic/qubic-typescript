@@ -14,7 +14,7 @@ TypeScript SDK for the [Qubic](https://qubic.org) network. Modular, tree-shakeab
 | [`@qubic.ts/registry`](packages/registry) | 0.1.0 | Versioned ABI registry for all Qubic smart contracts across all epochs |
 | [`@qubic.ts/contracts`](packages/contracts) | 0.1.0 | Generated typed wrappers for every deployed contract |
 | [`@qubic.ts/events`](packages/events) | 0.0.0 | Typed event bus |
-| [`@qubic.ts/wallet`](packages/wallet) | 0.0.0 | Wallet and key management |
+| [`@qubic.ts/wallet`](packages/wallet) | 0.1.0 | Wallet, encrypted vault, and seed utilities |
 | [`@qubic.ts/tcp`](packages/tcp) | 0.0.0 | Raw TCP transport for peer connections |
 | [`@qubic.ts/react`](packages/react) | 0.0.0 | React hooks and context providers |
 
@@ -58,37 +58,61 @@ graph TD
   events --> react
 ```
 
+## End-to-end example: wallet transfer
+
+```ts
+import { generateSeed, createWallet, createVault, unlockVault } from '@qubic.ts/wallet'
+import { createLiveClient } from '@qubic.ts/rpc'
+import type { Identity } from '@qubic.ts/types'
+
+const live = createLiveClient()
+const { tickInfo } = await live.getTickInfo()
+
+// Generate and persist a seed in an encrypted vault
+const seed = generateSeed()
+const vault = await createVault('strong-password', [seed])
+// exportVault(vault) → persist JSON to disk / localStorage
+
+// Later: unlock and use
+const [storedSeed] = await unlockVault(vault, 'strong-password')
+const wallet = createWallet(storedSeed)
+
+console.log(wallet.identity) // 60-char Qubic identity
+
+const { encoded } = await wallet.buildTransfer({
+  destination: 'BZBQFLLBNCXEMGLOBHUVGPQVZEJYLR...' as Identity,
+  amount: 1_000_000n,
+  targetTick: tickInfo.tick + 5,
+  currentTick: tickInfo.tick,
+})
+
+const result = await live.broadcastTransaction(encoded)
+console.log('peers:', result.peersBroadcastedTo)
+```
+
 ## End-to-end example: build and broadcast a contract call
 
 ```ts
-import { toSeed } from '@qubic.ts/types'
-import { publicKeyFromSeed } from '@qubic.ts/crypto'
-import { buildTransaction, signTransaction, encodeTransaction } from '@qubic.ts/tx'
+import { createWallet, toSeed } from '@qubic.ts/wallet'
 import { createLiveClient } from '@qubic.ts/rpc'
 import { qearn } from '@qubic.ts/contracts'
+import type { Identity } from '@qubic.ts/types'
 
-const seed = toSeed('yourfiftyfivecharacterlowercaseseedgoeshere1234567')
 const live = createLiveClient()
+const { tickInfo } = await live.getTickInfo()
+const wallet = createWallet(toSeed('yourfiftyfivecharacterlowercaseseedgoeshere1234567'))
 
-// 1. Get current tick
-const { tick } = await live.getTickInfo()
-
-// 2. Build the SC payload for Qearn lock procedure
 const payload = qearn.buildLockInput({ amount: 10_000_000n })
 
-// 3. Build and sign the transaction
-const txBytes = buildTransaction({
-  sourcePublicKey: publicKeyFromSeed(seed),
-  destinationPublicKey: new Uint8Array(32), // contract address = all zeros
+const { encoded } = await wallet.buildScTransaction({
+  destination: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' as Identity,
   amount: 10_000_000n,
-  targetTick: tick + 5,
-  inputType: 6, // LOCK procedure
+  targetTick: tickInfo.tick + 5,
+  currentTick: tickInfo.tick,
+  inputType: 6,
   payload,
 })
-const signedTx = await signTransaction(txBytes, seed)
-const encoded = encodeTransaction(signedTx)
 
-// 4. Broadcast
 const result = await live.broadcastTransaction(encoded)
 console.log('peers:', result.peersBroadcastedTo)
 ```

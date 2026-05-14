@@ -61,48 +61,48 @@ function allActiveAtEpoch(epoch: number): ContractAbiVersion[] {
 export const apiRoutes = new Elysia({ prefix: '/v1' })
   .get('/contracts', () => contractSummaries())
 
-  .get('/contracts/by-name/:name', ({ params, error }) => {
+  .get('/contracts/by-name/:name', ({ params, status }) => {
     const name = params.name.toLowerCase()
     const match = registry.versions.find(
       (v) => v.contractName.toLowerCase() === name && v.effectiveToEpoch === null,
     )
-    if (!match) return error(404, { error: `Contract '${params.name}' not found`, status: 404 })
+    if (!match) return status(404, { error: `Contract '${params.name}' not found`, status: 404 })
     try {
-      return getCurrentAbi(registry as Parameters<typeof getCurrentAbi>[0], match.contractIndex).version
+      return getCurrentAbi(registry as Parameters<typeof getCurrentAbi>[0], match.contractIndex)
     } catch (e) {
-      if (e instanceof AbiNotFoundError) return error(404, { error: e.message, status: 404 })
+      if (e instanceof AbiNotFoundError) return status(404, { error: e.message, status: 404 })
       throw e
     }
   })
 
-  .get('/contracts/:index', ({ params, error }) => {
+  .get('/contracts/:index', ({ params, status }) => {
     const idx = Number(params.index)
-    if (Number.isNaN(idx)) return error(400, { error: 'Invalid contract index', status: 400 })
+    if (Number.isNaN(idx)) return status(400, { error: 'Invalid contract index', status: 400 })
     try {
-      return getCurrentAbi(registry as Parameters<typeof getCurrentAbi>[0], idx).version
+      return getCurrentAbi(registry as Parameters<typeof getCurrentAbi>[0], idx)
     } catch (e) {
-      if (e instanceof AbiNotFoundError) return error(404, { error: e.message, status: 404 })
+      if (e instanceof AbiNotFoundError) return status(404, { error: e.message, status: 404 })
       throw e
     }
   })
 
-  .get('/contracts/:index/history', ({ params, error }) => {
+  .get('/contracts/:index/history', ({ params, status }) => {
     const idx = Number(params.index)
-    if (Number.isNaN(idx)) return error(400, { error: 'Invalid contract index', status: 400 })
+    if (Number.isNaN(idx)) return status(400, { error: 'Invalid contract index', status: 400 })
     const history = getAbiHistory(registry as Parameters<typeof getAbiHistory>[0], idx)
-    if (history.length === 0) return error(404, { error: `No ABI found for contract ${idx}`, status: 404 })
+    if (history.length === 0) return status(404, { error: `No ABI found for contract ${idx}`, status: 404 })
     return history
   })
 
-  .get('/contracts/:index/epoch/:epoch', ({ params, error }) => {
+  .get('/contracts/:index/epoch/:epoch', ({ params, status }) => {
     const idx = Number(params.index)
     const epoch = Number(params.epoch)
     if (Number.isNaN(idx) || Number.isNaN(epoch))
-      return error(400, { error: 'Invalid index or epoch', status: 400 })
+      return status(400, { error: 'Invalid index or epoch', status: 400 })
     try {
       return getAbi(registry as Parameters<typeof getAbi>[0], idx, epoch)
     } catch (e) {
-      if (e instanceof AbiNotFoundError) return error(404, { error: e.message, status: 404 })
+      if (e instanceof AbiNotFoundError) return status(404, { error: e.message, status: 404 })
       throw e
     }
   })
@@ -123,11 +123,11 @@ export const apiRoutes = new Elysia({ prefix: '/v1' })
     })
   })
 
-  .get('/epochs/:epoch', ({ params, error }) => {
+  .get('/epochs/:epoch', ({ params, status }) => {
     const epoch = Number(params.epoch)
-    if (Number.isNaN(epoch)) return error(400, { error: 'Invalid epoch', status: 400 })
+    if (Number.isNaN(epoch)) return status(400, { error: 'Invalid epoch', status: 400 })
     const result = allActiveAtEpoch(epoch)
-    if (result.length === 0) return error(404, { error: `No contracts found at epoch ${epoch}`, status: 404 })
+    if (result.length === 0) return status(404, { error: `No contracts found at epoch ${epoch}`, status: 404 })
     return result
   })
 

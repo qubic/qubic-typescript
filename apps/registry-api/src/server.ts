@@ -8,6 +8,6 @@ const app = new Elysia()
   .use(apiRoutes)
   .use(downloadRoutes)
   .get('/health', () => ({ ok: true }))
-  .listen(process.env.PORT ? Number(process.env.PORT) : 3001)
+  .listen(process.env['PORT'] ? Number(process.env['PORT']) : 3001)
 
 console.log(`registry-api running at http://localhost:${app.server?.port}`)

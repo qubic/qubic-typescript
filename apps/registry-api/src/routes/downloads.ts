@@ -27,12 +27,12 @@ export const downloadRoutes = new Elysia({ prefix: '/download' })
     return bytes
   })
 
-  .get('/epoch/:epoch/:contract', async ({ params, error, set }) => {
+  .get('/epoch/:epoch/:contract', async ({ params, status, set }) => {
     const { epoch, contract } = params
     const filename = contract.endsWith('.json') ? contract : `${contract}.json`
     const path = `${EPOCHS_DIR}${epoch}/${filename}`
     if (!existsSync(path)) {
-      return error(404, { error: `No snapshot found for ${contract} at epoch ${epoch}`, status: 404 })
+      return status(404, { error: `No snapshot found for ${contract} at epoch ${epoch}`, status: 404 })
     }
     const bytes = await readFile(path)
     set.headers['content-type'] = 'application/json'
@@ -40,14 +40,14 @@ export const downloadRoutes = new Elysia({ prefix: '/download' })
     return bytes
   })
 
-  .get('/epoch/:epoch/all.zip', async ({ params, error, set }) => {
+  .get('/epoch/:epoch/all.zip', async ({ params, status, set }) => {
     const epoch = Number(params.epoch)
-    if (Number.isNaN(epoch)) return error(400, { error: 'Invalid epoch', status: 400 })
+    if (Number.isNaN(epoch)) return status(400, { error: 'Invalid epoch', status: 400 })
     const dir = `${EPOCHS_DIR}${epoch}/`
-    if (!existsSync(dir)) return error(404, { error: `No data for epoch ${epoch}`, status: 404 })
+    if (!existsSync(dir)) return status(404, { error: `No data for epoch ${epoch}`, status: 404 })
 
     const files = readdirSync(dir).filter((f) => f.endsWith('.json'))
-    if (files.length === 0) return error(404, { error: `No contracts at epoch ${epoch}`, status: 404 })
+    if (files.length === 0) return status(404, { error: `No contracts at epoch ${epoch}`, status: 404 })
 
     const entries: Record<string, Uint8Array> = {}
     for (const f of files) {
@@ -60,15 +60,15 @@ export const downloadRoutes = new Elysia({ prefix: '/download' })
     return zip
   })
 
-  .get('/contract/:index/all.zip', async ({ params, error, set }) => {
+  .get('/contract/:index/all.zip', async ({ params, status, set }) => {
     const idx = Number(params.index)
-    if (Number.isNaN(idx)) return error(400, { error: 'Invalid contract index', status: 400 })
+    if (Number.isNaN(idx)) return status(400, { error: 'Invalid contract index', status: 400 })
 
     let name: string
     try {
       name = findContractByIndex(registry as Parameters<typeof findContractByIndex>[0], idx)
     } catch {
-      return error(404, { error: `Contract ${idx} not found`, status: 404 })
+      return status(404, { error: `Contract ${idx} not found`, status: 404 })
     }
 
     const entries: Record<string, Uint8Array> = {}
@@ -80,7 +80,7 @@ export const downloadRoutes = new Elysia({ prefix: '/download' })
     }
 
     if (Object.keys(entries).length === 0) {
-      return error(404, { error: `No epoch snapshots found for contract ${idx}`, status: 404 })
+      return status(404, { error: `No epoch snapshots found for contract ${idx}`, status: 404 })
     }
 
     const zip = zipSync(entries)

@@ -22,7 +22,7 @@
  *   data/epochs/{epoch}/{name}.json   — ABI snapshot per epoch per contract
  *   data/registry.json                — version-range index for client.ts
  */
-import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { parseArgs } from 'node:util'
 import type { ContractAbiVersion, ContractRegistry } from '../src/types.js'
@@ -338,7 +338,9 @@ async function runFillGaps(showFile: (ref: string, path: string) => Promise<stri
 
       const headerSource = await showFile(tag, `src/contracts/${sc.filename}`)
       if (!headerSource) {
-        console.warn(`  ⚠ [${sc.contractIndex}] ${sc.label} @epoch ${epoch}: file not found in ${tag}`)
+        console.warn(
+          `  ⚠ [${sc.contractIndex}] ${sc.label} @epoch ${epoch}: file not found in ${tag}`,
+        )
         failed++
         continue
       }
@@ -373,18 +375,14 @@ function rebuildRegistryFromSnapshots() {
   console.log('\nRebuilding registry.json from epoch snapshots…')
 
   const contractFilter = args.contracts
-    ? new Set(
-        args.contracts
-          .split(',')
-          .map((s) => s.trim().toLowerCase()),
-      )
+    ? new Set(args.contracts.split(',').map((s) => s.trim().toLowerCase()))
     : null
 
   const epochDirs = existsSync(EPOCHS_DIR)
     ? readdirSync(EPOCHS_DIR, { withFileTypes: true })
         .filter((d) => d.isDirectory())
         .map((d) => Number(d.name))
-        .filter((n) => !isNaN(n))
+        .filter((n) => !Number.isNaN(n))
         .sort((a, b) => a - b)
     : []
 
@@ -401,9 +399,11 @@ function rebuildRegistryFromSnapshots() {
       if (contractFilter) {
         const stem = contractName.toLowerCase()
         const sc = allContracts.find(
-          (c) => c.filename.replace(/\.h$/, '').toLowerCase() === stem || c.label.toLowerCase() === stem,
+          (c) =>
+            c.filename.replace(/\.h$/, '').toLowerCase() === stem || c.label.toLowerCase() === stem,
         )
-        if (!sc || (!contractFilter.has(stem) && !contractFilter.has(sc.label.toLowerCase()))) continue
+        if (!sc || (!contractFilter.has(stem) && !contractFilter.has(sc.label.toLowerCase())))
+          continue
       }
 
       let version: ContractAbiVersion

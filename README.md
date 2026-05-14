@@ -199,12 +199,15 @@ graph LR
     react["react/\n@qubic.ts/react"]
   end
   subgraph apps
-    cli["registry-cli/"]
+    api["registry-api/\nElysiaJS API"]
+    web["registry-web/\nNext.js browser"]
   end
   subgraph resources
     core["core/ — C++ contracts & OpenAPI schemas"]
     static["static/ — contract list & metadata"]
   end
+  registry --> api
+  api --> web
 ```
 
 ## Tooling

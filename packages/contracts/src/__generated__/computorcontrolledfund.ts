@@ -19,6 +19,8 @@ export interface ComputorControlledFundSubscriptionDataStruct {
   destination: string
   url: number[]
   weeksPerPeriod: number
+  _padding1: number[]
+  _padding2: number[]
   numberOfPeriods: number
   amountPerPeriod: bigint
   startEpoch: number
@@ -30,6 +32,8 @@ export interface ComputorControlledFundSubscriptionProposalDataStruct {
   destination: string
   url: number[]
   weeksPerPeriod: number
+  _padding0: number[]
+  _padding1: number[]
   numberOfPeriods: number
   amountPerPeriod: bigint
   startEpoch: number
@@ -51,8 +55,27 @@ export interface ComputorControlledFundProposalSummarizedVotingDataV1Struct {
   optionVoteCount: number[]
 }
 
+export interface ComputorControlledFundLatestTransfersEntryStruct {
+  destination: string
+  url: number[]
+  amount: bigint
+  tick: number
+  success: number
+}
+
+export interface ComputorControlledFundRegularPaymentEntryStruct {
+  destination: string
+  url: number[]
+  amount: bigint
+  tick: number
+  periodIndex: number
+  success: number
+  _padding0: number[]
+  _padding1: number[]
+}
+
 const STRUCTS: Record<string, NamedStruct> = {
-  ProposalDataT: {
+  'ProposalDataT': {
   name: 'ProposalDataT',
   byteLength: 304,
   fields: [
@@ -88,9 +111,9 @@ const STRUCTS: Record<string, NamedStruct> = {
     },
 ],
 },
-  SubscriptionData: {
+  'SubscriptionData': {
   name: 'SubscriptionData',
-  byteLength: 309,
+  byteLength: 312,
   fields: [
     {
       name: 'destination',
@@ -114,34 +137,52 @@ const STRUCTS: Record<string, NamedStruct> = {
       byteLength: 1,
     },
     {
+      name: '_padding1',
+      type: 'array',
+      offset: 289,
+      byteLength: 1,
+      arrayLength: 1,
+      arrayItemType: 'uint8',
+      arrayItemByteLength: 1,
+    },
+    {
+      name: '_padding2',
+      type: 'array',
+      offset: 290,
+      byteLength: 2,
+      arrayLength: 2,
+      arrayItemType: 'uint8',
+      arrayItemByteLength: 1,
+    },
+    {
       name: 'numberOfPeriods',
       type: 'uint32',
-      offset: 289,
+      offset: 292,
       byteLength: 4,
     },
     {
       name: 'amountPerPeriod',
       type: 'uint64',
-      offset: 293,
+      offset: 296,
       byteLength: 8,
     },
     {
       name: 'startEpoch',
       type: 'uint32',
-      offset: 301,
+      offset: 304,
       byteLength: 4,
     },
     {
       name: 'currentPeriod',
       type: 'sint32',
-      offset: 305,
+      offset: 308,
       byteLength: 4,
     },
 ],
 },
-  SubscriptionProposalData: {
+  'SubscriptionProposalData': {
   name: 'SubscriptionProposalData',
-  byteLength: 337,
+  byteLength: 340,
   fields: [
     {
       name: 'proposerId',
@@ -171,26 +212,44 @@ const STRUCTS: Record<string, NamedStruct> = {
       byteLength: 1,
     },
     {
+      name: '_padding0',
+      type: 'array',
+      offset: 321,
+      byteLength: 1,
+      arrayLength: 1,
+      arrayItemType: 'uint8',
+      arrayItemByteLength: 1,
+    },
+    {
+      name: '_padding1',
+      type: 'array',
+      offset: 322,
+      byteLength: 2,
+      arrayLength: 2,
+      arrayItemType: 'uint8',
+      arrayItemByteLength: 1,
+    },
+    {
       name: 'numberOfPeriods',
       type: 'uint32',
-      offset: 321,
+      offset: 324,
       byteLength: 4,
     },
     {
       name: 'amountPerPeriod',
       type: 'uint64',
-      offset: 325,
+      offset: 328,
       byteLength: 8,
     },
     {
       name: 'startEpoch',
       type: 'uint32',
-      offset: 333,
+      offset: 336,
       byteLength: 4,
     },
 ],
 },
-  ProposalSingleVoteDataV1: {
+  'ProposalSingleVoteDataV1': {
   name: 'ProposalSingleVoteDataV1',
   byteLength: 16,
   fields: [
@@ -220,7 +279,7 @@ const STRUCTS: Record<string, NamedStruct> = {
     },
 ],
 },
-  ProposalSummarizedVotingDataV1: {
+  'ProposalSummarizedVotingDataV1': {
   name: 'ProposalSummarizedVotingDataV1',
   byteLength: 48,
   fields: [
@@ -265,9 +324,109 @@ const STRUCTS: Record<string, NamedStruct> = {
     },
 ],
 },
+  'LatestTransfersEntry': {
+  name: 'LatestTransfersEntry',
+  byteLength: 301,
+  fields: [
+    {
+      name: 'destination',
+      type: 'id',
+      offset: 0,
+      byteLength: 32,
+    },
+    {
+      name: 'url',
+      type: 'array',
+      offset: 32,
+      byteLength: 256,
+      arrayLength: 256,
+      arrayItemType: 'uint8',
+      arrayItemByteLength: 1,
+    },
+    {
+      name: 'amount',
+      type: 'sint64',
+      offset: 288,
+      byteLength: 8,
+    },
+    {
+      name: 'tick',
+      type: 'uint32',
+      offset: 296,
+      byteLength: 4,
+    },
+    {
+      name: 'success',
+      type: 'uint8',
+      offset: 300,
+      byteLength: 1,
+    },
+],
+},
+  'RegularPaymentEntry': {
+  name: 'RegularPaymentEntry',
+  byteLength: 308,
+  fields: [
+    {
+      name: 'destination',
+      type: 'id',
+      offset: 0,
+      byteLength: 32,
+    },
+    {
+      name: 'url',
+      type: 'array',
+      offset: 32,
+      byteLength: 256,
+      arrayLength: 256,
+      arrayItemType: 'uint8',
+      arrayItemByteLength: 1,
+    },
+    {
+      name: 'amount',
+      type: 'sint64',
+      offset: 288,
+      byteLength: 8,
+    },
+    {
+      name: 'tick',
+      type: 'uint32',
+      offset: 296,
+      byteLength: 4,
+    },
+    {
+      name: 'periodIndex',
+      type: 'sint32',
+      offset: 300,
+      byteLength: 4,
+    },
+    {
+      name: 'success',
+      type: 'uint8',
+      offset: 304,
+      byteLength: 1,
+    },
+    {
+      name: '_padding0',
+      type: 'array',
+      offset: 305,
+      byteLength: 1,
+      arrayLength: 1,
+      arrayItemType: 'uint8',
+      arrayItemByteLength: 1,
+    },
+    {
+      name: '_padding1',
+      type: 'array',
+      offset: 306,
+      byteLength: 2,
+      arrayLength: 2,
+      arrayItemType: 'uint8',
+      arrayItemByteLength: 1,
+    },
+],
+},
 }
-
-export const COMPUTOR_CONTROLLED_FUND_VOTE_INPUT_TYPE = 0
 
 export const COMPUTOR_CONTROLLED_FUND_SET_PROPOSAL_INPUT_TYPE = 1
 
@@ -275,6 +434,7 @@ export interface ComputorControlledFundSetProposalInput {
   proposal: ComputorControlledFundProposalDataTStruct
   isSubscription: number
   weeksPerPeriod: number
+  _padding0: number[]
   startEpoch: number
   amountPerPeriod: bigint
   numberOfPeriods: number
@@ -301,28 +461,37 @@ const COMPUTOR_CONTROLLED_FUND_SET_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
     byteLength: 1,
   },
   {
+    name: '_padding0',
+    type: 'array',
+    offset: 306,
+    byteLength: 2,
+    arrayLength: 2,
+    arrayItemType: 'uint8',
+    arrayItemByteLength: 1,
+  },
+  {
     name: 'startEpoch',
     type: 'uint32',
-    offset: 306,
+    offset: 308,
     byteLength: 4,
   },
   {
     name: 'amountPerPeriod',
     type: 'uint64',
-    offset: 310,
+    offset: 312,
     byteLength: 8,
   },
   {
     name: 'numberOfPeriods',
     type: 'uint32',
-    offset: 318,
+    offset: 320,
     byteLength: 4,
   },
 ]
 
 export function buildComputorControlledFundSetProposalInput(
   input: ComputorControlledFundSetProposalInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(COMPUTOR_CONTROLLED_FUND_SET_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -342,55 +511,72 @@ const COMPUTOR_CONTROLLED_FUND_SET_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeComputorControlledFundSetProposalOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): ComputorControlledFundSetProposalOutput {
   return decodePayload(data, COMPUTOR_CONTROLLED_FUND_SET_PROPOSAL_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as ComputorControlledFundSetProposalOutput
 }
 
-export const COMPUTOR_CONTROLLED_FUND_GET_LATEST_TRANSFERS_INPUT_TYPE = 0
-export const COMPUTOR_CONTROLLED_FUND_GET_LATEST_TRANSFERS_INPUT_SIZE = 0
+export const COMPUTOR_CONTROLLED_FUND_VOTE_INPUT_TYPE = 4
 
-export const COMPUTOR_CONTROLLED_FUND_GET_REGULAR_PAYMENTS_INPUT_TYPE = 0
-export const COMPUTOR_CONTROLLED_FUND_GET_REGULAR_PAYMENTS_INPUT_SIZE = 0
-
-export const COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_FEE_INPUT_TYPE = 0
-export const COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_FEE_INPUT_SIZE = 0
-
-export interface ComputorControlledFundGetProposalFeeOutput {
-  proposalFee: number
+export interface ComputorControlledFundVoteInput {
+  proposalIndex: number
+  proposalType: number
+  proposalTick: number
+  voteValue: bigint
 }
 
-const COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_FEE_OUTPUT_FIELDS: BinaryField[] = [
+const COMPUTOR_CONTROLLED_FUND_VOTE_INPUT_FIELDS: BinaryField[] = [
   {
-    name: 'proposalFee',
-    type: 'uint32',
+    name: 'proposalIndex',
+    type: 'uint16',
     offset: 0,
+    byteLength: 2,
+  },
+  {
+    name: 'proposalType',
+    type: 'uint16',
+    offset: 2,
+    byteLength: 2,
+  },
+  {
+    name: 'proposalTick',
+    type: 'uint32',
+    offset: 4,
     byteLength: 4,
+  },
+  {
+    name: 'voteValue',
+    type: 'sint64',
+    offset: 8,
+    byteLength: 8,
   },
 ]
 
-export function decodeComputorControlledFundGetProposalFeeOutput(
-  data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
-): ComputorControlledFundGetProposalFeeOutput {
-  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_FEE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as ComputorControlledFundGetProposalFeeOutput
+export function buildComputorControlledFundVoteInput(
+  input: ComputorControlledFundVoteInput,
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
+): Uint8Array {
+  return buildPayload(COMPUTOR_CONTROLLED_FUND_VOTE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
 
-export async function computorControlledFundGetProposalFee(
-  live: SmartContractCaller,
-  options?: ContractCallOptions,
-): Promise<Result<ComputorControlledFundGetProposalFeeOutput, QubicRpcError>> {
-  return callContractFunction({
-    live,
-    contractIndex: COMPUTOR_CONTROLLED_FUND_CONTRACT_INDEX,
-    inputType: COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_FEE_INPUT_TYPE,
-    inputSize: COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_FEE_INPUT_SIZE,
-    inputFields: [],
-    outputFields: COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_FEE_OUTPUT_FIELDS,
-    structs: STRUCTS,
-    input: {},
-    ...options,
-  })
+export interface ComputorControlledFundVoteOutput {
+  okay: number
+}
+
+const COMPUTOR_CONTROLLED_FUND_VOTE_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'okay',
+    type: 'uint8',
+    offset: 0,
+    byteLength: 1,
+  },
+]
+
+export function decodeComputorControlledFundVoteOutput(
+  data: Uint8Array,
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
+): ComputorControlledFundVoteOutput {
+  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_VOTE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as ComputorControlledFundVoteOutput
 }
 
 export const COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_INDICES_INPUT_TYPE = 2
@@ -418,7 +604,7 @@ const COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_INDICES_INPUT_FIELDS: BinaryField[] 
 
 export function buildComputorControlledFundGetProposalIndicesInput(
   input: ComputorControlledFundGetProposalIndicesInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_INDICES_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -448,7 +634,7 @@ const COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_INDICES_OUTPUT_FIELDS: BinaryField[]
 
 export function decodeComputorControlledFundGetProposalIndicesOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): ComputorControlledFundGetProposalIndicesOutput {
   return decodePayload(data, COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_INDICES_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as ComputorControlledFundGetProposalIndicesOutput
 }
@@ -496,7 +682,7 @@ const COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
 
 export function buildComputorControlledFundGetProposalInput(
   input: ComputorControlledFundGetProposalInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -505,6 +691,8 @@ export interface ComputorControlledFundGetProposalOutput {
   okay: number
   hasSubscriptionProposal: number
   hasActiveSubscription: number
+  _padding0: number[]
+  _padding1: number[]
   proposerPublicKey: string
   proposal: ComputorControlledFundProposalDataTStruct
   subscription: ComputorControlledFundSubscriptionDataStruct
@@ -531,37 +719,55 @@ const COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
     byteLength: 1,
   },
   {
+    name: '_padding0',
+    type: 'array',
+    offset: 3,
+    byteLength: 1,
+    arrayLength: 1,
+    arrayItemType: 'uint8',
+    arrayItemByteLength: 1,
+  },
+  {
+    name: '_padding1',
+    type: 'array',
+    offset: 4,
+    byteLength: 4,
+    arrayLength: 4,
+    arrayItemType: 'uint8',
+    arrayItemByteLength: 1,
+  },
+  {
     name: 'proposerPublicKey',
     type: 'id',
-    offset: 3,
+    offset: 8,
     byteLength: 32,
   },
   {
     name: 'proposal',
     type: 'struct',
-    offset: 35,
+    offset: 40,
     byteLength: 304,
     structRef: 'ProposalDataT',
   },
   {
     name: 'subscription',
     type: 'struct',
-    offset: 339,
-    byteLength: 309,
+    offset: 344,
+    byteLength: 312,
     structRef: 'SubscriptionData',
   },
   {
     name: 'subscriptionProposal',
     type: 'struct',
-    offset: 648,
-    byteLength: 337,
+    offset: 656,
+    byteLength: 340,
     structRef: 'SubscriptionProposalData',
   },
 ]
 
 export function decodeComputorControlledFundGetProposalOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): ComputorControlledFundGetProposalOutput {
   return decodePayload(data, COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as ComputorControlledFundGetProposalOutput
 }
@@ -584,7 +790,7 @@ export async function computorControlledFundGetProposal(
   })
 }
 
-export const COMPUTOR_CONTROLLED_FUND_GET_VOTE_INPUT_TYPE = 4
+export const COMPUTOR_CONTROLLED_FUND_GET_VOTE_INPUT_TYPE = 5
 export const COMPUTOR_CONTROLLED_FUND_GET_VOTE_INPUT_SIZE = 34
 
 export interface ComputorControlledFundGetVoteInput {
@@ -609,7 +815,7 @@ const COMPUTOR_CONTROLLED_FUND_GET_VOTE_INPUT_FIELDS: BinaryField[] = [
 
 export function buildComputorControlledFundGetVoteInput(
   input: ComputorControlledFundGetVoteInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(COMPUTOR_CONTROLLED_FUND_GET_VOTE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -637,7 +843,7 @@ const COMPUTOR_CONTROLLED_FUND_GET_VOTE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeComputorControlledFundGetVoteOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): ComputorControlledFundGetVoteOutput {
   return decodePayload(data, COMPUTOR_CONTROLLED_FUND_GET_VOTE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as ComputorControlledFundGetVoteOutput
 }
@@ -660,7 +866,7 @@ export async function computorControlledFundGetVote(
   })
 }
 
-export const COMPUTOR_CONTROLLED_FUND_GET_VOTING_RESULTS_INPUT_TYPE = 5
+export const COMPUTOR_CONTROLLED_FUND_GET_VOTING_RESULTS_INPUT_TYPE = 6
 export const COMPUTOR_CONTROLLED_FUND_GET_VOTING_RESULTS_INPUT_SIZE = 2
 
 export interface ComputorControlledFundGetVotingResultsInput {
@@ -678,7 +884,7 @@ const COMPUTOR_CONTROLLED_FUND_GET_VOTING_RESULTS_INPUT_FIELDS: BinaryField[] = 
 
 export function buildComputorControlledFundGetVotingResultsInput(
   input: ComputorControlledFundGetVotingResultsInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(COMPUTOR_CONTROLLED_FUND_GET_VOTING_RESULTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -706,7 +912,7 @@ const COMPUTOR_CONTROLLED_FUND_GET_VOTING_RESULTS_OUTPUT_FIELDS: BinaryField[] =
 
 export function decodeComputorControlledFundGetVotingResultsOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): ComputorControlledFundGetVotingResultsOutput {
   return decodePayload(data, COMPUTOR_CONTROLLED_FUND_GET_VOTING_RESULTS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as ComputorControlledFundGetVotingResultsOutput
 }
@@ -729,14 +935,144 @@ export async function computorControlledFundGetVotingResults(
   })
 }
 
+export const COMPUTOR_CONTROLLED_FUND_GET_LATEST_TRANSFERS_INPUT_TYPE = 7
+export const COMPUTOR_CONTROLLED_FUND_GET_LATEST_TRANSFERS_INPUT_SIZE = 0
+
+export interface ComputorControlledFundGetLatestTransfersOutput {
+  data: number[]
+}
+
+const COMPUTOR_CONTROLLED_FUND_GET_LATEST_TRANSFERS_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'data',
+    type: 'array',
+    offset: 0,
+    byteLength: 38528,
+    arrayLength: 128,
+    arrayItemByteLength: 301,
+    arrayItemStructRef: 'LatestTransfersEntry',
+  },
+]
+
+export function decodeComputorControlledFundGetLatestTransfersOutput(
+  data: Uint8Array,
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
+): ComputorControlledFundGetLatestTransfersOutput {
+  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_GET_LATEST_TRANSFERS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as ComputorControlledFundGetLatestTransfersOutput
+}
+
+export async function computorControlledFundGetLatestTransfers(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<ComputorControlledFundGetLatestTransfersOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: COMPUTOR_CONTROLLED_FUND_CONTRACT_INDEX,
+    inputType: COMPUTOR_CONTROLLED_FUND_GET_LATEST_TRANSFERS_INPUT_TYPE,
+    inputSize: COMPUTOR_CONTROLLED_FUND_GET_LATEST_TRANSFERS_INPUT_SIZE,
+    inputFields: [],
+    outputFields: COMPUTOR_CONTROLLED_FUND_GET_LATEST_TRANSFERS_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
+}
+
+export const COMPUTOR_CONTROLLED_FUND_GET_REGULAR_PAYMENTS_INPUT_TYPE = 8
+export const COMPUTOR_CONTROLLED_FUND_GET_REGULAR_PAYMENTS_INPUT_SIZE = 0
+
+export interface ComputorControlledFundGetRegularPaymentsOutput {
+  data: number[]
+}
+
+const COMPUTOR_CONTROLLED_FUND_GET_REGULAR_PAYMENTS_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'data',
+    type: 'array',
+    offset: 0,
+    byteLength: 39424,
+    arrayLength: 128,
+    arrayItemByteLength: 308,
+    arrayItemStructRef: 'RegularPaymentEntry',
+  },
+]
+
+export function decodeComputorControlledFundGetRegularPaymentsOutput(
+  data: Uint8Array,
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
+): ComputorControlledFundGetRegularPaymentsOutput {
+  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_GET_REGULAR_PAYMENTS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as ComputorControlledFundGetRegularPaymentsOutput
+}
+
+export async function computorControlledFundGetRegularPayments(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<ComputorControlledFundGetRegularPaymentsOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: COMPUTOR_CONTROLLED_FUND_CONTRACT_INDEX,
+    inputType: COMPUTOR_CONTROLLED_FUND_GET_REGULAR_PAYMENTS_INPUT_TYPE,
+    inputSize: COMPUTOR_CONTROLLED_FUND_GET_REGULAR_PAYMENTS_INPUT_SIZE,
+    inputFields: [],
+    outputFields: COMPUTOR_CONTROLLED_FUND_GET_REGULAR_PAYMENTS_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
+}
+
+export const COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_FEE_INPUT_TYPE = 9
+export const COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_FEE_INPUT_SIZE = 0
+
+export interface ComputorControlledFundGetProposalFeeOutput {
+  proposalFee: number
+}
+
+const COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_FEE_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'proposalFee',
+    type: 'uint32',
+    offset: 0,
+    byteLength: 4,
+  },
+]
+
+export function decodeComputorControlledFundGetProposalFeeOutput(
+  data: Uint8Array,
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
+): ComputorControlledFundGetProposalFeeOutput {
+  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_FEE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as ComputorControlledFundGetProposalFeeOutput
+}
+
+export async function computorControlledFundGetProposalFee(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<ComputorControlledFundGetProposalFeeOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: COMPUTOR_CONTROLLED_FUND_CONTRACT_INDEX,
+    inputType: COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_FEE_INPUT_TYPE,
+    inputSize: COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_FEE_INPUT_SIZE,
+    inputFields: [],
+    outputFields: COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_FEE_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
+}
+
 export const computorControlledFund = {
   contractIndex: COMPUTOR_CONTROLLED_FUND_CONTRACT_INDEX,
-  GetProposalFee: computorControlledFundGetProposalFee,
   GetProposalIndices: computorControlledFundGetProposalIndices,
   GetProposal: computorControlledFundGetProposal,
   GetVote: computorControlledFundGetVote,
   GetVotingResults: computorControlledFundGetVotingResults,
+  GetLatestTransfers: computorControlledFundGetLatestTransfers,
+  GetRegularPayments: computorControlledFundGetRegularPayments,
+  GetProposalFee: computorControlledFundGetProposalFee,
   buildSetProposalInput: buildComputorControlledFundSetProposalInput,
   decodeSetProposalOutput: decodeComputorControlledFundSetProposalOutput,
+  buildVoteInput: buildComputorControlledFundVoteInput,
+  decodeVoteOutput: decodeComputorControlledFundVoteOutput,
 }
 

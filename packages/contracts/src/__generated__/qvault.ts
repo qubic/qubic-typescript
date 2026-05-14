@@ -108,7 +108,7 @@ export interface QVAULTAlloPInfoStruct {
 }
 
 const STRUCTS: Record<string, NamedStruct> = {
-  Asset: {
+  'Asset': {
   name: 'Asset',
   byteLength: 40,
   fields: [
@@ -126,7 +126,7 @@ const STRUCTS: Record<string, NamedStruct> = {
     },
 ],
 },
-  GPInfo: {
+  'GPInfo': {
   name: 'GPInfo',
   byteLength: 309,
   fields: [
@@ -183,7 +183,7 @@ const STRUCTS: Record<string, NamedStruct> = {
     },
 ],
 },
-  QCPInfo: {
+  'QCPInfo': {
   name: 'QCPInfo',
   byteLength: 313,
   fields: [
@@ -246,7 +246,7 @@ const STRUCTS: Record<string, NamedStruct> = {
     },
 ],
 },
-  IPOPInfo: {
+  'IPOPInfo': {
   name: 'IPOPInfo',
   byteLength: 329,
   fields: [
@@ -321,7 +321,7 @@ const STRUCTS: Record<string, NamedStruct> = {
     },
 ],
 },
-  QEarnPInfo: {
+  'QEarnPInfo': {
   name: 'QEarnPInfo',
   byteLength: 326,
   fields: [
@@ -396,7 +396,7 @@ const STRUCTS: Record<string, NamedStruct> = {
     },
 ],
 },
-  FundPInfo: {
+  'FundPInfo': {
   name: 'FundPInfo',
   byteLength: 325,
   fields: [
@@ -471,7 +471,7 @@ const STRUCTS: Record<string, NamedStruct> = {
     },
 ],
 },
-  MKTPInfo: {
+  'MKTPInfo': {
   name: 'MKTPInfo',
   byteLength: 337,
   fields: [
@@ -558,7 +558,7 @@ const STRUCTS: Record<string, NamedStruct> = {
     },
 ],
 },
-  AlloPInfo: {
+  'AlloPInfo': {
   name: 'AlloPInfo',
   byteLength: 321,
   fields: [
@@ -652,7 +652,7 @@ const QVAULT_STAKE_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQVAULTStakeInput(
   input: QVAULTStakeInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QVAULT_STAKE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -672,7 +672,7 @@ const QVAULT_STAKE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQVAULTStakeOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QVAULTStakeOutput {
   return decodePayload(data, QVAULT_STAKE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTStakeOutput
 }
@@ -694,7 +694,7 @@ const QVAULT_UN_STAKE_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQVAULTUnStakeInput(
   input: QVAULTUnStakeInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QVAULT_UN_STAKE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -714,7 +714,7 @@ const QVAULT_UN_STAKE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQVAULTUnStakeOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QVAULTUnStakeOutput {
   return decodePayload(data, QVAULT_UN_STAKE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTUnStakeOutput
 }
@@ -739,7 +739,7 @@ const QVAULT_SUBMIT_GP_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQVAULTSubmitGPInput(
   input: QVAULTSubmitGPInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QVAULT_SUBMIT_GP_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -759,7 +759,7 @@ const QVAULT_SUBMIT_GP_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQVAULTSubmitGPOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QVAULTSubmitGPOutput {
   return decodePayload(data, QVAULT_SUBMIT_GP_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTSubmitGPOutput
 }
@@ -791,7 +791,7 @@ const QVAULT_SUBMIT_QCP_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQVAULTSubmitQCPInput(
   input: QVAULTSubmitQCPInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QVAULT_SUBMIT_QCP_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -811,7 +811,7 @@ const QVAULT_SUBMIT_QCP_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQVAULTSubmitQCPOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QVAULTSubmitQCPOutput {
   return decodePayload(data, QVAULT_SUBMIT_QCP_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTSubmitQCPOutput
 }
@@ -843,7 +843,7 @@ const QVAULT_SUBMIT_IPOP_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQVAULTSubmitIPOPInput(
   input: QVAULTSubmitIPOPInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QVAULT_SUBMIT_IPOP_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -863,7 +863,7 @@ const QVAULT_SUBMIT_IPOP_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQVAULTSubmitIPOPOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QVAULTSubmitIPOPOutput {
   return decodePayload(data, QVAULT_SUBMIT_IPOP_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTSubmitIPOPOutput
 }
@@ -902,7 +902,7 @@ const QVAULT_SUBMIT_Q_EARN_P_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQVAULTSubmitQEarnPInput(
   input: QVAULTSubmitQEarnPInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QVAULT_SUBMIT_Q_EARN_P_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -922,7 +922,7 @@ const QVAULT_SUBMIT_Q_EARN_P_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQVAULTSubmitQEarnPOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QVAULTSubmitQEarnPOutput {
   return decodePayload(data, QVAULT_SUBMIT_Q_EARN_P_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTSubmitQEarnPOutput
 }
@@ -961,7 +961,7 @@ const QVAULT_SUBMIT_FUND_P_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQVAULTSubmitFundPInput(
   input: QVAULTSubmitFundPInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QVAULT_SUBMIT_FUND_P_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -981,7 +981,7 @@ const QVAULT_SUBMIT_FUND_P_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQVAULTSubmitFundPOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QVAULTSubmitFundPOutput {
   return decodePayload(data, QVAULT_SUBMIT_FUND_P_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTSubmitFundPOutput
 }
@@ -1041,7 +1041,7 @@ const QVAULT_SUBMIT_MKTP_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQVAULTSubmitMKTPInput(
   input: QVAULTSubmitMKTPInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QVAULT_SUBMIT_MKTP_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -1061,7 +1061,7 @@ const QVAULT_SUBMIT_MKTP_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQVAULTSubmitMKTPOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QVAULTSubmitMKTPOutput {
   return decodePayload(data, QVAULT_SUBMIT_MKTP_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTSubmitMKTPOutput
 }
@@ -1107,7 +1107,7 @@ const QVAULT_SUBMIT_ALLO_P_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQVAULTSubmitAlloPInput(
   input: QVAULTSubmitAlloPInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QVAULT_SUBMIT_ALLO_P_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -1127,7 +1127,7 @@ const QVAULT_SUBMIT_ALLO_P_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQVAULTSubmitAlloPOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QVAULTSubmitAlloPOutput {
   return decodePayload(data, QVAULT_SUBMIT_ALLO_P_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTSubmitAlloPOutput
 }
@@ -1170,7 +1170,7 @@ const QVAULT_VOTE_IN_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQVAULTVoteInProposalInput(
   input: QVAULTVoteInProposalInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QVAULT_VOTE_IN_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -1190,7 +1190,7 @@ const QVAULT_VOTE_IN_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQVAULTVoteInProposalOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QVAULTVoteInProposalOutput {
   return decodePayload(data, QVAULT_VOTE_IN_PROPOSAL_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTVoteInProposalOutput
 }
@@ -1212,7 +1212,7 @@ const QVAULT_BUY_QCAP_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQVAULTBuyQcapInput(
   input: QVAULTBuyQcapInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QVAULT_BUY_QCAP_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -1232,7 +1232,7 @@ const QVAULT_BUY_QCAP_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQVAULTBuyQcapOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QVAULTBuyQcapOutput {
   return decodePayload(data, QVAULT_BUY_QCAP_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTBuyQcapOutput
 }
@@ -1269,7 +1269,7 @@ const QVAULT_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQVAULTTransferShareManagementRightsInput(
   input: QVAULTTransferShareManagementRightsInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QVAULT_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -1296,7 +1296,7 @@ const QVAULT_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQVAULTTransferShareManagementRightsOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QVAULTTransferShareManagementRightsOutput {
   return decodePayload(data, QVAULT_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTTransferShareManagementRightsOutput
 }
@@ -1536,7 +1536,7 @@ const QVAULT_GET_DATA_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQVAULTGetDataOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QVAULTGetDataOutput {
   return decodePayload(data, QVAULT_GET_DATA_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetDataOutput
 }
@@ -1576,7 +1576,7 @@ const QVAULT_GET_STAKED_AMOUNT_AND_VOTING_POWER_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQVAULTGetStakedAmountAndVotingPowerInput(
   input: QVAULTGetStakedAmountAndVotingPowerInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QVAULT_GET_STAKED_AMOUNT_AND_VOTING_POWER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -1610,7 +1610,7 @@ const QVAULT_GET_STAKED_AMOUNT_AND_VOTING_POWER_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQVAULTGetStakedAmountAndVotingPowerOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QVAULTGetStakedAmountAndVotingPowerOutput {
   return decodePayload(data, QVAULT_GET_STAKED_AMOUNT_AND_VOTING_POWER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetStakedAmountAndVotingPowerOutput
 }
@@ -1651,7 +1651,7 @@ const QVAULT_GET_GP_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQVAULTGetGPInput(
   input: QVAULTGetGPInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QVAULT_GET_GP_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -1679,7 +1679,7 @@ const QVAULT_GET_GP_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQVAULTGetGPOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QVAULTGetGPOutput {
   return decodePayload(data, QVAULT_GET_GP_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetGPOutput
 }
@@ -1720,7 +1720,7 @@ const QVAULT_GET_QCP_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQVAULTGetQCPInput(
   input: QVAULTGetQCPInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QVAULT_GET_QCP_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -1748,7 +1748,7 @@ const QVAULT_GET_QCP_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQVAULTGetQCPOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QVAULTGetQCPOutput {
   return decodePayload(data, QVAULT_GET_QCP_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetQCPOutput
 }
@@ -1789,7 +1789,7 @@ const QVAULT_GET_IPOP_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQVAULTGetIPOPInput(
   input: QVAULTGetIPOPInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QVAULT_GET_IPOP_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -1817,7 +1817,7 @@ const QVAULT_GET_IPOP_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQVAULTGetIPOPOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QVAULTGetIPOPOutput {
   return decodePayload(data, QVAULT_GET_IPOP_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetIPOPOutput
 }
@@ -1858,7 +1858,7 @@ const QVAULT_GET_Q_EARN_P_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQVAULTGetQEarnPInput(
   input: QVAULTGetQEarnPInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QVAULT_GET_Q_EARN_P_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -1886,7 +1886,7 @@ const QVAULT_GET_Q_EARN_P_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQVAULTGetQEarnPOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QVAULTGetQEarnPOutput {
   return decodePayload(data, QVAULT_GET_Q_EARN_P_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetQEarnPOutput
 }
@@ -1927,7 +1927,7 @@ const QVAULT_GET_FUND_P_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQVAULTGetFundPInput(
   input: QVAULTGetFundPInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QVAULT_GET_FUND_P_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -1955,7 +1955,7 @@ const QVAULT_GET_FUND_P_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQVAULTGetFundPOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QVAULTGetFundPOutput {
   return decodePayload(data, QVAULT_GET_FUND_P_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetFundPOutput
 }
@@ -1996,7 +1996,7 @@ const QVAULT_GET_MKTP_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQVAULTGetMKTPInput(
   input: QVAULTGetMKTPInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QVAULT_GET_MKTP_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -2024,7 +2024,7 @@ const QVAULT_GET_MKTP_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQVAULTGetMKTPOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QVAULTGetMKTPOutput {
   return decodePayload(data, QVAULT_GET_MKTP_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetMKTPOutput
 }
@@ -2065,7 +2065,7 @@ const QVAULT_GET_ALLO_P_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQVAULTGetAlloPInput(
   input: QVAULTGetAlloPInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QVAULT_GET_ALLO_P_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -2093,7 +2093,7 @@ const QVAULT_GET_ALLO_P_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQVAULTGetAlloPOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QVAULTGetAlloPOutput {
   return decodePayload(data, QVAULT_GET_ALLO_P_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetAlloPOutput
 }
@@ -2141,7 +2141,7 @@ const QVAULT_GET_IDENTITIES_HV_VT_PW_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQVAULTGetIdentitiesHvVtPwInput(
   input: QVAULTGetIdentitiesHvVtPwInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QVAULT_GET_IDENTITIES_HV_VT_PW_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -2181,7 +2181,7 @@ const QVAULT_GET_IDENTITIES_HV_VT_PW_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQVAULTGetIdentitiesHvVtPwOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QVAULTGetIdentitiesHvVtPwOutput {
   return decodePayload(data, QVAULT_GET_IDENTITIES_HV_VT_PW_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetIdentitiesHvVtPwOutput
 }
@@ -2222,7 +2222,7 @@ const QVAULT_PP_CREATION_POWER_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQVAULTPpCreationPowerInput(
   input: QVAULTPpCreationPowerInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QVAULT_PP_CREATION_POWER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -2249,7 +2249,7 @@ const QVAULT_PP_CREATION_POWER_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQVAULTPpCreationPowerOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QVAULTPpCreationPowerOutput {
   return decodePayload(data, QVAULT_PP_CREATION_POWER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTPpCreationPowerOutput
 }
@@ -2290,7 +2290,7 @@ const QVAULT_GET_QCAP_BURNT_AMOUNT_IN_LAST_EPOCHES_INPUT_FIELDS: BinaryField[] =
 
 export function buildQVAULTGetQcapBurntAmountInLastEpochesInput(
   input: QVAULTGetQcapBurntAmountInLastEpochesInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QVAULT_GET_QCAP_BURNT_AMOUNT_IN_LAST_EPOCHES_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -2317,7 +2317,7 @@ const QVAULT_GET_QCAP_BURNT_AMOUNT_IN_LAST_EPOCHES_OUTPUT_FIELDS: BinaryField[] 
 
 export function decodeQVAULTGetQcapBurntAmountInLastEpochesOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QVAULTGetQcapBurntAmountInLastEpochesOutput {
   return decodePayload(data, QVAULT_GET_QCAP_BURNT_AMOUNT_IN_LAST_EPOCHES_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetQcapBurntAmountInLastEpochesOutput
 }
@@ -2358,7 +2358,7 @@ const QVAULT_GET_AMOUNT_TO_BE_SOLD_PER_YEAR_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQVAULTGetAmountToBeSoldPerYearInput(
   input: QVAULTGetAmountToBeSoldPerYearInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QVAULT_GET_AMOUNT_TO_BE_SOLD_PER_YEAR_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -2378,7 +2378,7 @@ const QVAULT_GET_AMOUNT_TO_BE_SOLD_PER_YEAR_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQVAULTGetAmountToBeSoldPerYearOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QVAULTGetAmountToBeSoldPerYearOutput {
   return decodePayload(data, QVAULT_GET_AMOUNT_TO_BE_SOLD_PER_YEAR_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetAmountToBeSoldPerYearOutput
 }
@@ -2419,7 +2419,7 @@ const QVAULT_GET_TOTAL_REVENUE_IN_QCAP_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQVAULTGetTotalRevenueInQcapOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QVAULTGetTotalRevenueInQcapOutput {
   return decodePayload(data, QVAULT_GET_TOTAL_REVENUE_IN_QCAP_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetTotalRevenueInQcapOutput
 }
@@ -2459,7 +2459,7 @@ const QVAULT_GET_REVENUE_IN_QCAP_PER_EPOCH_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQVAULTGetRevenueInQcapPerEpochInput(
   input: QVAULTGetRevenueInQcapPerEpochInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QVAULT_GET_REVENUE_IN_QCAP_PER_EPOCH_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -2500,7 +2500,7 @@ const QVAULT_GET_REVENUE_IN_QCAP_PER_EPOCH_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQVAULTGetRevenueInQcapPerEpochOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QVAULTGetRevenueInQcapPerEpochOutput {
   return decodePayload(data, QVAULT_GET_REVENUE_IN_QCAP_PER_EPOCH_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetRevenueInQcapPerEpochOutput
 }
@@ -2541,7 +2541,7 @@ const QVAULT_GET_REVENUE_PER_SHARE_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQVAULTGetRevenuePerShareInput(
   input: QVAULTGetRevenuePerShareInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QVAULT_GET_REVENUE_PER_SHARE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -2561,7 +2561,7 @@ const QVAULT_GET_REVENUE_PER_SHARE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQVAULTGetRevenuePerShareOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QVAULTGetRevenuePerShareOutput {
   return decodePayload(data, QVAULT_GET_REVENUE_PER_SHARE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetRevenuePerShareOutput
 }
@@ -2603,7 +2603,7 @@ const QVAULT_GET_AMOUNT_OF_SHARE_QVAULT_HOLD_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQVAULTGetAmountOfShareQvaultHoldInput(
   input: QVAULTGetAmountOfShareQvaultHoldInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QVAULT_GET_AMOUNT_OF_SHARE_QVAULT_HOLD_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -2623,7 +2623,7 @@ const QVAULT_GET_AMOUNT_OF_SHARE_QVAULT_HOLD_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQVAULTGetAmountOfShareQvaultHoldOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QVAULTGetAmountOfShareQvaultHoldOutput {
   return decodePayload(data, QVAULT_GET_AMOUNT_OF_SHARE_QVAULT_HOLD_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetAmountOfShareQvaultHoldOutput
 }
@@ -2678,7 +2678,7 @@ const QVAULT_GET_NUMBER_OF_HOLDER_AND_AVG_AM_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQVAULTGetNumberOfHolderAndAvgAmOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QVAULTGetNumberOfHolderAndAvgAmOutput {
   return decodePayload(data, QVAULT_GET_NUMBER_OF_HOLDER_AND_AVG_AM_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetNumberOfHolderAndAvgAmOutput
 }
@@ -2718,7 +2718,7 @@ const QVAULT_GET_AMOUNT_FOR_QEARN_IN_UPCOMING_EPOCH_INPUT_FIELDS: BinaryField[] 
 
 export function buildQVAULTGetAmountForQearnInUpcomingEpochInput(
   input: QVAULTGetAmountForQearnInUpcomingEpochInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QVAULT_GET_AMOUNT_FOR_QEARN_IN_UPCOMING_EPOCH_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -2745,7 +2745,7 @@ const QVAULT_GET_AMOUNT_FOR_QEARN_IN_UPCOMING_EPOCH_OUTPUT_FIELDS: BinaryField[]
 
 export function decodeQVAULTGetAmountForQearnInUpcomingEpochOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QVAULTGetAmountForQearnInUpcomingEpochOutput {
   return decodePayload(data, QVAULT_GET_AMOUNT_FOR_QEARN_IN_UPCOMING_EPOCH_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetAmountForQearnInUpcomingEpochOutput
 }
@@ -2800,7 +2800,7 @@ const QVAULT_GET_VOTE_IN_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQVAULTGetVoteInProposalInput(
   input: QVAULTGetVoteInProposalInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QVAULT_GET_VOTE_IN_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -2834,7 +2834,7 @@ const QVAULT_GET_VOTE_IN_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQVAULTGetVoteInProposalOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QVAULTGetVoteInProposalOutput {
   return decodePayload(data, QVAULT_GET_VOTE_IN_PROPOSAL_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetVoteInProposalOutput
 }

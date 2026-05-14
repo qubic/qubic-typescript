@@ -56,6 +56,15 @@ function toPascalCase(name: string): string {
   return name.charAt(0).toUpperCase() + name.slice(1)
 }
 
+// "OI::Price::OracleQuery" → "OIPriceOracleQuery"  |  "SimpleStruct" → "SimpleStruct"
+function toStructName(name: string): string {
+  return name
+    .split(/[^a-zA-Z0-9]+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join('')
+}
+
 // "GeneralQuorumProposal" → "generalQuorumProposal"  |  "QEarn" → "qEarn"
 function toObjectName(name: string): string {
   const pascal = toContractPascal(name)
@@ -83,7 +92,7 @@ function tsType(field: BinaryField, contractPascal: string): string {
       return 'Uint8Array'
     case 'struct':
       return field.structRef
-        ? `${contractPascal}${toPascalCase(field.structRef)}Struct`
+        ? `${contractPascal}${toStructName(field.structRef)}Struct`
         : 'Record<string, unknown>'
     case 'array': {
       const itemType: FieldType = field.arrayItemType ?? 'uint8'
@@ -174,7 +183,7 @@ for (const version of versions) {
     for (const [name, s] of Object.entries(version.structs)) {
       if (s.fields.length > 0) {
         lines.push(
-          `export interface ${cPascal}${toPascalCase(name)}Struct {`,
+          `export interface ${cPascal}${toStructName(name)}Struct {`,
           interfaceFields(s.fields, cPascal),
           '}',
           '',
@@ -182,7 +191,7 @@ for (const version of versions) {
       }
     }
     const structEntries = structNames
-      .map((name) => `  ${name}: ${structLiteral(version.structs[name] as NamedStruct)}`)
+      .map((name) => `  '${name}': ${structLiteral(version.structs[name] as NamedStruct)}`)
       .join(',\n')
     lines.push(`const STRUCTS: Record<string, NamedStruct> = {\n${structEntries},\n}`, '')
   } else {
@@ -207,7 +216,7 @@ for (const version of versions) {
         '',
         `export function build${cPascal}${callPascal}Input(`,
         `  input: ${cPascal}${callPascal}Input,`,
-        '  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),',
+        '  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),',
         '): Uint8Array {',
         `  return buildPayload(${cSnake}_${callSnake}_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)`,
         '}',
@@ -225,7 +234,7 @@ for (const version of versions) {
         '',
         `export function decode${cPascal}${callPascal}Output(`,
         '  data: Uint8Array,',
-        "  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),",
+        "  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),",
         `): ${cPascal}${callPascal}Output {`,
         `  return decodePayload(data, ${cSnake}_${callSnake}_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as ${cPascal}${callPascal}Output`,
         '}',
@@ -257,7 +266,7 @@ for (const version of versions) {
         '',
         `export function build${cPascal}${callPascal}Input(`,
         `  input: ${cPascal}${callPascal}Input,`,
-        '  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),',
+        '  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),',
         '): Uint8Array {',
         `  return buildPayload(${cSnake}_${callSnake}_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)`,
         '}',
@@ -275,7 +284,7 @@ for (const version of versions) {
         '',
         `export function decode${cPascal}${callPascal}Output(`,
         '  data: Uint8Array,',
-        "  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),",
+        "  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),",
         `): ${cPascal}${callPascal}Output {`,
         `  return decodePayload(data, ${cSnake}_${callSnake}_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as ${cPascal}${callPascal}Output`,
         '}',

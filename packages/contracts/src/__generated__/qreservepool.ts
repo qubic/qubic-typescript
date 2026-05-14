@@ -26,7 +26,7 @@ const Q_RESERVE_POOL_WITHDRAW_RESERVE_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQReservePoolWithdrawReserveInput(
   input: QReservePoolWithdrawReserveInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_RESERVE_POOL_WITHDRAW_RESERVE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -53,7 +53,7 @@ const Q_RESERVE_POOL_WITHDRAW_RESERVE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQReservePoolWithdrawReserveOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QReservePoolWithdrawReserveOutput {
   return decodePayload(data, Q_RESERVE_POOL_WITHDRAW_RESERVE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QReservePoolWithdrawReserveOutput
 }
@@ -75,7 +75,7 @@ const Q_RESERVE_POOL_ADD_ALLOWED_SC_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQReservePoolAddAllowedSCInput(
   input: QReservePoolAddAllowedSCInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_RESERVE_POOL_ADD_ALLOWED_SC_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -95,7 +95,7 @@ const Q_RESERVE_POOL_ADD_ALLOWED_SC_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQReservePoolAddAllowedSCOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QReservePoolAddAllowedSCOutput {
   return decodePayload(data, Q_RESERVE_POOL_ADD_ALLOWED_SC_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QReservePoolAddAllowedSCOutput
 }
@@ -117,7 +117,7 @@ const Q_RESERVE_POOL_REMOVE_ALLOWED_SC_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQReservePoolRemoveAllowedSCInput(
   input: QReservePoolRemoveAllowedSCInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_RESERVE_POOL_REMOVE_ALLOWED_SC_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -137,7 +137,7 @@ const Q_RESERVE_POOL_REMOVE_ALLOWED_SC_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQReservePoolRemoveAllowedSCOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QReservePoolRemoveAllowedSCOutput {
   return decodePayload(data, Q_RESERVE_POOL_REMOVE_ALLOWED_SC_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QReservePoolRemoveAllowedSCOutput
 }
@@ -166,7 +166,7 @@ const Q_RESERVE_POOL_SEND_RESERVE_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQReservePoolSendReserveInput(
   input: QReservePoolSendReserveInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_RESERVE_POOL_SEND_RESERVE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -186,7 +186,7 @@ const Q_RESERVE_POOL_SEND_RESERVE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQReservePoolSendReserveOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QReservePoolSendReserveOutput {
   return decodePayload(data, Q_RESERVE_POOL_SEND_RESERVE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QReservePoolSendReserveOutput
 }
@@ -209,7 +209,7 @@ const Q_RESERVE_POOL_GET_AVAILABLE_RESERVE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQReservePoolGetAvailableReserveOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QReservePoolGetAvailableReserveOutput {
   return decodePayload(data, Q_RESERVE_POOL_GET_AVAILABLE_RESERVE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QReservePoolGetAvailableReserveOutput
 }
@@ -252,7 +252,7 @@ const Q_RESERVE_POOL_GET_ALLOWED_SC_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQReservePoolGetAllowedSCOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QReservePoolGetAllowedSCOutput {
   return decodePayload(data, Q_RESERVE_POOL_GET_ALLOWED_SC_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QReservePoolGetAllowedSCOutput
 }

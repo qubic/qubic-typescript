@@ -27,7 +27,7 @@ export interface QBondMBondEntityStruct {
 }
 
 const STRUCTS: Record<string, NamedStruct> = {
-  Order: {
+  'Order': {
   name: 'Order',
   byteLength: 48,
   fields: [
@@ -51,7 +51,7 @@ const STRUCTS: Record<string, NamedStruct> = {
     },
 ],
 },
-  TableEntry: {
+  'TableEntry': {
   name: 'TableEntry',
   byteLength: 32,
   fields: [
@@ -81,7 +81,7 @@ const STRUCTS: Record<string, NamedStruct> = {
     },
 ],
 },
-  MBondEntity: {
+  'MBondEntity': {
   name: 'MBondEntity',
   byteLength: 24,
   fields: [
@@ -124,7 +124,7 @@ const Q_BOND_STAKE_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQBondStakeInput(
   input: QBondStakeInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_BOND_STAKE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -160,7 +160,7 @@ const Q_BOND_TRANSFER_M_BOND_OWNERSHIP_AND_POSSESSION_INPUT_FIELDS: BinaryField[
 
 export function buildQBondTransferMBondOwnershipAndPossessionInput(
   input: QBondTransferMBondOwnershipAndPossessionInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_BOND_TRANSFER_M_BOND_OWNERSHIP_AND_POSSESSION_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -180,7 +180,7 @@ const Q_BOND_TRANSFER_M_BOND_OWNERSHIP_AND_POSSESSION_OUTPUT_FIELDS: BinaryField
 
 export function decodeQBondTransferMBondOwnershipAndPossessionOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QBondTransferMBondOwnershipAndPossessionOutput {
   return decodePayload(data, Q_BOND_TRANSFER_M_BOND_OWNERSHIP_AND_POSSESSION_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QBondTransferMBondOwnershipAndPossessionOutput
 }
@@ -216,7 +216,7 @@ const Q_BOND_ADD_ASK_ORDER_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQBondAddAskOrderInput(
   input: QBondAddAskOrderInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_BOND_ADD_ASK_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -236,7 +236,7 @@ const Q_BOND_ADD_ASK_ORDER_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQBondAddAskOrderOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QBondAddAskOrderOutput {
   return decodePayload(data, Q_BOND_ADD_ASK_ORDER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QBondAddAskOrderOutput
 }
@@ -272,7 +272,7 @@ const Q_BOND_REMOVE_ASK_ORDER_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQBondRemoveAskOrderInput(
   input: QBondRemoveAskOrderInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_BOND_REMOVE_ASK_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -292,7 +292,7 @@ const Q_BOND_REMOVE_ASK_ORDER_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQBondRemoveAskOrderOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QBondRemoveAskOrderOutput {
   return decodePayload(data, Q_BOND_REMOVE_ASK_ORDER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QBondRemoveAskOrderOutput
 }
@@ -328,7 +328,7 @@ const Q_BOND_ADD_BID_ORDER_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQBondAddBidOrderInput(
   input: QBondAddBidOrderInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_BOND_ADD_BID_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -348,7 +348,7 @@ const Q_BOND_ADD_BID_ORDER_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQBondAddBidOrderOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QBondAddBidOrderOutput {
   return decodePayload(data, Q_BOND_ADD_BID_ORDER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QBondAddBidOrderOutput
 }
@@ -384,7 +384,7 @@ const Q_BOND_REMOVE_BID_ORDER_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQBondRemoveBidOrderInput(
   input: QBondRemoveBidOrderInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_BOND_REMOVE_BID_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -404,7 +404,7 @@ const Q_BOND_REMOVE_BID_ORDER_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQBondRemoveBidOrderOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QBondRemoveBidOrderOutput {
   return decodePayload(data, Q_BOND_REMOVE_BID_ORDER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QBondRemoveBidOrderOutput
 }
@@ -426,7 +426,7 @@ const Q_BOND_BURN_QU_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQBondBurnQUInput(
   input: QBondBurnQUInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_BOND_BURN_QU_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -446,7 +446,7 @@ const Q_BOND_BURN_QU_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQBondBurnQUOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QBondBurnQUOutput {
   return decodePayload(data, Q_BOND_BURN_QU_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QBondBurnQUOutput
 }
@@ -475,7 +475,7 @@ const Q_BOND_UPDATE_CFA_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQBondUpdateCFAInput(
   input: QBondUpdateCFAInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_BOND_UPDATE_CFA_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -495,7 +495,7 @@ const Q_BOND_UPDATE_CFA_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQBondUpdateCFAOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QBondUpdateCFAOutput {
   return decodePayload(data, Q_BOND_UPDATE_CFA_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QBondUpdateCFAOutput
 }
@@ -532,7 +532,7 @@ const Q_BOND_GET_FEES_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQBondGetFeesOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QBondGetFeesOutput {
   return decodePayload(data, Q_BOND_GET_FEES_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QBondGetFeesOutput
 }
@@ -579,7 +579,7 @@ const Q_BOND_GET_EARNED_FEES_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQBondGetEarnedFeesOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QBondGetEarnedFeesOutput {
   return decodePayload(data, Q_BOND_GET_EARNED_FEES_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QBondGetEarnedFeesOutput
 }
@@ -619,7 +619,7 @@ const Q_BOND_GET_INFO_PER_EPOCH_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQBondGetInfoPerEpochInput(
   input: QBondGetInfoPerEpochInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_BOND_GET_INFO_PER_EPOCH_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -653,7 +653,7 @@ const Q_BOND_GET_INFO_PER_EPOCH_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQBondGetInfoPerEpochOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QBondGetInfoPerEpochOutput {
   return decodePayload(data, Q_BOND_GET_INFO_PER_EPOCH_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QBondGetInfoPerEpochOutput
 }
@@ -708,7 +708,7 @@ const Q_BOND_GET_ORDERS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQBondGetOrdersInput(
   input: QBondGetOrdersInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_BOND_GET_ORDERS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -741,7 +741,7 @@ const Q_BOND_GET_ORDERS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQBondGetOrdersOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QBondGetOrdersOutput {
   return decodePayload(data, Q_BOND_GET_ORDERS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QBondGetOrdersOutput
 }
@@ -796,7 +796,7 @@ const Q_BOND_GET_USER_ORDERS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQBondGetUserOrdersInput(
   input: QBondGetUserOrdersInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_BOND_GET_USER_ORDERS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -829,7 +829,7 @@ const Q_BOND_GET_USER_ORDERS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQBondGetUserOrdersOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QBondGetUserOrdersOutput {
   return decodePayload(data, Q_BOND_GET_USER_ORDERS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QBondGetUserOrdersOutput
 }
@@ -873,7 +873,7 @@ const Q_BOND_GET_M_BONDS_TABLE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQBondGetMBondsTableOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QBondGetMBondsTableOutput {
   return decodePayload(data, Q_BOND_GET_M_BONDS_TABLE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QBondGetMBondsTableOutput
 }
@@ -913,7 +913,7 @@ const Q_BOND_GET_USER_M_BONDS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQBondGetUserMBondsInput(
   input: QBondGetUserMBondsInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_BOND_GET_USER_M_BONDS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -943,7 +943,7 @@ const Q_BOND_GET_USER_M_BONDS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQBondGetUserMBondsOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QBondGetUserMBondsOutput {
   return decodePayload(data, Q_BOND_GET_USER_M_BONDS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QBondGetUserMBondsOutput
 }
@@ -987,7 +987,7 @@ const Q_BOND_GET_CFA_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQBondGetCFAOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QBondGetCFAOutput {
   return decodePayload(data, Q_BOND_GET_CFA_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QBondGetCFAOutput
 }

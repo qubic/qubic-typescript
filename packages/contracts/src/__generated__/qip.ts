@@ -13,7 +13,7 @@ export interface QIPAssetStruct {
 }
 
 const STRUCTS: Record<string, NamedStruct> = {
-  Asset: {
+  'Asset': {
   name: 'Asset',
   byteLength: 40,
   fields: [
@@ -120,7 +120,7 @@ const QIP_CREATE_ICO_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQIPCreateICOInput(
   input: QIPCreateICOInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QIP_CREATE_ICO_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -140,7 +140,7 @@ const QIP_CREATE_ICO_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQIPCreateICOOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QIPCreateICOOutput {
   return decodePayload(data, QIP_CREATE_ICO_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QIPCreateICOOutput
 }
@@ -169,7 +169,7 @@ const QIP_BUY_TOKEN_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQIPBuyTokenInput(
   input: QIPBuyTokenInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QIP_BUY_TOKEN_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -189,7 +189,7 @@ const QIP_BUY_TOKEN_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQIPBuyTokenOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QIPBuyTokenOutput {
   return decodePayload(data, QIP_BUY_TOKEN_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QIPBuyTokenOutput
 }
@@ -226,7 +226,7 @@ const QIP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQIPTransferShareManagementRightsInput(
   input: QIPTransferShareManagementRightsInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QIP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -246,7 +246,7 @@ const QIP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQIPTransferShareManagementRightsOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QIPTransferShareManagementRightsOutput {
   return decodePayload(data, QIP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QIPTransferShareManagementRightsOutput
 }
@@ -269,7 +269,7 @@ const QIP_GET_ICO_INFO_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQIPGetICOInfoInput(
   input: QIPGetICOInfoInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QIP_GET_ICO_INFO_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -387,7 +387,7 @@ const QIP_GET_ICO_INFO_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQIPGetICOInfoOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QIPGetICOInfoOutput {
   return decodePayload(data, QIP_GET_ICO_INFO_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QIPGetICOInfoOutput
 }

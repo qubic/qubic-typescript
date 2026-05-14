@@ -26,7 +26,7 @@ const QEARN_LOCK_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQearnLockOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QearnLockOutput {
   return decodePayload(data, QEARN_LOCK_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QearnLockOutput
 }
@@ -55,7 +55,7 @@ const QEARN_UNLOCK_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQearnUnlockInput(
   input: QearnUnlockInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QEARN_UNLOCK_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -75,7 +75,7 @@ const QEARN_UNLOCK_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQearnUnlockOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QearnUnlockOutput {
   return decodePayload(data, QEARN_UNLOCK_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QearnUnlockOutput
 }
@@ -98,7 +98,7 @@ const QEARN_GET_LOCK_INFO_PER_EPOCH_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQearnGetLockInfoPerEpochInput(
   input: QearnGetLockInfoPerEpochInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QEARN_GET_LOCK_INFO_PER_EPOCH_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -146,7 +146,7 @@ const QEARN_GET_LOCK_INFO_PER_EPOCH_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQearnGetLockInfoPerEpochOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QearnGetLockInfoPerEpochOutput {
   return decodePayload(data, QEARN_GET_LOCK_INFO_PER_EPOCH_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QearnGetLockInfoPerEpochOutput
 }
@@ -194,7 +194,7 @@ const QEARN_GET_USER_LOCKED_INFO_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQearnGetUserLockedInfoInput(
   input: QearnGetUserLockedInfoInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QEARN_GET_USER_LOCKED_INFO_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -214,7 +214,7 @@ const QEARN_GET_USER_LOCKED_INFO_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQearnGetUserLockedInfoOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QearnGetUserLockedInfoOutput {
   return decodePayload(data, QEARN_GET_USER_LOCKED_INFO_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QearnGetUserLockedInfoOutput
 }
@@ -255,7 +255,7 @@ const QEARN_GET_STATE_OF_ROUND_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQearnGetStateOfRoundInput(
   input: QearnGetStateOfRoundInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QEARN_GET_STATE_OF_ROUND_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -275,7 +275,7 @@ const QEARN_GET_STATE_OF_ROUND_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQearnGetStateOfRoundOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QearnGetStateOfRoundOutput {
   return decodePayload(data, QEARN_GET_STATE_OF_ROUND_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QearnGetStateOfRoundOutput
 }
@@ -316,7 +316,7 @@ const QEARN_GET_USER_LOCK_STATUS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQearnGetUserLockStatusInput(
   input: QearnGetUserLockStatusInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QEARN_GET_USER_LOCK_STATUS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -336,7 +336,7 @@ const QEARN_GET_USER_LOCK_STATUS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQearnGetUserLockStatusOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QearnGetUserLockStatusOutput {
   return decodePayload(data, QEARN_GET_USER_LOCK_STATUS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QearnGetUserLockStatusOutput
 }
@@ -377,7 +377,7 @@ const QEARN_GET_ENDED_STATUS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQearnGetEndedStatusInput(
   input: QearnGetEndedStatusInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QEARN_GET_ENDED_STATUS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -418,7 +418,7 @@ const QEARN_GET_ENDED_STATUS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQearnGetEndedStatusOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QearnGetEndedStatusOutput {
   return decodePayload(data, QEARN_GET_ENDED_STATUS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QearnGetEndedStatusOutput
 }
@@ -459,7 +459,7 @@ const QEARN_GET_STATS_PER_EPOCH_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQearnGetStatsPerEpochInput(
   input: QearnGetStatsPerEpochInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QEARN_GET_STATS_PER_EPOCH_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -500,7 +500,7 @@ const QEARN_GET_STATS_PER_EPOCH_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQearnGetStatsPerEpochOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QearnGetStatsPerEpochOutput {
   return decodePayload(data, QEARN_GET_STATS_PER_EPOCH_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QearnGetStatsPerEpochOutput
 }
@@ -576,7 +576,7 @@ const QEARN_GET_BURNED_AND_BOOSTED_STATS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQearnGetBurnedAndBoostedStatsOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QearnGetBurnedAndBoostedStatsOutput {
   return decodePayload(data, QEARN_GET_BURNED_AND_BOOSTED_STATS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QearnGetBurnedAndBoostedStatsOutput
 }
@@ -616,7 +616,7 @@ const QEARN_GET_BURNED_AND_BOOSTED_STATS_PER_EPOCH_INPUT_FIELDS: BinaryField[] =
 
 export function buildQearnGetBurnedAndBoostedStatsPerEpochInput(
   input: QearnGetBurnedAndBoostedStatsPerEpochInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QEARN_GET_BURNED_AND_BOOSTED_STATS_PER_EPOCH_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -671,7 +671,7 @@ const QEARN_GET_BURNED_AND_BOOSTED_STATS_PER_EPOCH_OUTPUT_FIELDS: BinaryField[] 
 
 export function decodeQearnGetBurnedAndBoostedStatsPerEpochOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QearnGetBurnedAndBoostedStatsPerEpochOutput {
   return decodePayload(data, QEARN_GET_BURNED_AND_BOOSTED_STATS_PER_EPOCH_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QearnGetBurnedAndBoostedStatsPerEpochOutput
 }

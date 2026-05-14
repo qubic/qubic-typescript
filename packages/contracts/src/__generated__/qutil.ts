@@ -12,6 +12,13 @@ export interface QUtilAssetStruct {
   assetName: bigint
 }
 
+export interface QUtilOIPriceOracleQueryStruct {
+  oracle: string
+  timestamp: QUtilDateAndTimeStruct
+  currency1: string
+  currency2: string
+}
+
 export interface QUtilPollStruct {
   poll_name: string
   poll_type: bigint
@@ -22,8 +29,12 @@ export interface QUtilPollStruct {
   num_assets: bigint
 }
 
+export interface QUtilDateAndTimeStruct {
+  value: bigint
+}
+
 const STRUCTS: Record<string, NamedStruct> = {
-  Asset: {
+  'Asset': {
   name: 'Asset',
   byteLength: 40,
   fields: [
@@ -41,7 +52,38 @@ const STRUCTS: Record<string, NamedStruct> = {
     },
 ],
 },
-  Poll: {
+  'OI::Price::OracleQuery': {
+  name: 'OI::Price::OracleQuery',
+  byteLength: 104,
+  fields: [
+    {
+      name: 'oracle',
+      type: 'id',
+      offset: 0,
+      byteLength: 32,
+    },
+    {
+      name: 'timestamp',
+      type: 'struct',
+      offset: 32,
+      byteLength: 8,
+      structRef: 'DateAndTime',
+    },
+    {
+      name: 'currency1',
+      type: 'id',
+      offset: 40,
+      byteLength: 32,
+    },
+    {
+      name: 'currency2',
+      type: 'id',
+      offset: 72,
+      byteLength: 32,
+    },
+],
+},
+  'Poll': {
   name: 'Poll',
   byteLength: 736,
   fields: [
@@ -92,6 +134,18 @@ const STRUCTS: Record<string, NamedStruct> = {
     },
 ],
 },
+  'DateAndTime': {
+  name: 'DateAndTime',
+  byteLength: 8,
+  fields: [
+    {
+      name: 'value',
+      type: 'uint64',
+      offset: 0,
+      byteLength: 8,
+    },
+],
+},
 }
 
 export const Q_UTIL_SEND_TO_MANY_V1_INPUT_TYPE = 5
@@ -118,7 +172,7 @@ const Q_UTIL_SEND_TO_MANY_V1_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQUtilSendToManyV1Input(
   input: QUtilSendToManyV1Input,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_UTIL_SEND_TO_MANY_V1_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -138,7 +192,7 @@ const Q_UTIL_SEND_TO_MANY_V1_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQUtilSendToManyV1Output(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QUtilSendToManyV1Output {
   return decodePayload(data, Q_UTIL_SEND_TO_MANY_V1_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QUtilSendToManyV1Output
 }
@@ -181,7 +235,7 @@ const Q_UTIL_TRANSFER_SHARES_TO_MANY_V1_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQUtilTransferSharesToManyV1Input(
   input: QUtilTransferSharesToManyV1Input,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_UTIL_TRANSFER_SHARES_TO_MANY_V1_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -201,7 +255,7 @@ const Q_UTIL_TRANSFER_SHARES_TO_MANY_V1_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQUtilTransferSharesToManyV1Output(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QUtilTransferSharesToManyV1Output {
   return decodePayload(data, Q_UTIL_TRANSFER_SHARES_TO_MANY_V1_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QUtilTransferSharesToManyV1Output
 }
@@ -238,7 +292,7 @@ const Q_UTIL_TRANSFER_SHARES_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQUtilTransferSharesManagementRightsInput(
   input: QUtilTransferSharesManagementRightsInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_UTIL_TRANSFER_SHARES_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -258,7 +312,7 @@ const Q_UTIL_TRANSFER_SHARES_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQUtilTransferSharesManagementRightsOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QUtilTransferSharesManagementRightsOutput {
   return decodePayload(data, Q_UTIL_TRANSFER_SHARES_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QUtilTransferSharesManagementRightsOutput
 }
@@ -287,7 +341,7 @@ const Q_UTIL_SEND_TO_MANY_BENCHMARK_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQUtilSendToManyBenchmarkInput(
   input: QUtilSendToManyBenchmarkInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_UTIL_SEND_TO_MANY_BENCHMARK_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -321,7 +375,7 @@ const Q_UTIL_SEND_TO_MANY_BENCHMARK_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQUtilSendToManyBenchmarkOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QUtilSendToManyBenchmarkOutput {
   return decodePayload(data, Q_UTIL_SEND_TO_MANY_BENCHMARK_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QUtilSendToManyBenchmarkOutput
 }
@@ -343,7 +397,7 @@ const Q_UTIL_BURN_QUBIC_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQUtilBurnQubicInput(
   input: QUtilBurnQubicInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_UTIL_BURN_QUBIC_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -363,7 +417,7 @@ const Q_UTIL_BURN_QUBIC_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQUtilBurnQubicOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QUtilBurnQubicOutput {
   return decodePayload(data, Q_UTIL_BURN_QUBIC_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QUtilBurnQubicOutput
 }
@@ -385,7 +439,7 @@ const Q_UTIL_BURN_QUBIC_FOR_CONTRACT_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQUtilBurnQubicForContractInput(
   input: QUtilBurnQubicForContractInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_UTIL_BURN_QUBIC_FOR_CONTRACT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -405,12 +459,12 @@ const Q_UTIL_BURN_QUBIC_FOR_CONTRACT_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQUtilBurnQubicForContractOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QUtilBurnQubicForContractOutput {
   return decodePayload(data, Q_UTIL_BURN_QUBIC_FOR_CONTRACT_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QUtilBurnQubicForContractOutput
 }
 
-export const Q_UTIL_CREATE_POLL_INPUT_TYPE = 13
+export const Q_UTIL_CREATE_POLL_INPUT_TYPE = 14
 
 export interface QUtilCreatePollInput {
   poll_name: string
@@ -468,7 +522,7 @@ const Q_UTIL_CREATE_POLL_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQUtilCreatePollInput(
   input: QUtilCreatePollInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_UTIL_CREATE_POLL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -488,12 +542,12 @@ const Q_UTIL_CREATE_POLL_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQUtilCreatePollOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QUtilCreatePollOutput {
   return decodePayload(data, Q_UTIL_CREATE_POLL_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QUtilCreatePollOutput
 }
 
-export const Q_UTIL_VOTE_INPUT_TYPE = 14
+export const Q_UTIL_VOTE_INPUT_TYPE = 15
 
 export interface QUtilVoteInput {
   poll_id: bigint
@@ -531,7 +585,7 @@ const Q_UTIL_VOTE_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQUtilVoteInput(
   input: QUtilVoteInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_UTIL_VOTE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -551,12 +605,12 @@ const Q_UTIL_VOTE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQUtilVoteOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QUtilVoteOutput {
   return decodePayload(data, Q_UTIL_VOTE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QUtilVoteOutput
 }
 
-export const Q_UTIL_CANCEL_POLL_INPUT_TYPE = 15
+export const Q_UTIL_CANCEL_POLL_INPUT_TYPE = 16
 
 export interface QUtilCancelPollInput {
   poll_id: bigint
@@ -573,7 +627,7 @@ const Q_UTIL_CANCEL_POLL_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQUtilCancelPollInput(
   input: QUtilCancelPollInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_UTIL_CANCEL_POLL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -593,12 +647,12 @@ const Q_UTIL_CANCEL_POLL_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQUtilCancelPollOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QUtilCancelPollOutput {
   return decodePayload(data, Q_UTIL_CANCEL_POLL_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QUtilCancelPollOutput
 }
 
-export const Q_UTIL_DISTRIBUTE_QU_TO_SHAREHOLDERS_INPUT_TYPE = 20
+export const Q_UTIL_DISTRIBUTE_QU_TO_SHAREHOLDERS_INPUT_TYPE = 22
 
 export interface QUtilDistributeQuToShareholdersInput {
   asset: QUtilAssetStruct
@@ -616,7 +670,7 @@ const Q_UTIL_DISTRIBUTE_QU_TO_SHAREHOLDERS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQUtilDistributeQuToShareholdersInput(
   input: QUtilDistributeQuToShareholdersInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_UTIL_DISTRIBUTE_QU_TO_SHAREHOLDERS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -657,29 +711,37 @@ const Q_UTIL_DISTRIBUTE_QU_TO_SHAREHOLDERS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQUtilDistributeQuToShareholdersOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QUtilDistributeQuToShareholdersOutput {
   return decodePayload(data, Q_UTIL_DISTRIBUTE_QU_TO_SHAREHOLDERS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QUtilDistributeQuToShareholdersOutput
 }
 
-export const Q_UTIL_QUERY_PRICE_ORACLE_INPUT_TYPE = 21
+export const Q_UTIL_QUERY_PRICE_ORACLE_INPUT_TYPE = 23
 
 export interface QUtilQueryPriceOracleInput {
+  priceOracleQuery: QUtilOIPriceOracleQueryStruct
   timeoutMilliseconds: number
 }
 
 const Q_UTIL_QUERY_PRICE_ORACLE_INPUT_FIELDS: BinaryField[] = [
   {
+    name: 'priceOracleQuery',
+    type: 'struct',
+    offset: 0,
+    byteLength: 104,
+    structRef: 'OI::Price::OracleQuery',
+  },
+  {
     name: 'timeoutMilliseconds',
     type: 'uint32',
-    offset: 0,
+    offset: 104,
     byteLength: 4,
   },
 ]
 
 export function buildQUtilQueryPriceOracleInput(
   input: QUtilQueryPriceOracleInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_UTIL_QUERY_PRICE_ORACLE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -699,36 +761,44 @@ const Q_UTIL_QUERY_PRICE_ORACLE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQUtilQueryPriceOracleOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QUtilQueryPriceOracleOutput {
   return decodePayload(data, Q_UTIL_QUERY_PRICE_ORACLE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QUtilQueryPriceOracleOutput
 }
 
-export const Q_UTIL_SUBSCRIBE_PRICE_ORACLE_INPUT_TYPE = 22
+export const Q_UTIL_SUBSCRIBE_PRICE_ORACLE_INPUT_TYPE = 24
 
 export interface QUtilSubscribePriceOracleInput {
+  priceOracleQuery: QUtilOIPriceOracleQueryStruct
   subscriptionPeriodMilliseconds: number
   notifyPreviousValue: number
 }
 
 const Q_UTIL_SUBSCRIBE_PRICE_ORACLE_INPUT_FIELDS: BinaryField[] = [
   {
+    name: 'priceOracleQuery',
+    type: 'struct',
+    offset: 0,
+    byteLength: 104,
+    structRef: 'OI::Price::OracleQuery',
+  },
+  {
     name: 'subscriptionPeriodMilliseconds',
     type: 'uint32',
-    offset: 0,
+    offset: 104,
     byteLength: 4,
   },
   {
     name: 'notifyPreviousValue',
     type: 'uint8',
-    offset: 4,
+    offset: 108,
     byteLength: 1,
   },
 ]
 
 export function buildQUtilSubscribePriceOracleInput(
   input: QUtilSubscribePriceOracleInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_UTIL_SUBSCRIBE_PRICE_ORACLE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -748,12 +818,12 @@ const Q_UTIL_SUBSCRIBE_PRICE_ORACLE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQUtilSubscribePriceOracleOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QUtilSubscribePriceOracleOutput {
   return decodePayload(data, Q_UTIL_SUBSCRIBE_PRICE_ORACLE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QUtilSubscribePriceOracleOutput
 }
 
-export const Q_UTIL_UNSUBSCRIBE_ORACLE_INPUT_TYPE = 23
+export const Q_UTIL_UNSUBSCRIBE_ORACLE_INPUT_TYPE = 25
 
 export interface QUtilUnsubscribeOracleInput {
   subscriptionId: number
@@ -770,7 +840,7 @@ const Q_UTIL_UNSUBSCRIBE_ORACLE_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQUtilUnsubscribeOracleInput(
   input: QUtilUnsubscribeOracleInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_UTIL_UNSUBSCRIBE_ORACLE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -790,81 +860,10 @@ const Q_UTIL_UNSUBSCRIBE_ORACLE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQUtilUnsubscribeOracleOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QUtilUnsubscribeOracleOutput {
   return decodePayload(data, Q_UTIL_UNSUBSCRIBE_ORACLE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QUtilUnsubscribeOracleOutput
 }
-
-export const Q_UTIL_GET_FEES_INPUT_TYPE = 0
-export const Q_UTIL_GET_FEES_INPUT_SIZE = 0
-
-export interface QUtilGetFeesOutput {
-  smt1InvocationFee: bigint
-  pollCreationFee: bigint
-  pollVoteFee: bigint
-  distributeQuToShareholderFeePerShareholder: bigint
-  shareholderProposalFee: bigint
-}
-
-const Q_UTIL_GET_FEES_OUTPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'smt1InvocationFee',
-    type: 'sint64',
-    offset: 0,
-    byteLength: 8,
-  },
-  {
-    name: 'pollCreationFee',
-    type: 'sint64',
-    offset: 8,
-    byteLength: 8,
-  },
-  {
-    name: 'pollVoteFee',
-    type: 'sint64',
-    offset: 16,
-    byteLength: 8,
-  },
-  {
-    name: 'distributeQuToShareholderFeePerShareholder',
-    type: 'sint64',
-    offset: 24,
-    byteLength: 8,
-  },
-  {
-    name: 'shareholderProposalFee',
-    type: 'sint64',
-    offset: 32,
-    byteLength: 8,
-  },
-]
-
-export function decodeQUtilGetFeesOutput(
-  data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
-): QUtilGetFeesOutput {
-  return decodePayload(data, Q_UTIL_GET_FEES_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QUtilGetFeesOutput
-}
-
-export async function qUtilGetFees(
-  live: SmartContractCaller,
-  options?: ContractCallOptions,
-): Promise<Result<QUtilGetFeesOutput, QubicRpcError>> {
-  return callContractFunction({
-    live,
-    contractIndex: Q_UTIL_CONTRACT_INDEX,
-    inputType: Q_UTIL_GET_FEES_INPUT_TYPE,
-    inputSize: Q_UTIL_GET_FEES_INPUT_SIZE,
-    inputFields: [],
-    outputFields: Q_UTIL_GET_FEES_OUTPUT_FIELDS,
-    structs: STRUCTS,
-    input: {},
-    ...options,
-  })
-}
-
-export const Q_UTIL_GET_TOTAL_NUMBER_OF_ASSET_SHARES_INPUT_TYPE = 0
-export const Q_UTIL_GET_TOTAL_NUMBER_OF_ASSET_SHARES_INPUT_SIZE = 0
 
 export const Q_UTIL_GET_SEND_TO_MANY_V1FEE_INPUT_TYPE = 6
 export const Q_UTIL_GET_SEND_TO_MANY_V1FEE_INPUT_SIZE = 0
@@ -884,7 +883,7 @@ const Q_UTIL_GET_SEND_TO_MANY_V1FEE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQUtilGetSendToManyV1FeeOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QUtilGetSendToManyV1FeeOutput {
   return decodePayload(data, Q_UTIL_GET_SEND_TO_MANY_V1FEE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QUtilGetSendToManyV1FeeOutput
 }
@@ -924,7 +923,7 @@ const Q_UTIL_QUERY_FEE_RESERVE_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQUtilQueryFeeReserveInput(
   input: QUtilQueryFeeReserveInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_UTIL_QUERY_FEE_RESERVE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -944,7 +943,7 @@ const Q_UTIL_QUERY_FEE_RESERVE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQUtilQueryFeeReserveOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QUtilQueryFeeReserveOutput {
   return decodePayload(data, Q_UTIL_QUERY_FEE_RESERVE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QUtilQueryFeeReserveOutput
 }
@@ -967,7 +966,75 @@ export async function qUtilQueryFeeReserve(
   })
 }
 
-export const Q_UTIL_GET_CURRENT_RESULT_INPUT_TYPE = 16
+export const Q_UTIL_GET_TOTAL_NUMBER_OF_ASSET_SHARES_INPUT_TYPE = 13
+export const Q_UTIL_GET_TOTAL_NUMBER_OF_ASSET_SHARES_INPUT_SIZE = 40
+
+export interface QUtilGetTotalNumberOfAssetSharesInput {
+  issuer: string
+  assetName: bigint
+}
+
+const Q_UTIL_GET_TOTAL_NUMBER_OF_ASSET_SHARES_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'issuer',
+    type: 'id',
+    offset: 0,
+    byteLength: 32,
+  },
+  {
+    name: 'assetName',
+    type: 'uint64',
+    offset: 32,
+    byteLength: 8,
+  },
+]
+
+export function buildQUtilGetTotalNumberOfAssetSharesInput(
+  input: QUtilGetTotalNumberOfAssetSharesInput,
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
+): Uint8Array {
+  return buildPayload(Q_UTIL_GET_TOTAL_NUMBER_OF_ASSET_SHARES_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+}
+
+export interface QUtilGetTotalNumberOfAssetSharesOutput {
+  value: bigint
+}
+
+const Q_UTIL_GET_TOTAL_NUMBER_OF_ASSET_SHARES_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'value',
+    type: 'sint64',
+    offset: 0,
+    byteLength: 8,
+  },
+]
+
+export function decodeQUtilGetTotalNumberOfAssetSharesOutput(
+  data: Uint8Array,
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
+): QUtilGetTotalNumberOfAssetSharesOutput {
+  return decodePayload(data, Q_UTIL_GET_TOTAL_NUMBER_OF_ASSET_SHARES_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QUtilGetTotalNumberOfAssetSharesOutput
+}
+
+export async function qUtilGetTotalNumberOfAssetShares(
+  live: SmartContractCaller,
+  input: QUtilGetTotalNumberOfAssetSharesInput,
+  options?: ContractCallOptions,
+): Promise<Result<QUtilGetTotalNumberOfAssetSharesOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: Q_UTIL_CONTRACT_INDEX,
+    inputType: Q_UTIL_GET_TOTAL_NUMBER_OF_ASSET_SHARES_INPUT_TYPE,
+    inputSize: Q_UTIL_GET_TOTAL_NUMBER_OF_ASSET_SHARES_INPUT_SIZE,
+    inputFields: Q_UTIL_GET_TOTAL_NUMBER_OF_ASSET_SHARES_INPUT_FIELDS,
+    outputFields: Q_UTIL_GET_TOTAL_NUMBER_OF_ASSET_SHARES_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
+}
+
+export const Q_UTIL_GET_CURRENT_RESULT_INPUT_TYPE = 17
 export const Q_UTIL_GET_CURRENT_RESULT_INPUT_SIZE = 8
 
 export interface QUtilGetCurrentResultInput {
@@ -985,7 +1052,7 @@ const Q_UTIL_GET_CURRENT_RESULT_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQUtilGetCurrentResultInput(
   input: QUtilGetCurrentResultInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_UTIL_GET_CURRENT_RESULT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -1025,7 +1092,7 @@ const Q_UTIL_GET_CURRENT_RESULT_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQUtilGetCurrentResultOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QUtilGetCurrentResultOutput {
   return decodePayload(data, Q_UTIL_GET_CURRENT_RESULT_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QUtilGetCurrentResultOutput
 }
@@ -1048,7 +1115,7 @@ export async function qUtilGetCurrentResult(
   })
 }
 
-export const Q_UTIL_GET_POLLS_BY_CREATOR_INPUT_TYPE = 17
+export const Q_UTIL_GET_POLLS_BY_CREATOR_INPUT_TYPE = 18
 export const Q_UTIL_GET_POLLS_BY_CREATOR_INPUT_SIZE = 32
 
 export interface QUtilGetPollsByCreatorInput {
@@ -1066,7 +1133,7 @@ const Q_UTIL_GET_POLLS_BY_CREATOR_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQUtilGetPollsByCreatorInput(
   input: QUtilGetPollsByCreatorInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_UTIL_GET_POLLS_BY_CREATOR_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -1096,7 +1163,7 @@ const Q_UTIL_GET_POLLS_BY_CREATOR_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQUtilGetPollsByCreatorOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QUtilGetPollsByCreatorOutput {
   return decodePayload(data, Q_UTIL_GET_POLLS_BY_CREATOR_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QUtilGetPollsByCreatorOutput
 }
@@ -1119,7 +1186,7 @@ export async function qUtilGetPollsByCreator(
   })
 }
 
-export const Q_UTIL_GET_CURRENT_POLL_ID_INPUT_TYPE = 18
+export const Q_UTIL_GET_CURRENT_POLL_ID_INPUT_TYPE = 19
 export const Q_UTIL_GET_CURRENT_POLL_ID_INPUT_SIZE = 0
 
 export interface QUtilGetCurrentPollIdOutput {
@@ -1154,7 +1221,7 @@ const Q_UTIL_GET_CURRENT_POLL_ID_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQUtilGetCurrentPollIdOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QUtilGetCurrentPollIdOutput {
   return decodePayload(data, Q_UTIL_GET_CURRENT_POLL_ID_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QUtilGetCurrentPollIdOutput
 }
@@ -1176,7 +1243,7 @@ export async function qUtilGetCurrentPollId(
   })
 }
 
-export const Q_UTIL_GET_POLL_INFO_INPUT_TYPE = 19
+export const Q_UTIL_GET_POLL_INFO_INPUT_TYPE = 20
 export const Q_UTIL_GET_POLL_INFO_INPUT_SIZE = 8
 
 export interface QUtilGetPollInfoInput {
@@ -1194,7 +1261,7 @@ const Q_UTIL_GET_POLL_INFO_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQUtilGetPollInfoInput(
   input: QUtilGetPollInfoInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_UTIL_GET_POLL_INFO_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -1232,7 +1299,7 @@ const Q_UTIL_GET_POLL_INFO_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQUtilGetPollInfoOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QUtilGetPollInfoOutput {
   return decodePayload(data, Q_UTIL_GET_POLL_INFO_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QUtilGetPollInfoOutput
 }
@@ -1255,7 +1322,117 @@ export async function qUtilGetPollInfo(
   })
 }
 
-export const Q_UTIL_GET_BALANCES16_INPUT_TYPE = 24
+export const Q_UTIL_GET_FEES_INPUT_TYPE = 21
+export const Q_UTIL_GET_FEES_INPUT_SIZE = 0
+
+export interface QUtilGetFeesOutput {
+  smt1InvocationFee: bigint
+  pollCreationFee: bigint
+  pollVoteFee: bigint
+  distributeQuToShareholderFeePerShareholder: bigint
+  shareholderProposalFee: bigint
+  _futureFeePlaceholder0: bigint
+  _futureFeePlaceholder1: bigint
+  _futureFeePlaceholder2: bigint
+  _futureFeePlaceholder3: bigint
+  _futureFeePlaceholder4: bigint
+  _futureFeePlaceholder5: bigint
+}
+
+const Q_UTIL_GET_FEES_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'smt1InvocationFee',
+    type: 'sint64',
+    offset: 0,
+    byteLength: 8,
+  },
+  {
+    name: 'pollCreationFee',
+    type: 'sint64',
+    offset: 8,
+    byteLength: 8,
+  },
+  {
+    name: 'pollVoteFee',
+    type: 'sint64',
+    offset: 16,
+    byteLength: 8,
+  },
+  {
+    name: 'distributeQuToShareholderFeePerShareholder',
+    type: 'sint64',
+    offset: 24,
+    byteLength: 8,
+  },
+  {
+    name: 'shareholderProposalFee',
+    type: 'sint64',
+    offset: 32,
+    byteLength: 8,
+  },
+  {
+    name: '_futureFeePlaceholder0',
+    type: 'sint64',
+    offset: 40,
+    byteLength: 8,
+  },
+  {
+    name: '_futureFeePlaceholder1',
+    type: 'sint64',
+    offset: 48,
+    byteLength: 8,
+  },
+  {
+    name: '_futureFeePlaceholder2',
+    type: 'sint64',
+    offset: 56,
+    byteLength: 8,
+  },
+  {
+    name: '_futureFeePlaceholder3',
+    type: 'sint64',
+    offset: 64,
+    byteLength: 8,
+  },
+  {
+    name: '_futureFeePlaceholder4',
+    type: 'sint64',
+    offset: 72,
+    byteLength: 8,
+  },
+  {
+    name: '_futureFeePlaceholder5',
+    type: 'sint64',
+    offset: 80,
+    byteLength: 8,
+  },
+]
+
+export function decodeQUtilGetFeesOutput(
+  data: Uint8Array,
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
+): QUtilGetFeesOutput {
+  return decodePayload(data, Q_UTIL_GET_FEES_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QUtilGetFeesOutput
+}
+
+export async function qUtilGetFees(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<QUtilGetFeesOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: Q_UTIL_CONTRACT_INDEX,
+    inputType: Q_UTIL_GET_FEES_INPUT_TYPE,
+    inputSize: Q_UTIL_GET_FEES_INPUT_SIZE,
+    inputFields: [],
+    outputFields: Q_UTIL_GET_FEES_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
+}
+
+export const Q_UTIL_GET_BALANCES16_INPUT_TYPE = 27
 export const Q_UTIL_GET_BALANCES16_INPUT_SIZE = 512
 
 export interface QUtilGetBalances16Input {
@@ -1276,7 +1453,7 @@ const Q_UTIL_GET_BALANCES16_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQUtilGetBalances16Input(
   input: QUtilGetBalances16Input,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_UTIL_GET_BALANCES16_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -1299,7 +1476,7 @@ const Q_UTIL_GET_BALANCES16_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQUtilGetBalances16Output(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QUtilGetBalances16Output {
   return decodePayload(data, Q_UTIL_GET_BALANCES16_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QUtilGetBalances16Output
 }
@@ -1324,13 +1501,14 @@ export async function qUtilGetBalances16(
 
 export const qUtil = {
   contractIndex: Q_UTIL_CONTRACT_INDEX,
-  GetFees: qUtilGetFees,
   GetSendToManyV1Fee: qUtilGetSendToManyV1Fee,
   QueryFeeReserve: qUtilQueryFeeReserve,
+  GetTotalNumberOfAssetShares: qUtilGetTotalNumberOfAssetShares,
   GetCurrentResult: qUtilGetCurrentResult,
   GetPollsByCreator: qUtilGetPollsByCreator,
   GetCurrentPollId: qUtilGetCurrentPollId,
   GetPollInfo: qUtilGetPollInfo,
+  GetFees: qUtilGetFees,
   GetBalances16: qUtilGetBalances16,
   buildSendToManyV1Input: buildQUtilSendToManyV1Input,
   decodeSendToManyV1Output: decodeQUtilSendToManyV1Output,

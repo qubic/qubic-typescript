@@ -51,7 +51,7 @@ export interface NostromoInvestInfoStruct {
 }
 
 const STRUCTS: Record<string, NamedStruct> = {
-  Asset: {
+  'Asset': {
   name: 'Asset',
   byteLength: 40,
   fields: [
@@ -69,7 +69,7 @@ const STRUCTS: Record<string, NamedStruct> = {
     },
 ],
 },
-  projectInfo: {
+  'projectInfo': {
   name: 'projectInfo',
   byteLength: 65,
   fields: [
@@ -123,7 +123,7 @@ const STRUCTS: Record<string, NamedStruct> = {
     },
 ],
 },
-  fundaraisingInfo: {
+  'fundaraisingInfo': {
   name: 'fundaraisingInfo',
   byteLength: 76,
   fields: [
@@ -237,7 +237,7 @@ const STRUCTS: Record<string, NamedStruct> = {
     },
 ],
 },
-  investInfo: {
+  'investInfo': {
   name: 'investInfo',
   byteLength: 20,
   fields: [
@@ -280,7 +280,7 @@ const NOSTROMO_REGISTER_IN_TIER_INPUT_FIELDS: BinaryField[] = [
 
 export function buildNostromoRegisterInTierInput(
   input: NostromoRegisterInTierInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(NOSTROMO_REGISTER_IN_TIER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -300,7 +300,7 @@ const NOSTROMO_REGISTER_IN_TIER_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeNostromoRegisterInTierOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): NostromoRegisterInTierOutput {
   return decodePayload(data, NOSTROMO_REGISTER_IN_TIER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as NostromoRegisterInTierOutput
 }
@@ -322,7 +322,7 @@ const NOSTROMO_LOGOUT_FROM_TIER_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeNostromoLogoutFromTierOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): NostromoLogoutFromTierOutput {
   return decodePayload(data, NOSTROMO_LOGOUT_FROM_TIER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as NostromoLogoutFromTierOutput
 }
@@ -407,7 +407,7 @@ const NOSTROMO_CREATE_PROJECT_INPUT_FIELDS: BinaryField[] = [
 
 export function buildNostromoCreateProjectInput(
   input: NostromoCreateProjectInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(NOSTROMO_CREATE_PROJECT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -427,7 +427,7 @@ const NOSTROMO_CREATE_PROJECT_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeNostromoCreateProjectOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): NostromoCreateProjectOutput {
   return decodePayload(data, NOSTROMO_CREATE_PROJECT_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as NostromoCreateProjectOutput
 }
@@ -456,7 +456,7 @@ const NOSTROMO_VOTE_IN_PROJECT_INPUT_FIELDS: BinaryField[] = [
 
 export function buildNostromoVoteInProjectInput(
   input: NostromoVoteInProjectInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(NOSTROMO_VOTE_IN_PROJECT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -772,7 +772,7 @@ const NOSTROMO_CREATE_FUNDRAISING_INPUT_FIELDS: BinaryField[] = [
 
 export function buildNostromoCreateFundraisingInput(
   input: NostromoCreateFundraisingInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(NOSTROMO_CREATE_FUNDRAISING_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -794,7 +794,7 @@ const NOSTROMO_INVEST_IN_PROJECT_INPUT_FIELDS: BinaryField[] = [
 
 export function buildNostromoInvestInProjectInput(
   input: NostromoInvestInProjectInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(NOSTROMO_INVEST_IN_PROJECT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -823,7 +823,7 @@ const NOSTROMO_CLAIM_TOKEN_INPUT_FIELDS: BinaryField[] = [
 
 export function buildNostromoClaimTokenInput(
   input: NostromoClaimTokenInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(NOSTROMO_CLAIM_TOKEN_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -843,7 +843,7 @@ const NOSTROMO_CLAIM_TOKEN_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeNostromoClaimTokenOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): NostromoClaimTokenOutput {
   return decodePayload(data, NOSTROMO_CLAIM_TOKEN_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as NostromoClaimTokenOutput
 }
@@ -865,7 +865,7 @@ const NOSTROMO_UPGRADE_TIER_INPUT_FIELDS: BinaryField[] = [
 
 export function buildNostromoUpgradeTierInput(
   input: NostromoUpgradeTierInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(NOSTROMO_UPGRADE_TIER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -902,7 +902,7 @@ const NOSTROMO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildNostromoTransferShareManagementRightsInput(
   input: NostromoTransferShareManagementRightsInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(NOSTROMO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -922,7 +922,7 @@ const NOSTROMO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeNostromoTransferShareManagementRightsOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): NostromoTransferShareManagementRightsOutput {
   return decodePayload(data, NOSTROMO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as NostromoTransferShareManagementRightsOutput
 }
@@ -952,7 +952,7 @@ const NOSTROMO_GET_STATS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeNostromoGetStatsOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): NostromoGetStatsOutput {
   return decodePayload(data, NOSTROMO_GET_STATS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as NostromoGetStatsOutput
 }
@@ -992,7 +992,7 @@ const NOSTROMO_GET_TIER_LEVEL_BY_USER_INPUT_FIELDS: BinaryField[] = [
 
 export function buildNostromoGetTierLevelByUserInput(
   input: NostromoGetTierLevelByUserInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(NOSTROMO_GET_TIER_LEVEL_BY_USER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -1012,7 +1012,7 @@ const NOSTROMO_GET_TIER_LEVEL_BY_USER_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeNostromoGetTierLevelByUserOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): NostromoGetTierLevelByUserOutput {
   return decodePayload(data, NOSTROMO_GET_TIER_LEVEL_BY_USER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as NostromoGetTierLevelByUserOutput
 }
@@ -1053,7 +1053,7 @@ const NOSTROMO_GET_USER_VOTE_STATUS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildNostromoGetUserVoteStatusInput(
   input: NostromoGetUserVoteStatusInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(NOSTROMO_GET_USER_VOTE_STATUS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -1083,7 +1083,7 @@ const NOSTROMO_GET_USER_VOTE_STATUS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeNostromoGetUserVoteStatusOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): NostromoGetUserVoteStatusOutput {
   return decodePayload(data, NOSTROMO_GET_USER_VOTE_STATUS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as NostromoGetUserVoteStatusOutput
 }
@@ -1124,7 +1124,7 @@ const NOSTROMO_CHECK_TOKEN_CREATABILITY_INPUT_FIELDS: BinaryField[] = [
 
 export function buildNostromoCheckTokenCreatabilityInput(
   input: NostromoCheckTokenCreatabilityInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(NOSTROMO_CHECK_TOKEN_CREATABILITY_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -1144,7 +1144,7 @@ const NOSTROMO_CHECK_TOKEN_CREATABILITY_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeNostromoCheckTokenCreatabilityOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): NostromoCheckTokenCreatabilityOutput {
   return decodePayload(data, NOSTROMO_CHECK_TOKEN_CREATABILITY_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as NostromoCheckTokenCreatabilityOutput
 }
@@ -1185,7 +1185,7 @@ const NOSTROMO_GET_NUMBER_OF_INVESTED_PROJECTS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildNostromoGetNumberOfInvestedProjectsInput(
   input: NostromoGetNumberOfInvestedProjectsInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(NOSTROMO_GET_NUMBER_OF_INVESTED_PROJECTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -1205,7 +1205,7 @@ const NOSTROMO_GET_NUMBER_OF_INVESTED_PROJECTS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeNostromoGetNumberOfInvestedProjectsOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): NostromoGetNumberOfInvestedProjectsOutput {
   return decodePayload(data, NOSTROMO_GET_NUMBER_OF_INVESTED_PROJECTS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as NostromoGetNumberOfInvestedProjectsOutput
 }
@@ -1246,7 +1246,7 @@ const NOSTROMO_GET_PROJECT_BY_INDEX_INPUT_FIELDS: BinaryField[] = [
 
 export function buildNostromoGetProjectByIndexInput(
   input: NostromoGetProjectByIndexInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(NOSTROMO_GET_PROJECT_BY_INDEX_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -1267,7 +1267,7 @@ const NOSTROMO_GET_PROJECT_BY_INDEX_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeNostromoGetProjectByIndexOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): NostromoGetProjectByIndexOutput {
   return decodePayload(data, NOSTROMO_GET_PROJECT_BY_INDEX_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as NostromoGetProjectByIndexOutput
 }
@@ -1308,7 +1308,7 @@ const NOSTROMO_GET_FUNDARASING_BY_INDEX_INPUT_FIELDS: BinaryField[] = [
 
 export function buildNostromoGetFundarasingByIndexInput(
   input: NostromoGetFundarasingByIndexInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(NOSTROMO_GET_FUNDARASING_BY_INDEX_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -1329,7 +1329,7 @@ const NOSTROMO_GET_FUNDARASING_BY_INDEX_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeNostromoGetFundarasingByIndexOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): NostromoGetFundarasingByIndexOutput {
   return decodePayload(data, NOSTROMO_GET_FUNDARASING_BY_INDEX_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as NostromoGetFundarasingByIndexOutput
 }
@@ -1370,7 +1370,7 @@ const NOSTROMO_GET_PROJECT_INDEX_LIST_BY_CREATOR_INPUT_FIELDS: BinaryField[] = [
 
 export function buildNostromoGetProjectIndexListByCreatorInput(
   input: NostromoGetProjectIndexListByCreatorInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(NOSTROMO_GET_PROJECT_INDEX_LIST_BY_CREATOR_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -1393,7 +1393,7 @@ const NOSTROMO_GET_PROJECT_INDEX_LIST_BY_CREATOR_OUTPUT_FIELDS: BinaryField[] = 
 
 export function decodeNostromoGetProjectIndexListByCreatorOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): NostromoGetProjectIndexListByCreatorOutput {
   return decodePayload(data, NOSTROMO_GET_PROJECT_INDEX_LIST_BY_CREATOR_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as NostromoGetProjectIndexListByCreatorOutput
 }
@@ -1434,7 +1434,7 @@ const NOSTROMO_GET_INFO_USER_INVESTED_INPUT_FIELDS: BinaryField[] = [
 
 export function buildNostromoGetInfoUserInvestedInput(
   input: NostromoGetInfoUserInvestedInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(NOSTROMO_GET_INFO_USER_INVESTED_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -1457,7 +1457,7 @@ const NOSTROMO_GET_INFO_USER_INVESTED_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeNostromoGetInfoUserInvestedOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): NostromoGetInfoUserInvestedOutput {
   return decodePayload(data, NOSTROMO_GET_INFO_USER_INVESTED_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as NostromoGetInfoUserInvestedOutput
 }
@@ -1505,7 +1505,7 @@ const NOSTROMO_GET_MAX_CLAIM_AMOUNT_INPUT_FIELDS: BinaryField[] = [
 
 export function buildNostromoGetMaxClaimAmountInput(
   input: NostromoGetMaxClaimAmountInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(NOSTROMO_GET_MAX_CLAIM_AMOUNT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -1525,7 +1525,7 @@ const NOSTROMO_GET_MAX_CLAIM_AMOUNT_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeNostromoGetMaxClaimAmountOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): NostromoGetMaxClaimAmountOutput {
   return decodePayload(data, NOSTROMO_GET_MAX_CLAIM_AMOUNT_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as NostromoGetMaxClaimAmountOutput
 }

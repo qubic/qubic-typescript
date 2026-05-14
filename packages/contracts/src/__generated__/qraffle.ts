@@ -26,7 +26,7 @@ const Q_RAFFLE_REGISTER_IN_SYSTEM_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQRaffleRegisterInSystemInput(
   input: QRaffleRegisterInSystemInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_RAFFLE_REGISTER_IN_SYSTEM_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -46,7 +46,7 @@ const Q_RAFFLE_REGISTER_IN_SYSTEM_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQRaffleRegisterInSystemOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QRaffleRegisterInSystemOutput {
   return decodePayload(data, Q_RAFFLE_REGISTER_IN_SYSTEM_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleRegisterInSystemOutput
 }
@@ -68,7 +68,7 @@ const Q_RAFFLE_LOGOUT_IN_SYSTEM_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQRaffleLogoutInSystemOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QRaffleLogoutInSystemOutput {
   return decodePayload(data, Q_RAFFLE_LOGOUT_IN_SYSTEM_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleLogoutInSystemOutput
 }
@@ -90,7 +90,7 @@ const Q_RAFFLE_SUBMIT_ENTRY_AMOUNT_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQRaffleSubmitEntryAmountInput(
   input: QRaffleSubmitEntryAmountInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_RAFFLE_SUBMIT_ENTRY_AMOUNT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -110,7 +110,7 @@ const Q_RAFFLE_SUBMIT_ENTRY_AMOUNT_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQRaffleSubmitEntryAmountOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QRaffleSubmitEntryAmountOutput {
   return decodePayload(data, Q_RAFFLE_SUBMIT_ENTRY_AMOUNT_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleSubmitEntryAmountOutput
 }
@@ -146,7 +146,7 @@ const Q_RAFFLE_SUBMIT_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQRaffleSubmitProposalInput(
   input: QRaffleSubmitProposalInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_RAFFLE_SUBMIT_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -166,7 +166,7 @@ const Q_RAFFLE_SUBMIT_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQRaffleSubmitProposalOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QRaffleSubmitProposalOutput {
   return decodePayload(data, Q_RAFFLE_SUBMIT_PROPOSAL_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleSubmitProposalOutput
 }
@@ -195,7 +195,7 @@ const Q_RAFFLE_VOTE_IN_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQRaffleVoteInProposalInput(
   input: QRaffleVoteInProposalInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_RAFFLE_VOTE_IN_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -215,7 +215,7 @@ const Q_RAFFLE_VOTE_IN_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQRaffleVoteInProposalOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QRaffleVoteInProposalOutput {
   return decodePayload(data, Q_RAFFLE_VOTE_IN_PROPOSAL_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleVoteInProposalOutput
 }
@@ -237,7 +237,7 @@ const Q_RAFFLE_DEPOSIT_IN_QU_RAFFLE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQRaffleDepositInQuRaffleOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QRaffleDepositInQuRaffleOutput {
   return decodePayload(data, Q_RAFFLE_DEPOSIT_IN_QU_RAFFLE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleDepositInQuRaffleOutput
 }
@@ -259,7 +259,7 @@ const Q_RAFFLE_DEPOSIT_IN_TOKEN_RAFFLE_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQRaffleDepositInTokenRaffleInput(
   input: QRaffleDepositInTokenRaffleInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_RAFFLE_DEPOSIT_IN_TOKEN_RAFFLE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -279,7 +279,7 @@ const Q_RAFFLE_DEPOSIT_IN_TOKEN_RAFFLE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQRaffleDepositInTokenRaffleOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QRaffleDepositInTokenRaffleOutput {
   return decodePayload(data, Q_RAFFLE_DEPOSIT_IN_TOKEN_RAFFLE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleDepositInTokenRaffleOutput
 }
@@ -322,7 +322,7 @@ const Q_RAFFLE_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQRaffleTransferShareManagementRightsInput(
   input: QRaffleTransferShareManagementRightsInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_RAFFLE_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -342,7 +342,7 @@ const Q_RAFFLE_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQRaffleTransferShareManagementRightsOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QRaffleTransferShareManagementRightsOutput {
   return decodePayload(data, Q_RAFFLE_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleTransferShareManagementRightsOutput
 }
@@ -372,7 +372,7 @@ const Q_RAFFLE_GET_REGISTERS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQRaffleGetRegistersInput(
   input: QRaffleGetRegistersInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_RAFFLE_GET_REGISTERS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -399,7 +399,7 @@ const Q_RAFFLE_GET_REGISTERS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQRaffleGetRegistersOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QRaffleGetRegistersOutput {
   return decodePayload(data, Q_RAFFLE_GET_REGISTERS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleGetRegistersOutput
 }
@@ -538,7 +538,7 @@ const Q_RAFFLE_GET_ANALYTICS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQRaffleGetAnalyticsOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QRaffleGetAnalyticsOutput {
   return decodePayload(data, Q_RAFFLE_GET_ANALYTICS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleGetAnalyticsOutput
 }
@@ -578,7 +578,7 @@ const Q_RAFFLE_GET_ACTIVE_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQRaffleGetActiveProposalInput(
   input: QRaffleGetActiveProposalInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_RAFFLE_GET_ACTIVE_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -640,7 +640,7 @@ const Q_RAFFLE_GET_ACTIVE_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQRaffleGetActiveProposalOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QRaffleGetActiveProposalOutput {
   return decodePayload(data, Q_RAFFLE_GET_ACTIVE_PROPOSAL_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleGetActiveProposalOutput
 }
@@ -681,7 +681,7 @@ const Q_RAFFLE_GET_ENDED_TOKEN_RAFFLE_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQRaffleGetEndedTokenRaffleInput(
   input: QRaffleGetEndedTokenRaffleInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_RAFFLE_GET_ENDED_TOKEN_RAFFLE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -750,7 +750,7 @@ const Q_RAFFLE_GET_ENDED_TOKEN_RAFFLE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQRaffleGetEndedTokenRaffleOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QRaffleGetEndedTokenRaffleOutput {
   return decodePayload(data, Q_RAFFLE_GET_ENDED_TOKEN_RAFFLE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleGetEndedTokenRaffleOutput
 }
@@ -791,7 +791,7 @@ const Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQRaffleGetEpochRaffleIndexesInput(
   input: QRaffleGetEpochRaffleIndexesInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -825,7 +825,7 @@ const Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQRaffleGetEpochRaffleIndexesOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QRaffleGetEpochRaffleIndexesOutput {
   return decodePayload(data, Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleGetEpochRaffleIndexesOutput
 }
@@ -866,7 +866,7 @@ const Q_RAFFLE_GET_ENDED_QU_RAFFLE_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQRaffleGetEndedQuRaffleInput(
   input: QRaffleGetEndedQuRaffleInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_RAFFLE_GET_ENDED_QU_RAFFLE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -928,7 +928,7 @@ const Q_RAFFLE_GET_ENDED_QU_RAFFLE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQRaffleGetEndedQuRaffleOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QRaffleGetEndedQuRaffleOutput {
   return decodePayload(data, Q_RAFFLE_GET_ENDED_QU_RAFFLE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleGetEndedQuRaffleOutput
 }
@@ -969,7 +969,7 @@ const Q_RAFFLE_GET_ACTIVE_TOKEN_RAFFLE_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQRaffleGetActiveTokenRaffleInput(
   input: QRaffleGetActiveTokenRaffleInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_RAFFLE_GET_ACTIVE_TOKEN_RAFFLE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -1017,7 +1017,7 @@ const Q_RAFFLE_GET_ACTIVE_TOKEN_RAFFLE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQRaffleGetActiveTokenRaffleOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QRaffleGetActiveTokenRaffleOutput {
   return decodePayload(data, Q_RAFFLE_GET_ACTIVE_TOKEN_RAFFLE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleGetActiveTokenRaffleOutput
 }
@@ -1058,7 +1058,7 @@ const Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AMOUNT_PER_USER_INPUT_FIELDS: BinaryField[] =
 
 export function buildQRaffleGetQuRaffleEntryAmountPerUserInput(
   input: QRaffleGetQuRaffleEntryAmountPerUserInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AMOUNT_PER_USER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -1085,7 +1085,7 @@ const Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AMOUNT_PER_USER_OUTPUT_FIELDS: BinaryField[] 
 
 export function decodeQRaffleGetQuRaffleEntryAmountPerUserOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QRaffleGetQuRaffleEntryAmountPerUserOutput {
   return decodePayload(data, Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AMOUNT_PER_USER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleGetQuRaffleEntryAmountPerUserOutput
 }
@@ -1133,7 +1133,7 @@ const Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AVERAGE_AMOUNT_OUTPUT_FIELDS: BinaryField[] =
 
 export function decodeQRaffleGetQuRaffleEntryAverageAmountOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QRaffleGetQuRaffleEntryAverageAmountOutput {
   return decodePayload(data, Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AVERAGE_AMOUNT_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleGetQuRaffleEntryAverageAmountOutput
 }

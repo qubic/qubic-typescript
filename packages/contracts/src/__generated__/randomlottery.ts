@@ -21,7 +21,7 @@ export interface RandomLotteryNextEpochDataStruct {
 }
 
 const STRUCTS: Record<string, NamedStruct> = {
-  WinnerInfo: {
+  'WinnerInfo': {
   name: 'WinnerInfo',
   byteLength: 47,
   fields: [
@@ -57,7 +57,7 @@ const STRUCTS: Record<string, NamedStruct> = {
     },
 ],
 },
-  NextEpochData: {
+  'NextEpochData': {
   name: 'NextEpochData',
   byteLength: 9,
   fields: [
@@ -94,7 +94,7 @@ const RANDOM_LOTTERY_BUY_TICKET_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeRandomLotteryBuyTicketOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): RandomLotteryBuyTicketOutput {
   return decodePayload(data, RANDOM_LOTTERY_BUY_TICKET_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as RandomLotteryBuyTicketOutput
 }
@@ -116,7 +116,7 @@ const RANDOM_LOTTERY_SET_PRICE_INPUT_FIELDS: BinaryField[] = [
 
 export function buildRandomLotterySetPriceInput(
   input: RandomLotterySetPriceInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(RANDOM_LOTTERY_SET_PRICE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -136,7 +136,7 @@ const RANDOM_LOTTERY_SET_PRICE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeRandomLotterySetPriceOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): RandomLotterySetPriceOutput {
   return decodePayload(data, RANDOM_LOTTERY_SET_PRICE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as RandomLotterySetPriceOutput
 }
@@ -158,7 +158,7 @@ const RANDOM_LOTTERY_SET_SCHEDULE_INPUT_FIELDS: BinaryField[] = [
 
 export function buildRandomLotterySetScheduleInput(
   input: RandomLotterySetScheduleInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(RANDOM_LOTTERY_SET_SCHEDULE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -178,7 +178,7 @@ const RANDOM_LOTTERY_SET_SCHEDULE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeRandomLotterySetScheduleOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): RandomLotterySetScheduleOutput {
   return decodePayload(data, RANDOM_LOTTERY_SET_SCHEDULE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as RandomLotterySetScheduleOutput
 }
@@ -229,7 +229,7 @@ const RANDOM_LOTTERY_GET_FEES_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeRandomLotteryGetFeesOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): RandomLotteryGetFeesOutput {
   return decodePayload(data, RANDOM_LOTTERY_GET_FEES_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as RandomLotteryGetFeesOutput
 }
@@ -286,7 +286,7 @@ const RANDOM_LOTTERY_GET_PLAYERS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeRandomLotteryGetPlayersOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): RandomLotteryGetPlayersOutput {
   return decodePayload(data, RANDOM_LOTTERY_GET_PLAYERS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as RandomLotteryGetPlayersOutput
 }
@@ -343,7 +343,7 @@ const RANDOM_LOTTERY_GET_WINNERS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeRandomLotteryGetWinnersOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): RandomLotteryGetWinnersOutput {
   return decodePayload(data, RANDOM_LOTTERY_GET_WINNERS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as RandomLotteryGetWinnersOutput
 }
@@ -383,7 +383,7 @@ const RANDOM_LOTTERY_GET_TICKET_PRICE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeRandomLotteryGetTicketPriceOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): RandomLotteryGetTicketPriceOutput {
   return decodePayload(data, RANDOM_LOTTERY_GET_TICKET_PRICE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as RandomLotteryGetTicketPriceOutput
 }
@@ -423,7 +423,7 @@ const RANDOM_LOTTERY_GET_MAX_NUMBER_OF_PLAYERS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeRandomLotteryGetMaxNumberOfPlayersOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): RandomLotteryGetMaxNumberOfPlayersOutput {
   return decodePayload(data, RANDOM_LOTTERY_GET_MAX_NUMBER_OF_PLAYERS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as RandomLotteryGetMaxNumberOfPlayersOutput
 }
@@ -463,7 +463,7 @@ const RANDOM_LOTTERY_GET_STATE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeRandomLotteryGetStateOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): RandomLotteryGetStateOutput {
   return decodePayload(data, RANDOM_LOTTERY_GET_STATE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as RandomLotteryGetStateOutput
 }
@@ -503,7 +503,7 @@ const RANDOM_LOTTERY_GET_BALANCE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeRandomLotteryGetBalanceOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): RandomLotteryGetBalanceOutput {
   return decodePayload(data, RANDOM_LOTTERY_GET_BALANCE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as RandomLotteryGetBalanceOutput
 }
@@ -544,7 +544,7 @@ const RANDOM_LOTTERY_GET_NEXT_EPOCH_DATA_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeRandomLotteryGetNextEpochDataOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): RandomLotteryGetNextEpochDataOutput {
   return decodePayload(data, RANDOM_LOTTERY_GET_NEXT_EPOCH_DATA_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as RandomLotteryGetNextEpochDataOutput
 }
@@ -584,7 +584,7 @@ const RANDOM_LOTTERY_GET_DRAW_HOUR_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeRandomLotteryGetDrawHourOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): RandomLotteryGetDrawHourOutput {
   return decodePayload(data, RANDOM_LOTTERY_GET_DRAW_HOUR_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as RandomLotteryGetDrawHourOutput
 }
@@ -624,7 +624,7 @@ const RANDOM_LOTTERY_GET_SCHEDULE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeRandomLotteryGetScheduleOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): RandomLotteryGetScheduleOutput {
   return decodePayload(data, RANDOM_LOTTERY_GET_SCHEDULE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as RandomLotteryGetScheduleOutput
 }

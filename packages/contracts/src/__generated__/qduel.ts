@@ -28,7 +28,7 @@ export interface QDuelDateAndTimeStruct {
 }
 
 const STRUCTS: Record<string, NamedStruct> = {
-  RoomInfo: {
+  'RoomInfo': {
   name: 'RoomInfo',
   byteLength: 120,
   fields: [
@@ -71,7 +71,7 @@ const STRUCTS: Record<string, NamedStruct> = {
     },
 ],
 },
-  WinnerData: {
+  'WinnerData': {
   name: 'WinnerData',
   byteLength: 104,
   fields: [
@@ -101,7 +101,7 @@ const STRUCTS: Record<string, NamedStruct> = {
     },
 ],
 },
-  DateAndTime: {
+  'DateAndTime': {
   name: 'DateAndTime',
   byteLength: 8,
   fields: [
@@ -153,7 +153,7 @@ const Q_DUEL_CREATE_ROOM_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQDuelCreateRoomInput(
   input: QDuelCreateRoomInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_DUEL_CREATE_ROOM_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -173,7 +173,7 @@ const Q_DUEL_CREATE_ROOM_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQDuelCreateRoomOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QDuelCreateRoomOutput {
   return decodePayload(data, Q_DUEL_CREATE_ROOM_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QDuelCreateRoomOutput
 }
@@ -195,7 +195,7 @@ const Q_DUEL_CONNECT_TO_ROOM_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQDuelConnectToRoomInput(
   input: QDuelConnectToRoomInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_DUEL_CONNECT_TO_ROOM_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -222,7 +222,7 @@ const Q_DUEL_CONNECT_TO_ROOM_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQDuelConnectToRoomOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QDuelConnectToRoomOutput {
   return decodePayload(data, Q_DUEL_CONNECT_TO_ROOM_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QDuelConnectToRoomOutput
 }
@@ -244,7 +244,7 @@ const Q_DUEL_CLOSE_ROOM_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQDuelCloseRoomOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QDuelCloseRoomOutput {
   return decodePayload(data, Q_DUEL_CLOSE_ROOM_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QDuelCloseRoomOutput
 }
@@ -287,7 +287,7 @@ const Q_DUEL_SET_PERCENT_FEES_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQDuelSetPercentFeesInput(
   input: QDuelSetPercentFeesInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_DUEL_SET_PERCENT_FEES_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -307,7 +307,7 @@ const Q_DUEL_SET_PERCENT_FEES_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQDuelSetPercentFeesOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QDuelSetPercentFeesOutput {
   return decodePayload(data, Q_DUEL_SET_PERCENT_FEES_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QDuelSetPercentFeesOutput
 }
@@ -329,7 +329,7 @@ const Q_DUEL_SET_TTL_HOURS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQDuelSetTTLHoursInput(
   input: QDuelSetTTLHoursInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_DUEL_SET_TTL_HOURS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -349,7 +349,7 @@ const Q_DUEL_SET_TTL_HOURS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQDuelSetTTLHoursOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QDuelSetTTLHoursOutput {
   return decodePayload(data, Q_DUEL_SET_TTL_HOURS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QDuelSetTTLHoursOutput
 }
@@ -371,7 +371,7 @@ const Q_DUEL_DEPOSIT_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQDuelDepositOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QDuelDepositOutput {
   return decodePayload(data, Q_DUEL_DEPOSIT_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QDuelDepositOutput
 }
@@ -393,7 +393,7 @@ const Q_DUEL_WITHDRAW_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQDuelWithdrawInput(
   input: QDuelWithdrawInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_DUEL_WITHDRAW_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -413,7 +413,7 @@ const Q_DUEL_WITHDRAW_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQDuelWithdrawOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QDuelWithdrawOutput {
   return decodePayload(data, Q_DUEL_WITHDRAW_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QDuelWithdrawOutput
 }
@@ -436,7 +436,7 @@ const Q_DUEL_CALCULATE_REVENUE_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQDuelCalculateRevenueInput(
   input: QDuelCalculateRevenueInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_DUEL_CALCULATE_REVENUE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -477,7 +477,7 @@ const Q_DUEL_CALCULATE_REVENUE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQDuelCalculateRevenueOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QDuelCalculateRevenueOutput {
   return decodePayload(data, Q_DUEL_CALCULATE_REVENUE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QDuelCalculateRevenueOutput
 }
@@ -546,7 +546,7 @@ const Q_DUEL_GET_PERCENT_FEES_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQDuelGetPercentFeesOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QDuelGetPercentFeesOutput {
   return decodePayload(data, Q_DUEL_GET_PERCENT_FEES_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QDuelGetPercentFeesOutput
 }
@@ -596,7 +596,7 @@ const Q_DUEL_GET_ROOMS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQDuelGetRoomsOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QDuelGetRoomsOutput {
   return decodePayload(data, Q_DUEL_GET_ROOMS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QDuelGetRoomsOutput
 }
@@ -643,7 +643,7 @@ const Q_DUEL_GET_TTL_HOURS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQDuelGetTTLHoursOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QDuelGetTTLHoursOutput {
   return decodePayload(data, Q_DUEL_GET_TTL_HOURS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QDuelGetTTLHoursOutput
 }
@@ -683,7 +683,7 @@ const Q_DUEL_GET_USER_PROFILE_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQDuelGetUserProfileInput(
   input: QDuelGetUserProfileInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(Q_DUEL_GET_USER_PROFILE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -745,7 +745,7 @@ const Q_DUEL_GET_USER_PROFILE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQDuelGetUserProfileOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QDuelGetUserProfileOutput {
   return decodePayload(data, Q_DUEL_GET_USER_PROFILE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QDuelGetUserProfileOutput
 }
@@ -796,7 +796,7 @@ const Q_DUEL_GET_LAST_WINNERS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQDuelGetLastWinnersOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QDuelGetLastWinnersOutput {
   return decodePayload(data, Q_DUEL_GET_LAST_WINNERS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QDuelGetLastWinnersOutput
 }

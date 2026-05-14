@@ -9,21 +9,28 @@ const STRUCTS: Record<string, NamedStruct> = {}
 export const RANDOM_REVEAL_AND_COMMIT_INPUT_TYPE = 1
 
 export interface RandomRevealAndCommitInput {
+  reveal: Uint8Array
   commit: string
 }
 
 const RANDOM_REVEAL_AND_COMMIT_INPUT_FIELDS: BinaryField[] = [
   {
+    name: 'reveal',
+    type: 'bytes',
+    offset: 0,
+    byteLength: 512,
+  },
+  {
     name: 'commit',
     type: 'id',
-    offset: 0,
+    offset: 512,
     byteLength: 32,
   },
 ]
 
 export function buildRandomRevealAndCommitInput(
   input: RandomRevealAndCommitInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(RANDOM_REVEAL_AND_COMMIT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }

@@ -21,7 +21,7 @@ export interface QusinoGameInfoStruct {
 }
 
 const STRUCTS: Record<string, NamedStruct> = {
-  Asset: {
+  'Asset': {
   name: 'Asset',
   byteLength: 40,
   fields: [
@@ -39,7 +39,7 @@ const STRUCTS: Record<string, NamedStruct> = {
     },
 ],
 },
-  GameInfo: {
+  'GameInfo': {
   name: 'GameInfo',
   byteLength: 108,
   fields: [
@@ -97,7 +97,7 @@ const QUSINO_EARN_STAR_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQusinoEarnSTARInput(
   input: QusinoEarnSTARInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QUSINO_EARN_STAR_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -117,7 +117,7 @@ const QUSINO_EARN_STAR_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQusinoEarnSTAROutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QusinoEarnSTAROutput {
   return decodePayload(data, QUSINO_EARN_STAR_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QusinoEarnSTAROutput
 }
@@ -153,7 +153,7 @@ const QUSINO_TRANSFER_STAR_OR_QSC_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQusinoTransferSTAROrQSCInput(
   input: QusinoTransferSTAROrQSCInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QUSINO_TRANSFER_STAR_OR_QSC_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -173,7 +173,7 @@ const QUSINO_TRANSFER_STAR_OR_QSC_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQusinoTransferSTAROrQSCOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QusinoTransferSTAROrQSCOutput {
   return decodePayload(data, QUSINO_TRANSFER_STAR_OR_QSC_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QusinoTransferSTAROrQSCOutput
 }
@@ -198,7 +198,7 @@ const QUSINO_SUBMIT_GAME_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQusinoSubmitGameInput(
   input: QusinoSubmitGameInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QUSINO_SUBMIT_GAME_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -218,7 +218,7 @@ const QUSINO_SUBMIT_GAME_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQusinoSubmitGameOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QusinoSubmitGameOutput {
   return decodePayload(data, QUSINO_SUBMIT_GAME_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QusinoSubmitGameOutput
 }
@@ -257,7 +257,7 @@ const QUSINO_VOTE_IN_GAME_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQusinoVoteInGameProposalInput(
   input: QusinoVoteInGameProposalInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QUSINO_VOTE_IN_GAME_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -277,7 +277,7 @@ const QUSINO_VOTE_IN_GAME_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQusinoVoteInGameProposalOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QusinoVoteInGameProposalOutput {
   return decodePayload(data, QUSINO_VOTE_IN_GAME_PROPOSAL_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QusinoVoteInGameProposalOutput
 }
@@ -299,7 +299,7 @@ const QUSINO_DEPOSIT_BONUS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQusinoDepositBonusInput(
   input: QusinoDepositBonusInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QUSINO_DEPOSIT_BONUS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -319,7 +319,7 @@ const QUSINO_DEPOSIT_BONUS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQusinoDepositBonusOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QusinoDepositBonusOutput {
   return decodePayload(data, QUSINO_DEPOSIT_BONUS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QusinoDepositBonusOutput
 }
@@ -341,7 +341,7 @@ const QUSINO_DAILY_CLAIM_BONUS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQusinoDailyClaimBonusOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QusinoDailyClaimBonusOutput {
   return decodePayload(data, QUSINO_DAILY_CLAIM_BONUS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QusinoDailyClaimBonusOutput
 }
@@ -363,7 +363,7 @@ const QUSINO_REDEMPTION_QSC_TO_QUBIC_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQusinoRedemptionQSCToQubicInput(
   input: QusinoRedemptionQSCToQubicInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QUSINO_REDEMPTION_QSC_TO_QUBIC_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -383,7 +383,7 @@ const QUSINO_REDEMPTION_QSC_TO_QUBIC_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQusinoRedemptionQSCToQubicOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QusinoRedemptionQSCToQubicOutput {
   return decodePayload(data, QUSINO_REDEMPTION_QSC_TO_QUBIC_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QusinoRedemptionQSCToQubicOutput
 }
@@ -420,7 +420,7 @@ const QUSINO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQusinoTransferShareManagementRightsInput(
   input: QusinoTransferShareManagementRightsInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QUSINO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -440,7 +440,7 @@ const QUSINO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQusinoTransferShareManagementRightsOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QusinoTransferShareManagementRightsOutput {
   return decodePayload(data, QUSINO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QusinoTransferShareManagementRightsOutput
 }
@@ -463,7 +463,7 @@ const QUSINO_GET_USER_ASSET_VOLUME_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQusinoGetUserAssetVolumeInput(
   input: QusinoGetUserAssetVolumeInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QUSINO_GET_USER_ASSET_VOLUME_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -490,7 +490,7 @@ const QUSINO_GET_USER_ASSET_VOLUME_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQusinoGetUserAssetVolumeOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QusinoGetUserAssetVolumeOutput {
   return decodePayload(data, QUSINO_GET_USER_ASSET_VOLUME_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QusinoGetUserAssetVolumeOutput
 }
@@ -531,7 +531,7 @@ const QUSINO_GET_FAILED_GAME_LIST_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQusinoGetFailedGameListInput(
   input: QusinoGetFailedGameListInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QUSINO_GET_FAILED_GAME_LIST_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -554,7 +554,7 @@ const QUSINO_GET_FAILED_GAME_LIST_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQusinoGetFailedGameListOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QusinoGetFailedGameListOutput {
   return decodePayload(data, QUSINO_GET_FAILED_GAME_LIST_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QusinoGetFailedGameListOutput
 }
@@ -630,7 +630,7 @@ const QUSINO_GET_SC_INFO_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQusinoGetSCInfoOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QusinoGetSCInfoOutput {
   return decodePayload(data, QUSINO_GET_SC_INFO_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QusinoGetSCInfoOutput
 }
@@ -670,7 +670,7 @@ const QUSINO_GET_ACTIVE_GAME_LIST_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQusinoGetActiveGameListInput(
   input: QusinoGetActiveGameListInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QUSINO_GET_ACTIVE_GAME_LIST_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -703,7 +703,7 @@ const QUSINO_GET_ACTIVE_GAME_LIST_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQusinoGetActiveGameListOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QusinoGetActiveGameListOutput {
   return decodePayload(data, QUSINO_GET_ACTIVE_GAME_LIST_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QusinoGetActiveGameListOutput
 }
@@ -751,7 +751,7 @@ const QUSINO_GET_PROPOSER_EARNED_QSC_INFO_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQusinoGetProposerEarnedQSCInfoInput(
   input: QusinoGetProposerEarnedQSCInfoInput,
-  identityToPublicKey: (identity: string) => Uint8Array = () => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
   return buildPayload(QUSINO_GET_PROPOSER_EARNED_QSC_INFO_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -771,7 +771,7 @@ const QUSINO_GET_PROPOSER_EARNED_QSC_INFO_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQusinoGetProposerEarnedQSCInfoOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QusinoGetProposerEarnedQSCInfoOutput {
   return decodePayload(data, QUSINO_GET_PROPOSER_EARNED_QSC_INFO_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QusinoGetProposerEarnedQSCInfoOutput
 }

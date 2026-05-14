@@ -1,6 +1,6 @@
 import createClient from 'openapi-fetch'
-import { QubicRpcError } from './errors.js'
 import type { components, paths } from './live-schema.d.ts'
+import { sig, unwrap } from './_utils.js'
 
 export type LiveClientOptions = {
   baseUrl?: string
@@ -23,22 +23,6 @@ export type AssetPossession = components['schemas']['AssetPossession']
 export type Ipo = components['schemas']['Ipo']
 
 const DEFAULT_BASE_URL = 'https://rpc.qubic.org/live/v1'
-
-async function unwrap<T>(
-  promise: Promise<{ data?: T; error?: unknown; response: Response }>,
-  endpoint: string,
-): Promise<T> {
-  const { data, error, response } = await promise
-  if (error !== undefined || !response.ok) {
-    throw new QubicRpcError(response.status, endpoint)
-  }
-  return data as T
-}
-
-/** Spreads `signal` only when defined, avoiding `exactOptionalPropertyTypes` conflict. */
-function sig(signal: AbortSignal | undefined): { signal: AbortSignal } | Record<never, never> {
-  return signal ? { signal } : {}
-}
 
 /**
  * Creates a type-safe client for the Qubic live API (`https://rpc.qubic.org/live/v1`).

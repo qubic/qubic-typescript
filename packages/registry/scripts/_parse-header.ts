@@ -61,6 +61,19 @@ const QPI_TYPE_MAP: Record<string, MappedType> = {
   uint128: { type: 'uint128', byteLength: 16 },
   id: { type: 'id', byteLength: 32 },
   m256i: { type: 'id', byteLength: 32 },
+  // BitArray<L> typedefs: storage = ceil(L/64) * 8 bytes (one uint64 per 64 bits)
+  bit_2: { type: 'bytes', byteLength: 8 },
+  bit_4: { type: 'bytes', byteLength: 8 },
+  bit_8: { type: 'bytes', byteLength: 8 },
+  bit_16: { type: 'bytes', byteLength: 8 },
+  bit_32: { type: 'bytes', byteLength: 8 },
+  bit_64: { type: 'bytes', byteLength: 8 },
+  bit_128: { type: 'bytes', byteLength: 16 },
+  bit_256: { type: 'bytes', byteLength: 32 },
+  bit_512: { type: 'bytes', byteLength: 64 },
+  bit_1024: { type: 'bytes', byteLength: 128 },
+  bit_2048: { type: 'bytes', byteLength: 256 },
+  bit_4096: { type: 'bytes', byteLength: 512 },
 }
 
 // Built-in QPI structs from qpi.h that appear as field types in contracts.
@@ -91,6 +104,27 @@ const QPI_NAMED_STRUCTS: NamedStruct[] = [
     ],
   },
   { name: 'NoData', byteLength: 0, fields: [] },
+  // OI::Price::OracleQuery (oracle_interfaces/Price.h):
+  // id oracle (32) + DateAndTime timestamp (8) + id currency1 (32) + id currency2 (32) = 104
+  {
+    name: 'OI::Price::OracleQuery',
+    byteLength: 104,
+    fields: [
+      { name: 'oracle', type: 'id', offset: 0, byteLength: 32 },
+      { name: 'timestamp', type: 'struct', offset: 32, byteLength: 8, structRef: 'DateAndTime' },
+      { name: 'currency1', type: 'id', offset: 40, byteLength: 32 },
+      { name: 'currency2', type: 'id', offset: 72, byteLength: 32 },
+    ],
+  },
+  // OI::Price::OracleReply: sint64 numerator (8) + sint64 denominator (8) = 16
+  {
+    name: 'OI::Price::OracleReply',
+    byteLength: 16,
+    fields: [
+      { name: 'numerator', type: 'sint64', offset: 0, byteLength: 8 },
+      { name: 'denominator', type: 'sint64', offset: 8, byteLength: 8 },
+    ],
+  },
   // Asset: id issuer (32) + uint64 assetName (8) = 40
   {
     name: 'Asset',
@@ -284,7 +318,6 @@ function extractFields(
     if (!typeNode || !declNode) continue
 
     const fieldName = declNode.text.trim()
-    if (fieldName.startsWith('_')) continue
 
     // When the type node is an inline struct_specifier, use the struct's name for lookup
     // (the pre-pass should have already registered it in namedStructs).
@@ -292,11 +325,22 @@ function extractFields(
       typeNode.type === 'struct_specifier'
         ? ((typeNode.childForFieldName('name') as TsNode | null)?.text ?? typeNode.text)
         : typeNode.text
-    // Strip known namespace qualifiers (QPI::, QPI::QPI::) that are transparent aliases
+    // Strip known namespace qualifiers (QPI::, QPI::QPI::) that are transparent aliases.
+    // Do NOT strip OI::X:: — those are registered in namedStructs under their full qualified name.
     const typeName = rawTypeName.replace(/^(?:QPI::)+/, '')
 
     if (typeNode.type === 'template_type') {
       const templateName = findChildByType(typeNode, 'type_identifier')?.text
+      if (templateName === 'BitArray') {
+        // BitArray<N>: storage = ceil(N/64) * 8 bytes. Treat as opaque bytes.
+        const argList = findChildByType(typeNode, 'template_argument_list')
+        const sizeToken = argList ? namedChildren(argList)[0]?.text?.trim() ?? '0' : '0'
+        const bits = resolveSize(sizeToken)
+        const byteLength = Math.ceil(bits / 64) * 8
+        fields.push({ name: fieldName, type: 'bytes', offset, byteLength })
+        offset += byteLength
+        continue
+      }
       if (templateName === 'Array') {
         const argList = findChildByType(typeNode, 'template_argument_list')
         if (argList) {
@@ -360,6 +404,96 @@ function extractFields(
   return fields
 }
 
+// ── Typedef resolution ────────────────────────────────────────────────────────
+
+/**
+ * Resolves typedef aliases into namedStructs entries. Runs until fixpoint so that
+ * chained typedefs (e.g. Array<X,N> → T → T Foo_output) resolve in any order.
+ *
+ * Handles:
+ *  - Simple struct aliases:        typedef ProposalSingleVoteDataV1 Vote_input
+ *  - Template instantiation alias: typedef ProposalDataV1<false> ProposalDataT
+ *  - Array<ItemType, Length>:      typedef Array<RevenueDonationEntry, 128> RevenueDonationT
+ *  - Primitive type alias:         typedef sint64 GetTotalNumberOfAssetShares_output
+ */
+function resolveTypedefs(
+  source: string,
+  namedStructs: Map<string, NamedStruct>,
+  resolveSize: (token: string) => number,
+): void {
+  let prevSize = -1
+  while (prevSize !== namedStructs.size) {
+    prevSize = namedStructs.size
+    for (const m of source.matchAll(/typedef\s+(\w+)\s*(?:<([^>]*)>)?\s+(\w+)\s*;/g)) {
+      const [, src, templateArgs, alias] = m
+      if (!src || !alias || namedStructs.has(alias)) continue
+
+      if (src === 'Array' && templateArgs !== undefined) {
+        const parts = templateArgs.split(',').map((s) => s.trim())
+        const itemTypeName = parts[0] ?? ''
+        const sizeToken = parts[1]?.trim() ?? '0'
+        const arrayLength = resolveSize(sizeToken)
+
+        const primitiveItem = QPI_TYPE_MAP[itemTypeName]
+        if (primitiveItem) {
+          const totalBytes = arrayLength * primitiveItem.byteLength
+          namedStructs.set(alias, {
+            name: alias,
+            byteLength: totalBytes,
+            fields: [
+              {
+                name: 'data',
+                type: 'array',
+                offset: 0,
+                byteLength: totalBytes,
+                arrayLength,
+                arrayItemType: primitiveItem.type,
+                arrayItemByteLength: primitiveItem.byteLength,
+              },
+            ],
+          })
+        } else if (namedStructs.has(itemTypeName)) {
+          const itemByteLen = namedStructs.get(itemTypeName)!.byteLength
+          const totalBytes = arrayLength * itemByteLen
+          namedStructs.set(alias, {
+            name: alias,
+            byteLength: totalBytes,
+            fields: [
+              {
+                name: 'data',
+                type: 'array',
+                offset: 0,
+                byteLength: totalBytes,
+                arrayLength,
+                arrayItemStructRef: itemTypeName,
+                arrayItemByteLength: itemByteLen,
+              },
+            ],
+          })
+        }
+        continue
+      }
+
+      // Simple struct alias (possibly from template instantiation like ProposalDataV1<false>)
+      const resolved = namedStructs.get(src)
+      if (resolved) {
+        namedStructs.set(alias, { ...resolved, name: alias })
+        continue
+      }
+
+      // Primitive type alias: typedef sint64 Foo_output → wrap in single-field struct
+      const primitiveType = QPI_TYPE_MAP[src]
+      if (primitiveType) {
+        namedStructs.set(alias, {
+          name: alias,
+          byteLength: primitiveType.byteLength,
+          fields: [{ name: 'value', type: primitiveType.type, offset: 0, byteLength: primitiveType.byteLength }],
+        })
+      }
+    }
+  }
+}
+
 // ── Public API ────────────────────────────────────────────────────────────────
 
 export interface ParseHeaderOptions {
@@ -412,22 +546,10 @@ export function parseContractHeader(options: ParseHeaderOptions): ContractAbiVer
     })
   }
 
-  // Resolve typedef aliases before building directStructs so that types like
-  // ProposalDataT (= ProposalDataV1<false>) are available when we extractFields on
-  // _output structs that reference them.
-  // Handles plain typedefs and template instantiation typedefs:
-  //   typedef NoData GetRevenueDonation_input;
-  //   typedef ProposalDataV1<false> ProposalDataT;  ← strip angle brackets, look up base name
-  for (const m of headerSource.matchAll(/typedef\s+(\w+)(?:<[^>]*>)?\s+(\w+)\s*;/g)) {
-    const [, src, alias] = m
-    if (!src || !alias) continue
-    if (namedStructs.has(alias)) continue
-    const resolved = namedStructs.get(src)
-    if (resolved) namedStructs.set(alias, { ...resolved, name: alias })
-  }
-
-  // Build struct map from direct children — includes _input/_output so they
-  // can be used as field types inside other structs (e.g. _RemoveGapsInLockerArray_input)
+  // Build struct map from direct children — includes _input/_output so they can be used
+  // as field types inside other structs (e.g. _RemoveGapsInLockerArray_input).
+  // Must run BEFORE typedef resolution so that structs like RevenueDonationEntry are
+  // available when typedef Array<RevenueDonationEntry, 128> is resolved.
   for (const { name, node } of directStructs) {
     if (namedStructs.has(name)) continue
     const body = node.childForFieldName('body') as TsNode | null
@@ -440,12 +562,19 @@ export function parseContractHeader(options: ParseHeaderOptions): ContractAbiVer
     })
   }
 
-  // Assign ordinals: all _input structs in declaration order (1-indexed)
+  // Resolve typedef aliases (fixpoint — handles chained, Array<X,N>, and primitive typedefs).
+  resolveTypedefs(headerSource, namedStructs, resolveSize)
+
+  // Assign ordinals: all _input declarations in source order (both struct and typedef forms).
   const inputOrdinals = new Map<string, number>()
   let ordinal = 1
-  for (const { name } of directStructs) {
-    if (!name.endsWith('_input')) continue
-    inputOrdinals.set(name.slice(0, -'_input'.length), ordinal++)
+  for (const m of contractBody.text.matchAll(
+    /\bstruct\s+(\w+_input)\s*(?:\{|;)|\btypedef\s+\S+(?:\s*<[^>]*>)?\s+(\w+_input)\s*;/g,
+  )) {
+    const inputName = m[1] ?? m[2]
+    if (!inputName) continue
+    const procName = inputName.slice(0, -'_input'.length)
+    if (!inputOrdinals.has(procName)) inputOrdinals.set(procName, ordinal++)
   }
 
   // Detect public procedures and functions via regex (macros expand to function defs)
@@ -476,12 +605,14 @@ export function parseContractHeader(options: ParseHeaderOptions): ContractAbiVer
     const inputType = inputOrdinals.get(name) ?? 0
     const inNode = directStructs.find((s) => s.name === `${name}_input`)
     const outNode = directStructs.find((s) => s.name === `${name}_output`)
+    // Re-extract from tree-sitter node when available (captures warnOnUnknown warnings).
+    // Fall back to namedStructs for typedef-aliased structs (e.g. typedef NoData Foo_input).
     const inputFields = inNode
       ? extractFields(inNode.node.childForFieldName('body') as TsNode, namedStructs, resolveSize, true)
-      : []
+      : (namedStructs.get(`${name}_input`)?.fields ?? [])
     const outputFields = outNode
       ? extractFields(outNode.node.childForFieldName('body') as TsNode, namedStructs, resolveSize, true)
-      : []
+      : (namedStructs.get(`${name}_output`)?.fields ?? [])
     collectUsed(inputFields)
     collectUsed(outputFields)
     return {

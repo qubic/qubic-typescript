@@ -22,7 +22,8 @@ function epochDirs(): number[] {
     .sort((a, b) => a - b)
 }
 
-function contractSummaries() {
+// Computed once at startup — registry.json is static for the lifetime of the server process.
+const CONTRACT_SUMMARIES = (() => {
   const seen = new Map<number, ContractAbiVersion>()
   for (const v of registry.versions) {
     if (
@@ -48,7 +49,7 @@ function contractSummaries() {
         functionCount: current.functions.length,
       }
     })
-}
+})()
 
 function allActiveAtEpoch(epoch: number): ContractAbiVersion[] {
   const indices = [...new Set(registry.versions.map((v) => v.contractIndex))]
@@ -57,15 +58,15 @@ function allActiveAtEpoch(epoch: number): ContractAbiVersion[] {
     try {
       const { version } = getAbi(registry as Parameters<typeof getAbi>[0], idx, epoch)
       result.push(version as ContractAbiVersion)
-    } catch {
-      // contract not active at this epoch
+    } catch (e) {
+      if (!(e instanceof AbiNotFoundError)) throw e
     }
   }
   return result.sort((a, b) => a.contractIndex - b.contractIndex)
 }
 
 export const apiRoutes = new Elysia({ prefix: '/v1' })
-  .get('/contracts', () => contractSummaries())
+  .get('/contracts', () => CONTRACT_SUMMARIES)
 
   .get('/contracts/by-name/:name', ({ params, status }) => {
     const name = params.name.toLowerCase()

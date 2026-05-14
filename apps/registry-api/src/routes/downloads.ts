@@ -28,8 +28,13 @@ export const downloadRoutes = new Elysia({ prefix: '/download' })
   })
 
   .get('/epoch/:epoch/:contract', async ({ params, status, set }) => {
-    const { epoch, contract } = params
-    const filename = contract.endsWith('.json') ? contract : `${contract}.json`
+    const epoch = Number(params.epoch)
+    if (!Number.isInteger(epoch) || epoch < 0)
+      return status(400, { error: 'Invalid epoch', status: 400 })
+    const contract = params.contract.replace(/\.json$/, '')
+    if (!/^[a-zA-Z0-9_-]+$/.test(contract))
+      return status(400, { error: 'Invalid contract name', status: 400 })
+    const filename = `${contract}.json`
     const path = `${EPOCHS_DIR}${epoch}/${filename}`
     if (!existsSync(path)) {
       return status(404, {

@@ -211,7 +211,9 @@ function encodeField(
     case 'array': {
       if (!Array.isArray(value))
         throw new PayloadBuildError(`Field "${field.name}": expected array`)
-      const itemLen = field.arrayItemByteLength ?? 0
+      if (field.arrayItemByteLength === undefined)
+        throw new PayloadBuildError(`Field "${field.name}": missing arrayItemByteLength`)
+      const itemLen = field.arrayItemByteLength
       const itemType = field.arrayItemType ?? 'uint8'
       for (let i = 0; i < value.length; i++) {
         const itemOffset = offset + i * itemLen
@@ -304,7 +306,7 @@ function decodeScalar(
     case 'id':
       return publicKeyToIdentity(data.subarray(offset, offset + 32))
     default:
-      return 0
+      throw new PayloadBuildError(`Scalar decoding not supported for type "${type}"`)
   }
 }
 
@@ -342,9 +344,11 @@ function decodeField(
     case 'bytes':
       return data.slice(offset, offset + field.byteLength)
     case 'struct': {
-      if (field.structRef === undefined) return {}
+      if (field.structRef === undefined)
+        throw new PayloadBuildError(`Field "${field.name}": missing structRef`)
       const namedStruct = structs[field.structRef]
-      if (!namedStruct) return {}
+      if (!namedStruct)
+        throw new PayloadBuildError(`Field "${field.name}": struct "${field.structRef}" not found`)
       const nested: DecodedStruct = {}
       for (const sf of namedStruct.fields) {
         nested[sf.name] = decodeField(
@@ -388,7 +392,7 @@ function decodeField(
       return items
     }
     default:
-      return 0
+      throw new PayloadBuildError(`Unknown field type: ${field.type}`)
   }
 }
 

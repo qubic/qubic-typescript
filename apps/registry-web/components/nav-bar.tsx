@@ -17,10 +17,6 @@ export function NavBar() {
       <div className="container">
         <Link className="brand" href="/">
           <img src="/Qubic-Symbol-White.svg" alt="Qubic" className="brand-logo" />
-          <span className="brand-text">
-            <span className="slash">/</span>
-            <span className="reg">registry</span>
-          </span>
         </Link>
 
         <nav className="nav-links">

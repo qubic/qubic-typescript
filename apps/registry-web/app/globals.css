@@ -264,11 +264,11 @@ button:focus-visible {
   pointer-events: none;
 }
 .brand-logo {
-  height: 20px;
+  height: 28px;
   width: auto;
   display: block;
   flex: none;
-  opacity: 0.92;
+  opacity: 0.9;
 }
 .brand-text {
   font-size: 14px;

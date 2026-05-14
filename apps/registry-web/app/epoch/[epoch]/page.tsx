@@ -19,9 +19,9 @@ export default async function EpochPage({ params }: { params: Promise<{ epoch: s
   const maxEpoch = epochNums.length > 0 ? Math.max(...epochNums) : ep
 
   if (!contracts) {
-    const sorted = [...epochNums].sort((a, b) => b - a)
-    const nearest = sorted.find((e) => e <= ep) ?? sorted[0]
-    if (nearest !== undefined && nearest !== ep) redirect(`/epoch/${nearest}`)
+    const others = epochNums.filter((e) => e !== ep).sort((a, b) => b - a)
+    const nearest = others.find((e) => e <= ep) ?? others[0]
+    if (nearest !== undefined) redirect(`/epoch/${nearest}`)
     notFound()
   }
 

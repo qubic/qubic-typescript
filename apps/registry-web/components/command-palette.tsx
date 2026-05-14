@@ -1,4 +1,5 @@
 'use client'
+import * as Dialog from '@radix-ui/react-dialog'
 import { Command } from 'cmdk'
 import { BookOpen, Clock, Code, FileText, Search } from 'lucide-react'
 import { useRouter } from 'next/navigation'
@@ -64,7 +65,7 @@ export function CommandPalette() {
         className="cmd"
         title="Command palette"
       >
-        <span className="sr-only">Command palette</span>
+        <Dialog.Title className="sr-only">Command palette</Dialog.Title>
         <div className="cmd-input-wrap">
           <Search size={14} className="cmd-icon" />
           <Command.Input placeholder="Search contracts, navigate…" className="cmd-input" />

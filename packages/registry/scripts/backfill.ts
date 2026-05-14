@@ -3,24 +3,26 @@
  * Populates per-epoch ABI snapshots and registry.json for all known contracts.
  *
  * Modes:
- *   --local             Read from resources/core/src/contracts/ (current epoch only, fast)
- *   --from-epoch N      Clone qubic/core once, scan tags since epoch N, write one snapshot
- *                       folder per epoch and a version-range registry.json
- *   --fill-gaps         Re-scan all epoch/contract combinations that have no snapshot yet,
- *                       using resources/core git (requires tags to be present locally)
+ *   --local              Read from resources/core/src/contracts/ (current epoch only, fast)
+ *   --from-epoch N       Clone qubic/core once, scan tags since epoch N, write one snapshot
+ *                        folder per epoch and a version-range registry.json
+ *   --fill-gaps          Re-scan all epoch/contract combinations that have no snapshot yet,
+ *                        using resources/core git (requires tags to be present locally)
+ *   --rebuild-registry   Rebuild registry.json from all existing epoch snapshots on disk
  *
  * Options:
- *   --use-local-git     Source files from resources/core via git-show instead of cloning
- *   --contracts A,B     Process only these contracts (filename stem or label, comma-separated)
- *   --token GH_TOKEN    GitHub API token for fetching tags (--from-epoch only)
- *   --dry-run           Print what would be written without writing anything
+ *   --use-local-git      Source files from resources/core via git-show instead of cloning
+ *   --contracts A,B      Process only these contracts (filename stem or label, comma-separated)
+ *   --token GH_TOKEN     GitHub API token for fetching tags (--from-epoch only)
+ *   --force              Overwrite existing snapshots (--fill-gaps only)
+ *   --dry-run            Print what would be written without writing anything
  *
  * Outputs:
  *   data/epoch-refs.json              — saved epoch→tag map (reused on next run)
  *   data/epochs/{epoch}/{name}.json   — ABI snapshot per epoch per contract
  *   data/registry.json                — version-range index for client.ts
  */
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { parseArgs } from 'node:util'
 import type { ContractAbiVersion, ContractRegistry } from '../src/types.js'
@@ -32,11 +34,13 @@ const { values: args } = parseArgs({
   options: {
     local: { type: 'boolean', default: false },
     'fill-gaps': { type: 'boolean', default: false },
+    'rebuild-registry': { type: 'boolean', default: false },
     'use-local-git': { type: 'boolean', default: false },
     'from-epoch': { type: 'string' },
     'to-epoch': { type: 'string' },
     contracts: { type: 'string' },
     token: { type: 'string' },
+    force: { type: 'boolean', default: false },
     'dry-run': { type: 'boolean', default: false },
   },
 })
@@ -88,14 +92,14 @@ function readEpochFromSource(source: string): number | null {
   return m ? Number(m[1]) : null
 }
 
-function writeEpochSnapshot(epoch: number, version: ContractAbiVersion) {
+function writeEpochSnapshot(epoch: number, version: ContractAbiVersion, coreVersion?: string) {
   if (args['dry-run']) return
   const epochDir = join(EPOCHS_DIR, String(epoch))
+  const snapshotPath = join(epochDir, `${version.contractName}.json`)
+  if (!args.force && existsSync(snapshotPath)) return
+  const data = coreVersion ? { ...version, coreVersion } : version
   mkdirSync(epochDir, { recursive: true })
-  writeFileSync(
-    join(epochDir, `${version.contractName}.json`),
-    `${JSON.stringify(version, null, 2)}\n`,
-  )
+  writeFileSync(snapshotPath, `${JSON.stringify(data, null, 2)}\n`)
 }
 
 async function showFileFromLocalGit(ref: string, path: string): Promise<string | null> {
@@ -276,7 +280,7 @@ async function runFromEpoch(fromEpoch: number, toEpoch: number) {
           continue
         }
 
-        writeEpochSnapshot(epoch, version)
+        writeEpochSnapshot(epoch, version, tag)
         snapshots++
 
         const fp = abiFingerprint(version)
@@ -327,7 +331,7 @@ async function runFillGaps(showFile: (ref: string, path: string) => Promise<stri
 
     for (const sc of activeContracts) {
       const snapshotPath = join(EPOCHS_DIR, String(epoch), `${sc.label}.json`)
-      if (existsSync(snapshotPath)) {
+      if (!args.force && existsSync(snapshotPath)) {
         skipped++
         continue
       }
@@ -347,7 +351,7 @@ async function runFillGaps(showFile: (ref: string, path: string) => Promise<stri
           contractIndex: sc.contractIndex,
           effectiveFromEpoch: epoch,
         })
-        writeEpochSnapshot(epoch, version)
+        writeEpochSnapshot(epoch, version, tag)
         console.log(`  ✓ [${sc.contractIndex}] ${sc.label} @epoch ${epoch}`)
         filled++
       } catch (e) {
@@ -360,9 +364,95 @@ async function runFillGaps(showFile: (ref: string, path: string) => Promise<stri
   }
 
   console.log(`\nFilled ${filled}, skipped ${skipped} existing, ${failed} failed.`)
+  rebuildRegistryFromSnapshots()
 }
 
 // ── Output ────────────────────────────────────────────────────────────────────
+
+function rebuildRegistryFromSnapshots() {
+  console.log('\nRebuilding registry.json from epoch snapshots…')
+
+  const contractFilter = args.contracts
+    ? new Set(
+        args.contracts
+          .split(',')
+          .map((s) => s.trim().toLowerCase()),
+      )
+    : null
+
+  const epochDirs = existsSync(EPOCHS_DIR)
+    ? readdirSync(EPOCHS_DIR, { withFileTypes: true })
+        .filter((d) => d.isDirectory())
+        .map((d) => Number(d.name))
+        .filter((n) => !isNaN(n))
+        .sort((a, b) => a - b)
+    : []
+
+  // Track current ABI per contract index for version-range assignment
+  const current = new Map<number, { fingerprint: string; version: ContractAbiVersion }>()
+  const versions: ContractAbiVersion[] = []
+
+  for (const epoch of epochDirs) {
+    const epochDir = join(EPOCHS_DIR, String(epoch))
+    const files = readdirSync(epochDir).filter((f) => f.endsWith('.json'))
+
+    for (const file of files) {
+      const contractName = file.replace(/\.json$/, '')
+      if (contractFilter) {
+        const stem = contractName.toLowerCase()
+        const sc = allContracts.find(
+          (c) => c.filename.replace(/\.h$/, '').toLowerCase() === stem || c.label.toLowerCase() === stem,
+        )
+        if (!sc || (!contractFilter.has(stem) && !contractFilter.has(sc.label.toLowerCase()))) continue
+      }
+
+      let version: ContractAbiVersion
+      try {
+        version = JSON.parse(readFileSync(join(epochDir, file), 'utf-8')) as ContractAbiVersion
+      } catch {
+        console.warn(`  ⚠ Failed to parse ${epochDir}/${file}`)
+        continue
+      }
+
+      const fp = abiFingerprint(version)
+      const prev = current.get(version.contractIndex)
+
+      if (prev === undefined) {
+        version.effectiveToEpoch = null
+        current.set(version.contractIndex, { fingerprint: fp, version })
+        versions.push(version)
+      } else if (fp !== prev.fingerprint) {
+        prev.version.effectiveToEpoch = epoch - 1
+        version.effectiveToEpoch = null
+        current.set(version.contractIndex, { fingerprint: fp, version })
+        versions.push(version)
+      }
+      // else: same ABI, extend range silently
+    }
+  }
+
+  versions.sort(
+    (a, b) => a.contractIndex - b.contractIndex || a.effectiveFromEpoch - b.effectiveFromEpoch,
+  )
+
+  // If we're only rebuilding for specific contracts, merge with the existing registry
+  if (contractFilter) {
+    const indicesToProcess = new Set(versions.map((v) => v.contractIndex))
+    let existing: ContractAbiVersion[] = []
+    try {
+      const reg = JSON.parse(readFileSync(REGISTRY_PATH, 'utf-8')) as ContractRegistry
+      existing = reg.versions.filter((v) => !indicesToProcess.has(v.contractIndex))
+    } catch {
+      // Fresh
+    }
+    const merged = [...existing, ...versions].sort(
+      (a, b) => a.contractIndex - b.contractIndex || a.effectiveFromEpoch - b.effectiveFromEpoch,
+    )
+    writeRegistry({ schemaVersion: 1, updatedAt: new Date().toISOString(), versions: merged })
+  } else {
+    writeRegistry({ schemaVersion: 1, updatedAt: new Date().toISOString(), versions })
+  }
+}
 
 function writeRegistry(registry: ContractRegistry) {
   if (args['dry-run']) {
@@ -389,6 +479,8 @@ if (args.local) {
       await cleanup()
     }
   }
+} else if (args['rebuild-registry']) {
+  rebuildRegistryFromSnapshots()
 } else if (args['from-epoch'] !== undefined) {
   const fromEpoch = Number(args['from-epoch'])
   const toEpoch = args['to-epoch'] !== undefined ? Number(args['to-epoch']) : 9999
@@ -397,7 +489,8 @@ if (args.local) {
   console.error(
     'Usage:\n' +
       '  bun scripts/backfill.ts --local [--dry-run]\n' +
-      '  bun scripts/backfill.ts --fill-gaps [--use-local-git] [--contracts A,B] [--dry-run]\n' +
+      '  bun scripts/backfill.ts --fill-gaps [--use-local-git] [--contracts A,B] [--force] [--dry-run]\n' +
+      '  bun scripts/backfill.ts --rebuild-registry [--contracts A,B] [--dry-run]\n' +
       '  bun scripts/backfill.ts --from-epoch <N> [--to-epoch <M>] [--contracts A,B] [--token GH_TOKEN] [--dry-run]',
   )
   process.exit(1)

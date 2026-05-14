@@ -33,7 +33,7 @@ export function getAbi(
       v.effectiveFromEpoch <= epoch && epoch <= (v.effectiveToEpoch ?? Number.POSITIVE_INFINITY),
   )
   if (!version) throw new AbiNotFoundError(contractIndex, epoch)
-  const maxFrom = Math.max(...versions.map((v) => v.effectiveFromEpoch))
+  const maxFrom = versions.reduce((m, v) => Math.max(m, v.effectiveFromEpoch), 0)
   const isCurrent = version.effectiveToEpoch === null
   return {
     version,

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { AbiView } from '../../../../../components/AbiView'
+import { Crumbs } from '../../../../../components/crumbs'
 import { api } from '../../../../../lib/api'
 
 export default async function AbiSnapshotPage({
@@ -20,31 +21,55 @@ export default async function AbiSnapshotPage({
   if (!result) notFound()
   const { version } = result
   const name = current?.contractName ?? version.contractName
+  const isCurrent = result.isCurrent
 
   return (
-    <>
-      <div style={{ color: 'var(--text-muted)', fontSize: 13, marginBottom: 12 }}>
-        <Link href="/" style={{ color: 'var(--text-muted)' }}>
-          Contracts
-        </Link>
-        {' / '}
-        <Link href={`/contract/${idx}`} style={{ color: 'var(--text-muted)' }}>
-          {name}
-        </Link>
-        {' / '}
-        <span style={{ color: 'var(--text)' }}>Epoch {ep}</span>
-      </div>
+    <main className="container">
+      <Crumbs
+        items={[
+          { label: 'Contracts', href: '/' },
+          { label: name, href: `/contract/${idx}` },
+          { label: `Epoch ${ep}` },
+        ]}
+      />
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
-        <h1>
-          {name} — Epoch {ep}
-        </h1>
-        <a className="btn" href={`/download/epoch/${ep}/${version.contractName}.json`} download>
-          ↓ JSON
-        </a>
+      <div className="page-head">
+        <div style={{ display: 'flex', alignItems: 'flex-end', gap: 12, flexWrap: 'wrap' }}>
+          <div style={{ minWidth: 0 }}>
+            <div className="eyebrow">
+              Snapshot
+              {isCurrent && (
+                <>
+                  {' '}
+                  <span style={{ color: 'var(--accent)' }}>Current</span>
+                </>
+              )}
+            </div>
+            <h1 className="page-title">
+              {name} <span className="mono-idx">@ epoch {ep}</span>
+            </h1>
+            <p className="page-sub">
+              contractIndex {idx} · effective e{version.effectiveFromEpoch}
+              {version.effectiveToEpoch !== null ? ` – e${version.effectiveToEpoch}` : ' → now'}
+            </p>
+          </div>
+          <span style={{ flex: 1 }} />
+          <div style={{ display: 'flex', gap: 6 }}>
+            <Link className="btn sm" href={`/contract/${idx}`}>
+              ← Contract
+            </Link>
+            <a
+              className="btn sm primary"
+              href={`/download/epoch/${ep}/${version.contractName}.json`}
+              download
+            >
+              Download Snapshot
+            </a>
+          </div>
+        </div>
       </div>
 
       <AbiView version={version} />
-    </>
+    </main>
   )
 }

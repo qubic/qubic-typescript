@@ -643,21 +643,13 @@ export function parseContractHeader(options: ParseHeaderOptions): ContractAbiVer
     const outNode = directStructs.find((s) => s.name === `${name}_output`)
     // Re-extract from tree-sitter node when available (captures warnOnUnknown warnings).
     // Fall back to namedStructs for typedef-aliased structs (e.g. typedef NoData Foo_input).
-    const inputFields = inNode
-      ? extractFields(
-          inNode.node.childForFieldName('body') as TsNode,
-          namedStructs,
-          resolveSize,
-          true,
-        )
+    const inBody = inNode?.node.childForFieldName('body') as TsNode | null
+    const inputFields = inBody
+      ? extractFields(inBody, namedStructs, resolveSize, true)
       : (namedStructs.get(`${name}_input`)?.fields ?? [])
-    const outputFields = outNode
-      ? extractFields(
-          outNode.node.childForFieldName('body') as TsNode,
-          namedStructs,
-          resolveSize,
-          true,
-        )
+    const outBody = outNode?.node.childForFieldName('body') as TsNode | null
+    const outputFields = outBody
+      ? extractFields(outBody, namedStructs, resolveSize, true)
       : (namedStructs.get(`${name}_output`)?.fields ?? [])
     collectUsed(inputFields)
     collectUsed(outputFields)

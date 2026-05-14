@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { EpochNav } from '../../../components/EpochNav'
+import { Crumbs } from '../../../components/crumbs'
+import { Sigil } from '../../../components/sigil'
 import { api } from '../../../lib/api'
 
 export default async function EpochPage({ params }: { params: Promise<{ epoch: string }> }) {
@@ -16,37 +18,58 @@ export default async function EpochPage({ params }: { params: Promise<{ epoch: s
   const epochNums = epochs.map((e) => e.epoch)
   const minEpoch = epochNums.length > 0 ? Math.min(...epochNums) : ep
   const maxEpoch = epochNums.length > 0 ? Math.max(...epochNums) : ep
+  const isCurrentEpoch = ep === maxEpoch
 
   return (
-    <>
-      <div style={{ color: 'var(--text-muted)', fontSize: 13, marginBottom: 12 }}>
-        <Link href="/epochs" style={{ color: 'var(--text-muted)' }}>
-          Epochs
-        </Link>
-        {' / '}
-        <span style={{ color: 'var(--text)' }}>Epoch {ep}</span>
+    <main className="container">
+      <Crumbs items={[{ label: 'Epochs', href: '/epochs' }, { label: `Epoch ${ep}` }]} />
+
+      <div className="page-head">
+        <div className="eyebrow">Epoch Snapshot</div>
+        <h1 className="page-title">
+          Epoch <span style={{ color: 'var(--accent)' }}>{ep}</span>
+          {isCurrentEpoch && <span className="mono-idx">Current</span>}
+        </h1>
+        <p className="page-sub">
+          {contracts.length} contract{contracts.length === 1 ? '' : 's'} active
+        </p>
       </div>
 
-      <EpochNav epoch={ep} min={minEpoch} max={maxEpoch} />
+      <EpochNav epoch={ep} min={minEpoch} max={maxEpoch} contractCount={contracts.length} />
 
-      <div className="card-grid">
-        {contracts.map((c) => (
-          <div key={c.contractIndex} className="card">
-            <h3>{c.contractName}</h3>
-            <div className="meta">
-              #{c.contractIndex} · {c.procedures.length} procedures · {c.functions.length} functions
+      <div className="epoch-cards">
+        {contracts.map((c, i) => (
+          <Link
+            key={c.contractIndex}
+            href={`/contract/${c.contractIndex}/epoch/${ep}`}
+            className="epoch-card row-stagger"
+            style={{ animationDelay: `${i * 18}ms` }}
+          >
+            <div className="head">
+              <Sigil name={c.contractName} size={28} />
+              <span className="name">{c.contractName}</span>
+              <span className="idx">#{String(c.contractIndex).padStart(2, '0')}</span>
             </div>
-            <div className="actions">
-              <Link href={`/contract/${c.contractIndex}/epoch/${ep}`} className="btn">
-                View ABI
-              </Link>
-              <a className="btn" href={`/download/epoch/${ep}/${c.contractName}.json`} download>
-                ↓ JSON
-              </a>
+            <div className="counts">
+              <span>
+                <b>{c.procedures.length}</b> proc
+              </span>
+              <span>
+                <b>{c.functions.length}</b> func
+              </span>
+              {Object.keys(c.structs ?? {}).length > 0 && (
+                <span>
+                  <b>{Object.keys(c.structs).length}</b> struct
+                </span>
+              )}
             </div>
-          </div>
+            <div className="ftr">
+              <span>Full ABI</span>
+              <span className="open">View →</span>
+            </div>
+          </Link>
         ))}
       </div>
-    </>
+    </main>
   )
 }

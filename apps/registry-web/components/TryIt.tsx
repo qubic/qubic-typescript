@@ -14,22 +14,29 @@ export function TryIt({ path }: { path: string }) {
       setResult(text.length > 6000 ? `${text.slice(0, 6000)}\n… (truncated)` : text)
     } catch (e) {
       setResult(String(e))
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   return (
-    <>
-      <button
-        type="button"
-        className="btn"
-        onClick={run}
-        disabled={loading}
-        style={{ marginBottom: 8 }}
-      >
-        {loading ? 'Loading…' : 'Try it'}
+    <div>
+      <button type="button" className="try-it" onClick={run} disabled={loading}>
+        {loading ? 'Loading…' : 'Try live ↗'}
       </button>
-      {result && <pre style={{ marginTop: 8 }}>{result}</pre>}
-    </>
+      {result && (
+        <div className="code" style={{ marginTop: 8 }}>
+          <div className="code-bar">
+            <span className="dots">
+              <i />
+              <i />
+              <i />
+            </span>
+            <span className="lbl">200 OK · application/json</span>
+          </div>
+          <pre style={{ maxHeight: 320, overflow: 'auto' }}>{result}</pre>
+        </div>
+      )}
+    </div>
   )
 }

@@ -98,8 +98,9 @@ export function createBobRpcClient(options: BobRpcClientOptions): BobRpcClient {
     const id = ++idCounter
     const body: JsonRpcRequest = { jsonrpc: '2.0', id, method, params }
 
-    let attempt = 0
-    while (attempt <= retries) {
+    let lastError: BobRpcError | undefined
+
+    for (let attempt = 0; attempt <= retries; attempt++) {
       const timeoutController = new AbortController()
       const timeoutId = setTimeout(() => timeoutController.abort(), timeoutMs)
 
@@ -118,11 +119,8 @@ export function createBobRpcClient(options: BobRpcClientOptions): BobRpcClient {
         clearTimeout(timeoutId)
 
         if (!response.ok) {
-          if (attempt < retries) {
-            attempt++
-            continue
-          }
-          return err(new BobRpcError(-32603, `HTTP ${response.status} from Bob RPC`))
+          lastError = new BobRpcError(-32603, `HTTP ${response.status} from Bob RPC`)
+          continue
         }
 
         const json = (await response.json()) as JsonRpcResponse<T>
@@ -137,15 +135,11 @@ export function createBobRpcClient(options: BobRpcClientOptions): BobRpcClient {
         if (signal?.aborted === true) {
           return err(new BobRpcError(-32000, 'Request aborted', { cause: e }))
         }
-        if (attempt < retries) {
-          attempt++
-          continue
-        }
-        return err(new BobRpcError(-32603, 'Bob RPC request failed', { cause: e }))
+        lastError = new BobRpcError(-32603, 'Bob RPC request failed', { cause: e })
       }
     }
 
-    return err(new BobRpcError(-32603, 'Bob RPC request failed after retries'))
+    return err(lastError ?? new BobRpcError(-32603, 'Bob RPC request failed after retries'))
   }
 
   return {

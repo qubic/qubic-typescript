@@ -2,8 +2,8 @@ name: Registry Backfill
 
 on:
   schedule:
-    # Every Monday at 06:00 UTC (after weekend releases)
-    - cron: '0 6 * * 1'
+    # Wednesdays at 14:00 UTC — 2 h after the epoch change at 12:00 UTC
+    - cron: '0 14 * * 3'
   workflow_dispatch:
     inputs:
       from_epoch:

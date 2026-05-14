@@ -85,12 +85,12 @@ function buildSnippet(call: ContractCallBase, contractIndex: number): string {
 
   if (call.kind === 'function') {
     L.push('')
-    L.push("import { createBobRpcClient } from '@qubic.ts/bob'")
+    L.push("import { createLiveClient } from '@qubic.ts/rpc'")
     if (hasIn) L.push("import { BinaryReader, buildPayload } from '@qubic.ts/tx'")
     else if (hasOut) L.push("import { BinaryReader } from '@qubic.ts/tx'")
-    L.push("import type { Base64 } from '@qubic.ts/types'")
+    if (hasIn) L.push("import type { Base64 } from '@qubic.ts/types'")
     L.push('')
-    L.push("const rpc = createBobRpcClient({ endpoint: 'http://localhost:40420' })")
+    L.push('const rpc = createLiveClient()')
 
     if (hasIn) {
       L.push('')
@@ -106,23 +106,27 @@ function buildSnippet(call: ContractCallBase, contractIndex: number): string {
       L.push('])')
       L.push('')
       L.push('// 2. query smart contract (read-only, no signing needed)')
-      L.push(
-        `const res = await rpc.querySmartContract(${contractIndex}, ${call.inputType}, btoa(String.fromCharCode(...input)) as Base64)`,
-      )
+      L.push('const res = await rpc.querySmartContract({')
+      L.push(`  contractIndex: ${contractIndex},`)
+      L.push(`  inputType: ${call.inputType},`)
+      L.push('  inputData: btoa(String.fromCharCode(...input)) as Base64,')
+      L.push('})')
     } else {
       L.push('')
       L.push('// query smart contract (no input fields)')
-      L.push(
-        `const res = await rpc.querySmartContract(${contractIndex}, ${call.inputType}, '' as Base64)`,
-      )
+      L.push('const res = await rpc.querySmartContract({')
+      L.push(`  contractIndex: ${contractIndex},`)
+      L.push(`  inputType: ${call.inputType},`)
+      L.push("  inputData: '',")
+      L.push('})')
     }
-
-    L.push('if (!res.ok) throw res.error')
 
     if (hasOut) {
       L.push('')
       L.push(`// ${hasIn ? '3' : '2'}. decode output (${call.outputSize}B)`)
-      L.push('const out = new BinaryReader(Uint8Array.from(atob(res.value), c => c.charCodeAt(0)))')
+      L.push(
+        'const out = new BinaryReader(Uint8Array.from(atob(res.responseData), c => c.charCodeAt(0)))',
+      )
       for (const f of outs) {
         const rc = readCallFor(f)
         L.push(`${`const ${f.name} = ${rc}`.padEnd(40)}// ${f.type} · ${f.byteLength}B`)
@@ -131,18 +135,17 @@ function buildSnippet(call: ContractCallBase, contractIndex: number): string {
   } else {
     // procedure
     L.push('')
-    L.push("import { createBobRpcClient } from '@qubic.ts/bob'")
+    L.push("import { createLiveClient } from '@qubic.ts/rpc'")
     L.push("import { createWallet } from '@qubic.ts/wallet'")
     L.push("import { buildPayload } from '@qubic.ts/tx'")
     L.push("import type { Identity, Seed } from '@qubic.ts/types'")
     L.push('')
     L.push("const CONTRACT_ID = 'CONTRACT_IDENTITY_HERE' as Identity")
-    L.push("const rpc    = createBobRpcClient({ endpoint: 'http://localhost:40420' })")
+    L.push('const rpc    = createLiveClient()')
     L.push('const wallet = createWallet(process.env.SEED as Seed)')
     L.push('')
     L.push('// 1. get current tick')
-    L.push('const tick = await rpc.getTickNumber()')
-    L.push('if (!tick.ok) throw tick.error')
+    L.push('const { tick } = await rpc.getTickInfo()')
 
     if (hasIn) {
       L.push('')
@@ -171,15 +174,14 @@ function buildSnippet(call: ContractCallBase, contractIndex: number): string {
     } else {
       L.push('  amount: 0n,')
     }
-    L.push('  targetTick: tick.value + 5,')
+    L.push('  targetTick: tick + 5,')
     L.push(`  inputType: ${call.inputType},`)
     L.push(`  payload: ${hasIn ? 'payload' : 'buildPayload([])'},`)
     L.push('})')
     L.push('')
     L.push(`// ${broadcastStep}. broadcast`)
-    L.push('const broadcast = await rpc.broadcastTransaction(encoded)')
-    L.push('if (!broadcast.ok) throw broadcast.error')
-    L.push("console.log('tx hash:', hash)")
+    L.push('const result = await rpc.broadcastTransaction(encoded)')
+    L.push("console.log('tx id:', result.transactionId)")
   }
 
   return L.join('\n')
@@ -307,8 +309,8 @@ function MethodBlock({
             </span>
             <span className="lbl">
               {call.kind === 'function'
-                ? 'TypeScript · @qubic.ts/bob'
-                : 'TypeScript · @qubic.ts/bob + @qubic.ts/wallet'}
+                ? 'TypeScript · @qubic.ts/rpc'
+                : 'TypeScript · @qubic.ts/rpc + @qubic.ts/wallet'}
             </span>
             <span className="grow" />
             <CopyButton value={buildSnippet(call, contractIndex)} />

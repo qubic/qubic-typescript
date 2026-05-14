@@ -58,6 +58,7 @@ export function FieldTable({ fields }: { fields: BinaryField[] }) {
           <tr>
             <th
               onClick={() => toggle('name')}
+              onKeyDown={(e) => e.key === 'Enter' && toggle('name')}
               style={{ cursor: 'pointer', color: sortKey === 'name' ? 'var(--link)' : undefined }}
             >
               Name{arrow('name')}
@@ -65,6 +66,7 @@ export function FieldTable({ fields }: { fields: BinaryField[] }) {
             <th>Type</th>
             <th
               onClick={() => toggle('offset')}
+              onKeyDown={(e) => e.key === 'Enter' && toggle('offset')}
               style={{ cursor: 'pointer', color: sortKey === 'offset' ? 'var(--link)' : undefined }}
             >
               Offset{arrow('offset')}

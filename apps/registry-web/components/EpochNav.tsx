@@ -8,6 +8,7 @@ export function EpochNav({ epoch, min, max }: { epoch: number; min: number; max:
       style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}
     >
       <button
+        type="button"
         className="epoch-btn"
         disabled={epoch <= min}
         onClick={() => router.push(`/epoch/${epoch - 1}`)}
@@ -16,6 +17,7 @@ export function EpochNav({ epoch, min, max }: { epoch: number; min: number; max:
       </button>
       <h1>Epoch {epoch}</h1>
       <button
+        type="button"
         className="epoch-btn"
         disabled={epoch >= max}
         onClick={() => router.push(`/epoch/${epoch + 1}`)}

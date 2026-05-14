@@ -8,6 +8,7 @@ const app = new Elysia()
   .use(apiRoutes)
   .use(downloadRoutes)
   .get('/health', () => ({ ok: true }))
+  // biome-ignore lint/complexity/useLiteralKeys: noPropertyAccessFromIndexSignature requires bracket notation
   .listen(process.env['PORT'] ? Number(process.env['PORT']) : 3001)
 
-console.log(`registry-api running at http://localhost:${app.server?.port}`)
+console.warn(`registry-api running at http://localhost:${app.server?.port}`)

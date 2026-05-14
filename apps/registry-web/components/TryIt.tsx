@@ -20,7 +20,13 @@ export function TryIt({ path }: { path: string }) {
 
   return (
     <>
-      <button className="btn" onClick={run} disabled={loading} style={{ marginBottom: 8 }}>
+      <button
+        type="button"
+        className="btn"
+        onClick={run}
+        disabled={loading}
+        style={{ marginBottom: 8 }}
+      >
         {loading ? 'Loading…' : 'Try it'}
       </button>
       {result && <pre style={{ marginTop: 8 }}>{result}</pre>}

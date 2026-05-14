@@ -482,7 +482,7 @@ function resolveTypedefs(
             ],
           })
         } else if (namedStructs.has(itemTypeName)) {
-          const itemByteLen = namedStructs.get(itemTypeName)!.byteLength
+          const itemByteLen = namedStructs.get(itemTypeName)?.byteLength ?? 0
           const totalBytes = arrayLength * itemByteLen
           namedStructs.set(alias, {
             name: alias,

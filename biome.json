@@ -82,7 +82,8 @@
       "docs/**",
       "resources/**",
       "planning/**",
-      ".claude/**"
+      ".claude/**",
+      "**/.next/**"
     ]
   }
 }

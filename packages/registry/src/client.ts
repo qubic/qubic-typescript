@@ -53,7 +53,6 @@ export function createRegistryClient(options: RegistryClientOptions = {}): Regis
 
     if (cacheMode === 'session') {
       if (sessionCache && now < sessionCache.expiresAt) return sessionCache.registry
-      // Try sessionStorage in browser
       if (typeof globalThis.sessionStorage !== 'undefined') {
         try {
           const raw = globalThis.sessionStorage.getItem(STORAGE_KEY)
@@ -64,13 +63,9 @@ export function createRegistryClient(options: RegistryClientOptions = {}): Regis
               return cached.registry
             }
           }
-        } catch {
-          // ignore storage errors
-        }
+        } catch { /* ignore storage errors */ }
       }
-    }
-
-    if (cacheMode === 'persistent') {
+    } else if (cacheMode === 'persistent') {
       if (typeof globalThis.localStorage !== 'undefined') {
         try {
           const raw = globalThis.localStorage.getItem(STORAGE_KEY)
@@ -78,9 +73,7 @@ export function createRegistryClient(options: RegistryClientOptions = {}): Regis
             const cached = JSON.parse(raw) as { registry: ContractRegistry; expiresAt: number }
             if (now < cached.expiresAt) return cached.registry
           }
-        } catch {
-          // ignore storage errors
-        }
+        } catch { /* ignore storage errors */ }
       }
     }
 
@@ -90,21 +83,13 @@ export function createRegistryClient(options: RegistryClientOptions = {}): Regis
     if (cacheMode === 'session') {
       sessionCache = entry
       if (typeof globalThis.sessionStorage !== 'undefined') {
-        try {
-          globalThis.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(entry))
-        } catch {
-          // ignore quota errors
-        }
+        try { globalThis.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(entry)) }
+        catch { /* ignore quota errors */ }
       }
-    }
-
-    if (cacheMode === 'persistent') {
+    } else if (cacheMode === 'persistent') {
       if (typeof globalThis.localStorage !== 'undefined') {
-        try {
-          globalThis.localStorage.setItem(STORAGE_KEY, JSON.stringify(entry))
-        } catch {
-          // ignore quota errors
-        }
+        try { globalThis.localStorage.setItem(STORAGE_KEY, JSON.stringify(entry)) }
+        catch { /* ignore quota errors */ }
       }
     }
 

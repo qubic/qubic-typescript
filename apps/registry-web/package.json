@@ -2,20 +2,22 @@
   "name": "registry-web",
   "version": "0.0.0",
   "private": true,
-  "type": "module",
   "scripts": {
-    "dev": "bun --hot src/server.ts",
-    "build": "bun build index.html --outdir dist",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "elysia": "latest",
-    "@elysiajs/cors": "latest",
-    "fflate": "latest",
     "@qubic.ts/registry": "workspace:^",
-    "@qubic.ts/types": "workspace:^"
+    "next": "^16.2.6",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6"
   },
   "devDependencies": {
+    "@types/node": "latest",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
     "typescript": "*"
   }
 }

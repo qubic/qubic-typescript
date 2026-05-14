@@ -1,6 +1,6 @@
 'use client'
+import type { ContractAbiVersion, ContractCallBase, NamedStruct } from '@qubic.ts/registry'
 import { useState } from 'react'
-import type { ContractAbiVersion, ContractCallBase, StructDef } from '@qubic.ts/registry'
 import { CopyButton } from './CopyButton'
 import { FieldTable } from './FieldTable'
 
@@ -30,9 +30,7 @@ function MethodBlock({ call, kind }: { call: ContractCallBase; kind: 'procedure'
         </div>
       </div>
 
-      {!hasIn && !hasOut && (
-        <div className="method-empty">— no input or output fields —</div>
-      )}
+      {!hasIn && !hasOut && <div className="method-empty">— no input or output fields —</div>}
 
       <div className={`method-body ${bodyClass}`}>
         {hasIn && (
@@ -64,7 +62,7 @@ function MethodBlock({ call, kind }: { call: ContractCallBase; kind: 'procedure'
   )
 }
 
-function StructBlock({ struct }: { struct: StructDef }) {
+function StructBlock({ struct }: { struct: NamedStruct }) {
   const fields = struct.fields ?? []
   return (
     <div className="method" id={`struct-${struct.name}`}>
@@ -213,37 +211,62 @@ export function AbiView({
   )
 }
 
+type Token = { text: string; cls: string | null }
+
+function tokenizeJson(raw: string): Token[] {
+  const tokens: Token[] = []
+  const re =
+    /("(?:[^"\\]|\\.)*")(\s*:)?|(-?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?)|(\btrue\b|\bfalse\b)|\bnull\b|([{}[\],])/g
+  let last = 0
+  let m: RegExpExecArray | null
+  // biome-ignore lint/suspicious/noAssignInExpressions: standard regex exec loop
+  while ((m = re.exec(raw)) !== null) {
+    if (m.index > last) tokens.push({ text: raw.slice(last, m.index), cls: null })
+    if (m[1] !== undefined) {
+      tokens.push({ text: m[1], cls: m[2] !== undefined ? 'tok-k' : 'tok-s' })
+      if (m[2] !== undefined) tokens.push({ text: m[2], cls: null })
+    } else if (m[3] !== undefined) {
+      tokens.push({ text: m[3], cls: 'tok-n' })
+    } else if (m[4] !== undefined) {
+      tokens.push({ text: m[4], cls: 'tok-b' })
+    } else if (m[0] === 'null') {
+      tokens.push({ text: 'null', cls: 'tok-null' })
+    } else if (m[5] !== undefined) {
+      tokens.push({ text: m[5], cls: 'tok-p' })
+    }
+    last = m.index + m[0].length
+  }
+  if (last < raw.length) tokens.push({ text: raw.slice(last), cls: null })
+  return tokens
+}
+
 function JsonView({ data, label }: { data: unknown; label: string }) {
   const text = JSON.stringify(data, null, 2)
-  const html = highlightJson(text)
+  const tokens = tokenizeJson(text)
   return (
     <div className="code">
       <div className="code-bar">
         <span className="dots">
-          <i /><i /><i />
+          <i />
+          <i />
+          <i />
         </span>
         <span className="lbl">{label}</span>
         <span className="grow" />
         <CopyButton value={text} />
       </div>
-      {/* biome-ignore lint/security/noDangerouslySetInnerHtml: syntax highlighting output */}
-      <pre style={{ maxHeight: 480, overflow: 'auto' }} dangerouslySetInnerHTML={{ __html: html }} />
+      <pre style={{ maxHeight: 480, overflow: 'auto' }}>
+        {tokens.map((t, i) =>
+          t.cls ? (
+            // biome-ignore lint/suspicious/noArrayIndexKey: token order is stable
+            <span key={i} className={t.cls}>
+              {t.text}
+            </span>
+          ) : (
+            t.text
+          ),
+        )}
+      </pre>
     </div>
   )
-}
-
-function highlightJson(text: string): string {
-  let s = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-  s = s.replace(/("(?:[^"\\]|\\.)*")(\s*:)?/g, (_m, str, colon) =>
-    colon
-      ? `<span class="tok-k">${str}</span>${colon}`
-      : `<span class="tok-s">${str}</span>`,
-  )
-  s = s.replace(/(^|[,\s:\[])(-?\d+(?:\.\d+)?(?:e[-+]?\d+)?)/gi, (_m, pre, num) =>
-    `${pre}<span class="tok-n">${num}</span>`,
-  )
-  s = s.replace(/\b(true|false)\b/g, '<span class="tok-b">$1</span>')
-  s = s.replace(/\bnull\b/g, '<span class="tok-null">null</span>')
-  s = s.replace(/([{}[\]])/g, '<span class="tok-p">$1</span>')
-  return s
 }

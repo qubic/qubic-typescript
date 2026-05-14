@@ -47,6 +47,7 @@ const CONTRACT_SUMMARIES = (() => {
         versionCount: history.length,
         procedureCount: current.procedures.length,
         functionCount: current.functions.length,
+        structCount: Object.keys(current.structs ?? {}).length,
       }
     })
 })()

@@ -18,8 +18,8 @@ const BGS = [
 function fnv(s: string): number {
   let h = 2166136261
   for (let i = 0; i < s.length; i++) {
-    h = ((h ^ s.charCodeAt(i)) >>> 0)
-    h = (Math.imul(h, 16777619) >>> 0)
+    h = (h ^ s.charCodeAt(i)) >>> 0
+    h = Math.imul(h, 16777619) >>> 0
   }
   return h
 }
@@ -49,9 +49,9 @@ export function Sigil({ name, size = 28 }: { name: string; size?: number }) {
       style={{ width: size, height: size, background: bg, borderColor: 'transparent' }}
     >
       <svg viewBox="0 0 100 100" width={size - 6} height={size - 6} aria-hidden="true">
-        {cells.map(([x, y], i) => (
+        {cells.map(([x, y]) => (
           <rect
-            key={i}
+            key={`${x}-${y}`}
             x={x * cell + 1}
             y={y * cell + 1}
             width={cell - 2}

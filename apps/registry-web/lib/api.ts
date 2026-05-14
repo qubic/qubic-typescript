@@ -9,6 +9,7 @@ export interface ContractSummary {
   versionCount: number
   procedureCount: number
   functionCount: number
+  structCount: number
 }
 
 export interface EpochSummary {

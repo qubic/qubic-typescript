@@ -1,17 +1,14 @@
 'use client'
+import { Code, Search } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Github, Search } from 'lucide-react'
 
 export function NavBar() {
   const pathname = usePathname()
 
-  const contractsActive =
-    pathname === '/' ||
-    pathname.startsWith('/contract')
+  const contractsActive = pathname === '/' || pathname.startsWith('/contract')
 
-  const epochsActive =
-    pathname === '/epochs' || pathname.startsWith('/epoch')
+  const epochsActive = pathname === '/epochs' || pathname.startsWith('/epoch')
 
   const apiActive = pathname === '/api-docs'
 
@@ -41,11 +38,11 @@ export function NavBar() {
 
         <span className="grow" />
 
-        <div className="kbar" role="button" tabIndex={0}>
+        <button type="button" className="kbar">
           <Search size={13} />
           <span>Quick search…</span>
           <span className="kbd">⌘K</span>
-        </div>
+        </button>
 
         <a
           className="btn sm"
@@ -53,7 +50,7 @@ export function NavBar() {
           target="_blank"
           rel="noreferrer"
         >
-          <Github size={13} />
+          <Code size={13} />
           Source
         </a>
       </div>

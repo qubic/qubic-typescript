@@ -1,6 +1,6 @@
 'use client'
-import { useState } from 'react'
 import type { BinaryField } from '@qubic.ts/registry'
+import { useState } from 'react'
 import { TypeChip } from './type-chip'
 
 type SortKey = 'offset' | 'name'
@@ -28,31 +28,48 @@ export function FieldTable({
 
   function toggle(key: SortKey) {
     if (sortKey === key) setAsc((v) => !v)
-    else { setSortKey(key); setAsc(true) }
+    else {
+      setSortKey(key)
+      setAsc(true)
+    }
   }
 
-  const arrow = (key: SortKey) => sortKey === key ? (asc ? ' ↑' : ' ↓') : ''
+  const arrow = (key: SortKey) => (sortKey === key ? (asc ? ' ↑' : ' ↓') : '')
 
   return (
     <table className="ft">
       <thead>
         <tr>
           <th
-            style={{ width: '38%', cursor: 'pointer', color: sortKey === 'name' ? 'var(--accent)' : undefined }}
+            style={{
+              width: '38%',
+              cursor: 'pointer',
+              color: sortKey === 'name' ? 'var(--accent)' : undefined,
+            }}
             onClick={() => toggle('name')}
+            onKeyDown={(e) => e.key === 'Enter' && toggle('name')}
           >
             name{arrow('name')}
           </th>
           <th style={{ width: '24%' }}>type</th>
           <th
             className="right"
-            style={{ width: '12%', cursor: 'pointer', color: sortKey === 'offset' ? 'var(--accent)' : undefined }}
+            style={{
+              width: '12%',
+              cursor: 'pointer',
+              color: sortKey === 'offset' ? 'var(--accent)' : undefined,
+            }}
             onClick={() => toggle('offset')}
+            onKeyDown={(e) => e.key === 'Enter' && toggle('offset')}
           >
             offset{arrow('offset')}
           </th>
-          <th className="right" style={{ width: '12%' }}>bytes</th>
-          <th className="offbar-cell" style={{ width: '14%' }}>layout</th>
+          <th className="right" style={{ width: '12%' }}>
+            bytes
+          </th>
+          <th className="offbar-cell" style={{ width: '14%' }}>
+            layout
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -64,7 +81,9 @@ export function FieldTable({
           return (
             <tr key={f.name}>
               <td className="fname">{f.name}</td>
-              <td><TypeChip type={f.type} /></td>
+              <td>
+                <TypeChip type={f.type} />
+              </td>
               <td className="right fmuted">{off}</td>
               <td className="right">{len}</td>
               <td className="offbar-cell">

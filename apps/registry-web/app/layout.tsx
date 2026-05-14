@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
+import { CommandPalette } from '../components/command-palette'
 import { Footer } from '../components/footer'
 import { NavBar } from '../components/nav-bar'
 
@@ -35,6 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
           <Footer />
         </div>
+        <CommandPalette />
       </body>
     </html>
   )

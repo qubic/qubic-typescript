@@ -33,7 +33,11 @@ export function NavBar() {
 
         <span className="grow" />
 
-        <button type="button" className="kbar">
+        <button
+          type="button"
+          className="kbar"
+          onClick={() => document.dispatchEvent(new Event('open-command-palette'))}
+        >
           <Search size={13} />
           <span>Quick search…</span>
           <span className="kbd">⌘K</span>

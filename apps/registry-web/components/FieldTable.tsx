@@ -1,8 +1,18 @@
 'use client'
-import { useState } from 'react'
 import type { BinaryField } from '@qubic.ts/registry'
+import { useState } from 'react'
 
-const INT_TYPES = new Set(['uint8','uint16','uint32','uint64','sint8','sint16','sint32','sint64','uint128'])
+const INT_TYPES = new Set([
+  'uint8',
+  'uint16',
+  'uint32',
+  'uint64',
+  'sint8',
+  'sint16',
+  'sint32',
+  'sint64',
+  'uint128',
+])
 
 function TypeBadge({ type }: { type: string }) {
   let cls = 'badge-bytes'
@@ -20,35 +30,50 @@ export function FieldTable({ fields }: { fields: BinaryField[] }) {
   const [sortKey, setSortKey] = useState<SortKey>('offset')
   const [asc, setAsc] = useState(true)
 
-  if (fields.length === 0) return <p style={{ color: 'var(--text-muted)', fontSize: 13 }}>No fields</p>
+  if (fields.length === 0)
+    return <p style={{ color: 'var(--text-muted)', fontSize: 13 }}>No fields</p>
 
   const sorted = [...fields].sort((a, b) => {
     const av = sortKey === 'offset' ? a.offset : a.name
     const bv = sortKey === 'offset' ? b.offset : b.name
-    const cmp = typeof av === 'number' ? av - (bv as number) : (av as string).localeCompare(bv as string)
+    const cmp =
+      typeof av === 'number' ? av - (bv as number) : (av as string).localeCompare(bv as string)
     return asc ? cmp : -cmp
   })
 
   function toggle(key: SortKey) {
-    if (sortKey === key) setAsc(v => !v)
-    else { setSortKey(key); setAsc(true) }
+    if (sortKey === key) setAsc((v) => !v)
+    else {
+      setSortKey(key)
+      setAsc(true)
+    }
   }
 
-  const arrow = (key: SortKey) => sortKey === key ? (asc ? ' ↑' : ' ↓') : ''
+  const arrow = (key: SortKey) => (sortKey === key ? (asc ? ' ↑' : ' ↓') : '')
 
   return (
     <div className="table-wrap">
       <table>
         <thead>
           <tr>
-            <th onClick={() => toggle('name')} style={{ cursor: 'pointer', color: sortKey === 'name' ? 'var(--link)' : undefined }}>Name{arrow('name')}</th>
+            <th
+              onClick={() => toggle('name')}
+              style={{ cursor: 'pointer', color: sortKey === 'name' ? 'var(--link)' : undefined }}
+            >
+              Name{arrow('name')}
+            </th>
             <th>Type</th>
-            <th onClick={() => toggle('offset')} style={{ cursor: 'pointer', color: sortKey === 'offset' ? 'var(--link)' : undefined }}>Offset{arrow('offset')}</th>
+            <th
+              onClick={() => toggle('offset')}
+              style={{ cursor: 'pointer', color: sortKey === 'offset' ? 'var(--link)' : undefined }}
+            >
+              Offset{arrow('offset')}
+            </th>
             <th>Size</th>
           </tr>
         </thead>
         <tbody>
-          {sorted.map(f => (
+          {sorted.map((f) => (
             <tr key={f.name}>
               <td>{f.name}</td>
               <td>

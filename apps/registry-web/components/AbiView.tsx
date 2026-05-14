@@ -1,18 +1,29 @@
 import type { ContractAbiVersion, ContractCallBase } from '@qubic.ts/registry'
-import { FieldTable } from './FieldTable'
 import { CopyButton } from './CopyButton'
+import { FieldTable } from './FieldTable'
 
 function CallBlock({ call }: { call: ContractCallBase }) {
   return (
     <div style={{ marginBottom: 20 }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 8 }}>
-        <span style={{ fontFamily: 'var(--mono)', fontSize: 13, fontWeight: 600 }}>{call.name}</span>
+      <div
+        style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 8 }}
+      >
+        <span style={{ fontFamily: 'var(--mono)', fontSize: 13, fontWeight: 600 }}>
+          {call.name}
+        </span>
         <span style={{ color: 'var(--text-muted)', fontSize: 12 }}>inputType</span>
-        <span style={{
-          fontFamily: 'var(--mono)', fontSize: 12,
-          background: 'var(--bg2)', border: '1px solid var(--border)',
-          borderRadius: 4, padding: '1px 6px',
-        }}>{call.inputType}</span>
+        <span
+          style={{
+            fontFamily: 'var(--mono)',
+            fontSize: 12,
+            background: 'var(--bg2)',
+            border: '1px solid var(--border)',
+            borderRadius: 4,
+            padding: '1px 6px',
+          }}
+        >
+          {call.inputType}
+        </span>
         <CopyButton value={String(call.inputType)} />
       </div>
       {call.inputFields.length > 0 && (
@@ -46,7 +57,11 @@ function Section({ title, calls }: { title: string; calls: ContractCallBase[] })
         {calls.map((call, i) => (
           <div key={call.name}>
             <CallBlock call={call} />
-            {i < calls.length - 1 && <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '16px 0' }} />}
+            {i < calls.length - 1 && (
+              <hr
+                style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '16px 0' }}
+              />
+            )}
           </div>
         ))}
       </div>
@@ -67,9 +82,18 @@ export function AbiView({ version }: { version: ContractAbiVersion }) {
             <span style={{ color: 'var(--text-muted)', fontSize: 12 }}>{structs.length}</span>
           </div>
           <div style={{ padding: 16 }}>
-            {structs.map(s => (
+            {structs.map((s) => (
               <div key={s.name} style={{ marginBottom: 16 }}>
-                <div style={{ fontFamily: 'var(--mono)', fontSize: 13, fontWeight: 600, marginBottom: 8 }}>{s.name}</div>
+                <div
+                  style={{
+                    fontFamily: 'var(--mono)',
+                    fontSize: 13,
+                    fontWeight: 600,
+                    marginBottom: 8,
+                  }}
+                >
+                  {s.name}
+                </div>
                 <FieldTable fields={s.fields} />
               </div>
             ))}

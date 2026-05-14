@@ -1,5 +1,5 @@
-import { api } from '../lib/api'
 import { SearchFilter } from '../components/SearchFilter'
+import { api } from '../lib/api'
 
 export default async function Home() {
   const contracts = await api.contracts()
@@ -7,7 +7,9 @@ export default async function Home() {
     <>
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
         <h1>Contracts</h1>
-        <a className="btn" href="/download/registry.json" download style={{ marginLeft: 'auto' }}>↓ registry.json</a>
+        <a className="btn" href="/download/registry.json" download style={{ marginLeft: 'auto' }}>
+          ↓ registry.json
+        </a>
       </div>
       <SearchFilter contracts={contracts} />
     </>

@@ -10,16 +10,25 @@ export default async function EpochsPage() {
       <div className="table-wrap">
         <table>
           <thead>
-            <tr><th>Epoch</th><th>Contracts</th><th>Git tag</th><th /></tr>
+            <tr>
+              <th>Epoch</th>
+              <th>Contracts</th>
+              <th>Git tag</th>
+              <th />
+            </tr>
           </thead>
           <tbody>
-            {[...epochs].reverse().map(e => (
+            {[...epochs].reverse().map((e) => (
               <tr key={e.epoch} className="clickable">
-                <td><Link href={`/epoch/${e.epoch}`}>{e.epoch}</Link></td>
+                <td>
+                  <Link href={`/epoch/${e.epoch}`}>{e.epoch}</Link>
+                </td>
                 <td>{e.contractCount}</td>
                 <td style={{ color: 'var(--text-muted)' }}>{e.gitTag ?? '—'}</td>
                 <td>
-                  <a className="btn" href={`/download/epoch/${e.epoch}.zip`} download>↓ Zip</a>
+                  <a className="btn" href={`/download/epoch/${e.epoch}.zip`} download>
+                    ↓ Zip
+                  </a>
                 </td>
               </tr>
             ))}

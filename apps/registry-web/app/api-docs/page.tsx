@@ -25,12 +25,14 @@ export default function ApiDocsPage() {
       <h1 style={{ marginBottom: 20 }}>API Reference</h1>
 
       <h2 style={{ marginBottom: 12 }}>JSON endpoints</h2>
-      {ENDPOINTS.map(ep => (
+      {ENDPOINTS.map((ep) => (
         <div key={ep.path} className="endpoint" style={{ marginBottom: 12 }}>
           <div className="endpoint-header">
             <span className="method">GET</span>
             <span style={{ fontFamily: 'var(--mono)', fontSize: 13 }}>{ep.path}</span>
-            <span style={{ color: 'var(--text-muted)', fontSize: 12, marginLeft: 'auto' }}>{ep.desc}</span>
+            <span style={{ color: 'var(--text-muted)', fontSize: 12, marginLeft: 'auto' }}>
+              {ep.desc}
+            </span>
           </div>
           <div style={{ padding: '12px 16px' }}>
             <TryIt path={ep.path} />
@@ -39,15 +41,19 @@ export default function ApiDocsPage() {
       ))}
 
       <h2 style={{ margin: '24px 0 12px' }}>Download endpoints</h2>
-      {DOWNLOADS.map(ep => (
+      {DOWNLOADS.map((ep) => (
         <div key={ep.path} className="endpoint" style={{ marginBottom: 12 }}>
           <div className="endpoint-header">
             <span className="method">GET</span>
             <span style={{ fontFamily: 'var(--mono)', fontSize: 13 }}>{ep.path}</span>
-            <span style={{ color: 'var(--text-muted)', fontSize: 12, marginLeft: 'auto' }}>{ep.desc}</span>
+            <span style={{ color: 'var(--text-muted)', fontSize: 12, marginLeft: 'auto' }}>
+              {ep.desc}
+            </span>
           </div>
           <div style={{ padding: '12px 16px' }}>
-            <a className="btn" href={ep.path} download>↓ Download</a>
+            <a className="btn" href={ep.path} download>
+              ↓ Download
+            </a>
           </div>
         </div>
       ))}

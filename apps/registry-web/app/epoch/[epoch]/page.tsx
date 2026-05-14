@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { api } from '../../../lib/api'
 import { EpochNav } from '../../../components/EpochNav'
+import { api } from '../../../lib/api'
 
 const MIN_EPOCH = 122
 const MAX_EPOCH = 212
@@ -16,7 +16,9 @@ export default async function EpochPage({ params }: { params: Promise<{ epoch: s
   return (
     <>
       <div style={{ color: 'var(--text-muted)', fontSize: 13, marginBottom: 12 }}>
-        <Link href="/epochs" style={{ color: 'var(--text-muted)' }}>Epochs</Link>
+        <Link href="/epochs" style={{ color: 'var(--text-muted)' }}>
+          Epochs
+        </Link>
         {' / '}
         <span style={{ color: 'var(--text)' }}>Epoch {ep}</span>
       </div>
@@ -24,13 +26,19 @@ export default async function EpochPage({ params }: { params: Promise<{ epoch: s
       <EpochNav epoch={ep} min={MIN_EPOCH} max={MAX_EPOCH} />
 
       <div className="card-grid">
-        {contracts.map(c => (
+        {contracts.map((c) => (
           <div key={c.contractIndex} className="card">
             <h3>{c.contractName}</h3>
-            <div className="meta">#{c.contractIndex} · {c.procedures.length} procedures · {c.functions.length} functions</div>
+            <div className="meta">
+              #{c.contractIndex} · {c.procedures.length} procedures · {c.functions.length} functions
+            </div>
             <div className="actions">
-              <Link href={`/contract/${c.contractIndex}/epoch/${ep}`} className="btn">View ABI</Link>
-              <a className="btn" href={`/download/epoch/${ep}/${c.contractName}.json`} download>↓ JSON</a>
+              <Link href={`/contract/${c.contractIndex}/epoch/${ep}`} className="btn">
+                View ABI
+              </Link>
+              <a className="btn" href={`/download/epoch/${ep}/${c.contractName}.json`} download>
+                ↓ JSON
+              </a>
             </div>
           </div>
         ))}

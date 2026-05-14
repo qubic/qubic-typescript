@@ -69,6 +69,14 @@ function readEpochFromDisk(epoch: number): ContractAbiVersion[] | null {
   }
 }
 
+function readContractAtEpochFromDisk(
+  contractIndex: number,
+  epoch: number,
+): ContractAbiVersion | null {
+  const contracts = readEpochFromDisk(epoch)
+  return contracts?.find((c) => c.contractIndex === contractIndex) ?? null
+}
+
 function allActiveAtEpoch(epoch: number): ContractAbiVersion[] {
   const fromDisk = readEpochFromDisk(epoch)
   if (fromDisk) return fromDisk
@@ -127,6 +135,13 @@ export const apiRoutes = new Elysia({ prefix: '/v1' })
     const epoch = Number(params.epoch)
     if (Number.isNaN(idx) || Number.isNaN(epoch))
       return status(400, { error: 'Invalid index or epoch', status: 400 })
+    const fromDisk = readContractAtEpochFromDisk(idx, epoch)
+    if (fromDisk)
+      return {
+        version: fromDisk,
+        isCurrent: fromDisk.effectiveToEpoch === null,
+        isRegistryPossiblyStale: false,
+      }
     try {
       return getAbi(registry as Parameters<typeof getAbi>[0], idx, epoch)
     } catch (e) {

@@ -3,15 +3,19 @@ import { notFound } from 'next/navigation'
 import { EpochNav } from '../../../components/EpochNav'
 import { api } from '../../../lib/api'
 
-const MIN_EPOCH = 122
-const MAX_EPOCH = 212
-
 export default async function EpochPage({ params }: { params: Promise<{ epoch: string }> }) {
   const { epoch } = await params
   const ep = Number(epoch)
 
-  const contracts = await api.epoch(ep).catch(() => null)
+  const [contracts, epochs] = await Promise.all([
+    api.epoch(ep).catch(() => null),
+    api.epochs().catch(() => []),
+  ])
   if (!contracts) notFound()
+
+  const epochNums = epochs.map((e) => e.epoch)
+  const minEpoch = epochNums.length > 0 ? Math.min(...epochNums) : ep
+  const maxEpoch = epochNums.length > 0 ? Math.max(...epochNums) : ep
 
   return (
     <>
@@ -23,7 +27,7 @@ export default async function EpochPage({ params }: { params: Promise<{ epoch: s
         <span style={{ color: 'var(--text)' }}>Epoch {ep}</span>
       </div>
 
-      <EpochNav epoch={ep} min={MIN_EPOCH} max={MAX_EPOCH} />
+      <EpochNav epoch={ep} min={minEpoch} max={maxEpoch} />
 
       <div className="card-grid">
         {contracts.map((c) => (

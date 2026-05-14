@@ -26,7 +26,7 @@ export default async function EpochsPage() {
                 <td>{e.contractCount}</td>
                 <td style={{ color: 'var(--text-muted)' }}>{e.gitTag ?? '—'}</td>
                 <td>
-                  <a className="btn" href={`/download/epoch/${e.epoch}.zip`} download>
+                  <a className="btn" href={`/download/epoch/${e.epoch}/all.zip`} download>
                     ↓ Zip
                   </a>
                 </td>

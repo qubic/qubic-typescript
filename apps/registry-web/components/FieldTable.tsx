@@ -1,9 +1,5 @@
-'use client'
 import type { BinaryField } from '@qubic.ts/registry'
-import { useState } from 'react'
 import { TypeChip } from './type-chip'
-
-type SortKey = 'offset' | 'name'
 
 export function FieldTable({
   fields,
@@ -12,57 +8,20 @@ export function FieldTable({
   fields: BinaryField[]
   totalSize?: number
 }) {
-  const [sortKey, setSortKey] = useState<SortKey>('offset')
-  const [asc, setAsc] = useState(true)
-
   if (fields.length === 0) {
     return <div className="method-empty">— no fields —</div>
   }
 
   const total = totalSize ?? fields.reduce((s, f) => s + (f.byteLength ?? 0), 0)
 
-  const sorted = [...fields].sort((a, b) => {
-    const cmp = sortKey === 'offset' ? a.offset - b.offset : a.name.localeCompare(b.name)
-    return asc ? cmp : -cmp
-  })
-
-  function toggle(key: SortKey) {
-    if (sortKey === key) setAsc((v) => !v)
-    else {
-      setSortKey(key)
-      setAsc(true)
-    }
-  }
-
-  const arrow = (key: SortKey) => (sortKey === key ? (asc ? ' ↑' : ' ↓') : '')
-
   return (
     <table className="ft">
       <thead>
         <tr>
-          <th
-            style={{
-              width: '38%',
-              cursor: 'pointer',
-              color: sortKey === 'name' ? 'var(--accent)' : undefined,
-            }}
-            onClick={() => toggle('name')}
-            onKeyDown={(e) => e.key === 'Enter' && toggle('name')}
-          >
-            name{arrow('name')}
-          </th>
+          <th style={{ width: '38%' }}>name</th>
           <th style={{ width: '24%' }}>type</th>
-          <th
-            className="right"
-            style={{
-              width: '12%',
-              cursor: 'pointer',
-              color: sortKey === 'offset' ? 'var(--accent)' : undefined,
-            }}
-            onClick={() => toggle('offset')}
-            onKeyDown={(e) => e.key === 'Enter' && toggle('offset')}
-          >
-            offset{arrow('offset')}
+          <th className="right" style={{ width: '12%' }}>
+            offset
           </th>
           <th className="right" style={{ width: '12%' }}>
             bytes
@@ -73,7 +32,7 @@ export function FieldTable({
         </tr>
       </thead>
       <tbody>
-        {sorted.map((f) => {
+        {fields.map((f) => {
           const off = f.offset ?? 0
           const len = f.byteLength ?? 0
           const pctOff = total > 0 ? (off / total) * 100 : 0

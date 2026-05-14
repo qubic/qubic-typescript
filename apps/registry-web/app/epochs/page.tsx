@@ -5,14 +5,22 @@ export default async function EpochsPage() {
   const epochs = await api.epochs()
   const sorted = [...epochs].reverse()
   const maxEpoch = epochs.length > 0 ? Math.max(...epochs.map((e) => e.epoch)) : null
+  const minEpoch = epochs.length > 0 ? Math.min(...epochs.map((e) => e.epoch)) : null
+  const totalContracts = maxEpoch
+    ? (epochs.find((e) => e.epoch === maxEpoch)?.contractCount ?? 0)
+    : 0
 
   return (
     <main className="container">
       <div className="page-head">
         <div className="eyebrow">/v1/epochs</div>
-        <h1 className="page-title">Epochs</h1>
+        <h1 className="page-title">Epoch History</h1>
         <p className="page-sub">
-          {epochs.length} epoch snapshots · current #{maxEpoch}
+          {epochs.length} snapshots · epoch {minEpoch}–{maxEpoch} · {totalContracts} contracts today
+        </p>
+        <p className="page-desc">
+          Each epoch is an immutable snapshot of every deployed contract ABI at that point in time.
+          Snapshots are content-addressed and permanently cached — safe to pin in builds or SDKs.
         </p>
       </div>
 
@@ -21,9 +29,9 @@ export default async function EpochsPage() {
           <thead>
             <tr>
               <th style={{ width: 80 }}>Epoch</th>
-              <th style={{ width: 100 }}>Contracts</th>
+              <th style={{ width: 110 }}>Contracts</th>
               <th>Git tag</th>
-              <th className="right" style={{ width: 160 }} />
+              <th className="right" style={{ width: 180 }} />
             </tr>
           </thead>
           <tbody>
@@ -57,6 +65,16 @@ export default async function EpochsPage() {
                 </td>
                 <td>
                   <span className="num">{e.contractCount}</span>
+                  <span
+                    style={{
+                      marginLeft: 6,
+                      fontSize: 11,
+                      color: 'var(--text-faint)',
+                      fontFamily: 'var(--font-mono)',
+                    }}
+                  >
+                    deployed
+                  </span>
                 </td>
                 <td>
                   <span
@@ -72,7 +90,7 @@ export default async function EpochsPage() {
                 <td className="right">
                   <div className="row-actions">
                     <Link className="btn sm ghost" href={`/epoch/${e.epoch}`}>
-                      View →
+                      View ABIs →
                     </Link>
                     <a
                       className="btn sm ghost"

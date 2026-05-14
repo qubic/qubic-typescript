@@ -1,28 +1,20 @@
 'use client'
 import { useState } from 'react'
 
-export function CopyButton({ value }: { value: string }) {
+export function CopyButton({ value, label = 'copy' }: { value: string; label?: string }) {
   const [copied, setCopied] = useState(false)
+
+  function copy(e: React.MouseEvent) {
+    e.stopPropagation()
+    navigator.clipboard?.writeText(value).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1200)
+    })
+  }
+
   return (
-    <button
-      type="button"
-      onClick={() => {
-        navigator.clipboard.writeText(value)
-        setCopied(true)
-        setTimeout(() => setCopied(false), 1500)
-      }}
-      style={{
-        background: 'none',
-        border: '1px solid var(--border)',
-        borderRadius: 4,
-        color: copied ? 'var(--green)' : 'var(--text-muted)',
-        cursor: 'pointer',
-        fontSize: 11,
-        fontFamily: 'var(--mono)',
-        padding: '1px 6px',
-      }}
-    >
-      {copied ? 'copied!' : value}
+    <button type="button" className={`copy${copied ? ' ok' : ''}`} onClick={copy} title={`Copy ${value}`}>
+      {copied ? '✓ copied' : label}
     </button>
   )
 }

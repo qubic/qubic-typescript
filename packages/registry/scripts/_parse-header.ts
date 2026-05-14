@@ -428,6 +428,29 @@ function resolveTypedefs(
       const [, src, templateArgs, alias] = m
       if (!src || !alias || namedStructs.has(alias)) continue
 
+      if (src === 'OracleNotificationInput' && templateArgs !== undefined) {
+        // OracleNotificationInput<OI::X> — instantiate with the concrete OracleReply type.
+        // Layout (from qpi.h): sint64(8) + sint32(4) + uint8(1) + __reserved0(1) + __reserved1(2) + reply(varies)
+        const iface = templateArgs.trim()
+        const replyRef = `${iface}::OracleReply`
+        const reply = namedStructs.get(replyRef)
+        if (reply) {
+          namedStructs.set(alias, {
+            name: alias,
+            byteLength: 16 + reply.byteLength,
+            fields: [
+              { name: 'queryId', type: 'sint64', offset: 0, byteLength: 8 },
+              { name: 'subscriptionId', type: 'sint32', offset: 8, byteLength: 4 },
+              { name: 'status', type: 'uint8', offset: 12, byteLength: 1 },
+              { name: '__reserved0', type: 'uint8', offset: 13, byteLength: 1 },
+              { name: '__reserved1', type: 'uint16', offset: 14, byteLength: 2 },
+              { name: 'reply', type: 'struct', offset: 16, byteLength: reply.byteLength, structRef: replyRef },
+            ],
+          })
+        }
+        continue
+      }
+
       if (src === 'Array' && templateArgs !== undefined) {
         const parts = templateArgs.split(',').map((s) => s.trim())
         const itemTypeName = parts[0] ?? ''

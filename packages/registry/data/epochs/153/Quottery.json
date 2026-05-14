@@ -73,10 +73,16 @@
           "type": "uint32",
           "offset": 8,
           "byteLength": 4
+        },
+        {
+          "name": "_placeHolder",
+          "type": "uint32",
+          "offset": 12,
+          "byteLength": 4
         }
       ],
       "outputFields": [],
-      "inputSize": 12,
+      "inputSize": 16,
       "outputSize": 0
     },
     {

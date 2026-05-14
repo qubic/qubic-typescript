@@ -170,7 +170,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 9,
+      "inputType": 10,
       "name": "CreatePoll",
       "inputFields": [
         {
@@ -229,7 +229,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 10,
+      "inputType": 11,
       "name": "Vote",
       "inputFields": [
         {
@@ -270,7 +270,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 11,
+      "inputType": 12,
       "name": "CancelPoll",
       "inputFields": [
         {
@@ -295,15 +295,6 @@
   "functions": [
     {
       "kind": "function",
-      "inputType": 0,
-      "name": "GetTotalNumberOfAssetShares",
-      "inputFields": [],
-      "outputFields": [],
-      "inputSize": 0,
-      "outputSize": 0
-    },
-    {
-      "kind": "function",
       "inputType": 6,
       "name": "GetSendToManyV1Fee",
       "inputFields": [],
@@ -320,7 +311,36 @@
     },
     {
       "kind": "function",
-      "inputType": 12,
+      "inputType": 9,
+      "name": "GetTotalNumberOfAssetShares",
+      "inputFields": [
+        {
+          "name": "issuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "value",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 40,
+      "outputSize": 8
+    },
+    {
+      "kind": "function",
+      "inputType": 13,
       "name": "GetCurrentResult",
       "inputFields": [
         {
@@ -361,7 +381,7 @@
     },
     {
       "kind": "function",
-      "inputType": 13,
+      "inputType": 14,
       "name": "GetPollsByCreator",
       "inputFields": [
         {
@@ -393,7 +413,7 @@
     },
     {
       "kind": "function",
-      "inputType": 14,
+      "inputType": 15,
       "name": "GetCurrentPollId",
       "inputFields": [],
       "outputFields": [
@@ -424,7 +444,7 @@
     },
     {
       "kind": "function",
-      "inputType": 15,
+      "inputType": 16,
       "name": "GetPollInfo",
       "inputFields": [
         {

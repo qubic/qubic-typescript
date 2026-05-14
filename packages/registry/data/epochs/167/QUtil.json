@@ -102,15 +102,6 @@
   "functions": [
     {
       "kind": "function",
-      "inputType": 0,
-      "name": "GetTotalNumberOfAssetShares",
-      "inputFields": [],
-      "outputFields": [],
-      "inputSize": 0,
-      "outputSize": 0
-    },
-    {
-      "kind": "function",
       "inputType": 2,
       "name": "GetSendToManyV1Fee",
       "inputFields": [],
@@ -123,6 +114,35 @@
         }
       ],
       "inputSize": 0,
+      "outputSize": 8
+    },
+    {
+      "kind": "function",
+      "inputType": 5,
+      "name": "GetTotalNumberOfAssetShares",
+      "inputFields": [
+        {
+          "name": "issuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "value",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 40,
       "outputSize": 8
     }
   ]

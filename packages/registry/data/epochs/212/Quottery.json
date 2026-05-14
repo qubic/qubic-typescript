@@ -225,15 +225,6 @@
   "procedures": [
     {
       "kind": "procedure",
-      "inputType": 0,
-      "name": "CleanMemory",
-      "inputFields": [],
-      "outputFields": [],
-      "inputSize": 0,
-      "outputSize": 0
-    },
-    {
-      "kind": "procedure",
       "inputType": 9,
       "name": "AddToAskOrder",
       "inputFields": [
@@ -560,7 +551,16 @@
     },
     {
       "kind": "procedure",
-      "inputType": 25,
+      "inputType": 26,
+      "name": "CleanMemory",
+      "inputFields": [],
+      "outputFields": [],
+      "inputSize": 0,
+      "outputSize": 0
+    },
+    {
+      "kind": "procedure",
+      "inputType": 27,
       "name": "ProposalVote",
       "inputFields": [
         {
@@ -577,7 +577,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 28,
+      "inputType": 31,
       "name": "TransferQUSD",
       "inputFields": [
         {
@@ -606,7 +606,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 29,
+      "inputType": 32,
       "name": "TransferQTRYGOV",
       "inputFields": [
         {
@@ -635,7 +635,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 30,
+      "inputType": 33,
       "name": "TransferShareManagementRights",
       "inputFields": [
         {
@@ -928,7 +928,7 @@
     },
     {
       "kind": "function",
-      "inputType": 26,
+      "inputType": 29,
       "name": "GetTopProposals",
       "inputFields": [],
       "outputFields": [
@@ -953,7 +953,7 @@
     },
     {
       "kind": "function",
-      "inputType": 27,
+      "inputType": 30,
       "name": "GetApprovedAmount",
       "inputFields": [
         {

@@ -151,9 +151,15 @@
           "type": "uint8",
           "offset": 62,
           "byteLength": 1
+        },
+        {
+          "name": "_pad0",
+          "type": "uint8",
+          "offset": 63,
+          "byteLength": 1
         }
       ],
-      "byteLength": 63
+      "byteLength": 64
     }
   },
   "procedures": [
@@ -683,38 +689,38 @@
           "name": "payouts",
           "type": "array",
           "offset": 0,
-          "byteLength": 32256,
+          "byteLength": 32768,
           "arrayLength": 512,
           "arrayItemStructRef": "QRWAPayoutEntry",
-          "arrayItemByteLength": 63
+          "arrayItemByteLength": 64
         },
         {
           "name": "nextIdx",
           "type": "uint16",
-          "offset": 32256,
+          "offset": 32768,
           "byteLength": 2
         },
         {
           "name": "returnedCount",
           "type": "uint16",
-          "offset": 32258,
+          "offset": 32770,
           "byteLength": 2
         },
         {
           "name": "page",
           "type": "uint16",
-          "offset": 32260,
+          "offset": 32772,
           "byteLength": 2
         },
         {
           "name": "totalPages",
           "type": "uint16",
-          "offset": 32262,
+          "offset": 32774,
           "byteLength": 2
         }
       ],
       "inputSize": 2,
-      "outputSize": 32264
+      "outputSize": 32776
     },
     {
       "kind": "function",
@@ -733,38 +739,38 @@
           "name": "payouts",
           "type": "array",
           "offset": 0,
-          "byteLength": 32256,
+          "byteLength": 32768,
           "arrayLength": 512,
           "arrayItemStructRef": "QRWAPayoutEntry",
-          "arrayItemByteLength": 63
+          "arrayItemByteLength": 64
         },
         {
           "name": "nextIdx",
           "type": "uint16",
-          "offset": 32256,
+          "offset": 32768,
           "byteLength": 2
         },
         {
           "name": "returnedCount",
           "type": "uint16",
-          "offset": 32258,
+          "offset": 32770,
           "byteLength": 2
         },
         {
           "name": "page",
           "type": "uint16",
-          "offset": 32260,
+          "offset": 32772,
           "byteLength": 2
         },
         {
           "name": "totalPages",
           "type": "uint16",
-          "offset": 32262,
+          "offset": 32774,
           "byteLength": 2
         }
       ],
       "inputSize": 2,
-      "outputSize": 32264
+      "outputSize": 32776
     },
     {
       "kind": "function",
@@ -783,38 +789,38 @@
           "name": "payouts",
           "type": "array",
           "offset": 0,
-          "byteLength": 32256,
+          "byteLength": 32768,
           "arrayLength": 512,
           "arrayItemStructRef": "QRWAPayoutEntry",
-          "arrayItemByteLength": 63
+          "arrayItemByteLength": 64
         },
         {
           "name": "nextIdx",
           "type": "uint16",
-          "offset": 32256,
+          "offset": 32768,
           "byteLength": 2
         },
         {
           "name": "returnedCount",
           "type": "uint16",
-          "offset": 32258,
+          "offset": 32770,
           "byteLength": 2
         },
         {
           "name": "page",
           "type": "uint16",
-          "offset": 32260,
+          "offset": 32772,
           "byteLength": 2
         },
         {
           "name": "totalPages",
           "type": "uint16",
-          "offset": 32262,
+          "offset": 32774,
           "byteLength": 2
         }
       ],
       "inputSize": 2,
-      "outputSize": 32264
+      "outputSize": 32776
     },
     {
       "kind": "function",
@@ -833,38 +839,38 @@
           "name": "payouts",
           "type": "array",
           "offset": 0,
-          "byteLength": 32256,
+          "byteLength": 32768,
           "arrayLength": 512,
           "arrayItemStructRef": "QRWAPayoutEntry",
-          "arrayItemByteLength": 63
+          "arrayItemByteLength": 64
         },
         {
           "name": "nextIdx",
           "type": "uint16",
-          "offset": 32256,
+          "offset": 32768,
           "byteLength": 2
         },
         {
           "name": "returnedCount",
           "type": "uint16",
-          "offset": 32258,
+          "offset": 32770,
           "byteLength": 2
         },
         {
           "name": "page",
           "type": "uint16",
-          "offset": 32260,
+          "offset": 32772,
           "byteLength": 2
         },
         {
           "name": "totalPages",
           "type": "uint16",
-          "offset": 32262,
+          "offset": 32774,
           "byteLength": 2
         }
       ],
       "inputSize": 2,
-      "outputSize": 32264
+      "outputSize": 32776
     }
   ]
 }

@@ -11,14 +11,20 @@
       "name": "RevealAndCommit",
       "inputFields": [
         {
+          "name": "reveal",
+          "type": "bytes",
+          "offset": 0,
+          "byteLength": 512
+        },
+        {
           "name": "commit",
           "type": "id",
-          "offset": 0,
+          "offset": 512,
           "byteLength": 32
         }
       ],
       "outputFields": [],
-      "inputSize": 32,
+      "inputSize": 544,
       "outputSize": 0
     }
   ],

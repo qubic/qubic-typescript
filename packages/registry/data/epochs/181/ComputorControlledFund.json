@@ -114,57 +114,141 @@
           "arrayItemByteLength": 4
         }
       ]
+    },
+    "LatestTransfersEntry": {
+      "name": "LatestTransfersEntry",
+      "fields": [
+        {
+          "name": "destination",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "url",
+          "type": "array",
+          "offset": 32,
+          "byteLength": 256,
+          "arrayLength": 256,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        },
+        {
+          "name": "amount",
+          "type": "sint64",
+          "offset": 288,
+          "byteLength": 8
+        },
+        {
+          "name": "tick",
+          "type": "uint32",
+          "offset": 296,
+          "byteLength": 4
+        },
+        {
+          "name": "success",
+          "type": "uint8",
+          "offset": 300,
+          "byteLength": 1
+        }
+      ],
+      "byteLength": 301
     }
   },
   "procedures": [
     {
       "kind": "procedure",
-      "inputType": 0,
+      "inputType": 1,
       "name": "SetProposal",
-      "inputFields": [],
-      "outputFields": [],
-      "inputSize": 0,
-      "outputSize": 0
+      "inputFields": [
+        {
+          "name": "url",
+          "type": "bytes",
+          "offset": 0,
+          "byteLength": 256
+        },
+        {
+          "name": "epoch",
+          "type": "uint16",
+          "offset": 256,
+          "byteLength": 2
+        },
+        {
+          "name": "type",
+          "type": "uint16",
+          "offset": 258,
+          "byteLength": 2
+        },
+        {
+          "name": "tick",
+          "type": "uint32",
+          "offset": 260,
+          "byteLength": 4
+        },
+        {
+          "name": "data",
+          "type": "bytes",
+          "offset": 264,
+          "byteLength": 40
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "okay",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 304,
+      "outputSize": 1
     },
     {
       "kind": "procedure",
-      "inputType": 0,
+      "inputType": 4,
       "name": "Vote",
-      "inputFields": [],
-      "outputFields": [],
-      "inputSize": 0,
-      "outputSize": 0
+      "inputFields": [
+        {
+          "name": "proposalIndex",
+          "type": "uint16",
+          "offset": 0,
+          "byteLength": 2
+        },
+        {
+          "name": "proposalType",
+          "type": "uint16",
+          "offset": 2,
+          "byteLength": 2
+        },
+        {
+          "name": "proposalTick",
+          "type": "uint32",
+          "offset": 4,
+          "byteLength": 4
+        },
+        {
+          "name": "voteValue",
+          "type": "sint64",
+          "offset": 8,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "okay",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 16,
+      "outputSize": 1
     }
   ],
   "functions": [
     {
       "kind": "function",
-      "inputType": 0,
-      "name": "GetLatestTransfers",
-      "inputFields": [],
-      "outputFields": [],
-      "inputSize": 0,
-      "outputSize": 0
-    },
-    {
-      "kind": "function",
-      "inputType": 0,
-      "name": "GetProposalFee",
-      "inputFields": [],
-      "outputFields": [
-        {
-          "name": "proposalFee",
-          "type": "uint32",
-          "offset": 0,
-          "byteLength": 4
-        }
-      ],
-      "inputSize": 0,
-      "outputSize": 4
-    },
-    {
-      "kind": "function",
-      "inputType": 1,
+      "inputType": 2,
       "name": "GetProposalIndices",
       "inputFields": [
         {
@@ -202,7 +286,7 @@
     },
     {
       "kind": "function",
-      "inputType": 2,
+      "inputType": 3,
       "name": "GetProposal",
       "inputFields": [
         {
@@ -220,25 +304,52 @@
           "byteLength": 1
         },
         {
+          "name": "_padding0",
+          "type": "array",
+          "offset": 1,
+          "byteLength": 4,
+          "arrayLength": 4,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        },
+        {
+          "name": "_padding1",
+          "type": "array",
+          "offset": 5,
+          "byteLength": 2,
+          "arrayLength": 2,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        },
+        {
+          "name": "_padding2",
+          "type": "array",
+          "offset": 7,
+          "byteLength": 1,
+          "arrayLength": 1,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        },
+        {
           "name": "proposerPubicKey",
           "type": "id",
-          "offset": 1,
+          "offset": 8,
           "byteLength": 32
         },
         {
           "name": "proposal",
           "type": "struct",
-          "offset": 33,
+          "offset": 40,
           "byteLength": 304,
           "structRef": "ProposalDataT"
         }
       ],
       "inputSize": 2,
-      "outputSize": 337
+      "outputSize": 344
     },
     {
       "kind": "function",
-      "inputType": 3,
+      "inputType": 5,
       "name": "GetVote",
       "inputFields": [
         {
@@ -274,7 +385,7 @@
     },
     {
       "kind": "function",
-      "inputType": 4,
+      "inputType": 6,
       "name": "GetVotingResults",
       "inputFields": [
         {
@@ -301,6 +412,41 @@
       ],
       "inputSize": 2,
       "outputSize": 49
+    },
+    {
+      "kind": "function",
+      "inputType": 7,
+      "name": "GetLatestTransfers",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "data",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 38528,
+          "arrayLength": 128,
+          "arrayItemStructRef": "LatestTransfersEntry",
+          "arrayItemByteLength": 301
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 38528
+    },
+    {
+      "kind": "function",
+      "inputType": 8,
+      "name": "GetProposalFee",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "proposalFee",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 4
     }
   ]
 }

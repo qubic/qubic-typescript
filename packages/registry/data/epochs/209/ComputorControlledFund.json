@@ -4,6 +4,42 @@
   "effectiveFromEpoch": 209,
   "effectiveToEpoch": null,
   "structs": {
+    "ProposalDataT": {
+      "name": "ProposalDataT",
+      "byteLength": 304,
+      "fields": [
+        {
+          "name": "url",
+          "type": "bytes",
+          "offset": 0,
+          "byteLength": 256
+        },
+        {
+          "name": "epoch",
+          "type": "uint16",
+          "offset": 256,
+          "byteLength": 2
+        },
+        {
+          "name": "type",
+          "type": "uint16",
+          "offset": 258,
+          "byteLength": 2
+        },
+        {
+          "name": "tick",
+          "type": "uint32",
+          "offset": 260,
+          "byteLength": 4
+        },
+        {
+          "name": "data",
+          "type": "bytes",
+          "offset": 264,
+          "byteLength": 40
+        }
+      ]
+    },
     "SubscriptionData": {
       "name": "SubscriptionData",
       "fields": [
@@ -29,31 +65,49 @@
           "byteLength": 1
         },
         {
+          "name": "_padding1",
+          "type": "array",
+          "offset": 289,
+          "byteLength": 1,
+          "arrayLength": 1,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        },
+        {
+          "name": "_padding2",
+          "type": "array",
+          "offset": 290,
+          "byteLength": 2,
+          "arrayLength": 2,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        },
+        {
           "name": "numberOfPeriods",
           "type": "uint32",
-          "offset": 289,
+          "offset": 292,
           "byteLength": 4
         },
         {
           "name": "amountPerPeriod",
           "type": "uint64",
-          "offset": 293,
+          "offset": 296,
           "byteLength": 8
         },
         {
           "name": "startEpoch",
           "type": "uint32",
-          "offset": 301,
+          "offset": 304,
           "byteLength": 4
         },
         {
           "name": "currentPeriod",
           "type": "sint32",
-          "offset": 305,
+          "offset": 308,
           "byteLength": 4
         }
       ],
-      "byteLength": 309
+      "byteLength": 312
     },
     "SubscriptionProposalData": {
       "name": "SubscriptionProposalData",
@@ -86,64 +140,272 @@
           "byteLength": 1
         },
         {
+          "name": "_padding0",
+          "type": "array",
+          "offset": 321,
+          "byteLength": 1,
+          "arrayLength": 1,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        },
+        {
+          "name": "_padding1",
+          "type": "array",
+          "offset": 322,
+          "byteLength": 2,
+          "arrayLength": 2,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        },
+        {
           "name": "numberOfPeriods",
           "type": "uint32",
-          "offset": 321,
+          "offset": 324,
           "byteLength": 4
         },
         {
           "name": "amountPerPeriod",
           "type": "uint64",
-          "offset": 325,
+          "offset": 328,
           "byteLength": 8
         },
         {
           "name": "startEpoch",
           "type": "uint32",
-          "offset": 333,
+          "offset": 336,
           "byteLength": 4
         }
       ],
-      "byteLength": 337
+      "byteLength": 340
+    },
+    "ProposalSingleVoteDataV1": {
+      "name": "ProposalSingleVoteDataV1",
+      "byteLength": 16,
+      "fields": [
+        {
+          "name": "proposalIndex",
+          "type": "uint16",
+          "offset": 0,
+          "byteLength": 2
+        },
+        {
+          "name": "proposalType",
+          "type": "uint16",
+          "offset": 2,
+          "byteLength": 2
+        },
+        {
+          "name": "proposalTick",
+          "type": "uint32",
+          "offset": 4,
+          "byteLength": 4
+        },
+        {
+          "name": "voteValue",
+          "type": "sint64",
+          "offset": 8,
+          "byteLength": 8
+        }
+      ]
+    },
+    "ProposalSummarizedVotingDataV1": {
+      "name": "ProposalSummarizedVotingDataV1",
+      "byteLength": 48,
+      "fields": [
+        {
+          "name": "proposalIndex",
+          "type": "uint16",
+          "offset": 0,
+          "byteLength": 2
+        },
+        {
+          "name": "optionCount",
+          "type": "uint16",
+          "offset": 2,
+          "byteLength": 2
+        },
+        {
+          "name": "proposalTick",
+          "type": "uint32",
+          "offset": 4,
+          "byteLength": 4
+        },
+        {
+          "name": "totalVotesAuthorized",
+          "type": "uint32",
+          "offset": 8,
+          "byteLength": 4
+        },
+        {
+          "name": "totalVotesCasted",
+          "type": "uint32",
+          "offset": 12,
+          "byteLength": 4
+        },
+        {
+          "name": "optionVoteCount",
+          "type": "array",
+          "offset": 16,
+          "byteLength": 32,
+          "arrayLength": 8,
+          "arrayItemType": "uint32",
+          "arrayItemByteLength": 4
+        }
+      ]
+    },
+    "LatestTransfersEntry": {
+      "name": "LatestTransfersEntry",
+      "fields": [
+        {
+          "name": "destination",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "url",
+          "type": "array",
+          "offset": 32,
+          "byteLength": 256,
+          "arrayLength": 256,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        },
+        {
+          "name": "amount",
+          "type": "sint64",
+          "offset": 288,
+          "byteLength": 8
+        },
+        {
+          "name": "tick",
+          "type": "uint32",
+          "offset": 296,
+          "byteLength": 4
+        },
+        {
+          "name": "success",
+          "type": "uint8",
+          "offset": 300,
+          "byteLength": 1
+        }
+      ],
+      "byteLength": 301
+    },
+    "RegularPaymentEntry": {
+      "name": "RegularPaymentEntry",
+      "fields": [
+        {
+          "name": "destination",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "url",
+          "type": "array",
+          "offset": 32,
+          "byteLength": 256,
+          "arrayLength": 256,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        },
+        {
+          "name": "amount",
+          "type": "sint64",
+          "offset": 288,
+          "byteLength": 8
+        },
+        {
+          "name": "tick",
+          "type": "uint32",
+          "offset": 296,
+          "byteLength": 4
+        },
+        {
+          "name": "periodIndex",
+          "type": "sint32",
+          "offset": 300,
+          "byteLength": 4
+        },
+        {
+          "name": "success",
+          "type": "uint8",
+          "offset": 304,
+          "byteLength": 1
+        },
+        {
+          "name": "_padding0",
+          "type": "array",
+          "offset": 305,
+          "byteLength": 1,
+          "arrayLength": 1,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        },
+        {
+          "name": "_padding1",
+          "type": "array",
+          "offset": 306,
+          "byteLength": 2,
+          "arrayLength": 2,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        }
+      ],
+      "byteLength": 308
     }
   },
   "procedures": [
-    {
-      "kind": "procedure",
-      "inputType": 0,
-      "name": "Vote",
-      "inputFields": [],
-      "outputFields": [],
-      "inputSize": 0,
-      "outputSize": 0
-    },
     {
       "kind": "procedure",
       "inputType": 1,
       "name": "SetProposal",
       "inputFields": [
         {
+          "name": "proposal",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 304,
+          "structRef": "ProposalDataT"
+        },
+        {
+          "name": "isSubscription",
+          "type": "uint8",
+          "offset": 304,
+          "byteLength": 1
+        },
+        {
           "name": "weeksPerPeriod",
           "type": "uint8",
-          "offset": 0,
+          "offset": 305,
           "byteLength": 1
+        },
+        {
+          "name": "_padding0",
+          "type": "array",
+          "offset": 306,
+          "byteLength": 2,
+          "arrayLength": 2,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
         },
         {
           "name": "startEpoch",
           "type": "uint32",
-          "offset": 1,
+          "offset": 308,
           "byteLength": 4
         },
         {
           "name": "amountPerPeriod",
           "type": "uint64",
-          "offset": 5,
+          "offset": 312,
           "byteLength": 8
         },
         {
           "name": "numberOfPeriods",
           "type": "uint32",
-          "offset": 13,
+          "offset": 320,
           "byteLength": 4
         }
       ],
@@ -155,54 +417,67 @@
           "byteLength": 2
         }
       ],
-      "inputSize": 17,
+      "inputSize": 324,
       "outputSize": 2
+    },
+    {
+      "kind": "procedure",
+      "inputType": 4,
+      "name": "Vote",
+      "inputFields": [
+        {
+          "name": "proposalIndex",
+          "type": "uint16",
+          "offset": 0,
+          "byteLength": 2
+        },
+        {
+          "name": "proposalType",
+          "type": "uint16",
+          "offset": 2,
+          "byteLength": 2
+        },
+        {
+          "name": "proposalTick",
+          "type": "uint32",
+          "offset": 4,
+          "byteLength": 4
+        },
+        {
+          "name": "voteValue",
+          "type": "sint64",
+          "offset": 8,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "okay",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 16,
+      "outputSize": 1
     }
   ],
   "functions": [
-    {
-      "kind": "function",
-      "inputType": 0,
-      "name": "GetLatestTransfers",
-      "inputFields": [],
-      "outputFields": [],
-      "inputSize": 0,
-      "outputSize": 0
-    },
-    {
-      "kind": "function",
-      "inputType": 0,
-      "name": "GetRegularPayments",
-      "inputFields": [],
-      "outputFields": [],
-      "inputSize": 0,
-      "outputSize": 0
-    },
-    {
-      "kind": "function",
-      "inputType": 0,
-      "name": "GetProposalFee",
-      "inputFields": [],
-      "outputFields": [
-        {
-          "name": "proposalFee",
-          "type": "uint32",
-          "offset": 0,
-          "byteLength": 4
-        }
-      ],
-      "inputSize": 0,
-      "outputSize": 4
-    },
     {
       "kind": "function",
       "inputType": 2,
       "name": "GetProposalIndices",
       "inputFields": [
         {
+          "name": "activeProposals",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        },
+        {
           "name": "prevProposalIndex",
           "type": "sint32",
-          "offset": 0,
+          "offset": 1,
           "byteLength": 4
         }
       ],
@@ -223,7 +498,7 @@
           "arrayItemByteLength": 2
         }
       ],
-      "inputSize": 4,
+      "inputSize": 5,
       "outputSize": 130
     },
     {
@@ -246,32 +521,75 @@
       ],
       "outputFields": [
         {
+          "name": "okay",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        },
+        {
+          "name": "hasSubscriptionProposal",
+          "type": "uint8",
+          "offset": 1,
+          "byteLength": 1
+        },
+        {
+          "name": "hasActiveSubscription",
+          "type": "uint8",
+          "offset": 2,
+          "byteLength": 1
+        },
+        {
+          "name": "_padding0",
+          "type": "array",
+          "offset": 3,
+          "byteLength": 1,
+          "arrayLength": 1,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        },
+        {
+          "name": "_padding1",
+          "type": "array",
+          "offset": 4,
+          "byteLength": 4,
+          "arrayLength": 4,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        },
+        {
           "name": "proposerPublicKey",
           "type": "id",
-          "offset": 0,
+          "offset": 8,
           "byteLength": 32
+        },
+        {
+          "name": "proposal",
+          "type": "struct",
+          "offset": 40,
+          "byteLength": 304,
+          "structRef": "ProposalDataT"
         },
         {
           "name": "subscription",
           "type": "struct",
-          "offset": 32,
-          "byteLength": 309,
+          "offset": 344,
+          "byteLength": 312,
           "structRef": "SubscriptionData"
         },
         {
           "name": "subscriptionProposal",
           "type": "struct",
-          "offset": 341,
-          "byteLength": 337,
+          "offset": 656,
+          "byteLength": 340,
           "structRef": "SubscriptionProposalData"
         }
       ],
       "inputSize": 34,
-      "outputSize": 678
+      "outputSize": 996
     },
     {
       "kind": "function",
-      "inputType": 4,
+      "inputType": 5,
       "name": "GetVote",
       "inputFields": [
         {
@@ -287,13 +605,27 @@
           "byteLength": 2
         }
       ],
-      "outputFields": [],
+      "outputFields": [
+        {
+          "name": "okay",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        },
+        {
+          "name": "vote",
+          "type": "struct",
+          "offset": 1,
+          "byteLength": 16,
+          "structRef": "ProposalSingleVoteDataV1"
+        }
+      ],
       "inputSize": 34,
-      "outputSize": 0
+      "outputSize": 17
     },
     {
       "kind": "function",
-      "inputType": 5,
+      "inputType": 6,
       "name": "GetVotingResults",
       "inputFields": [
         {
@@ -303,9 +635,77 @@
           "byteLength": 2
         }
       ],
-      "outputFields": [],
+      "outputFields": [
+        {
+          "name": "okay",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        },
+        {
+          "name": "results",
+          "type": "struct",
+          "offset": 1,
+          "byteLength": 48,
+          "structRef": "ProposalSummarizedVotingDataV1"
+        }
+      ],
       "inputSize": 2,
-      "outputSize": 0
+      "outputSize": 49
+    },
+    {
+      "kind": "function",
+      "inputType": 7,
+      "name": "GetLatestTransfers",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "data",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 38528,
+          "arrayLength": 128,
+          "arrayItemStructRef": "LatestTransfersEntry",
+          "arrayItemByteLength": 301
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 38528
+    },
+    {
+      "kind": "function",
+      "inputType": 8,
+      "name": "GetRegularPayments",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "data",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 39424,
+          "arrayLength": 128,
+          "arrayItemStructRef": "RegularPaymentEntry",
+          "arrayItemByteLength": 308
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 39424
+    },
+    {
+      "kind": "function",
+      "inputType": 9,
+      "name": "GetProposalFee",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "proposalFee",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 4
     }
   ]
 }

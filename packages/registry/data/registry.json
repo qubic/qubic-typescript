@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-05-13T14:30:09.133Z",
+  "updatedAt": "2026-05-14T18:44:09.589Z",
   "versions": [
     {
       "contractIndex": 1,
@@ -733,15 +733,6 @@
       "procedures": [
         {
           "kind": "procedure",
-          "inputType": 0,
-          "name": "CleanMemory",
-          "inputFields": [],
-          "outputFields": [],
-          "inputSize": 0,
-          "outputSize": 0
-        },
-        {
-          "kind": "procedure",
           "inputType": 9,
           "name": "AddToAskOrder",
           "inputFields": [
@@ -1068,7 +1059,16 @@
         },
         {
           "kind": "procedure",
-          "inputType": 25,
+          "inputType": 26,
+          "name": "CleanMemory",
+          "inputFields": [],
+          "outputFields": [],
+          "inputSize": 0,
+          "outputSize": 0
+        },
+        {
+          "kind": "procedure",
+          "inputType": 27,
           "name": "ProposalVote",
           "inputFields": [
             {
@@ -1085,7 +1085,7 @@
         },
         {
           "kind": "procedure",
-          "inputType": 28,
+          "inputType": 31,
           "name": "TransferQUSD",
           "inputFields": [
             {
@@ -1114,7 +1114,7 @@
         },
         {
           "kind": "procedure",
-          "inputType": 29,
+          "inputType": 32,
           "name": "TransferQTRYGOV",
           "inputFields": [
             {
@@ -1143,7 +1143,7 @@
         },
         {
           "kind": "procedure",
-          "inputType": 30,
+          "inputType": 33,
           "name": "TransferShareManagementRights",
           "inputFields": [
             {
@@ -1436,7 +1436,7 @@
         },
         {
           "kind": "function",
-          "inputType": 26,
+          "inputType": 29,
           "name": "GetTopProposals",
           "inputFields": [],
           "outputFields": [
@@ -1461,7 +1461,7 @@
         },
         {
           "kind": "function",
-          "inputType": 27,
+          "inputType": 30,
           "name": "GetApprovedAmount",
           "inputFields": [
             {
@@ -1497,14 +1497,20 @@
           "name": "RevealAndCommit",
           "inputFields": [
             {
+              "name": "reveal",
+              "type": "bytes",
+              "offset": 0,
+              "byteLength": 512
+            },
+            {
               "name": "commit",
               "type": "id",
-              "offset": 0,
+              "offset": 512,
               "byteLength": 32
             }
           ],
           "outputFields": [],
-          "inputSize": 32,
+          "inputSize": 544,
           "outputSize": 0
         }
       ],
@@ -1531,6 +1537,37 @@
               "type": "uint64",
               "offset": 32,
               "byteLength": 8
+            }
+          ]
+        },
+        "OI::Price::OracleQuery": {
+          "name": "OI::Price::OracleQuery",
+          "byteLength": 104,
+          "fields": [
+            {
+              "name": "oracle",
+              "type": "id",
+              "offset": 0,
+              "byteLength": 32
+            },
+            {
+              "name": "timestamp",
+              "type": "struct",
+              "offset": 32,
+              "byteLength": 8,
+              "structRef": "DateAndTime"
+            },
+            {
+              "name": "currency1",
+              "type": "id",
+              "offset": 40,
+              "byteLength": 32
+            },
+            {
+              "name": "currency2",
+              "type": "id",
+              "offset": 72,
+              "byteLength": 32
             }
           ]
         },
@@ -1584,6 +1621,18 @@
             }
           ],
           "byteLength": 736
+        },
+        "DateAndTime": {
+          "name": "DateAndTime",
+          "byteLength": 8,
+          "fields": [
+            {
+              "name": "value",
+              "type": "uint64",
+              "offset": 0,
+              "byteLength": 8
+            }
+          ]
         }
       },
       "procedures": [
@@ -1782,7 +1831,7 @@
         },
         {
           "kind": "procedure",
-          "inputType": 13,
+          "inputType": 14,
           "name": "CreatePoll",
           "inputFields": [
             {
@@ -1841,7 +1890,7 @@
         },
         {
           "kind": "procedure",
-          "inputType": 14,
+          "inputType": 15,
           "name": "Vote",
           "inputFields": [
             {
@@ -1882,7 +1931,7 @@
         },
         {
           "kind": "procedure",
-          "inputType": 15,
+          "inputType": 16,
           "name": "CancelPoll",
           "inputFields": [
             {
@@ -1905,7 +1954,7 @@
         },
         {
           "kind": "procedure",
-          "inputType": 20,
+          "inputType": 22,
           "name": "DistributeQuToShareholders",
           "inputFields": [
             {
@@ -1947,13 +1996,20 @@
         },
         {
           "kind": "procedure",
-          "inputType": 21,
+          "inputType": 23,
           "name": "QueryPriceOracle",
           "inputFields": [
             {
+              "name": "priceOracleQuery",
+              "type": "struct",
+              "offset": 0,
+              "byteLength": 104,
+              "structRef": "OI::Price::OracleQuery"
+            },
+            {
               "name": "timeoutMilliseconds",
               "type": "uint32",
-              "offset": 0,
+              "offset": 104,
               "byteLength": 4
             }
           ],
@@ -1965,24 +2021,31 @@
               "byteLength": 8
             }
           ],
-          "inputSize": 4,
+          "inputSize": 108,
           "outputSize": 8
         },
         {
           "kind": "procedure",
-          "inputType": 22,
+          "inputType": 24,
           "name": "SubscribePriceOracle",
           "inputFields": [
             {
+              "name": "priceOracleQuery",
+              "type": "struct",
+              "offset": 0,
+              "byteLength": 104,
+              "structRef": "OI::Price::OracleQuery"
+            },
+            {
               "name": "subscriptionPeriodMilliseconds",
               "type": "uint32",
-              "offset": 0,
+              "offset": 104,
               "byteLength": 4
             },
             {
               "name": "notifyPreviousValue",
               "type": "uint8",
-              "offset": 4,
+              "offset": 108,
               "byteLength": 1
             }
           ],
@@ -1994,12 +2057,12 @@
               "byteLength": 4
             }
           ],
-          "inputSize": 5,
+          "inputSize": 109,
           "outputSize": 4
         },
         {
           "kind": "procedure",
-          "inputType": 23,
+          "inputType": 25,
           "name": "UnsubscribeOracle",
           "inputFields": [
             {
@@ -2022,55 +2085,6 @@
         }
       ],
       "functions": [
-        {
-          "kind": "function",
-          "inputType": 0,
-          "name": "GetFees",
-          "inputFields": [],
-          "outputFields": [
-            {
-              "name": "smt1InvocationFee",
-              "type": "sint64",
-              "offset": 0,
-              "byteLength": 8
-            },
-            {
-              "name": "pollCreationFee",
-              "type": "sint64",
-              "offset": 8,
-              "byteLength": 8
-            },
-            {
-              "name": "pollVoteFee",
-              "type": "sint64",
-              "offset": 16,
-              "byteLength": 8
-            },
-            {
-              "name": "distributeQuToShareholderFeePerShareholder",
-              "type": "sint64",
-              "offset": 24,
-              "byteLength": 8
-            },
-            {
-              "name": "shareholderProposalFee",
-              "type": "sint64",
-              "offset": 32,
-              "byteLength": 8
-            }
-          ],
-          "inputSize": 0,
-          "outputSize": 40
-        },
-        {
-          "kind": "function",
-          "inputType": 0,
-          "name": "GetTotalNumberOfAssetShares",
-          "inputFields": [],
-          "outputFields": [],
-          "inputSize": 0,
-          "outputSize": 0
-        },
         {
           "kind": "function",
           "inputType": 6,
@@ -2112,7 +2126,36 @@
         },
         {
           "kind": "function",
-          "inputType": 16,
+          "inputType": 13,
+          "name": "GetTotalNumberOfAssetShares",
+          "inputFields": [
+            {
+              "name": "issuer",
+              "type": "id",
+              "offset": 0,
+              "byteLength": 32
+            },
+            {
+              "name": "assetName",
+              "type": "uint64",
+              "offset": 32,
+              "byteLength": 8
+            }
+          ],
+          "outputFields": [
+            {
+              "name": "value",
+              "type": "sint64",
+              "offset": 0,
+              "byteLength": 8
+            }
+          ],
+          "inputSize": 40,
+          "outputSize": 8
+        },
+        {
+          "kind": "function",
+          "inputType": 17,
           "name": "GetCurrentResult",
           "inputFields": [
             {
@@ -2153,7 +2196,7 @@
         },
         {
           "kind": "function",
-          "inputType": 17,
+          "inputType": 18,
           "name": "GetPollsByCreator",
           "inputFields": [
             {
@@ -2185,7 +2228,7 @@
         },
         {
           "kind": "function",
-          "inputType": 18,
+          "inputType": 19,
           "name": "GetCurrentPollId",
           "inputFields": [],
           "outputFields": [
@@ -2216,7 +2259,7 @@
         },
         {
           "kind": "function",
-          "inputType": 19,
+          "inputType": 20,
           "name": "GetPollInfo",
           "inputFields": [
             {
@@ -2255,7 +2298,83 @@
         },
         {
           "kind": "function",
-          "inputType": 24,
+          "inputType": 21,
+          "name": "GetFees",
+          "inputFields": [],
+          "outputFields": [
+            {
+              "name": "smt1InvocationFee",
+              "type": "sint64",
+              "offset": 0,
+              "byteLength": 8
+            },
+            {
+              "name": "pollCreationFee",
+              "type": "sint64",
+              "offset": 8,
+              "byteLength": 8
+            },
+            {
+              "name": "pollVoteFee",
+              "type": "sint64",
+              "offset": 16,
+              "byteLength": 8
+            },
+            {
+              "name": "distributeQuToShareholderFeePerShareholder",
+              "type": "sint64",
+              "offset": 24,
+              "byteLength": 8
+            },
+            {
+              "name": "shareholderProposalFee",
+              "type": "sint64",
+              "offset": 32,
+              "byteLength": 8
+            },
+            {
+              "name": "_futureFeePlaceholder0",
+              "type": "sint64",
+              "offset": 40,
+              "byteLength": 8
+            },
+            {
+              "name": "_futureFeePlaceholder1",
+              "type": "sint64",
+              "offset": 48,
+              "byteLength": 8
+            },
+            {
+              "name": "_futureFeePlaceholder2",
+              "type": "sint64",
+              "offset": 56,
+              "byteLength": 8
+            },
+            {
+              "name": "_futureFeePlaceholder3",
+              "type": "sint64",
+              "offset": 64,
+              "byteLength": 8
+            },
+            {
+              "name": "_futureFeePlaceholder4",
+              "type": "sint64",
+              "offset": 72,
+              "byteLength": 8
+            },
+            {
+              "name": "_futureFeePlaceholder5",
+              "type": "sint64",
+              "offset": 80,
+              "byteLength": 8
+            }
+          ],
+          "inputSize": 0,
+          "outputSize": 88
+        },
+        {
+          "kind": "function",
+          "inputType": 27,
           "name": "GetBalances16",
           "inputFields": [
             {
@@ -2409,14 +2528,69 @@
               "arrayItemByteLength": 4
             }
           ]
+        },
+        "RevenueDonationEntry": {
+          "name": "RevenueDonationEntry",
+          "fields": [
+            {
+              "name": "destinationPublicKey",
+              "type": "id",
+              "offset": 0,
+              "byteLength": 32
+            },
+            {
+              "name": "millionthAmount",
+              "type": "sint64",
+              "offset": 32,
+              "byteLength": 8
+            },
+            {
+              "name": "firstEpoch",
+              "type": "uint16",
+              "offset": 40,
+              "byteLength": 2
+            }
+          ],
+          "byteLength": 42
         }
       },
       "procedures": [
         {
           "kind": "procedure",
-          "inputType": 0,
+          "inputType": 3,
           "name": "SetProposal",
-          "inputFields": [],
+          "inputFields": [
+            {
+              "name": "url",
+              "type": "bytes",
+              "offset": 0,
+              "byteLength": 256
+            },
+            {
+              "name": "epoch",
+              "type": "uint16",
+              "offset": 256,
+              "byteLength": 2
+            },
+            {
+              "name": "type",
+              "type": "uint16",
+              "offset": 258,
+              "byteLength": 2
+            },
+            {
+              "name": "tick",
+              "type": "uint32",
+              "offset": 260,
+              "byteLength": 4
+            },
+            {
+              "name": "data",
+              "type": "bytes",
+              "offset": 264,
+              "byteLength": 64
+            }
+          ],
           "outputFields": [
             {
               "name": "proposalIndex",
@@ -2431,32 +2605,55 @@
               "byteLength": 1
             }
           ],
-          "inputSize": 0,
+          "inputSize": 328,
           "outputSize": 3
         },
         {
           "kind": "procedure",
-          "inputType": 0,
+          "inputType": 6,
           "name": "Vote",
-          "inputFields": [],
-          "outputFields": [],
-          "inputSize": 0,
-          "outputSize": 0
+          "inputFields": [
+            {
+              "name": "proposalIndex",
+              "type": "uint16",
+              "offset": 0,
+              "byteLength": 2
+            },
+            {
+              "name": "proposalType",
+              "type": "uint16",
+              "offset": 2,
+              "byteLength": 2
+            },
+            {
+              "name": "proposalTick",
+              "type": "uint32",
+              "offset": 4,
+              "byteLength": 4
+            },
+            {
+              "name": "voteValue",
+              "type": "sint64",
+              "offset": 8,
+              "byteLength": 8
+            }
+          ],
+          "outputFields": [
+            {
+              "name": "okay",
+              "type": "uint8",
+              "offset": 0,
+              "byteLength": 1
+            }
+          ],
+          "inputSize": 16,
+          "outputSize": 1
         }
       ],
       "functions": [
         {
           "kind": "function",
-          "inputType": 0,
-          "name": "GetRevenueDonation",
-          "inputFields": [],
-          "outputFields": [],
-          "inputSize": 0,
-          "outputSize": 0
-        },
-        {
-          "kind": "function",
-          "inputType": 1,
+          "inputType": 4,
           "name": "GetProposalIndices",
           "inputFields": [
             {
@@ -2494,7 +2691,7 @@
         },
         {
           "kind": "function",
-          "inputType": 2,
+          "inputType": 5,
           "name": "GetProposal",
           "inputFields": [
             {
@@ -2512,25 +2709,52 @@
               "byteLength": 1
             },
             {
+              "name": "_padding0",
+              "type": "array",
+              "offset": 1,
+              "byteLength": 4,
+              "arrayLength": 4,
+              "arrayItemType": "uint8",
+              "arrayItemByteLength": 1
+            },
+            {
+              "name": "_padding1",
+              "type": "array",
+              "offset": 5,
+              "byteLength": 2,
+              "arrayLength": 2,
+              "arrayItemType": "uint8",
+              "arrayItemByteLength": 1
+            },
+            {
+              "name": "_padding2",
+              "type": "array",
+              "offset": 7,
+              "byteLength": 1,
+              "arrayLength": 1,
+              "arrayItemType": "uint8",
+              "arrayItemByteLength": 1
+            },
+            {
               "name": "proposerPubicKey",
               "type": "id",
-              "offset": 1,
+              "offset": 8,
               "byteLength": 32
             },
             {
               "name": "proposal",
               "type": "struct",
-              "offset": 33,
+              "offset": 40,
               "byteLength": 328,
               "structRef": "ProposalDataT"
             }
           ],
           "inputSize": 2,
-          "outputSize": 361
+          "outputSize": 368
         },
         {
           "kind": "function",
-          "inputType": 3,
+          "inputType": 7,
           "name": "GetVote",
           "inputFields": [
             {
@@ -2566,7 +2790,7 @@
         },
         {
           "kind": "function",
-          "inputType": 4,
+          "inputType": 8,
           "name": "GetVotingResults",
           "inputFields": [
             {
@@ -2593,6 +2817,25 @@
           ],
           "inputSize": 2,
           "outputSize": 49
+        },
+        {
+          "kind": "function",
+          "inputType": 9,
+          "name": "GetRevenueDonation",
+          "inputFields": [],
+          "outputFields": [
+            {
+              "name": "data",
+              "type": "array",
+              "offset": 0,
+              "byteLength": 5376,
+              "arrayLength": 128,
+              "arrayItemStructRef": "RevenueDonationEntry",
+              "arrayItemByteLength": 42
+            }
+          ],
+          "inputSize": 0,
+          "outputSize": 5376
         }
       ]
     },
@@ -2672,31 +2915,49 @@
               "byteLength": 1
             },
             {
+              "name": "_padding1",
+              "type": "array",
+              "offset": 289,
+              "byteLength": 1,
+              "arrayLength": 1,
+              "arrayItemType": "uint8",
+              "arrayItemByteLength": 1
+            },
+            {
+              "name": "_padding2",
+              "type": "array",
+              "offset": 290,
+              "byteLength": 2,
+              "arrayLength": 2,
+              "arrayItemType": "uint8",
+              "arrayItemByteLength": 1
+            },
+            {
               "name": "numberOfPeriods",
               "type": "uint32",
-              "offset": 289,
+              "offset": 292,
               "byteLength": 4
             },
             {
               "name": "amountPerPeriod",
               "type": "uint64",
-              "offset": 293,
+              "offset": 296,
               "byteLength": 8
             },
             {
               "name": "startEpoch",
               "type": "uint32",
-              "offset": 301,
+              "offset": 304,
               "byteLength": 4
             },
             {
               "name": "currentPeriod",
               "type": "sint32",
-              "offset": 305,
+              "offset": 308,
               "byteLength": 4
             }
           ],
-          "byteLength": 309
+          "byteLength": 312
         },
         "SubscriptionProposalData": {
           "name": "SubscriptionProposalData",
@@ -2729,25 +2990,43 @@
               "byteLength": 1
             },
             {
+              "name": "_padding0",
+              "type": "array",
+              "offset": 321,
+              "byteLength": 1,
+              "arrayLength": 1,
+              "arrayItemType": "uint8",
+              "arrayItemByteLength": 1
+            },
+            {
+              "name": "_padding1",
+              "type": "array",
+              "offset": 322,
+              "byteLength": 2,
+              "arrayLength": 2,
+              "arrayItemType": "uint8",
+              "arrayItemByteLength": 1
+            },
+            {
               "name": "numberOfPeriods",
               "type": "uint32",
-              "offset": 321,
+              "offset": 324,
               "byteLength": 4
             },
             {
               "name": "amountPerPeriod",
               "type": "uint64",
-              "offset": 325,
+              "offset": 328,
               "byteLength": 8
             },
             {
               "name": "startEpoch",
               "type": "uint32",
-              "offset": 333,
+              "offset": 336,
               "byteLength": 4
             }
           ],
-          "byteLength": 337
+          "byteLength": 340
         },
         "ProposalSingleVoteDataV1": {
           "name": "ProposalSingleVoteDataV1",
@@ -2823,18 +3102,111 @@
               "arrayItemByteLength": 4
             }
           ]
+        },
+        "LatestTransfersEntry": {
+          "name": "LatestTransfersEntry",
+          "fields": [
+            {
+              "name": "destination",
+              "type": "id",
+              "offset": 0,
+              "byteLength": 32
+            },
+            {
+              "name": "url",
+              "type": "array",
+              "offset": 32,
+              "byteLength": 256,
+              "arrayLength": 256,
+              "arrayItemType": "uint8",
+              "arrayItemByteLength": 1
+            },
+            {
+              "name": "amount",
+              "type": "sint64",
+              "offset": 288,
+              "byteLength": 8
+            },
+            {
+              "name": "tick",
+              "type": "uint32",
+              "offset": 296,
+              "byteLength": 4
+            },
+            {
+              "name": "success",
+              "type": "uint8",
+              "offset": 300,
+              "byteLength": 1
+            }
+          ],
+          "byteLength": 301
+        },
+        "RegularPaymentEntry": {
+          "name": "RegularPaymentEntry",
+          "fields": [
+            {
+              "name": "destination",
+              "type": "id",
+              "offset": 0,
+              "byteLength": 32
+            },
+            {
+              "name": "url",
+              "type": "array",
+              "offset": 32,
+              "byteLength": 256,
+              "arrayLength": 256,
+              "arrayItemType": "uint8",
+              "arrayItemByteLength": 1
+            },
+            {
+              "name": "amount",
+              "type": "sint64",
+              "offset": 288,
+              "byteLength": 8
+            },
+            {
+              "name": "tick",
+              "type": "uint32",
+              "offset": 296,
+              "byteLength": 4
+            },
+            {
+              "name": "periodIndex",
+              "type": "sint32",
+              "offset": 300,
+              "byteLength": 4
+            },
+            {
+              "name": "success",
+              "type": "uint8",
+              "offset": 304,
+              "byteLength": 1
+            },
+            {
+              "name": "_padding0",
+              "type": "array",
+              "offset": 305,
+              "byteLength": 1,
+              "arrayLength": 1,
+              "arrayItemType": "uint8",
+              "arrayItemByteLength": 1
+            },
+            {
+              "name": "_padding1",
+              "type": "array",
+              "offset": 306,
+              "byteLength": 2,
+              "arrayLength": 2,
+              "arrayItemType": "uint8",
+              "arrayItemByteLength": 1
+            }
+          ],
+          "byteLength": 308
         }
       },
       "procedures": [
-        {
-          "kind": "procedure",
-          "inputType": 0,
-          "name": "Vote",
-          "inputFields": [],
-          "outputFields": [],
-          "inputSize": 0,
-          "outputSize": 0
-        },
         {
           "kind": "procedure",
           "inputType": 1,
@@ -2860,21 +3232,30 @@
               "byteLength": 1
             },
             {
+              "name": "_padding0",
+              "type": "array",
+              "offset": 306,
+              "byteLength": 2,
+              "arrayLength": 2,
+              "arrayItemType": "uint8",
+              "arrayItemByteLength": 1
+            },
+            {
               "name": "startEpoch",
               "type": "uint32",
-              "offset": 306,
+              "offset": 308,
               "byteLength": 4
             },
             {
               "name": "amountPerPeriod",
               "type": "uint64",
-              "offset": 310,
+              "offset": 312,
               "byteLength": 8
             },
             {
               "name": "numberOfPeriods",
               "type": "uint32",
-              "offset": 318,
+              "offset": 320,
               "byteLength": 4
             }
           ],
@@ -2886,45 +3267,52 @@
               "byteLength": 2
             }
           ],
-          "inputSize": 322,
+          "inputSize": 324,
           "outputSize": 2
+        },
+        {
+          "kind": "procedure",
+          "inputType": 4,
+          "name": "Vote",
+          "inputFields": [
+            {
+              "name": "proposalIndex",
+              "type": "uint16",
+              "offset": 0,
+              "byteLength": 2
+            },
+            {
+              "name": "proposalType",
+              "type": "uint16",
+              "offset": 2,
+              "byteLength": 2
+            },
+            {
+              "name": "proposalTick",
+              "type": "uint32",
+              "offset": 4,
+              "byteLength": 4
+            },
+            {
+              "name": "voteValue",
+              "type": "sint64",
+              "offset": 8,
+              "byteLength": 8
+            }
+          ],
+          "outputFields": [
+            {
+              "name": "okay",
+              "type": "uint8",
+              "offset": 0,
+              "byteLength": 1
+            }
+          ],
+          "inputSize": 16,
+          "outputSize": 1
         }
       ],
       "functions": [
-        {
-          "kind": "function",
-          "inputType": 0,
-          "name": "GetLatestTransfers",
-          "inputFields": [],
-          "outputFields": [],
-          "inputSize": 0,
-          "outputSize": 0
-        },
-        {
-          "kind": "function",
-          "inputType": 0,
-          "name": "GetRegularPayments",
-          "inputFields": [],
-          "outputFields": [],
-          "inputSize": 0,
-          "outputSize": 0
-        },
-        {
-          "kind": "function",
-          "inputType": 0,
-          "name": "GetProposalFee",
-          "inputFields": [],
-          "outputFields": [
-            {
-              "name": "proposalFee",
-              "type": "uint32",
-              "offset": 0,
-              "byteLength": 4
-            }
-          ],
-          "inputSize": 0,
-          "outputSize": 4
-        },
         {
           "kind": "function",
           "inputType": 2,
@@ -3001,39 +3389,57 @@
               "byteLength": 1
             },
             {
+              "name": "_padding0",
+              "type": "array",
+              "offset": 3,
+              "byteLength": 1,
+              "arrayLength": 1,
+              "arrayItemType": "uint8",
+              "arrayItemByteLength": 1
+            },
+            {
+              "name": "_padding1",
+              "type": "array",
+              "offset": 4,
+              "byteLength": 4,
+              "arrayLength": 4,
+              "arrayItemType": "uint8",
+              "arrayItemByteLength": 1
+            },
+            {
               "name": "proposerPublicKey",
               "type": "id",
-              "offset": 3,
+              "offset": 8,
               "byteLength": 32
             },
             {
               "name": "proposal",
               "type": "struct",
-              "offset": 35,
+              "offset": 40,
               "byteLength": 304,
               "structRef": "ProposalDataT"
             },
             {
               "name": "subscription",
               "type": "struct",
-              "offset": 339,
-              "byteLength": 309,
+              "offset": 344,
+              "byteLength": 312,
               "structRef": "SubscriptionData"
             },
             {
               "name": "subscriptionProposal",
               "type": "struct",
-              "offset": 648,
-              "byteLength": 337,
+              "offset": 656,
+              "byteLength": 340,
               "structRef": "SubscriptionProposalData"
             }
           ],
           "inputSize": 34,
-          "outputSize": 985
+          "outputSize": 996
         },
         {
           "kind": "function",
-          "inputType": 4,
+          "inputType": 5,
           "name": "GetVote",
           "inputFields": [
             {
@@ -3069,7 +3475,7 @@
         },
         {
           "kind": "function",
-          "inputType": 5,
+          "inputType": 6,
           "name": "GetVotingResults",
           "inputFields": [
             {
@@ -3096,6 +3502,60 @@
           ],
           "inputSize": 2,
           "outputSize": 49
+        },
+        {
+          "kind": "function",
+          "inputType": 7,
+          "name": "GetLatestTransfers",
+          "inputFields": [],
+          "outputFields": [
+            {
+              "name": "data",
+              "type": "array",
+              "offset": 0,
+              "byteLength": 38528,
+              "arrayLength": 128,
+              "arrayItemStructRef": "LatestTransfersEntry",
+              "arrayItemByteLength": 301
+            }
+          ],
+          "inputSize": 0,
+          "outputSize": 38528
+        },
+        {
+          "kind": "function",
+          "inputType": 8,
+          "name": "GetRegularPayments",
+          "inputFields": [],
+          "outputFields": [
+            {
+              "name": "data",
+              "type": "array",
+              "offset": 0,
+              "byteLength": 39424,
+              "arrayLength": 128,
+              "arrayItemStructRef": "RegularPaymentEntry",
+              "arrayItemByteLength": 308
+            }
+          ],
+          "inputSize": 0,
+          "outputSize": 39424
+        },
+        {
+          "kind": "function",
+          "inputType": 9,
+          "name": "GetProposalFee",
+          "inputFields": [],
+          "outputFields": [
+            {
+              "name": "proposalFee",
+              "type": "uint32",
+              "offset": 0,
+              "byteLength": 4
+            }
+          ],
+          "inputSize": 0,
+          "outputSize": 4
         }
       ]
     },
@@ -11373,9 +11833,15 @@
               "type": "uint8",
               "offset": 62,
               "byteLength": 1
+            },
+            {
+              "name": "_pad0",
+              "type": "uint8",
+              "offset": 63,
+              "byteLength": 1
             }
           ],
-          "byteLength": 63
+          "byteLength": 64
         }
       },
       "procedures": [
@@ -11905,38 +12371,38 @@
               "name": "payouts",
               "type": "array",
               "offset": 0,
-              "byteLength": 32256,
+              "byteLength": 32768,
               "arrayLength": 512,
               "arrayItemStructRef": "QRWAPayoutEntry",
-              "arrayItemByteLength": 63
+              "arrayItemByteLength": 64
             },
             {
               "name": "nextIdx",
               "type": "uint16",
-              "offset": 32256,
+              "offset": 32768,
               "byteLength": 2
             },
             {
               "name": "returnedCount",
               "type": "uint16",
-              "offset": 32258,
+              "offset": 32770,
               "byteLength": 2
             },
             {
               "name": "page",
               "type": "uint16",
-              "offset": 32260,
+              "offset": 32772,
               "byteLength": 2
             },
             {
               "name": "totalPages",
               "type": "uint16",
-              "offset": 32262,
+              "offset": 32774,
               "byteLength": 2
             }
           ],
           "inputSize": 2,
-          "outputSize": 32264
+          "outputSize": 32776
         },
         {
           "kind": "function",
@@ -11955,38 +12421,38 @@
               "name": "payouts",
               "type": "array",
               "offset": 0,
-              "byteLength": 32256,
+              "byteLength": 32768,
               "arrayLength": 512,
               "arrayItemStructRef": "QRWAPayoutEntry",
-              "arrayItemByteLength": 63
+              "arrayItemByteLength": 64
             },
             {
               "name": "nextIdx",
               "type": "uint16",
-              "offset": 32256,
+              "offset": 32768,
               "byteLength": 2
             },
             {
               "name": "returnedCount",
               "type": "uint16",
-              "offset": 32258,
+              "offset": 32770,
               "byteLength": 2
             },
             {
               "name": "page",
               "type": "uint16",
-              "offset": 32260,
+              "offset": 32772,
               "byteLength": 2
             },
             {
               "name": "totalPages",
               "type": "uint16",
-              "offset": 32262,
+              "offset": 32774,
               "byteLength": 2
             }
           ],
           "inputSize": 2,
-          "outputSize": 32264
+          "outputSize": 32776
         },
         {
           "kind": "function",
@@ -12005,38 +12471,38 @@
               "name": "payouts",
               "type": "array",
               "offset": 0,
-              "byteLength": 32256,
+              "byteLength": 32768,
               "arrayLength": 512,
               "arrayItemStructRef": "QRWAPayoutEntry",
-              "arrayItemByteLength": 63
+              "arrayItemByteLength": 64
             },
             {
               "name": "nextIdx",
               "type": "uint16",
-              "offset": 32256,
+              "offset": 32768,
               "byteLength": 2
             },
             {
               "name": "returnedCount",
               "type": "uint16",
-              "offset": 32258,
+              "offset": 32770,
               "byteLength": 2
             },
             {
               "name": "page",
               "type": "uint16",
-              "offset": 32260,
+              "offset": 32772,
               "byteLength": 2
             },
             {
               "name": "totalPages",
               "type": "uint16",
-              "offset": 32262,
+              "offset": 32774,
               "byteLength": 2
             }
           ],
           "inputSize": 2,
-          "outputSize": 32264
+          "outputSize": 32776
         },
         {
           "kind": "function",
@@ -12055,38 +12521,38 @@
               "name": "payouts",
               "type": "array",
               "offset": 0,
-              "byteLength": 32256,
+              "byteLength": 32768,
               "arrayLength": 512,
               "arrayItemStructRef": "QRWAPayoutEntry",
-              "arrayItemByteLength": 63
+              "arrayItemByteLength": 64
             },
             {
               "name": "nextIdx",
               "type": "uint16",
-              "offset": 32256,
+              "offset": 32768,
               "byteLength": 2
             },
             {
               "name": "returnedCount",
               "type": "uint16",
-              "offset": 32258,
+              "offset": 32770,
               "byteLength": 2
             },
             {
               "name": "page",
               "type": "uint16",
-              "offset": 32260,
+              "offset": 32772,
               "byteLength": 2
             },
             {
               "name": "totalPages",
               "type": "uint16",
-              "offset": 32262,
+              "offset": 32774,
               "byteLength": 2
             }
           ],
           "inputSize": 2,
-          "outputSize": 32264
+          "outputSize": 32776
         }
       ]
     },
@@ -14557,7 +15023,7 @@
         },
         {
           "kind": "procedure",
-          "inputType": 10,
+          "inputType": 12,
           "name": "createProposal",
           "inputFields": [
             {
@@ -14604,7 +15070,7 @@
         },
         {
           "kind": "procedure",
-          "inputType": 11,
+          "inputType": 13,
           "name": "approveProposal",
           "inputFields": [
             {
@@ -14633,7 +15099,7 @@
         },
         {
           "kind": "procedure",
-          "inputType": 13,
+          "inputType": 15,
           "name": "cancelProposal",
           "inputFields": [
             {
@@ -14656,7 +15122,7 @@
         },
         {
           "kind": "procedure",
-          "inputType": 15,
+          "inputType": 17,
           "name": "addLiquidity",
           "inputFields": [],
           "outputFields": [
@@ -14888,7 +15354,7 @@
         },
         {
           "kind": "function",
-          "inputType": 12,
+          "inputType": 14,
           "name": "getProposal",
           "inputFields": [
             {
@@ -14918,7 +15384,7 @@
         },
         {
           "kind": "function",
-          "inputType": 14,
+          "inputType": 16,
           "name": "getOrderByDetails",
           "inputFields": [
             {

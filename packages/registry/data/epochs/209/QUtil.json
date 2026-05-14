@@ -4,6 +4,55 @@
   "effectiveFromEpoch": 209,
   "effectiveToEpoch": null,
   "structs": {
+    "Asset": {
+      "name": "Asset",
+      "byteLength": 40,
+      "fields": [
+        {
+          "name": "issuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        }
+      ]
+    },
+    "OI::Price::OracleQuery": {
+      "name": "OI::Price::OracleQuery",
+      "byteLength": 104,
+      "fields": [
+        {
+          "name": "oracle",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "timestamp",
+          "type": "struct",
+          "offset": 32,
+          "byteLength": 8,
+          "structRef": "DateAndTime"
+        },
+        {
+          "name": "currency1",
+          "type": "id",
+          "offset": 40,
+          "byteLength": 32
+        },
+        {
+          "name": "currency2",
+          "type": "id",
+          "offset": 72,
+          "byteLength": 32
+        }
+      ]
+    },
     "Poll": {
       "name": "Poll",
       "fields": [
@@ -38,13 +87,34 @@
           "byteLength": 32
         },
         {
+          "name": "allowed_assets",
+          "type": "array",
+          "offset": 88,
+          "byteLength": 640,
+          "arrayLength": 16,
+          "arrayItemStructRef": "Asset",
+          "arrayItemByteLength": 40
+        },
+        {
           "name": "num_assets",
           "type": "uint64",
-          "offset": 88,
+          "offset": 728,
           "byteLength": 8
         }
       ],
-      "byteLength": 96
+      "byteLength": 736
+    },
+    "DateAndTime": {
+      "name": "DateAndTime",
+      "byteLength": 8,
+      "fields": [
+        {
+          "name": "value",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ]
     }
   },
   "procedures": [
@@ -166,7 +236,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 11,
+      "inputType": 12,
       "name": "CreatePoll",
       "inputFields": [
         {
@@ -197,9 +267,18 @@
           "arrayItemByteLength": 1
         },
         {
+          "name": "allowed_assets",
+          "type": "array",
+          "offset": 304,
+          "byteLength": 640,
+          "arrayLength": 16,
+          "arrayItemStructRef": "Asset",
+          "arrayItemByteLength": 40
+        },
+        {
           "name": "num_assets",
           "type": "uint64",
-          "offset": 304,
+          "offset": 944,
           "byteLength": 8
         }
       ],
@@ -211,12 +290,12 @@
           "byteLength": 8
         }
       ],
-      "inputSize": 312,
+      "inputSize": 952,
       "outputSize": 8
     },
     {
       "kind": "procedure",
-      "inputType": 12,
+      "inputType": 13,
       "name": "Vote",
       "inputFields": [
         {
@@ -244,13 +323,20 @@
           "byteLength": 8
         }
       ],
-      "outputFields": [],
+      "outputFields": [
+        {
+          "name": "success",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
       "inputSize": 56,
-      "outputSize": 0
+      "outputSize": 1
     },
     {
       "kind": "procedure",
-      "inputType": 13,
+      "inputType": 14,
       "name": "CancelPoll",
       "inputFields": [
         {
@@ -260,15 +346,30 @@
           "byteLength": 8
         }
       ],
-      "outputFields": [],
+      "outputFields": [
+        {
+          "name": "success",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
       "inputSize": 8,
-      "outputSize": 0
+      "outputSize": 1
     },
     {
       "kind": "procedure",
-      "inputType": 18,
+      "inputType": 20,
       "name": "DistributeQuToShareholders",
-      "inputFields": [],
+      "inputFields": [
+        {
+          "name": "asset",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 40,
+          "structRef": "Asset"
+        }
+      ],
       "outputFields": [
         {
           "name": "shareholders",
@@ -295,18 +396,25 @@
           "byteLength": 8
         }
       ],
-      "inputSize": 0,
+      "inputSize": 40,
       "outputSize": 32
     },
     {
       "kind": "procedure",
-      "inputType": 19,
+      "inputType": 21,
       "name": "QueryPriceOracle",
       "inputFields": [
         {
+          "name": "priceOracleQuery",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 104,
+          "structRef": "OI::Price::OracleQuery"
+        },
+        {
           "name": "timeoutMilliseconds",
           "type": "uint32",
-          "offset": 0,
+          "offset": 104,
           "byteLength": 4
         }
       ],
@@ -318,19 +426,32 @@
           "byteLength": 8
         }
       ],
-      "inputSize": 4,
+      "inputSize": 108,
       "outputSize": 8
     },
     {
       "kind": "procedure",
-      "inputType": 20,
+      "inputType": 22,
       "name": "SubscribePriceOracle",
       "inputFields": [
         {
+          "name": "priceOracleQuery",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 104,
+          "structRef": "OI::Price::OracleQuery"
+        },
+        {
           "name": "subscriptionPeriodMilliseconds",
           "type": "uint32",
-          "offset": 0,
+          "offset": 104,
           "byteLength": 4
+        },
+        {
+          "name": "notifyPreviousValue",
+          "type": "uint8",
+          "offset": 108,
+          "byteLength": 1
         }
       ],
       "outputFields": [
@@ -341,12 +462,12 @@
           "byteLength": 4
         }
       ],
-      "inputSize": 4,
+      "inputSize": 109,
       "outputSize": 4
     },
     {
       "kind": "procedure",
-      "inputType": 21,
+      "inputType": 23,
       "name": "UnsubscribeOracle",
       "inputFields": [
         {
@@ -356,61 +477,19 @@
           "byteLength": 4
         }
       ],
-      "outputFields": [],
+      "outputFields": [
+        {
+          "name": "success",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
       "inputSize": 4,
-      "outputSize": 0
+      "outputSize": 1
     }
   ],
   "functions": [
-    {
-      "kind": "function",
-      "inputType": 0,
-      "name": "GetFees",
-      "inputFields": [],
-      "outputFields": [
-        {
-          "name": "smt1InvocationFee",
-          "type": "sint64",
-          "offset": 0,
-          "byteLength": 8
-        },
-        {
-          "name": "pollCreationFee",
-          "type": "sint64",
-          "offset": 8,
-          "byteLength": 8
-        },
-        {
-          "name": "pollVoteFee",
-          "type": "sint64",
-          "offset": 16,
-          "byteLength": 8
-        },
-        {
-          "name": "distributeQuToShareholderFeePerShareholder",
-          "type": "sint64",
-          "offset": 24,
-          "byteLength": 8
-        },
-        {
-          "name": "shareholderProposalFee",
-          "type": "sint64",
-          "offset": 32,
-          "byteLength": 8
-        }
-      ],
-      "inputSize": 0,
-      "outputSize": 40
-    },
-    {
-      "kind": "function",
-      "inputType": 0,
-      "name": "GetTotalNumberOfAssetShares",
-      "inputFields": [],
-      "outputFields": [],
-      "inputSize": 0,
-      "outputSize": 0
-    },
     {
       "kind": "function",
       "inputType": 6,
@@ -452,7 +531,36 @@
     },
     {
       "kind": "function",
-      "inputType": 14,
+      "inputType": 11,
+      "name": "GetTotalNumberOfAssetShares",
+      "inputFields": [
+        {
+          "name": "issuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "value",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 40,
+      "outputSize": 8
+    },
+    {
+      "kind": "function",
+      "inputType": 15,
       "name": "GetCurrentResult",
       "inputFields": [
         {
@@ -493,7 +601,7 @@
     },
     {
       "kind": "function",
-      "inputType": 15,
+      "inputType": 16,
       "name": "GetPollsByCreator",
       "inputFields": [
         {
@@ -525,7 +633,7 @@
     },
     {
       "kind": "function",
-      "inputType": 16,
+      "inputType": 17,
       "name": "GetCurrentPollId",
       "inputFields": [],
       "outputFields": [
@@ -556,7 +664,7 @@
     },
     {
       "kind": "function",
-      "inputType": 17,
+      "inputType": 18,
       "name": "GetPollInfo",
       "inputFields": [
         {
@@ -577,13 +685,13 @@
           "name": "poll_info",
           "type": "struct",
           "offset": 8,
-          "byteLength": 96,
+          "byteLength": 736,
           "structRef": "Poll"
         },
         {
           "name": "poll_link",
           "type": "array",
-          "offset": 104,
+          "offset": 744,
           "byteLength": 256,
           "arrayLength": 256,
           "arrayItemType": "uint8",
@@ -591,11 +699,87 @@
         }
       ],
       "inputSize": 8,
-      "outputSize": 360
+      "outputSize": 1000
     },
     {
       "kind": "function",
-      "inputType": 22,
+      "inputType": 19,
+      "name": "GetFees",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "smt1InvocationFee",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "pollCreationFee",
+          "type": "sint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "pollVoteFee",
+          "type": "sint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "distributeQuToShareholderFeePerShareholder",
+          "type": "sint64",
+          "offset": 24,
+          "byteLength": 8
+        },
+        {
+          "name": "shareholderProposalFee",
+          "type": "sint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "_futureFeePlaceholder0",
+          "type": "sint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "_futureFeePlaceholder1",
+          "type": "sint64",
+          "offset": 48,
+          "byteLength": 8
+        },
+        {
+          "name": "_futureFeePlaceholder2",
+          "type": "sint64",
+          "offset": 56,
+          "byteLength": 8
+        },
+        {
+          "name": "_futureFeePlaceholder3",
+          "type": "sint64",
+          "offset": 64,
+          "byteLength": 8
+        },
+        {
+          "name": "_futureFeePlaceholder4",
+          "type": "sint64",
+          "offset": 72,
+          "byteLength": 8
+        },
+        {
+          "name": "_futureFeePlaceholder5",
+          "type": "sint64",
+          "offset": 80,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 88
+    },
+    {
+      "kind": "function",
+      "inputType": 25,
       "name": "GetBalances16",
       "inputFields": [
         {

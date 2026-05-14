@@ -85,12 +85,12 @@ function buildSnippet(call: ContractCallBase, contractIndex: number): string {
 
   if (call.kind === 'function') {
     L.push('')
-    L.push("import { createRpcClient } from '@qubic.ts/rpc'")
+    L.push("import { createBobRpcClient } from '@qubic.ts/bob'")
     if (hasIn) L.push("import { BinaryReader, buildPayload } from '@qubic.ts/tx'")
     else if (hasOut) L.push("import { BinaryReader } from '@qubic.ts/tx'")
     L.push("import type { Base64 } from '@qubic.ts/types'")
     L.push('')
-    L.push("const rpc = createRpcClient({ endpoint: 'http://localhost:40420' })")
+    L.push("const rpc = createBobRpcClient({ endpoint: 'http://localhost:40420' })")
 
     if (hasIn) {
       L.push('')
@@ -131,13 +131,13 @@ function buildSnippet(call: ContractCallBase, contractIndex: number): string {
   } else {
     // procedure
     L.push('')
-    L.push("import { createRpcClient } from '@qubic.ts/rpc'")
+    L.push("import { createBobRpcClient } from '@qubic.ts/bob'")
     L.push("import { createWallet } from '@qubic.ts/wallet'")
-    if (hasIn) L.push("import { buildPayload } from '@qubic.ts/tx'")
+    L.push("import { buildPayload } from '@qubic.ts/tx'")
     L.push("import type { Identity, Seed } from '@qubic.ts/types'")
     L.push('')
     L.push("const CONTRACT_ID = 'CONTRACT_IDENTITY_HERE' as Identity")
-    L.push("const rpc    = createRpcClient({ endpoint: 'http://localhost:40420' })")
+    L.push("const rpc    = createBobRpcClient({ endpoint: 'http://localhost:40420' })")
     L.push('const wallet = createWallet(process.env.SEED as Seed)')
     L.push('')
     L.push('// 1. get current tick')
@@ -160,7 +160,7 @@ function buildSnippet(call: ContractCallBase, contractIndex: number): string {
       L.push('// 3. build + sign transaction')
     } else {
       L.push('')
-      L.push('// 2. build + sign transaction (no input fields)')
+      L.push('// 2. build + sign transaction')
     }
 
     const broadcastStep = hasIn ? 4 : 3
@@ -173,7 +173,7 @@ function buildSnippet(call: ContractCallBase, contractIndex: number): string {
     }
     L.push('  targetTick: tick.value + 5,')
     L.push(`  inputType: ${call.inputType},`)
-    if (hasIn) L.push('  payload,')
+    L.push(`  payload: ${hasIn ? 'payload' : 'buildPayload([])'},`)
     L.push('})')
     L.push('')
     L.push(`// ${broadcastStep}. broadcast`)
@@ -307,8 +307,8 @@ function MethodBlock({
             </span>
             <span className="lbl">
               {call.kind === 'function'
-                ? 'TypeScript · @qubic.ts/rpc'
-                : 'TypeScript · @qubic.ts/wallet'}
+                ? 'TypeScript · @qubic.ts/bob'
+                : 'TypeScript · @qubic.ts/bob + @qubic.ts/wallet'}
             </span>
             <span className="grow" />
             <CopyButton value={buildSnippet(call, contractIndex)} />

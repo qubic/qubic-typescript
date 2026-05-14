@@ -1,4 +1,3 @@
-import { Elysia } from 'elysia'
 import { readdirSync } from 'node:fs'
 import {
   AbiNotFoundError,
@@ -8,6 +7,7 @@ import {
   getCurrentAbi,
 } from '@qubic.ts/registry'
 import registry from '@qubic.ts/registry/registry.json'
+import { Elysia } from 'elysia'
 
 // Resolve packages/registry root from the workspace-linked source entry
 const REGISTRY_SRC = Bun.resolveSync('@qubic.ts/registry', import.meta.dir) // .../packages/registry/src/index.ts
@@ -25,14 +25,20 @@ function epochDirs(): number[] {
 function contractSummaries() {
   const seen = new Map<number, ContractAbiVersion>()
   for (const v of registry.versions) {
-    if (!seen.has(v.contractIndex) || v.effectiveFromEpoch > (seen.get(v.contractIndex)?.effectiveFromEpoch ?? 0)) {
+    if (
+      !seen.has(v.contractIndex) ||
+      v.effectiveFromEpoch > (seen.get(v.contractIndex)?.effectiveFromEpoch ?? 0)
+    ) {
       seen.set(v.contractIndex, v as ContractAbiVersion)
     }
   }
   return Array.from(seen.entries())
     .sort((a, b) => a[0] - b[0])
     .map(([, current]) => {
-      const history = getAbiHistory(registry as Parameters<typeof getAbiHistory>[0], current.contractIndex)
+      const history = getAbiHistory(
+        registry as Parameters<typeof getAbiHistory>[0],
+        current.contractIndex,
+      )
       return {
         contractIndex: current.contractIndex,
         contractName: current.contractName,
@@ -90,7 +96,8 @@ export const apiRoutes = new Elysia({ prefix: '/v1' })
     const idx = Number(params.index)
     if (Number.isNaN(idx)) return status(400, { error: 'Invalid contract index', status: 400 })
     const history = getAbiHistory(registry as Parameters<typeof getAbiHistory>[0], idx)
-    if (history.length === 0) return status(404, { error: `No ABI found for contract ${idx}`, status: 404 })
+    if (history.length === 0)
+      return status(404, { error: `No ABI found for contract ${idx}`, status: 404 })
     return history
   })
 
@@ -127,7 +134,8 @@ export const apiRoutes = new Elysia({ prefix: '/v1' })
     const epoch = Number(params.epoch)
     if (Number.isNaN(epoch)) return status(400, { error: 'Invalid epoch', status: 400 })
     const result = allActiveAtEpoch(epoch)
-    if (result.length === 0) return status(404, { error: `No contracts found at epoch ${epoch}`, status: 404 })
+    if (result.length === 0)
+      return status(404, { error: `No contracts found at epoch ${epoch}`, status: 404 })
     return result
   })
 

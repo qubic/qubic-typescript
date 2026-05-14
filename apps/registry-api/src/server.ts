@@ -1,5 +1,5 @@
-import { Elysia } from 'elysia'
 import { cors } from '@elysiajs/cors'
+import { Elysia } from 'elysia'
 import { apiRoutes } from './routes/api'
 import { downloadRoutes } from './routes/downloads'
 

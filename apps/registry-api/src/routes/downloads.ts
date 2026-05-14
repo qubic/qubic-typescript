@@ -1,8 +1,8 @@
-import { Elysia } from 'elysia'
-import { readdirSync, existsSync } from 'node:fs'
-import { zipSync } from 'fflate'
+import { existsSync, readdirSync } from 'node:fs'
 import { findContractByIndex } from '@qubic.ts/registry'
 import registry from '@qubic.ts/registry/registry.json'
+import { Elysia } from 'elysia'
+import { zipSync } from 'fflate'
 
 const REGISTRY_SRC = Bun.resolveSync('@qubic.ts/registry', import.meta.dir)
 const DATA_DIR = REGISTRY_SRC.replace(/\/src\/index\.ts$/, '/data/')
@@ -32,7 +32,10 @@ export const downloadRoutes = new Elysia({ prefix: '/download' })
     const filename = contract.endsWith('.json') ? contract : `${contract}.json`
     const path = `${EPOCHS_DIR}${epoch}/${filename}`
     if (!existsSync(path)) {
-      return status(404, { error: `No snapshot found for ${contract} at epoch ${epoch}`, status: 404 })
+      return status(404, {
+        error: `No snapshot found for ${contract} at epoch ${epoch}`,
+        status: 404,
+      })
     }
     const bytes = await readFile(path)
     set.headers['content-type'] = 'application/json'
@@ -47,7 +50,8 @@ export const downloadRoutes = new Elysia({ prefix: '/download' })
     if (!existsSync(dir)) return status(404, { error: `No data for epoch ${epoch}`, status: 404 })
 
     const files = readdirSync(dir).filter((f) => f.endsWith('.json'))
-    if (files.length === 0) return status(404, { error: `No contracts at epoch ${epoch}`, status: 404 })
+    if (files.length === 0)
+      return status(404, { error: `No contracts at epoch ${epoch}`, status: 404 })
 
     const entries: Record<string, Uint8Array> = {}
     for (const f of files) {
@@ -86,6 +90,7 @@ export const downloadRoutes = new Elysia({ prefix: '/download' })
     const zip = zipSync(entries)
     const slug = name.toLowerCase().replace(/[^a-z0-9]/g, '-')
     set.headers['content-type'] = 'application/zip'
-    set.headers['content-disposition'] = `attachment; filename="qubic-registry-contract-${idx}-${slug}-all-epochs.zip"`
+    set.headers['content-disposition'] =
+      `attachment; filename="qubic-registry-contract-${idx}-${slug}-all-epochs.zip"`
     return zip
   })

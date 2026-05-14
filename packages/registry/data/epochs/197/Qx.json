@@ -3,7 +3,6 @@
   "contractName": "Qx",
   "effectiveFromEpoch": 197,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T14:13:11.666Z",
   "structs": {
     "Asset": {
       "name": "Asset",

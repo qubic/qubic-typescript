@@ -3,7 +3,6 @@
   "contractName": "Quottery",
   "effectiveFromEpoch": 167,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T14:12:36.718Z",
   "structs": {},
   "procedures": [
     {

@@ -3,7 +3,6 @@
   "contractName": "VottunBridge",
   "effectiveFromEpoch": 208,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T12:08:47.383Z",
   "structs": {
     "OrderResponse": {
       "name": "OrderResponse",
@@ -112,9 +111,21 @@
           "type": "uint8",
           "offset": 593,
           "byteLength": 1
+        },
+        {
+          "name": "executed",
+          "type": "uint8",
+          "offset": 594,
+          "byteLength": 1
+        },
+        {
+          "name": "active",
+          "type": "uint8",
+          "offset": 595,
+          "byteLength": 1
         }
       ],
-      "byteLength": 594
+      "byteLength": 596
     },
     "BridgeOrder": {
       "name": "BridgeOrder",
@@ -163,9 +174,27 @@
           "type": "uint8",
           "offset": 145,
           "byteLength": 1
+        },
+        {
+          "name": "fromQubicToEthereum",
+          "type": "uint8",
+          "offset": 146,
+          "byteLength": 1
+        },
+        {
+          "name": "tokensReceived",
+          "type": "uint8",
+          "offset": 147,
+          "byteLength": 1
+        },
+        {
+          "name": "tokensLocked",
+          "type": "uint8",
+          "offset": 148,
+          "byteLength": 1
         }
       ],
-      "byteLength": 146
+      "byteLength": 149
     }
   },
   "procedures": [
@@ -194,6 +223,12 @@
           "arrayLength": 64,
           "arrayItemType": "uint8",
           "arrayItemByteLength": 1
+        },
+        {
+          "name": "fromQubicToEthereum",
+          "type": "uint8",
+          "offset": 104,
+          "byteLength": 1
         }
       ],
       "outputFields": [
@@ -210,7 +245,7 @@
           "byteLength": 8
         }
       ],
-      "inputSize": 104,
+      "inputSize": 105,
       "outputSize": 9
     },
     {
@@ -353,10 +388,16 @@
           "type": "uint8",
           "offset": 0,
           "byteLength": 1
+        },
+        {
+          "name": "executed",
+          "type": "uint8",
+          "offset": 1,
+          "byteLength": 1
         }
       ],
       "inputSize": 8,
-      "outputSize": 1
+      "outputSize": 2
     },
     {
       "kind": "procedure",
@@ -549,27 +590,27 @@
           "name": "firstOrders",
           "type": "array",
           "offset": 552,
-          "byteLength": 2336,
+          "byteLength": 2384,
           "arrayLength": 16,
           "arrayItemStructRef": "BridgeOrder",
-          "arrayItemByteLength": 146
+          "arrayItemByteLength": 149
         },
         {
           "name": "totalOrdersFound",
           "type": "uint64",
-          "offset": 2888,
+          "offset": 2936,
           "byteLength": 8
         },
         {
           "name": "emptySlots",
           "type": "uint64",
-          "offset": 2896,
+          "offset": 2944,
           "byteLength": 8
         },
         {
           "name": "multisigAdmins",
           "type": "array",
-          "offset": 2904,
+          "offset": 2952,
           "byteLength": 512,
           "arrayLength": 16,
           "arrayItemType": "id",
@@ -578,24 +619,24 @@
         {
           "name": "numberOfAdmins",
           "type": "uint8",
-          "offset": 3416,
+          "offset": 3464,
           "byteLength": 1
         },
         {
           "name": "requiredApprovals",
           "type": "uint8",
-          "offset": 3417,
+          "offset": 3465,
           "byteLength": 1
         },
         {
           "name": "totalProposals",
           "type": "uint64",
-          "offset": 3418,
+          "offset": 3466,
           "byteLength": 8
         }
       ],
       "inputSize": 0,
-      "outputSize": 3426
+      "outputSize": 3474
     },
     {
       "kind": "function",
@@ -636,12 +677,12 @@
           "name": "proposal",
           "type": "struct",
           "offset": 1,
-          "byteLength": 594,
+          "byteLength": 596,
           "structRef": "AdminProposal"
         }
       ],
       "inputSize": 8,
-      "outputSize": 595
+      "outputSize": 597
     },
     {
       "kind": "function",

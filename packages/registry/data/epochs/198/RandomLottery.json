@@ -3,7 +3,6 @@
   "contractName": "RandomLottery",
   "effectiveFromEpoch": 198,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T14:13:14.610Z",
   "structs": {
     "WinnerInfo": {
       "name": "WinnerInfo",

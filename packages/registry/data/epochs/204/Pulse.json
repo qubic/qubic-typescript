@@ -3,7 +3,6 @@
   "contractName": "Pulse",
   "effectiveFromEpoch": 204,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T14:13:38.892Z",
   "structs": {
     "WinnerInfo": {
       "name": "WinnerInfo",

@@ -3,7 +3,6 @@
   "contractName": "Nostromo",
   "effectiveFromEpoch": 182,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T14:12:52.649Z",
   "structs": {
     "Asset": {
       "name": "Asset",

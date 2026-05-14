@@ -3,7 +3,6 @@
   "contractName": "Qswap",
   "effectiveFromEpoch": 172,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T14:12:41.254Z",
   "structs": {},
   "procedures": [
     {

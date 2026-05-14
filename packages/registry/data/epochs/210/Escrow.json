@@ -3,7 +3,6 @@
   "contractName": "Escrow",
   "effectiveFromEpoch": 210,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T14:44:35.401Z",
   "structs": {
     "AssetWithAmount": {
       "name": "AssetWithAmount",

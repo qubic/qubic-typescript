@@ -7,7 +7,6 @@
       "contractName": "Qx",
       "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T14:30:08.606Z",
       "structs": {
         "Asset": {
           "name": "Asset",
@@ -512,7 +511,6 @@
       "contractName": "Quottery",
       "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T14:30:08.678Z",
       "structs": {
         "QtryEventInfo": {
           "name": "QtryEventInfo",
@@ -1491,7 +1489,6 @@
       "contractName": "Random",
       "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T14:30:08.689Z",
       "structs": {},
       "procedures": [
         {
@@ -1518,7 +1515,6 @@
       "contractName": "QUtil",
       "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T14:30:08.747Z",
       "structs": {
         "Asset": {
           "name": "Asset",
@@ -2293,7 +2289,6 @@
       "contractName": "MyLastMatch",
       "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T14:30:08.750Z",
       "structs": {},
       "procedures": [],
       "functions": []
@@ -2303,7 +2298,6 @@
       "contractName": "GeneralQuorumProposal",
       "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T14:30:08.760Z",
       "structs": {
         "ProposalDataT": {
           "name": "ProposalDataT",
@@ -2607,7 +2601,6 @@
       "contractName": "SupplyWatcher",
       "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T14:30:08.764Z",
       "structs": {},
       "procedures": [],
       "functions": []
@@ -2617,7 +2610,6 @@
       "contractName": "ComputorControlledFund",
       "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T14:30:08.776Z",
       "structs": {
         "ProposalDataT": {
           "name": "ProposalDataT",
@@ -3112,7 +3104,6 @@
       "contractName": "Qearn",
       "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T14:30:08.800Z",
       "structs": {},
       "procedures": [
         {
@@ -3472,7 +3463,6 @@
       "contractName": "QVAULT",
       "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T14:30:08.844Z",
       "structs": {
         "Asset": {
           "name": "Asset",
@@ -5211,7 +5201,6 @@
       "contractName": "MsVault",
       "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T14:30:08.874Z",
       "structs": {
         "Asset": {
           "name": "Asset",
@@ -6172,7 +6161,6 @@
       "contractName": "Qbay",
       "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T14:30:08.908Z",
       "structs": {
         "Asset": {
           "name": "Asset",
@@ -7497,7 +7485,6 @@
       "contractName": "Qswap",
       "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T14:30:08.929Z",
       "structs": {
         "Asset": {
           "name": "Asset",
@@ -8264,7 +8251,6 @@
       "contractName": "Nostromo",
       "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T14:30:08.950Z",
       "structs": {
         "Asset": {
           "name": "Asset",
@@ -9242,7 +9228,6 @@
       "contractName": "Qdraw",
       "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T14:30:08.953Z",
       "structs": {},
       "procedures": [
         {
@@ -9362,7 +9347,6 @@
       "contractName": "RandomLottery",
       "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T14:30:08.960Z",
       "structs": {
         "WinnerInfo": {
           "name": "WinnerInfo",
@@ -9706,7 +9690,6 @@
       "contractName": "QBond",
       "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T14:30:08.975Z",
       "structs": {
         "Order": {
           "name": "Order",
@@ -10289,7 +10272,6 @@
       "contractName": "QIP",
       "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T14:30:08.982Z",
       "structs": {
         "Asset": {
           "name": "Asset",
@@ -10575,7 +10557,6 @@
       "contractName": "QRaffle",
       "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T14:30:08.998Z",
       "structs": {},
       "procedures": [
         {
@@ -11244,7 +11225,6 @@
       "contractName": "qRWA",
       "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T14:30:09.029Z",
       "structs": {
         "QRWAGovParams": {
           "name": "QRWAGovParams",
@@ -12115,7 +12095,6 @@
       "contractName": "QReservePool",
       "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T14:30:09.032Z",
       "structs": {},
       "procedures": [
         {
@@ -12266,7 +12245,6 @@
       "contractName": "QThirtyFour",
       "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T14:30:09.054Z",
       "structs": {
         "NextEpochData": {
           "name": "NextEpochData",
@@ -12924,7 +12902,6 @@
       "contractName": "QDuel",
       "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T14:30:09.066Z",
       "structs": {
         "RoomInfo": {
           "name": "RoomInfo",
@@ -13423,7 +13400,6 @@
       "contractName": "Pulse",
       "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T14:30:09.086Z",
       "structs": {
         "Ticket": {
           "name": "Ticket",
@@ -14259,7 +14235,6 @@
       "contractName": "VottunBridge",
       "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T14:30:09.109Z",
       "structs": {
         "OrderResponse": {
           "name": "OrderResponse",
@@ -14998,7 +14973,6 @@
       "contractName": "Qusino",
       "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T14:30:09.120Z",
       "structs": {
         "Asset": {
           "name": "Asset",
@@ -15453,7 +15427,6 @@
       "contractName": "Escrow",
       "effectiveFromEpoch": 212,
       "effectiveToEpoch": null,
-      "registeredAt": "2026-05-13T14:30:09.132Z",
       "structs": {
         "AssetWithAmount": {
           "name": "AssetWithAmount",

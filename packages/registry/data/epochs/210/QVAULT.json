@@ -3,7 +3,6 @@
   "contractName": "QVAULT",
   "effectiveFromEpoch": 210,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T14:44:26.547Z",
   "structs": {
     "Asset": {
       "name": "Asset",

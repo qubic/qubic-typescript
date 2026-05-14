@@ -3,7 +3,6 @@
   "contractName": "Qearn",
   "effectiveFromEpoch": 143,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T14:12:21.998Z",
   "structs": {},
   "procedures": [
     {

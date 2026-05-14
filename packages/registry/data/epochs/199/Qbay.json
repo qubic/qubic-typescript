@@ -3,7 +3,6 @@
   "contractName": "Qbay",
   "effectiveFromEpoch": 199,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T14:13:15.885Z",
   "structs": {
     "Asset": {
       "name": "Asset",

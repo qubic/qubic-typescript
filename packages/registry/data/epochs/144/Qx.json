@@ -3,7 +3,6 @@
   "contractName": "Qx",
   "effectiveFromEpoch": 144,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T14:12:22.520Z",
   "structs": {
     "Order": {
       "name": "Order",

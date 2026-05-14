@@ -3,7 +3,6 @@
   "contractName": "Random",
   "effectiveFromEpoch": 125,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T14:12:15.260Z",
   "structs": {},
   "procedures": [
     {

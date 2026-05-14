@@ -3,7 +3,6 @@
   "contractName": "VottunBridge",
   "effectiveFromEpoch": 210,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T14:44:34.373Z",
   "structs": {
     "OrderResponse": {
       "name": "OrderResponse",

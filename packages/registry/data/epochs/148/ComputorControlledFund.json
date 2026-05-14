@@ -3,7 +3,6 @@
   "contractName": "ComputorControlledFund",
   "effectiveFromEpoch": 148,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T14:12:26.336Z",
   "structs": {
     "ProposalDataT": {
       "name": "ProposalDataT",

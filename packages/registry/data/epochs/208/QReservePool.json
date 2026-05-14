@@ -3,7 +3,6 @@
   "contractName": "QReservePool",
   "effectiveFromEpoch": 208,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T12:08:46.853Z",
   "structs": {},
   "procedures": [
     {

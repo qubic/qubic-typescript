@@ -3,7 +3,6 @@
   "contractName": "QThirtyFour",
   "effectiveFromEpoch": 199,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T14:13:18.171Z",
   "structs": {
     "NextEpochData": {
       "name": "NextEpochData",

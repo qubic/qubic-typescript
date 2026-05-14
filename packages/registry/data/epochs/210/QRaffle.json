@@ -3,7 +3,6 @@
   "contractName": "QRaffle",
   "effectiveFromEpoch": 210,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T14:44:31.180Z",
   "structs": {},
   "procedures": [
     {

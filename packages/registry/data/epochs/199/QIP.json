@@ -3,7 +3,6 @@
   "contractName": "QIP",
   "effectiveFromEpoch": 199,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T14:13:16.993Z",
   "structs": {
     "Asset": {
       "name": "Asset",

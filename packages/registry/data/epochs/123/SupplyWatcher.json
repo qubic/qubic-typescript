@@ -3,7 +3,6 @@
   "contractName": "SupplyWatcher",
   "effectiveFromEpoch": 123,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T14:12:14.682Z",
   "structs": {},
   "procedures": [],
   "functions": []

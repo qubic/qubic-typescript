@@ -3,7 +3,6 @@
   "contractName": "GeneralQuorumProposal",
   "effectiveFromEpoch": 208,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T12:08:46.146Z",
   "structs": {},
   "procedures": [
     {

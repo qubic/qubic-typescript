@@ -3,7 +3,6 @@
   "contractName": "GeneralQuorumProposal",
   "effectiveFromEpoch": 140,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T14:12:20.259Z",
   "structs": {
     "ProposalDataT": {
       "name": "ProposalDataT",

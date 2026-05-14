@@ -3,7 +3,6 @@
   "contractName": "Qusino",
   "effectiveFromEpoch": 212,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T14:30:09.120Z",
   "structs": {
     "Asset": {
       "name": "Asset",

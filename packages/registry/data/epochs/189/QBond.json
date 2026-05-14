@@ -3,7 +3,6 @@
   "contractName": "QBond",
   "effectiveFromEpoch": 189,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T14:13:01.696Z",
   "structs": {
     "Order": {
       "name": "Order",

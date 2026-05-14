@@ -3,7 +3,6 @@
   "contractName": "Quottery",
   "effectiveFromEpoch": 210,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T14:44:22.354Z",
   "structs": {
     "QtryEventInfo": {
       "name": "QtryEventInfo",

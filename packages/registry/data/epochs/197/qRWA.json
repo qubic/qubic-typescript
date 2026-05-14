@@ -3,7 +3,6 @@
   "contractName": "qRWA",
   "effectiveFromEpoch": 197,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T14:13:13.417Z",
   "structs": {
     "QRWAGovParams": {
       "name": "QRWAGovParams",

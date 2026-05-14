@@ -3,7 +3,6 @@
   "contractName": "MsVault",
   "effectiveFromEpoch": 168,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T14:12:38.325Z",
   "structs": {},
   "procedures": [
     {

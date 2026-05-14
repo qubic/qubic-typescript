@@ -3,7 +3,6 @@
   "contractName": "QDuel",
   "effectiveFromEpoch": 200,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T14:13:21.523Z",
   "structs": {
     "RoomInfo": {
       "name": "RoomInfo",

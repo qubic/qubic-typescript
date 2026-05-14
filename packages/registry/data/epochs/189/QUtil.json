@@ -3,7 +3,6 @@
   "contractName": "QUtil",
   "effectiveFromEpoch": 189,
   "effectiveToEpoch": null,
-  "registeredAt": "2026-05-13T14:13:01.560Z",
   "structs": {
     "Asset": {
       "name": "Asset",

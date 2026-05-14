@@ -1,4 +1,4 @@
-import { readdirSync } from 'node:fs'
+import { readFileSync, readdirSync } from 'node:fs'
 import {
   AbiNotFoundError,
   type ContractAbiVersion,
@@ -52,7 +52,26 @@ const CONTRACT_SUMMARIES = (() => {
     })
 })()
 
+function readEpochFromDisk(epoch: number): ContractAbiVersion[] | null {
+  const dir = `${EPOCHS_DIR}${epoch}/`
+  try {
+    const files = readdirSync(dir).filter((f) => f.endsWith('.json'))
+    if (files.length === 0) return null
+    const versions: ContractAbiVersion[] = []
+    for (const file of files) {
+      try {
+        versions.push(JSON.parse(readFileSync(`${dir}${file}`, 'utf-8')) as ContractAbiVersion)
+      } catch {}
+    }
+    return versions.sort((a, b) => a.contractIndex - b.contractIndex)
+  } catch {
+    return null
+  }
+}
+
 function allActiveAtEpoch(epoch: number): ContractAbiVersion[] {
+  const fromDisk = readEpochFromDisk(epoch)
+  if (fromDisk) return fromDisk
   const indices = [...new Set(registry.versions.map((v) => v.contractIndex))]
   const result: ContractAbiVersion[] = []
   for (const idx of indices) {

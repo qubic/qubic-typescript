@@ -3,7 +3,7 @@ import type { Seed } from '@qubic.ts/types'
 import { InvalidVaultError, VaultDecryptionError } from './errors.js'
 
 const VAULT_VERSION = 1
-const PBKDF2_ITERATIONS = 100_000
+const PBKDF2_ITERATIONS = 600_000
 const SALT_BYTES = 16
 const IV_BYTES = 12
 

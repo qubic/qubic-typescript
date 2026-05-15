@@ -143,10 +143,11 @@
       "name": "@qubic.ts/tcp",
       "version": "0.0.0",
       "dependencies": {
-        "@qubic.ts/events": "workspace:^",
-        "@qubic.ts/rpc": "workspace:^",
+        "@qubic.ts/crypto": "workspace:^",
+        "@qubic.ts/types": "workspace:^",
       },
       "devDependencies": {
+        "@types/node": "^25.8.0",
         "typescript": "*",
       },
     },

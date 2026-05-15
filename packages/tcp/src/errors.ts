@@ -1,11 +1,11 @@
 import { QubicError } from '@qubic.ts/types'
 
 export class QubicTcpError extends QubicError {
-  readonly code = 'TCP_ERROR' as const
+  override readonly code: string = 'TCP_ERROR'
 }
 
 export class QubicTcpConnectionError extends QubicTcpError {
-  readonly code = 'TCP_CONNECTION_ERROR' as const
+  override readonly code = 'TCP_CONNECTION_ERROR' as const
 
   constructor(
     readonly hostname: string,
@@ -19,7 +19,7 @@ export class QubicTcpConnectionError extends QubicTcpError {
 }
 
 export class QubicTcpTimeoutError extends QubicTcpError {
-  readonly code = 'TCP_TIMEOUT' as const
+  override readonly code: string = 'TCP_TIMEOUT'
 
   constructor(
     readonly hostname: string,

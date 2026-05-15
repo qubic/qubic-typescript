@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import { api } from '../../lib/api'
 
+export const dynamic = 'force-dynamic'
+
 export default async function EpochsPage() {
   const epochs = await api.epochs()
   const sorted = [...epochs].reverse()

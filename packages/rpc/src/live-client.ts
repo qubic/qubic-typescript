@@ -43,44 +43,53 @@ export function createLiveClient(options: LiveClientOptions = {}) {
   })
   const signal = options.signal
 
+  type Opts = { signal?: AbortSignal }
+  const s = (opts?: Opts) => sig(opts?.signal ?? signal)
+
   return {
     /** Returns current tick, epoch, duration and initial tick. */
-    async getTickInfo(): Promise<LiveTickInfo> {
-      const res = await unwrap(client.GET('/tick-info', { ...sig(signal) }), '/tick-info')
+    async getTickInfo(opts?: Opts): Promise<LiveTickInfo> {
+      const res = await unwrap(client.GET('/tick-info', { ...s(opts) }), '/tick-info')
       return res.tickInfo as LiveTickInfo
     },
 
     /** Returns the balance and transfer history for the given identity. */
-    async getBalance(identity: string): Promise<LiveBalance> {
+    async getBalance(identity: string, opts?: Opts): Promise<LiveBalance> {
       const res = await unwrap(
-        client.GET('/balances/{id}', { params: { path: { id: identity } }, ...sig(signal) }),
+        client.GET('/balances/{id}', { params: { path: { id: identity } }, ...s(opts) }),
         `/balances/${identity}`,
       )
       return res.balance as LiveBalance
     },
 
     /** Broadcasts a base64-encoded signed transaction; returns peer count and tx id. */
-    async broadcastTransaction(encodedTransaction: string): Promise<BroadcastTransactionResponse> {
+    async broadcastTransaction(
+      encodedTransaction: string,
+      opts?: Opts,
+    ): Promise<BroadcastTransactionResponse> {
       return unwrap(
-        client.POST('/broadcast-transaction', { body: { encodedTransaction }, ...sig(signal) }),
+        client.POST('/broadcast-transaction', { body: { encodedTransaction }, ...s(opts) }),
         '/broadcast-transaction',
       )
     },
 
     /** Calls a smart contract read-only function; returns base64-encoded response data. */
-    async querySmartContract(req: QuerySmartContractRequest): Promise<QuerySmartContractResponse> {
+    async querySmartContract(
+      req: QuerySmartContractRequest,
+      opts?: Opts,
+    ): Promise<QuerySmartContractResponse> {
       return unwrap(
-        client.POST('/querySmartContract', { body: req, ...sig(signal) }),
+        client.POST('/querySmartContract', { body: req, ...s(opts) }),
         '/querySmartContract',
       )
     },
 
     /** Lists assets issued by the given identity. */
-    async getIssuedAssets(identity: string): Promise<IssuedAsset[]> {
+    async getIssuedAssets(identity: string, opts?: Opts): Promise<IssuedAsset[]> {
       const res = await unwrap(
         client.GET('/assets/{identity}/issued', {
           params: { path: { identity } },
-          ...sig(signal),
+          ...s(opts),
         }),
         `/assets/${identity}/issued`,
       )
@@ -88,11 +97,11 @@ export function createLiveClient(options: LiveClientOptions = {}) {
     },
 
     /** Lists assets owned by the given identity. */
-    async getOwnedAssets(identity: string): Promise<OwnedAsset[]> {
+    async getOwnedAssets(identity: string, opts?: Opts): Promise<OwnedAsset[]> {
       const res = await unwrap(
         client.GET('/assets/{identity}/owned', {
           params: { path: { identity } },
-          ...sig(signal),
+          ...s(opts),
         }),
         `/assets/${identity}/owned`,
       )
@@ -100,11 +109,11 @@ export function createLiveClient(options: LiveClientOptions = {}) {
     },
 
     /** Lists assets possessed by the given identity. */
-    async getPossessedAssets(identity: string): Promise<PossessedAsset[]> {
+    async getPossessedAssets(identity: string, opts?: Opts): Promise<PossessedAsset[]> {
       const res = await unwrap(
         client.GET('/assets/{identity}/possessed', {
           params: { path: { identity } },
-          ...sig(signal),
+          ...s(opts),
         }),
         `/assets/${identity}/possessed`,
       )
@@ -112,14 +121,14 @@ export function createLiveClient(options: LiveClientOptions = {}) {
     },
 
     /** Searches asset issuances by optional filter. */
-    async getAssetIssuances(filter?: {
-      issuerIdentity?: string
-      assetName?: string
-    }): Promise<AssetIssuance[]> {
+    async getAssetIssuances(
+      filter?: { issuerIdentity?: string; assetName?: string },
+      opts?: Opts,
+    ): Promise<AssetIssuance[]> {
       const res = await unwrap(
         client.GET('/assets/issuances', {
           ...(filter ? { params: { query: filter } } : {}),
-          ...sig(signal),
+          ...s(opts),
         }),
         '/assets/issuances',
       )
@@ -127,27 +136,30 @@ export function createLiveClient(options: LiveClientOptions = {}) {
     },
 
     /** Returns a single asset issuance by universe index. */
-    async getAssetIssuanceByIndex(index: number): Promise<AssetIssuance> {
+    async getAssetIssuanceByIndex(index: number, opts?: Opts): Promise<AssetIssuance> {
       return unwrap(
         client.GET('/assets/issuances/{index}', {
           params: { path: { index } },
-          ...sig(signal),
+          ...s(opts),
         }),
         `/assets/issuances/${index}`,
       )
     },
 
     /** Searches asset ownerships by optional filter. */
-    async getAssetOwnerships(filter?: {
-      issuerIdentity?: string
-      assetName?: string
-      ownerIdentity?: string
-      ownershipManagingContract?: number
-    }): Promise<AssetOwnership[]> {
+    async getAssetOwnerships(
+      filter?: {
+        issuerIdentity?: string
+        assetName?: string
+        ownerIdentity?: string
+        ownershipManagingContract?: number
+      },
+      opts?: Opts,
+    ): Promise<AssetOwnership[]> {
       const res = await unwrap(
         client.GET('/assets/ownerships', {
           ...(filter ? { params: { query: filter } } : {}),
-          ...sig(signal),
+          ...s(opts),
         }),
         '/assets/ownerships',
       )
@@ -155,29 +167,32 @@ export function createLiveClient(options: LiveClientOptions = {}) {
     },
 
     /** Returns a single asset ownership by universe index. */
-    async getAssetOwnershipByIndex(index: number): Promise<AssetOwnership> {
+    async getAssetOwnershipByIndex(index: number, opts?: Opts): Promise<AssetOwnership> {
       return unwrap(
         client.GET('/assets/ownerships/{index}', {
           params: { path: { index } },
-          ...sig(signal),
+          ...s(opts),
         }),
         `/assets/ownerships/${index}`,
       )
     },
 
     /** Searches asset possessions by optional filter. */
-    async getAssetPossessions(filter?: {
-      issuerIdentity?: string
-      assetName?: string
-      ownerIdentity?: string
-      possessorIdentity?: string
-      ownershipManagingContract?: number
-      possessionManagingContract?: number
-    }): Promise<AssetPossession[]> {
+    async getAssetPossessions(
+      filter?: {
+        issuerIdentity?: string
+        assetName?: string
+        ownerIdentity?: string
+        possessorIdentity?: string
+        ownershipManagingContract?: number
+        possessionManagingContract?: number
+      },
+      opts?: Opts,
+    ): Promise<AssetPossession[]> {
       const res = await unwrap(
         client.GET('/assets/possessions', {
           ...(filter ? { params: { query: filter } } : {}),
-          ...sig(signal),
+          ...s(opts),
         }),
         '/assets/possessions',
       )
@@ -185,19 +200,19 @@ export function createLiveClient(options: LiveClientOptions = {}) {
     },
 
     /** Returns a single asset possession by universe index. */
-    async getAssetPossessionByIndex(index: number): Promise<AssetPossession> {
+    async getAssetPossessionByIndex(index: number, opts?: Opts): Promise<AssetPossession> {
       return unwrap(
         client.GET('/assets/possessions/{index}', {
           params: { path: { index } },
-          ...sig(signal),
+          ...s(opts),
         }),
         `/assets/possessions/${index}`,
       )
     },
 
     /** Returns all active IPOs. */
-    async getActiveIpos(): Promise<Ipo[]> {
-      const res = await unwrap(client.GET('/ipos/active', { ...sig(signal) }), '/ipos/active')
+    async getActiveIpos(opts?: Opts): Promise<Ipo[]> {
+      const res = await unwrap(client.GET('/ipos/active', { ...s(opts) }), '/ipos/active')
       return res.ipos ?? []
     },
   }

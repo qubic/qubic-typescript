@@ -39,16 +39,19 @@ export function createQueryClient(options: QueryClientOptions = {}) {
   })
   const signal = options.signal
 
+  type Opts = { signal?: AbortSignal }
+  const s = (opts?: Opts) => sig(opts?.signal ?? signal)
+
   return {
     /** Returns the last tick processed by the archive indexer. */
-    async getLastProcessedTick(): Promise<{
+    async getLastProcessedTick(opts?: Opts): Promise<{
       tickNumber: number
       epoch: number
       intervalInitialTick: number
       logTickNumber: number
     }> {
       return unwrap(
-        client.GET('/getLastProcessedTick', { ...sig(signal) }),
+        client.GET('/getLastProcessedTick', { ...s(opts) }),
         '/getLastProcessedTick',
       ) as Promise<{
         tickNumber: number
@@ -59,36 +62,36 @@ export function createQueryClient(options: QueryClientOptions = {}) {
     },
 
     /** Returns the tick intervals that have been processed (indexed) by the archive. */
-    async getProcessedTickIntervals(): Promise<ProcessedTickInterval[]> {
+    async getProcessedTickIntervals(opts?: Opts): Promise<ProcessedTickInterval[]> {
       const res = await unwrap(
-        client.GET('/getProcessedTickIntervals', { ...sig(signal) }),
+        client.GET('/getProcessedTickIntervals', { ...s(opts) }),
         '/getProcessedTickIntervals',
       )
       return res.processedTickIntervals ?? []
     },
 
     /** Returns computor lists for the given epoch. */
-    async getComputorListsForEpoch(epoch: number): Promise<QueryComputorList[]> {
+    async getComputorListsForEpoch(epoch: number, opts?: Opts): Promise<QueryComputorList[]> {
       const res = await unwrap(
-        client.POST('/getComputorListsForEpoch', { body: { epoch }, ...sig(signal) }),
+        client.POST('/getComputorListsForEpoch', { body: { epoch }, ...s(opts) }),
         '/getComputorListsForEpoch',
       )
       return res.computorsLists ?? []
     },
 
     /** Returns full tick data including transaction hashes and computor info. */
-    async getTickData(tickNumber: number): Promise<QueryTickData> {
+    async getTickData(tickNumber: number, opts?: Opts): Promise<QueryTickData> {
       const res = await unwrap(
-        client.POST('/getTickData', { body: { tickNumber }, ...sig(signal) }),
+        client.POST('/getTickData', { body: { tickNumber }, ...s(opts) }),
         '/getTickData',
       )
       return res.tickData as QueryTickData
     },
 
     /** Returns a single transaction by its 60-char lowercase hash. */
-    async getTransactionByHash(hash: string): Promise<QueryTransaction> {
+    async getTransactionByHash(hash: string, opts?: Opts): Promise<QueryTransaction> {
       const res = await unwrap(
-        client.POST('/getTransactionByHash', { body: { hash }, ...sig(signal) }),
+        client.POST('/getTransactionByHash', { body: { hash }, ...s(opts) }),
         '/getTransactionByHash',
       )
       return res.transaction as QueryTransaction
@@ -97,9 +100,10 @@ export function createQueryClient(options: QueryClientOptions = {}) {
     /** Returns transactions for the given identity with optional filters. */
     async getTransactionsForIdentity(
       req: GetTransactionsForIdentityRequest,
+      opts?: Opts,
     ): Promise<{ transactions: QueryTransaction[]; hits: Hits; validForTick: number }> {
       const res = await unwrap(
-        client.POST('/getTransactionsForIdentity', { body: req, ...sig(signal) }),
+        client.POST('/getTransactionsForIdentity', { body: req, ...s(opts) }),
         '/getTransactionsForIdentity',
       )
       return {
@@ -110,9 +114,9 @@ export function createQueryClient(options: QueryClientOptions = {}) {
     },
 
     /** Returns all transactions included in the given tick. */
-    async getTransactionsForTick(tickNumber: number): Promise<QueryTransaction[]> {
+    async getTransactionsForTick(tickNumber: number, opts?: Opts): Promise<QueryTransaction[]> {
       const res = await unwrap(
-        client.POST('/getTransactionsForTick', { body: { tickNumber }, ...sig(signal) }),
+        client.POST('/getTransactionsForTick', { body: { tickNumber }, ...s(opts) }),
         '/getTransactionsForTick',
       )
       return res.transactions ?? []
@@ -121,9 +125,10 @@ export function createQueryClient(options: QueryClientOptions = {}) {
     /** Queries event logs with rich filtering (log type, identity, tick range, pagination). */
     async getEventLogs(
       req: GetEventLogsRequest,
+      opts?: Opts,
     ): Promise<{ eventLogs: QueryEvent[]; hits: Hits; validForTick: number }> {
       const res = await unwrap(
-        client.POST('/getEventLogs', { body: req, ...sig(signal) }),
+        client.POST('/getEventLogs', { body: req, ...s(opts) }),
         '/getEventLogs',
       )
       return {

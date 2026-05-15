@@ -6,7 +6,13 @@ export async function unwrap<T>(
 ): Promise<T> {
   const { data, error, response } = await promise
   if (error !== undefined || !response.ok) {
-    throw new QubicRpcError(response.status, endpoint)
+    let detail = ''
+    try {
+      detail = await response.text()
+    } catch {
+      // ignore — body already consumed or unavailable
+    }
+    throw new QubicRpcError(response.status, endpoint, detail || undefined)
   }
   return data as T
 }

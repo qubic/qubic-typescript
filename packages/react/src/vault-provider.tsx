@@ -1,4 +1,4 @@
-import type { Identity } from '@qubic.ts/types'
+import type { Identity, Seed } from '@qubic.ts/types'
 import type { Wallet } from '@qubic.ts/wallet'
 import { createWallet, unlockVault } from '@qubic.ts/wallet'
 import type { VaultData } from '@qubic.ts/wallet'
@@ -11,13 +11,28 @@ import {
   useRef,
   useState,
 } from 'react'
+import { clearSession, restoreSession, saveSession } from './session-store.js'
+
+const DEFAULT_SESSION_KEY = 'qubic-session'
+
+// Pure module-level helper — no hook deps needed.
+function buildWalletMap(seeds: Seed[]): { map: Map<Identity, Wallet>; ids: Identity[] } {
+  const map = new Map<Identity, Wallet>()
+  const ids: Identity[] = []
+  for (const seed of seeds) {
+    const wallet = createWallet(seed)
+    map.set(wallet.identity, wallet)
+    ids.push(wallet.identity)
+  }
+  return { map, ids }
+}
 
 // ── Public context (exported via useVaultState) ───────────────────────────────
 
 export interface VaultStateValue {
   /** Whether the vault has been unlocked and wallets are in memory. */
   isUnlocked: boolean
-  /** True while the vault is being decrypted. */
+  /** True while the vault is being decrypted or a session is being restored. */
   isUnlocking: boolean
   /** Identities derived from the vault. Safe to expose in component code. */
   identities: readonly Identity[]
@@ -30,25 +45,39 @@ export interface VaultStateValue {
    * never in React state, never serialisable by dev tools.
    */
   unlock(password: string): Promise<void>
-  /** Remove all wallets from memory. Call on logout or session end. */
+  /** Remove all wallets from memory and clear any active session. */
   lock(): void
 }
 
 const VaultStateContext = createContext<VaultStateValue | undefined>(undefined)
 
-// ── Internal signing context (NOT exported from the package) ──────────────────
+// ── Internal signing context (NOT exported from the package barrel) ───────────
 
 export interface VaultSigningValue {
   getWallet(identity: Identity): Wallet | undefined
 }
 
-// Exported only within this module — hooks in this package import it directly.
 export const VaultSigningContext = createContext<VaultSigningValue | undefined>(undefined)
 
 // ── Provider ──────────────────────────────────────────────────────────────────
 
 export interface VaultProviderProps {
   vaultData: VaultData
+  /**
+   * Persist the session across page refreshes using a non-extractable
+   * AES-GCM CryptoKey in IndexedDB and an encrypted seed payload in
+   * sessionStorage. The session is automatically revoked when the tab closes
+   * (sessionStorage is tab-scoped). Keys rotate on every restore (forward secrecy).
+   *
+   * Default: false.
+   */
+  persistSession?: boolean
+  /**
+   * sessionStorage key used to store the encrypted session payload.
+   * Override if you need multiple independent vaults on the same origin.
+   * Default: 'qubic-session'.
+   */
+  sessionStorageKey?: string
   /**
    * Auto-lock after this many milliseconds of inactivity.
    * Resets on every unlock. Also locks when the page is hidden.
@@ -60,22 +89,33 @@ export interface VaultProviderProps {
 
 /**
  * Manages an encrypted Qubic vault for child components.
- * Seeds are never stored in React state — wallets live in a Ref.
- * Child hooks (useSendTransfer, useSendContractCall) access signing internally;
- * components only see identities via useVaultState().
+ *
+ * Security properties:
+ * - Wallets live in a Ref, never in React state (invisible to DevTools).
+ * - Components only see identities (strings) via useVaultState().
+ * - useSendTransfer / useSendContractCall sign internally — no wallet exposure.
+ * - Auto-locks on page hide and after a configurable idle timeout.
+ * - With persistSession: keys are non-extractable (XSS-resistant), session
+ *   expires on tab close, keys rotate on restore (forward secrecy).
  *
  * @example
  * ```tsx
  * <QubicProvider liveClient={live}>
- *   <VaultProvider vaultData={vault} autoLockMs={15 * 60_000}>
+ *   <VaultProvider vaultData={vault} persistSession autoLockMs={15 * 60_000}>
  *     <App />
  *   </VaultProvider>
  * </QubicProvider>
  * ```
  */
-export function VaultProvider({ vaultData, autoLockMs, children }: VaultProviderProps) {
-  // Wallets are stored in a Ref: invisible to React dev tools, not serialisable,
-  // not part of the render cycle — minimises accidental exposure.
+export function VaultProvider({
+  vaultData,
+  persistSession = false,
+  sessionStorageKey = DEFAULT_SESSION_KEY,
+  autoLockMs,
+  children,
+}: VaultProviderProps) {
+  // Wallets stored in a Ref: invisible to DevTools, not serialisable,
+  // not part of the render cycle.
   const walletsRef = useRef<Map<Identity, Wallet>>(new Map())
 
   const [identities, setIdentities] = useState<readonly Identity[]>([])
@@ -90,7 +130,8 @@ export function VaultProvider({ vaultData, autoLockMs, children }: VaultProvider
     walletsRef.current.clear()
     setIdentities([])
     setError(undefined)
-  }, [])
+    if (persistSession) clearSession(sessionStorageKey).catch(() => {})
+  }, [persistSession, sessionStorageKey])
 
   const resetLockTimer = useCallback(() => {
     clearTimeout(lockTimerRef.current)
@@ -99,7 +140,27 @@ export function VaultProvider({ vaultData, autoLockMs, children }: VaultProvider
     }
   }, [autoLockMs, performLock])
 
-  // Lock when the page becomes hidden (tab switch, minimise, etc.)
+  // ── Session restore on mount ────────────────────────────────────────────────
+
+  useEffect(() => {
+    if (!persistSession) return
+    setIsUnlocking(true)
+    restoreSession(sessionStorageKey)
+      .then(async (seeds) => {
+        if (!seeds) return
+        const { map, ids } = buildWalletMap(seeds)
+        walletsRef.current = map
+        setIdentities(ids)
+        // Re-save with fresh rotated key (restoreSession deleted the old key).
+        await saveSession(seeds, sessionStorageKey)
+        resetLockTimer()
+      })
+      .catch(() => {})
+      .finally(() => setIsUnlocking(false))
+  }, [persistSession, sessionStorageKey, resetLockTimer])
+
+  // ── Lock on page hide ───────────────────────────────────────────────────────
+
   useEffect(() => {
     const handleVisibility = () => {
       if (document.hidden) performLock()
@@ -108,8 +169,11 @@ export function VaultProvider({ vaultData, autoLockMs, children }: VaultProvider
     return () => document.removeEventListener('visibilitychange', handleVisibility)
   }, [performLock])
 
-  // Clear timer on unmount
+  // ── Clear timer on unmount ──────────────────────────────────────────────────
+
   useEffect(() => () => clearTimeout(lockTimerRef.current), [])
+
+  // ── Unlock ──────────────────────────────────────────────────────────────────
 
   const unlock = useCallback(
     async (password: string) => {
@@ -117,14 +181,10 @@ export function VaultProvider({ vaultData, autoLockMs, children }: VaultProvider
       setError(undefined)
       try {
         const seeds = await unlockVault(vaultData, password)
-        const newMap = new Map<Identity, Wallet>()
-        const ids: Identity[] = []
-        for (const seed of seeds) {
-          const wallet = createWallet(seed)
-          newMap.set(wallet.identity, wallet)
-          ids.push(wallet.identity)
-        }
-        walletsRef.current = newMap
+        // Save session before seeds go out of scope.
+        if (persistSession) await saveSession(seeds, sessionStorageKey)
+        const { map, ids } = buildWalletMap(seeds)
+        walletsRef.current = map
         setIdentities(ids)
         resetLockTimer()
       } catch (e) {
@@ -133,8 +193,10 @@ export function VaultProvider({ vaultData, autoLockMs, children }: VaultProvider
         setIsUnlocking(false)
       }
     },
-    [vaultData, resetLockTimer],
+    [vaultData, persistSession, sessionStorageKey, resetLockTimer],
   )
+
+  // ── Context values ──────────────────────────────────────────────────────────
 
   const signingValue: VaultSigningValue = {
     getWallet: (identity) => walletsRef.current.get(identity),

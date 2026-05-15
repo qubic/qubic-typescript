@@ -47,14 +47,18 @@ export function useSendTransfer(): UseMutationResult<
     mutationFn: async ({ from, destination, amount, tickOffset = 5 }) => {
       const wallet = getWallet(from)
       if (wallet === undefined) throw new Error(`No wallet for identity: ${from}`)
-      const { tick } = await liveClient.getTickInfo()
+      const tickR = await liveClient.getTickInfo()
+      if (!tickR.ok) throw tickR.error
+      const { tick } = tickR.value
       const { encoded } = await wallet.buildTransfer({
         destination,
         amount,
         targetTick: tick + tickOffset,
         currentTick: tick,
       })
-      return liveClient.broadcastTransaction(encoded)
+      const broadcastR = await liveClient.broadcastTransaction(encoded)
+      if (!broadcastR.ok) throw broadcastR.error
+      return broadcastR.value
     },
   })
 }

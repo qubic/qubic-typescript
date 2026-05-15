@@ -20,7 +20,11 @@ export function useIssuedAssets(
   const { liveClient } = useQubic()
   return useQuery<IssuedAsset[]>({
     queryKey: ['qubic', 'issuedAssets', identity],
-    queryFn: () => liveClient.getIssuedAssets(identity as string),
+    queryFn: async () => {
+      const r = await liveClient.getIssuedAssets(identity as string)
+      if (!r.ok) throw r.error
+      return r.value
+    },
     enabled: enabled(identity),
     ...options,
   })
@@ -37,7 +41,11 @@ export function useOwnedAssets(
   const { liveClient } = useQubic()
   return useQuery<OwnedAsset[]>({
     queryKey: ['qubic', 'ownedAssets', identity],
-    queryFn: () => liveClient.getOwnedAssets(identity as string),
+    queryFn: async () => {
+      const r = await liveClient.getOwnedAssets(identity as string)
+      if (!r.ok) throw r.error
+      return r.value
+    },
     enabled: enabled(identity),
     ...options,
   })
@@ -54,7 +62,11 @@ export function usePossessedAssets(
   const { liveClient } = useQubic()
   return useQuery<PossessedAsset[]>({
     queryKey: ['qubic', 'possessedAssets', identity],
-    queryFn: () => liveClient.getPossessedAssets(identity as string),
+    queryFn: async () => {
+      const r = await liveClient.getPossessedAssets(identity as string)
+      if (!r.ok) throw r.error
+      return r.value
+    },
     enabled: enabled(identity),
     ...options,
   })

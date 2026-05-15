@@ -21,7 +21,11 @@ export function useTickInfo(
   const { liveClient } = useQubic()
   return useQuery<LiveTickInfo>({
     queryKey: ['qubic', 'tickInfo'],
-    queryFn: () => liveClient.getTickInfo(),
+    queryFn: async () => {
+      const r = await liveClient.getTickInfo()
+      if (!r.ok) throw r.error
+      return r.value
+    },
     refetchInterval: refetchIntervalMs,
     ...options,
   })

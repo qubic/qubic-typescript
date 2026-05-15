@@ -1,20 +1,27 @@
 import { QubicRpcError } from './errors.js'
+import { err, ok } from './result.js'
+import type { Result } from './result.js'
 
 export async function unwrap<T>(
   promise: Promise<{ data?: T; error?: unknown; response: Response }>,
   endpoint: string,
-): Promise<T> {
-  const { data, error, response } = await promise
-  if (error !== undefined || !response.ok) {
-    let detail = ''
-    try {
-      detail = await response.text()
-    } catch {
-      // ignore — body already consumed or unavailable
+): Promise<Result<T, QubicRpcError>> {
+  try {
+    const { data, error, response } = await promise
+    if (error !== undefined || !response.ok) {
+      let detail = ''
+      try {
+        detail = await response.text()
+      } catch {
+        // ignore — body already consumed or unavailable
+      }
+      return err(new QubicRpcError(response.status, endpoint, detail || undefined))
     }
-    throw new QubicRpcError(response.status, endpoint, detail || undefined)
+    return ok(data as T)
+  } catch (e) {
+    if (e instanceof QubicRpcError) return err(e)
+    return err(new QubicRpcError(-1, endpoint, String(e)))
   }
-  return data as T
 }
 
 /** Spreads `signal` only when defined, avoiding `exactOptionalPropertyTypes` conflict. */

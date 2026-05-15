@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test'
-import { QubicRpcError } from '@qubic.org/rpc'
+import { QubicRpcError, ok, err } from '@qubic.org/rpc'
 import {
   QEARN_CONTRACT_INDEX,
   QEARN_GET_STATE_OF_ROUND_INPUT_TYPE,
@@ -91,7 +91,7 @@ describe('high-level function wrappers', () => {
     new DataView(responseData.buffer).setUint32(0, 99, true)
     const live = {
       async querySmartContract() {
-        return { responseData: makeBase64(responseData) }
+        return ok({ responseData: makeBase64(responseData) })
       },
     }
     const result = await qearnGetStateOfRound(live, { epoch: 212 })
@@ -126,7 +126,7 @@ describe('callContractFunction', () => {
 
     const live = {
       async querySmartContract() {
-        return { responseData: makeBase64(responseData) }
+        return ok({ responseData: makeBase64(responseData) })
       },
     }
 
@@ -147,10 +147,10 @@ describe('callContractFunction', () => {
     if (result.ok) expect(result.value.state).toBe(7)
   })
 
-  test('returns err result when live throws QubicRpcError', async () => {
+  test('returns err result when live returns err Result', async () => {
     const live = {
       async querySmartContract() {
-        throw new QubicRpcError(500, '/querySmartContract')
+        return err(new QubicRpcError(500, '/querySmartContract'))
       },
     }
 
@@ -176,7 +176,7 @@ describe('callContractFunction', () => {
     const live = {
       async querySmartContract(req: unknown) {
         capturedReq = req
-        return { responseData: makeBase64(new Uint8Array(4)) }
+        return ok({ responseData: makeBase64(new Uint8Array(4)) })
       },
     }
 

@@ -32,10 +32,14 @@ export function useTransactionsForIdentity(
   const { archiveClient } = useQubic()
   return useQuery<TransactionsForIdentityResult>({
     queryKey: ['qubic', 'transactionsForIdentity', request],
-    queryFn: () => {
+    queryFn: async () => {
       if (archiveClient == null)
         throw new Error('archiveClient is required for useTransactionsForIdentity')
-      return archiveClient.getTransactionsForIdentity(request as GetTransactionsForIdentityRequest)
+      const r = await archiveClient.getTransactionsForIdentity(
+        request as GetTransactionsForIdentityRequest,
+      )
+      if (!r.ok) throw r.error
+      return r.value
     },
     enabled: request != null,
     ...options,

@@ -1,9 +1,9 @@
-import type { LiveBalance } from '@qubic.org/rpc'
+import type { QubicBalance } from '@qubic.org/rpc'
 import type { Identity } from '@qubic.org/types'
 import { type UseQueryOptions, type UseQueryResult, useQuery } from '@tanstack/react-query'
 import { useQubic } from '../context.js'
 
-type Options = Omit<UseQueryOptions<LiveBalance>, 'queryKey' | 'queryFn' | 'enabled'>
+type Options = Omit<UseQueryOptions<QubicBalance>, 'queryKey' | 'queryFn' | 'enabled'>
 
 /**
  * Fetches the balance for a Qubic identity from the live API.
@@ -12,17 +12,21 @@ type Options = Omit<UseQueryOptions<LiveBalance>, 'queryKey' | 'queryFn' | 'enab
  * @example
  * ```tsx
  * const { data, isLoading } = useBalance(identity)
- * console.log(data?.balance)
+ * console.log(data?.balance) // bigint
  * ```
  */
 export function useBalance(
   identity: Identity | string | null | undefined,
   options?: Options,
-): UseQueryResult<LiveBalance> {
+): UseQueryResult<QubicBalance> {
   const { liveClient } = useQubic()
-  return useQuery<LiveBalance>({
+  return useQuery<QubicBalance>({
     queryKey: ['qubic', 'balance', identity],
-    queryFn: () => liveClient.getBalance(identity as string),
+    queryFn: async () => {
+      const r = await liveClient.getBalance(identity as string)
+      if (!r.ok) throw r.error
+      return r.value
+    },
     enabled: identity != null && identity.length > 0,
     ...options,
   })

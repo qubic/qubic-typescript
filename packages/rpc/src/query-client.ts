@@ -1,6 +1,9 @@
 import createClient from 'openapi-fetch'
 import { sig, unwrap } from './_utils.js'
+import type { QubicRpcError } from './errors.js'
 import type { components, paths } from './query-schema.d.ts'
+import { ok } from './result.js'
+import type { Result } from './result.js'
 
 export type QueryClientOptions = {
   baseUrl?: string
@@ -29,7 +32,8 @@ const DEFAULT_BASE_URL = 'https://rpc.qubic.org/query/v1'
  * @example
  * ```ts
  * const query = createQueryClient()
- * const tx = await query.getTransactionByHash(hash)
+ * const result = await query.getTransactionByHash(hash)
+ * if (result.ok) console.log(result.value)
  * ```
  */
 export function createQueryClient(options: QueryClientOptions = {}) {
@@ -44,98 +48,142 @@ export function createQueryClient(options: QueryClientOptions = {}) {
 
   return {
     /** Returns the last tick processed by the archive indexer. */
-    async getLastProcessedTick(opts?: Opts): Promise<{
-      tickNumber: number
-      epoch: number
-      intervalInitialTick: number
-      logTickNumber: number
-    }> {
-      return unwrap(
+    async getLastProcessedTick(
+      opts?: Opts,
+    ): Promise<
+      Result<
+        { tickNumber: number; epoch: number; intervalInitialTick: number; logTickNumber: number },
+        QubicRpcError
+      >
+    > {
+      const r = await unwrap(
         client.GET('/getLastProcessedTick', { ...s(opts) }),
         '/getLastProcessedTick',
-      ) as Promise<{
-        tickNumber: number
-        epoch: number
-        intervalInitialTick: number
-        logTickNumber: number
-      }>
+      )
+      if (!r.ok) return r
+      return ok(
+        r.value as {
+          tickNumber: number
+          epoch: number
+          intervalInitialTick: number
+          logTickNumber: number
+        },
+      )
     },
 
     /** Returns the tick intervals that have been processed (indexed) by the archive. */
-    async getProcessedTickIntervals(opts?: Opts): Promise<ProcessedTickInterval[]> {
-      const res = await unwrap(
+    async getProcessedTickIntervals(
+      opts?: Opts,
+    ): Promise<Result<ProcessedTickInterval[], QubicRpcError>> {
+      const r = await unwrap(
         client.GET('/getProcessedTickIntervals', { ...s(opts) }),
         '/getProcessedTickIntervals',
       )
-      return res.processedTickIntervals ?? []
+      if (!r.ok) return r
+      return ok(
+        (r.value as { processedTickIntervals?: ProcessedTickInterval[] }).processedTickIntervals ??
+          [],
+      )
     },
 
     /** Returns computor lists for the given epoch. */
-    async getComputorListsForEpoch(epoch: number, opts?: Opts): Promise<QueryComputorList[]> {
-      const res = await unwrap(
+    async getComputorListsForEpoch(
+      epoch: number,
+      opts?: Opts,
+    ): Promise<Result<QueryComputorList[], QubicRpcError>> {
+      const r = await unwrap(
         client.POST('/getComputorListsForEpoch', { body: { epoch }, ...s(opts) }),
         '/getComputorListsForEpoch',
       )
-      return res.computorsLists ?? []
+      if (!r.ok) return r
+      return ok((r.value as { computorsLists?: QueryComputorList[] }).computorsLists ?? [])
     },
 
     /** Returns full tick data including transaction hashes and computor info. */
-    async getTickData(tickNumber: number, opts?: Opts): Promise<QueryTickData> {
-      const res = await unwrap(
+    async getTickData(
+      tickNumber: number,
+      opts?: Opts,
+    ): Promise<Result<QueryTickData, QubicRpcError>> {
+      const r = await unwrap(
         client.POST('/getTickData', { body: { tickNumber }, ...s(opts) }),
         '/getTickData',
       )
-      return res.tickData as QueryTickData
+      if (!r.ok) return r
+      return ok((r.value as { tickData?: QueryTickData }).tickData as QueryTickData)
     },
 
     /** Returns a single transaction by its 60-char lowercase hash. */
-    async getTransactionByHash(hash: string, opts?: Opts): Promise<QueryTransaction> {
-      const res = await unwrap(
+    async getTransactionByHash(
+      hash: string,
+      opts?: Opts,
+    ): Promise<Result<QueryTransaction, QubicRpcError>> {
+      const r = await unwrap(
         client.POST('/getTransactionByHash', { body: { hash }, ...s(opts) }),
         '/getTransactionByHash',
       )
-      return res.transaction as QueryTransaction
+      if (!r.ok) return r
+      return ok((r.value as { transaction?: QueryTransaction }).transaction as QueryTransaction)
     },
 
     /** Returns transactions for the given identity with optional filters. */
     async getTransactionsForIdentity(
       req: GetTransactionsForIdentityRequest,
       opts?: Opts,
-    ): Promise<{ transactions: QueryTransaction[]; hits: Hits; validForTick: number }> {
-      const res = await unwrap(
+    ): Promise<
+      Result<{ transactions: QueryTransaction[]; hits: Hits; validForTick: number }, QubicRpcError>
+    > {
+      const r = await unwrap(
         client.POST('/getTransactionsForIdentity', { body: req, ...s(opts) }),
         '/getTransactionsForIdentity',
       )
-      return {
-        transactions: res.transactions ?? [],
-        hits: res.hits as Hits,
-        validForTick: res.validForTick ?? 0,
+      if (!r.ok) return r
+      const v = r.value as {
+        transactions?: QueryTransaction[]
+        hits?: Hits
+        validForTick?: number
       }
+      return ok({
+        transactions: v.transactions ?? [],
+        hits: v.hits as Hits,
+        validForTick: v.validForTick ?? 0,
+      })
     },
 
     /** Returns all transactions included in the given tick. */
-    async getTransactionsForTick(tickNumber: number, opts?: Opts): Promise<QueryTransaction[]> {
-      const res = await unwrap(
+    async getTransactionsForTick(
+      tickNumber: number,
+      opts?: Opts,
+    ): Promise<Result<QueryTransaction[], QubicRpcError>> {
+      const r = await unwrap(
         client.POST('/getTransactionsForTick', { body: { tickNumber }, ...s(opts) }),
         '/getTransactionsForTick',
       )
-      return res.transactions ?? []
+      if (!r.ok) return r
+      return ok((r.value as { transactions?: QueryTransaction[] }).transactions ?? [])
     },
 
     /** Queries event logs with rich filtering (log type, identity, tick range, pagination). */
     async getEventLogs(
       req: GetEventLogsRequest,
       opts?: Opts,
-    ): Promise<{ eventLogs: QueryEvent[]; hits: Hits; validForTick: number }> {
-      const res = await unwrap(
+    ): Promise<
+      Result<{ eventLogs: QueryEvent[]; hits: Hits; validForTick: number }, QubicRpcError>
+    > {
+      const r = await unwrap(
         client.POST('/getEventLogs', { body: req, ...s(opts) }),
         '/getEventLogs',
       )
-      return {
-        eventLogs: res.eventLogs ?? [],
-        hits: res.hits as Hits,
-        validForTick: res.validForTick ?? 0,
+      if (!r.ok) return r
+      const v = r.value as {
+        eventLogs?: QueryEvent[]
+        hits?: Hits
+        validForTick?: number
       }
+      return ok({
+        eventLogs: v.eventLogs ?? [],
+        hits: v.hits as Hits,
+        validForTick: v.validForTick ?? 0,
+      })
     },
   }
 }

@@ -1,10 +1,13 @@
 export { QubicRpcError, QubicError } from './errors.js'
+export { err, ok } from './result.js'
+export type { Err, Ok, Result } from './result.js'
 export { createLiveClient } from './live-client.js'
 export type {
   LiveClient,
   LiveClientOptions,
   LiveBalance,
   LiveTickInfo,
+  QubicBalance,
   BroadcastTransactionRequest,
   BroadcastTransactionResponse,
   QuerySmartContractRequest,

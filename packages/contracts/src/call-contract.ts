@@ -1,17 +1,26 @@
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.org/registry'
 import { buildPayload, decodePayload } from '@qubic.org/registry'
-import { QubicRpcError } from '@qubic.org/rpc'
+import type { QubicRpcError } from '@qubic.org/rpc'
 import type { QuerySmartContractRequest, QuerySmartContractResponse } from '@qubic.org/rpc'
-import { err, ok } from './result.js'
-import type { Result } from './result.js'
+import type { Result } from '@qubic.org/rpc'
+import { ok } from './result.js'
 
 export interface SmartContractCaller {
-  querySmartContract(req: QuerySmartContractRequest): Promise<QuerySmartContractResponse>
+  querySmartContract(
+    req: QuerySmartContractRequest,
+  ): Promise<Result<QuerySmartContractResponse, QubicRpcError>>
 }
 
 export interface ContractCallOptions {
   identityToPublicKey?: (identity: string) => Uint8Array
   publicKeyToIdentity?: (pk: Uint8Array) => string
+}
+
+/** Returned by builder functions — contains everything needed to send a contract call. */
+export interface ContractCall {
+  contractIndex: number
+  inputType: number
+  payload: Uint8Array
 }
 
 const _defaultIdToPk = (_identity: string): Uint8Array => {
@@ -60,18 +69,14 @@ export async function callContractFunction<TInput extends Record<string, unknown
     options.input as Record<string, FieldValue | Uint8Array>,
     idToPk,
   )
-  try {
-    const response = await options.live.querySmartContract({
-      contractIndex: options.contractIndex,
-      inputType: options.inputType,
-      inputSize: options.inputSize,
-      requestData: toBase64(payload),
-    })
-    const responseBytes = fromBase64(response.responseData ?? '')
-    const decoded = decodePayload(responseBytes, options.outputFields, options.structs, pkToId)
-    return ok(decoded as unknown as TOutput)
-  } catch (cause) {
-    if (cause instanceof QubicRpcError) return err(cause)
-    throw cause
-  }
+  const r = await options.live.querySmartContract({
+    contractIndex: options.contractIndex,
+    inputType: options.inputType,
+    inputSize: options.inputSize,
+    requestData: toBase64(payload),
+  })
+  if (!r.ok) return r
+  const responseBytes = fromBase64(r.value.responseData ?? '')
+  const decoded = decodePayload(responseBytes, options.outputFields, options.structs, pkToId)
+  return ok(decoded as unknown as TOutput)
 }

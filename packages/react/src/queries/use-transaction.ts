@@ -22,9 +22,11 @@ export function useTransaction(
   const { archiveClient } = useQubic()
   return useQuery<QueryTransaction>({
     queryKey: ['qubic', 'transaction', hash],
-    queryFn: () => {
+    queryFn: async () => {
       if (archiveClient == null) throw new Error('archiveClient is required for useTransaction')
-      return archiveClient.getTransactionByHash(hash as string)
+      const r = await archiveClient.getTransactionByHash(hash as string)
+      if (!r.ok) throw r.error
+      return r.value
     },
     enabled: hash != null && hash.length > 0,
     ...options,

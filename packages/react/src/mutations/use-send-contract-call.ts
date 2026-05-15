@@ -67,7 +67,9 @@ export function useSendContractCall(): UseMutationResult<
     }) => {
       const wallet = getWallet(from)
       if (wallet === undefined) throw new Error(`No wallet for identity: ${from}`)
-      const { tick } = await liveClient.getTickInfo()
+      const tickR = await liveClient.getTickInfo()
+      if (!tickR.ok) throw tickR.error
+      const { tick } = tickR.value
       const { encoded } = await wallet.buildScTransaction({
         destination,
         amount,
@@ -76,7 +78,9 @@ export function useSendContractCall(): UseMutationResult<
         inputType,
         payload,
       })
-      return liveClient.broadcastTransaction(encoded)
+      const broadcastR = await liveClient.broadcastTransaction(encoded)
+      if (!broadcastR.ok) throw broadcastR.error
+      return broadcastR.value
     },
   })
 }

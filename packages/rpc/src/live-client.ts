@@ -1,6 +1,9 @@
 import createClient from 'openapi-fetch'
 import { sig, unwrap } from './_utils.js'
+import type { QubicRpcError } from './errors.js'
 import type { components, paths } from './live-schema.d.ts'
+import { ok } from './result.js'
+import type { Result } from './result.js'
 
 export type LiveClientOptions = {
   baseUrl?: string
@@ -22,6 +25,19 @@ export type AssetOwnership = components['schemas']['AssetOwnership']
 export type AssetPossession = components['schemas']['AssetPossession']
 export type Ipo = components['schemas']['Ipo']
 
+/** Mapped balance type with numeric string fields converted to bigint. */
+export interface QubicBalance {
+  id: string
+  balance: bigint
+  validForTick: number
+  latestIncomingTransferTick: number
+  latestOutgoingTransferTick: number
+  incomingAmount: bigint
+  outgoingAmount: bigint
+  numberOfIncomingTransfers: number
+  numberOfOutgoingTransfers: number
+}
+
 const DEFAULT_BASE_URL = 'https://rpc.qubic.org/live/v1'
 
 /**
@@ -33,7 +49,8 @@ const DEFAULT_BASE_URL = 'https://rpc.qubic.org/live/v1'
  * @example
  * ```ts
  * const live = createLiveClient()
- * const tickInfo = await live.getTickInfo()
+ * const result = await live.getTickInfo()
+ * if (result.ok) console.log(result.value.tick)
  * ```
  */
 export function createLiveClient(options: LiveClientOptions = {}) {
@@ -48,25 +65,38 @@ export function createLiveClient(options: LiveClientOptions = {}) {
 
   return {
     /** Returns current tick, epoch, duration and initial tick. */
-    async getTickInfo(opts?: Opts): Promise<LiveTickInfo> {
-      const res = await unwrap(client.GET('/tick-info', { ...s(opts) }), '/tick-info')
-      return res.tickInfo as LiveTickInfo
+    async getTickInfo(opts?: Opts): Promise<Result<LiveTickInfo, QubicRpcError>> {
+      const r = await unwrap(client.GET('/tick-info', { ...s(opts) }), '/tick-info')
+      if (!r.ok) return r
+      return ok(r.value.tickInfo as LiveTickInfo)
     },
 
-    /** Returns the balance and transfer history for the given identity. */
-    async getBalance(identity: string, opts?: Opts): Promise<LiveBalance> {
-      const res = await unwrap(
+    /** Returns the balance for the given identity with bigint amounts. */
+    async getBalance(identity: string, opts?: Opts): Promise<Result<QubicBalance, QubicRpcError>> {
+      const r = await unwrap(
         client.GET('/balances/{id}', { params: { path: { id: identity } }, ...s(opts) }),
         `/balances/${identity}`,
       )
-      return res.balance as LiveBalance
+      if (!r.ok) return r
+      const b = r.value.balance as LiveBalance
+      return ok({
+        id: b.id ?? '',
+        balance: BigInt(b.balance ?? 0),
+        validForTick: b.validForTick ?? 0,
+        latestIncomingTransferTick: b.latestIncomingTransferTick ?? 0,
+        latestOutgoingTransferTick: b.latestOutgoingTransferTick ?? 0,
+        incomingAmount: BigInt(b.incomingAmount ?? 0),
+        outgoingAmount: BigInt(b.outgoingAmount ?? 0),
+        numberOfIncomingTransfers: b.numberOfIncomingTransfers ?? 0,
+        numberOfOutgoingTransfers: b.numberOfOutgoingTransfers ?? 0,
+      })
     },
 
     /** Broadcasts a base64-encoded signed transaction; returns peer count and tx id. */
     async broadcastTransaction(
       encodedTransaction: string,
       opts?: Opts,
-    ): Promise<BroadcastTransactionResponse> {
+    ): Promise<Result<BroadcastTransactionResponse, QubicRpcError>> {
       return unwrap(
         client.POST('/broadcast-transaction', { body: { encodedTransaction }, ...s(opts) }),
         '/broadcast-transaction',
@@ -77,7 +107,7 @@ export function createLiveClient(options: LiveClientOptions = {}) {
     async querySmartContract(
       req: QuerySmartContractRequest,
       opts?: Opts,
-    ): Promise<QuerySmartContractResponse> {
+    ): Promise<Result<QuerySmartContractResponse, QubicRpcError>> {
       return unwrap(
         client.POST('/querySmartContract', { body: req, ...s(opts) }),
         '/querySmartContract',
@@ -85,58 +115,74 @@ export function createLiveClient(options: LiveClientOptions = {}) {
     },
 
     /** Lists assets issued by the given identity. */
-    async getIssuedAssets(identity: string, opts?: Opts): Promise<IssuedAsset[]> {
-      const res = await unwrap(
+    async getIssuedAssets(
+      identity: string,
+      opts?: Opts,
+    ): Promise<Result<IssuedAsset[], QubicRpcError>> {
+      const r = await unwrap(
         client.GET('/assets/{identity}/issued', {
           params: { path: { identity } },
           ...s(opts),
         }),
         `/assets/${identity}/issued`,
       )
-      return res.issuedAssets ?? []
+      if (!r.ok) return r
+      return ok(r.value.issuedAssets ?? [])
     },
 
     /** Lists assets owned by the given identity. */
-    async getOwnedAssets(identity: string, opts?: Opts): Promise<OwnedAsset[]> {
-      const res = await unwrap(
+    async getOwnedAssets(
+      identity: string,
+      opts?: Opts,
+    ): Promise<Result<OwnedAsset[], QubicRpcError>> {
+      const r = await unwrap(
         client.GET('/assets/{identity}/owned', {
           params: { path: { identity } },
           ...s(opts),
         }),
         `/assets/${identity}/owned`,
       )
-      return res.ownedAssets ?? []
+      if (!r.ok) return r
+      return ok(r.value.ownedAssets ?? [])
     },
 
     /** Lists assets possessed by the given identity. */
-    async getPossessedAssets(identity: string, opts?: Opts): Promise<PossessedAsset[]> {
-      const res = await unwrap(
+    async getPossessedAssets(
+      identity: string,
+      opts?: Opts,
+    ): Promise<Result<PossessedAsset[], QubicRpcError>> {
+      const r = await unwrap(
         client.GET('/assets/{identity}/possessed', {
           params: { path: { identity } },
           ...s(opts),
         }),
         `/assets/${identity}/possessed`,
       )
-      return res.possessedAssets ?? []
+      if (!r.ok) return r
+      return ok(r.value.possessedAssets ?? [])
     },
 
     /** Searches asset issuances by optional filter. */
     async getAssetIssuances(
       filter?: { issuerIdentity?: string; assetName?: string },
       opts?: Opts,
-    ): Promise<AssetIssuance[]> {
-      const res = await unwrap(
+    ): Promise<Result<AssetIssuance[], QubicRpcError>> {
+      const r = await unwrap(
         client.GET('/assets/issuances', {
           ...(filter ? { params: { query: filter } } : {}),
           ...s(opts),
         }),
         '/assets/issuances',
       )
-      return res.assets ?? []
+      if (!r.ok) return r
+      return ok(r.value.assets ?? [])
     },
 
     /** Returns a single asset issuance by universe index. */
-    async getAssetIssuanceByIndex(index: number, opts?: Opts): Promise<AssetIssuance> {
+    async getAssetIssuanceByIndex(
+      index: number,
+      opts?: Opts,
+    ): Promise<Result<AssetIssuance, QubicRpcError>> {
       return unwrap(
         client.GET('/assets/issuances/{index}', {
           params: { path: { index } },
@@ -155,19 +201,23 @@ export function createLiveClient(options: LiveClientOptions = {}) {
         ownershipManagingContract?: number
       },
       opts?: Opts,
-    ): Promise<AssetOwnership[]> {
-      const res = await unwrap(
+    ): Promise<Result<AssetOwnership[], QubicRpcError>> {
+      const r = await unwrap(
         client.GET('/assets/ownerships', {
           ...(filter ? { params: { query: filter } } : {}),
           ...s(opts),
         }),
         '/assets/ownerships',
       )
-      return res.assets ?? []
+      if (!r.ok) return r
+      return ok(r.value.assets ?? [])
     },
 
     /** Returns a single asset ownership by universe index. */
-    async getAssetOwnershipByIndex(index: number, opts?: Opts): Promise<AssetOwnership> {
+    async getAssetOwnershipByIndex(
+      index: number,
+      opts?: Opts,
+    ): Promise<Result<AssetOwnership, QubicRpcError>> {
       return unwrap(
         client.GET('/assets/ownerships/{index}', {
           params: { path: { index } },
@@ -188,19 +238,23 @@ export function createLiveClient(options: LiveClientOptions = {}) {
         possessionManagingContract?: number
       },
       opts?: Opts,
-    ): Promise<AssetPossession[]> {
-      const res = await unwrap(
+    ): Promise<Result<AssetPossession[], QubicRpcError>> {
+      const r = await unwrap(
         client.GET('/assets/possessions', {
           ...(filter ? { params: { query: filter } } : {}),
           ...s(opts),
         }),
         '/assets/possessions',
       )
-      return res.assets ?? []
+      if (!r.ok) return r
+      return ok(r.value.assets ?? [])
     },
 
     /** Returns a single asset possession by universe index. */
-    async getAssetPossessionByIndex(index: number, opts?: Opts): Promise<AssetPossession> {
+    async getAssetPossessionByIndex(
+      index: number,
+      opts?: Opts,
+    ): Promise<Result<AssetPossession, QubicRpcError>> {
       return unwrap(
         client.GET('/assets/possessions/{index}', {
           params: { path: { index } },
@@ -211,9 +265,10 @@ export function createLiveClient(options: LiveClientOptions = {}) {
     },
 
     /** Returns all active IPOs. */
-    async getActiveIpos(opts?: Opts): Promise<Ipo[]> {
-      const res = await unwrap(client.GET('/ipos/active', { ...s(opts) }), '/ipos/active')
-      return res.ipos ?? []
+    async getActiveIpos(opts?: Opts): Promise<Result<Ipo[], QubicRpcError>> {
+      const r = await unwrap(client.GET('/ipos/active', { ...s(opts) }), '/ipos/active')
+      if (!r.ok) return r
+      return ok(r.value.ipos ?? [])
     },
   }
 }

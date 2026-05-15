@@ -19,6 +19,13 @@ Seeds **never** appear in React state or component code:
 - `useSendTransfer` / `useSendContractCall` access signing internally — the component passes params but never touches a wallet.
 - Auto-lock on page hide (`visibilitychange`) and after a configurable idle timeout.
 
+**Session persistence** (`persistSession` prop):
+- Seeds re-encrypted with a freshly generated AES-256-GCM key on every unlock.
+- The key is stored in IndexedDB as `extractable: false` — JS cannot read key bytes even under XSS.
+- The encrypted payload lives in `sessionStorage` (tab-scoped — cleared automatically when the tab closes).
+- Keys rotate on every restore: the previous IDB key is deleted before wallets are loaded (forward secrecy).
+- If decryption fails for any reason the session is silently cleared and the lock form is shown.
+
 ## Setup
 
 ```tsx
@@ -33,13 +40,24 @@ const vault = importVault(localStorage.getItem('qubic-vault')!)
 export function App() {
   return (
     <QubicProvider liveClient={live} archiveClient={archive}>
-      <VaultProvider vaultData={vault} autoLockMs={15 * 60_000}>
+      <VaultProvider
+        vaultData={vault}
+        persistSession        // survives page refresh; expires on tab close
+        autoLockMs={15 * 60_000}  // also auto-locks after 15 min idle
+      >
         <YourApp />
       </VaultProvider>
     </QubicProvider>
   )
 }
 ```
+
+| Prop | Default | Description |
+|------|---------|-------------|
+| `vaultData` | required | `VaultData` from `importVault` / `createVault` |
+| `persistSession` | `false` | Re-encrypt seeds into sessionStorage + IDB on unlock; restore on page refresh |
+| `sessionStorageKey` | `'qubic-session'` | Key used in sessionStorage — override for multiple vaults |
+| `autoLockMs` | none | Auto-lock after N ms idle; also locks on `visibilitychange` |
 
 `QubicProvider` also acts as a TanStack `QueryClientProvider`. Pass your own `queryClient` to share the cache with the rest of your app.
 

@@ -6,17 +6,17 @@ TypeScript SDK for the [Qubic](https://qubic.org) network. Modular, tree-shakeab
 
 | Package | Version | Description |
 |---|---|---|
-| [`@qubic.ts/types`](packages/types) | 0.1.0 | Branded primitives, protocol constants, shared error types |
-| [`@qubic.ts/crypto`](packages/crypto) | 0.1.0 | K12 hash, SchnorrQ signatures, FourQ key derivation |
-| [`@qubic.ts/tx`](packages/tx) | 0.1.0 | Binary transaction builder, signer, and verifier |
-| [`@qubic.ts/rpc`](packages/rpc) | 0.1.0 | Type-safe REST client for the Qubic RPC gateway |
-| [`@qubic.ts/bob`](packages/bob) | 0.1.0 | Live node client — JSON-RPC 2.0, REST, WebSocket subscriptions |
-| [`@qubic.ts/registry`](packages/registry) | 0.1.0 | Versioned ABI registry for all Qubic smart contracts across all epochs |
-| [`@qubic.ts/contracts`](packages/contracts) | 0.1.0 | Generated typed wrappers for every deployed contract |
-| [`@qubic.ts/events`](packages/events) | 0.1.0 | Binary event decoder, filter builder, and typed Bob subscription helpers |
-| [`@qubic.ts/wallet`](packages/wallet) | 0.1.0 | Wallet, encrypted vault, and seed utilities |
-| [`@qubic.ts/tcp`](packages/tcp) | 0.1.0 | Direct TCP transport — framing, connection pool, typed request helpers |
-| [`@qubic.ts/react`](packages/react) | 0.1.0 | React hooks and providers — TanStack Query, VaultProvider, WalletProvider (extension / WalletConnect / MetaMask Snap), contract queries, send mutations |
+| [`@qubic.org/types`](packages/types) | 0.1.0 | Branded primitives, protocol constants, shared error types |
+| [`@qubic.org/crypto`](packages/crypto) | 0.1.0 | K12 hash, SchnorrQ signatures, FourQ key derivation |
+| [`@qubic.org/tx`](packages/tx) | 0.1.0 | Binary transaction builder, signer, and verifier |
+| [`@qubic.org/rpc`](packages/rpc) | 0.1.0 | Type-safe REST client for the Qubic RPC gateway |
+| [`@qubic.org/bob`](packages/bob) | 0.1.0 | Live node client — JSON-RPC 2.0, REST, WebSocket subscriptions |
+| [`@qubic.org/registry`](packages/registry) | 0.1.0 | Versioned ABI registry for all Qubic smart contracts across all epochs |
+| [`@qubic.org/contracts`](packages/contracts) | 0.1.0 | Generated typed wrappers for every deployed contract |
+| [`@qubic.org/events`](packages/events) | 0.1.0 | Binary event decoder, filter builder, and typed Bob subscription helpers |
+| [`@qubic.org/wallet`](packages/wallet) | 0.1.0 | Wallet, encrypted vault, and seed utilities |
+| [`@qubic.org/tcp`](packages/tcp) | 0.1.0 | Direct TCP transport — framing, connection pool, typed request helpers |
+| [`@qubic.org/react`](packages/react) | 0.1.0 | React hooks and providers — TanStack Query, VaultProvider, WalletProvider (extension / WalletConnect / MetaMask Snap), contract queries, send mutations |
 
 ## Quick start
 
@@ -32,17 +32,17 @@ bun run lint      # lint + format (biome)
 
 ```mermaid
 graph TD
-  types["@qubic.ts/types<br/><sub>no deps — install anywhere</sub>"]
-  crypto["@qubic.ts/crypto<br/><sub>K12 · SchnorrQ · FourQ</sub>"]
-  tx["@qubic.ts/tx<br/><sub>transaction builder/signer</sub>"]
-  rpc["@qubic.ts/rpc<br/><sub>REST gateway client</sub>"]
-  registry["@qubic.ts/registry<br/><sub>ABI registry + binary codec</sub>"]
-  contracts["@qubic.ts/contracts<br/><sub>generated contract wrappers</sub>"]
-  bob["@qubic.ts/bob<br/><sub>live node client</sub>"]
-  wallet["@qubic.ts/wallet<br/><sub>key management</sub>"]
-  events["@qubic.ts/events<br/><sub>typed event bus</sub>"]
-  tcp["@qubic.ts/tcp<br/><sub>raw TCP transport</sub>"]
-  react["@qubic.ts/react<br/><sub>React hooks</sub>"]
+  types["@qubic.org/types<br/><sub>no deps — install anywhere</sub>"]
+  crypto["@qubic.org/crypto<br/><sub>K12 · SchnorrQ · FourQ</sub>"]
+  tx["@qubic.org/tx<br/><sub>transaction builder/signer</sub>"]
+  rpc["@qubic.org/rpc<br/><sub>REST gateway client</sub>"]
+  registry["@qubic.org/registry<br/><sub>ABI registry + binary codec</sub>"]
+  contracts["@qubic.org/contracts<br/><sub>generated contract wrappers</sub>"]
+  bob["@qubic.org/bob<br/><sub>live node client</sub>"]
+  wallet["@qubic.org/wallet<br/><sub>key management</sub>"]
+  events["@qubic.org/events<br/><sub>typed event bus</sub>"]
+  tcp["@qubic.org/tcp<br/><sub>raw TCP transport</sub>"]
+  react["@qubic.org/react<br/><sub>React hooks</sub>"]
 
   types --> crypto
   types --> rpc
@@ -65,9 +65,9 @@ graph TD
 ## End-to-end example: wallet transfer
 
 ```ts
-import { generateSeed, createWallet, createVault, unlockVault } from '@qubic.ts/wallet'
-import { createLiveClient } from '@qubic.ts/rpc'
-import type { Identity } from '@qubic.ts/types'
+import { generateSeed, createWallet, createVault, unlockVault } from '@qubic.org/wallet'
+import { createLiveClient } from '@qubic.org/rpc'
+import type { Identity } from '@qubic.org/types'
 
 const live = createLiveClient()
 const { tickInfo } = await live.getTickInfo()
@@ -97,10 +97,10 @@ console.log('peers:', result.peersBroadcastedTo)
 ## End-to-end example: build and broadcast a contract call
 
 ```ts
-import { createWallet, toSeed } from '@qubic.ts/wallet'
-import { createLiveClient } from '@qubic.ts/rpc'
-import { qearn } from '@qubic.ts/contracts'
-import type { Identity } from '@qubic.ts/types'
+import { createWallet, toSeed } from '@qubic.org/wallet'
+import { createLiveClient } from '@qubic.org/rpc'
+import { qearn } from '@qubic.org/contracts'
+import type { Identity } from '@qubic.org/types'
 
 const live = createLiveClient()
 const { tickInfo } = await live.getTickInfo()
@@ -124,9 +124,9 @@ console.log('peers:', result.peersBroadcastedTo)
 ## End-to-end example: query a contract read function
 
 ```ts
-import { createLiveClient } from '@qubic.ts/rpc'
-import { qearn } from '@qubic.ts/contracts'
-import { identityToPublicKey, publicKeyToIdentity } from '@qubic.ts/crypto'
+import { createLiveClient } from '@qubic.org/rpc'
+import { qearn } from '@qubic.org/contracts'
+import { identityToPublicKey, publicKeyToIdentity } from '@qubic.org/crypto'
 
 const live = createLiveClient()
 
@@ -145,9 +145,9 @@ if (result.ok) {
 ## End-to-end example: subscribe to live events
 
 ```ts
-import { subscribeQuTransfers, subscribeAssetEvents, eventFilter, LOG_TYPE } from '@qubic.ts/events'
-import { createBobSubscriptionClient } from '@qubic.ts/bob'
-import type { Identity } from '@qubic.ts/types'
+import { subscribeQuTransfers, subscribeAssetEvents, eventFilter, LOG_TYPE } from '@qubic.org/events'
+import { createBobSubscriptionClient } from '@qubic.org/bob'
+import type { Identity } from '@qubic.org/types'
 
 const bob = createBobSubscriptionClient({ wsUrl: 'wss://bob.qubic.org/v1/ws' })
 
@@ -173,9 +173,9 @@ for await (const event of subscribeAssetEvents(bob, filter)) {
 ## End-to-end example: direct TCP node query
 
 ```ts
-import { createNodePool, requestCurrentTickInfo, requestEntity, broadcastTransaction } from '@qubic.ts/tcp'
-import { identityToPublicKey } from '@qubic.ts/crypto'
-import type { Identity } from '@qubic.ts/types'
+import { createNodePool, requestCurrentTickInfo, requestEntity, broadcastTransaction } from '@qubic.org/tcp'
+import { identityToPublicKey } from '@qubic.org/crypto'
+import type { Identity } from '@qubic.org/types'
 
 const pool = createNodePool([
   'node1.qubic.org',
@@ -205,9 +205,9 @@ import {
   QubicProvider, WalletProvider, VaultProvider,
   extensionConnector, createWalletConnectConnector,
   useWallet, useBalance, useContractQuery, useSendTransfer,
-} from '@qubic.ts/react'
-import { createLiveClient, createQueryClient } from '@qubic.ts/rpc'
-import { qearnGetStateOfRound } from '@qubic.ts/contracts'
+} from '@qubic.org/react'
+import { createLiveClient, createQueryClient } from '@qubic.org/rpc'
+import { qearnGetStateOfRound } from '@qubic.org/contracts'
 
 const live = createLiveClient()
 const archive = createQueryClient()
@@ -253,9 +253,9 @@ function Dashboard() {
 ## End-to-end example: decode a historical transaction payload
 
 ```ts
-import { createRegistryClient } from '@qubic.ts/registry/client'
-import { decodePayload } from '@qubic.ts/registry'
-import { publicKeyToIdentity } from '@qubic.ts/crypto'
+import { createRegistryClient } from '@qubic.org/registry/client'
+import { decodePayload } from '@qubic.org/registry'
+import { publicKeyToIdentity } from '@qubic.org/crypto'
 
 // Get the ABI active at the epoch when the tx was submitted
 const registry = createRegistryClient()
@@ -268,7 +268,7 @@ const decoded = decodePayload(payloadBytes, lockProc.inputFields, version.struct
 
 ## Contract ABI registry
 
-`@qubic.ts/registry` stores per-epoch ABI snapshots as JSON for every Qubic smart contract. Each snapshot records the exact binary field layout (`inputFields`, `outputFields`, nested structs) active in that epoch. The codec engine (`buildPayload` / `decodePayload`) handles all Qubic primitive types including `uint128` and FourQ identity fields.
+`@qubic.org/registry` stores per-epoch ABI snapshots as JSON for every Qubic smart contract. Each snapshot records the exact binary field layout (`inputFields`, `outputFields`, nested structs) active in that epoch. The codec engine (`buildPayload` / `decodePayload`) handles all Qubic primitive types including `uint128` and FourQ identity fields.
 
 **Coverage**: epochs 122–213 (all epochs with deployed contracts since early mainnet)
 
@@ -294,7 +294,7 @@ bun run packages/contracts/scripts/generate.ts
 
 ## Contract wrappers
 
-`@qubic.ts/contracts` provides fully typed wrappers generated from the latest epoch snapshot. Every contract exports:
+`@qubic.org/contracts` provides fully typed wrappers generated from the latest epoch snapshot. Every contract exports:
 
 - **Constants**: `CONTRACT_INDEX`, per-procedure `INPUT_TYPE` constants
 - **Payload builders**: `build{Contract}{Procedure}Input(input) → Uint8Array` — for use in transaction construction
@@ -303,7 +303,7 @@ bun run packages/contracts/scripts/generate.ts
 - **Namespace object**: `export const {contract} = { contractIndex, ...callers, ...builders, ...decoders }`
 
 ```ts
-import { qearn, qx, quottery } from '@qubic.ts/contracts'
+import { qearn, qx, quottery } from '@qubic.org/contracts'
 
 // Read-only query
 const state = await qearn.getStateOfRound(live, { epoch: 212 })
@@ -322,17 +322,17 @@ const payload = qx.buildAddToAskOrderInput({
 ```mermaid
 graph LR
   subgraph packages
-    types["types/\n@qubic.ts/types"]
-    crypto["crypto/\n@qubic.ts/crypto"]
-    tx["tx/\n@qubic.ts/tx"]
-    rpc["rpc/\n@qubic.ts/rpc"]
-    bob["bob/\n@qubic.ts/bob"]
-    registry["registry/\n@qubic.ts/registry"]
-    contracts["contracts/\n@qubic.ts/contracts"]
-    wallet["wallet/\n@qubic.ts/wallet"]
-    events["events/\n@qubic.ts/events"]
-    tcp["tcp/\n@qubic.ts/tcp (direct TCP)"]
-    react["react/\n@qubic.ts/react"]
+    types["types/\n@qubic.org/types"]
+    crypto["crypto/\n@qubic.org/crypto"]
+    tx["tx/\n@qubic.org/tx"]
+    rpc["rpc/\n@qubic.org/rpc"]
+    bob["bob/\n@qubic.org/bob"]
+    registry["registry/\n@qubic.org/registry"]
+    contracts["contracts/\n@qubic.org/contracts"]
+    wallet["wallet/\n@qubic.org/wallet"]
+    events["events/\n@qubic.org/events"]
+    tcp["tcp/\n@qubic.org/tcp (direct TCP)"]
+    react["react/\n@qubic.org/react"]
   end
   subgraph apps
     api["registry-api/\nElysiaJS API"]

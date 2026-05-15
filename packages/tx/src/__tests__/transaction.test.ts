@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test'
-import { identityToPublicKey, publicKeyToIdentity } from '@qubic.ts/crypto'
-import { PROTOCOL, toSeed } from '@qubic.ts/types'
+import { identityToPublicKey, publicKeyToIdentity } from '@qubic.org/crypto'
+import { PROTOCOL, toSeed } from '@qubic.org/types'
 import { InvalidTransactionError, PayloadTooLargeError, TickInThePastError } from '../errors.js'
 import {
   buildTransaction,
@@ -107,7 +107,7 @@ describe('signTransaction', () => {
 describe('verifyTransactionSignature', () => {
   test('returns true for a valid signature', async () => {
     // Use real derived public key so the signature is verifiable
-    const { publicKeyFromSeed } = await import('@qubic.ts/crypto')
+    const { publicKeyFromSeed } = await import('@qubic.org/crypto')
     const srcPk = publicKeyFromSeed(SEED)
     const tx = buildTransaction({ ...BASE_INPUT, sourcePublicKey: srcPk })
     const signed = await signTransaction(tx, SEED)
@@ -115,7 +115,7 @@ describe('verifyTransactionSignature', () => {
   })
 
   test('returns false for tampered signature', async () => {
-    const { publicKeyFromSeed } = await import('@qubic.ts/crypto')
+    const { publicKeyFromSeed } = await import('@qubic.org/crypto')
     const srcPk = publicKeyFromSeed(SEED)
     const tx = buildTransaction({ ...BASE_INPUT, sourcePublicKey: srcPk })
     const signed = await signTransaction(tx, SEED)

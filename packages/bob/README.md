@@ -1,4 +1,4 @@
-# `@qubic.ts/bob`
+# `@qubic.org/bob`
 
 Live node client for the Qubic Bob indexer — JSON-RPC 2.0, REST, and WebSocket subscriptions.
 
@@ -7,13 +7,13 @@ The Bob indexer is a Qubic node service that exposes chain state through three c
 ## Installation
 
 ```sh
-bun add @qubic.ts/bob
+bun add @qubic.org/bob
 ```
 
 In a monorepo workspace:
 
 ```json
-{ "dependencies": { "@qubic.ts/bob": "workspace:*" } }
+{ "dependencies": { "@qubic.org/bob": "workspace:*" } }
 ```
 
 ## API Reference
@@ -50,7 +50,7 @@ class BobSubscriptionError extends QubicError {
 ### JSON-RPC client
 
 ```ts
-import { createBobRpcClient } from '@qubic.ts/bob'
+import { createBobRpcClient } from '@qubic.org/bob'
 
 interface BobRpcClientOptions {
   endpoint: string         // e.g. 'http://localhost:40420'
@@ -97,7 +97,7 @@ interface BobLogEvent {
   logId: bigint
   contractIndex: number
   logType: LogType
-  data: Base64        // raw payload; decode with @qubic.ts/events
+  data: Base64        // raw payload; decode with @qubic.org/events
   isCatchUp: boolean
 }
 
@@ -122,7 +122,7 @@ interface BobTransaction {
 ### REST client
 
 ```ts
-import { createBobRestClient } from '@qubic.ts/bob'
+import { createBobRestClient } from '@qubic.org/bob'
 
 interface BobRestClientOptions {
   baseUrl?: string    // default: 'http://localhost:40420'
@@ -149,7 +149,7 @@ function createBobRestClient(options?: BobRestClientOptions): BobRestClient
 ### WebSocket subscription client
 
 ```ts
-import { createBobSubscriptionClient } from '@qubic.ts/bob'
+import { createBobSubscriptionClient } from '@qubic.org/bob'
 
 interface BobSubscriptionClientOptions {
   wsUrl: string
@@ -186,7 +186,7 @@ Reconnect uses exponential backoff (1s → 2s → 4s → 8s → 30s). On reconne
 ### Check a balance
 
 ```ts
-import { createBobRpcClient } from '@qubic.ts/bob'
+import { createBobRpcClient } from '@qubic.org/bob'
 
 const bob = createBobRpcClient({ endpoint: 'http://localhost:40420' })
 
@@ -199,8 +199,8 @@ if (result.ok) {
 ### Query a smart contract function
 
 ```ts
-import { createBobRpcClient } from '@qubic.ts/bob'
-import { buildQearnGetStateOfRoundInput, decodeQearnGetStateOfRoundOutput } from '@qubic.ts/contracts'
+import { createBobRpcClient } from '@qubic.org/bob'
+import { buildQearnGetStateOfRoundInput, decodeQearnGetStateOfRoundOutput } from '@qubic.org/contracts'
 
 const bob = createBobRpcClient({ endpoint: 'http://localhost:40420' })
 
@@ -217,7 +217,7 @@ if (result.ok) {
 ### Fetch status and epoch info via REST
 
 ```ts
-import { createBobRestClient } from '@qubic.ts/bob'
+import { createBobRestClient } from '@qubic.org/bob'
 
 const rest = createBobRestClient({ baseUrl: 'http://localhost:40420' })
 
@@ -233,7 +233,7 @@ if (epochInfo.ok) console.log(epochInfo.value)
 ### Subscribe to live log events
 
 ```ts
-import { createBobSubscriptionClient } from '@qubic.ts/bob'
+import { createBobSubscriptionClient } from '@qubic.org/bob'
 
 const sub = createBobSubscriptionClient({ wsUrl: 'ws://localhost:40420/ws' })
 
@@ -268,7 +268,7 @@ while (true) {
 ## Error handling
 
 ```ts
-import { createBobRpcClient, BobRpcError } from '@qubic.ts/bob'
+import { createBobRpcClient, BobRpcError } from '@qubic.org/bob'
 
 const bob = createBobRpcClient({ endpoint: 'http://localhost:40420', retries: 0 })
 
@@ -283,7 +283,7 @@ if (!result.ok) {
 The subscription client can throw `BobSubscriptionError` when `onBufferOverflow: 'error'` and the consumer is too slow:
 
 ```ts
-import { BobSubscriptionError } from '@qubic.ts/bob'
+import { BobSubscriptionError } from '@qubic.org/bob'
 
 try {
   for await (const event of sub.subscribeLogs()) {

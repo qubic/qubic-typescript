@@ -1,5 +1,5 @@
-import { toSeed } from '@qubic.ts/types'
-import type { Seed } from '@qubic.ts/types'
+import { toSeed } from '@qubic.org/types'
+import type { Seed } from '@qubic.org/types'
 import { InvalidVaultError, VaultDecryptionError } from './errors.js'
 
 const VAULT_VERSION = 1

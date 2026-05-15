@@ -1,5 +1,5 @@
 {
-  "name": "@qubic.ts/tx",
+  "name": "@qubic.org/tx",
   "version": "0.1.0",
   "type": "module",
   "sideEffects": false,
@@ -22,8 +22,8 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@qubic.ts/crypto": "workspace:^",
-    "@qubic.ts/types": "workspace:^"
+    "@qubic.org/crypto": "workspace:^",
+    "@qubic.org/types": "workspace:^"
   },
   "devDependencies": {
     "typescript": "*"

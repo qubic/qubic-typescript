@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test'
-import type { BobLogEvent } from '@qubic.ts/bob'
-import { LOG_TYPE } from '@qubic.ts/types'
+import type { BobLogEvent } from '@qubic.org/bob'
+import { LOG_TYPE } from '@qubic.org/types'
 import { decodeEvent } from '../src/decode-event.js'
 import { EventDecodeError } from '../src/errors.js'
 

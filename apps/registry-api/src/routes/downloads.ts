@@ -1,10 +1,10 @@
 import { existsSync, readdirSync } from 'node:fs'
-import { findContractByIndex } from '@qubic.ts/registry'
-import registry from '@qubic.ts/registry/registry.json'
+import { findContractByIndex } from '@qubic.org/registry'
+import registry from '@qubic.org/registry/registry.json'
 import { Elysia } from 'elysia'
 import { zipSync } from 'fflate'
 
-const REGISTRY_SRC = Bun.resolveSync('@qubic.ts/registry', import.meta.dir)
+const REGISTRY_SRC = Bun.resolveSync('@qubic.org/registry', import.meta.dir)
 const DATA_DIR = REGISTRY_SRC.replace(/\/src\/index\.ts$/, '/data/')
 const EPOCHS_DIR = `${DATA_DIR}epochs/`
 

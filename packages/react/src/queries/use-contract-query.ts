@@ -1,6 +1,6 @@
-import type { SmartContractCaller } from '@qubic.ts/contracts'
-import { identityToPublicKey, publicKeyToIdentity } from '@qubic.ts/crypto'
-import type { QubicRpcError } from '@qubic.ts/rpc'
+import type { SmartContractCaller } from '@qubic.org/contracts'
+import { identityToPublicKey, publicKeyToIdentity } from '@qubic.org/crypto'
+import type { QubicRpcError } from '@qubic.org/rpc'
 import { type UseQueryOptions, type UseQueryResult, useQuery } from '@tanstack/react-query'
 import { useQubic } from '../context.js'
 
@@ -16,13 +16,13 @@ type ContractQueryFn<TInput, TOutput> = (
 type Options<TOutput> = Omit<UseQueryOptions<TOutput>, 'queryKey' | 'queryFn' | 'enabled'>
 
 /**
- * Runs a typed smart contract read function from @qubic.ts/contracts as a TanStack Query.
- * Automatically provides identityToPublicKey and publicKeyToIdentity from @qubic.ts/crypto.
+ * Runs a typed smart contract read function from @qubic.org/contracts as a TanStack Query.
+ * Automatically provides identityToPublicKey and publicKeyToIdentity from @qubic.org/crypto.
  * Query is disabled when `input` is null or undefined.
  *
  * @example
  * ```tsx
- * import { qearnGetStateOfRound } from '@qubic.ts/contracts'
+ * import { qearnGetStateOfRound } from '@qubic.org/contracts'
  *
  * const { data, isLoading } = useContractQuery(qearnGetStateOfRound, { epoch: 212 })
  * console.log(data?.totalLockedAmount)

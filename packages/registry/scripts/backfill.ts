@@ -26,7 +26,7 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { parseArgs } from 'node:util'
-import { contractIndexToIdentity } from '@qubic.ts/crypto'
+import { contractIndexToIdentity } from '@qubic.org/crypto'
 import type { ContractAbiVersion, ContractRegistry, ContractSnapshot } from '../src/types.js'
 import { cloneForBackfill, fetchCoreTags } from './_git-utils.js'
 import { parseContractHeader } from './_parse-header.js'

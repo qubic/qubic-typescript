@@ -1,5 +1,5 @@
 {
-  "name": "@qubic.ts/rpc",
+  "name": "@qubic.org/rpc",
   "version": "0.1.0",
   "type": "module",
   "sideEffects": false,
@@ -23,7 +23,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@qubic.ts/types": "workspace:^",
+    "@qubic.org/types": "workspace:^",
     "openapi-fetch": "^0.17.0"
   },
   "devDependencies": {

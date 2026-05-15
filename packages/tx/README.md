@@ -1,4 +1,4 @@
-# `@qubic.ts/tx`
+# `@qubic.org/tx`
 
 Transaction building, signing, encoding, and verification for the Qubic network.
 
@@ -7,10 +7,10 @@ This package covers the full lifecycle of a Qubic transaction: constructing the 
 ## Installation
 
 ```sh
-bun add @qubic.ts/tx
+bun add @qubic.org/tx
 ```
 
-Dependencies: `@qubic.ts/crypto`, `@qubic.ts/types`
+Dependencies: `@qubic.org/crypto`, `@qubic.org/types`
 
 ## API
 
@@ -55,7 +55,7 @@ Signs the unsigned transaction bytes produced by `buildTransaction`. The signing
 function encodeTransaction(signedTx: Uint8Array): Base64
 ```
 
-Base64-encodes a signed transaction buffer into a `Base64`-branded string ready to POST to the `broadcast-transaction` endpoint of `@qubic.ts/rpc`.
+Base64-encodes a signed transaction buffer into a `Base64`-branded string ready to POST to the `broadcast-transaction` endpoint of `@qubic.org/rpc`.
 
 ### Decoding
 
@@ -105,7 +105,7 @@ type PayloadField =
 function buildPayload(fields: PayloadField[]): Uint8Array
 ```
 
-Serialises a list of typed fields into a binary payload buffer using little-endian encoding. The `'id'` type accepts an `Identity` string and automatically converts it to its 32-byte public key representation using `identityToPublicKey` from `@qubic.ts/crypto`.
+Serialises a list of typed fields into a binary payload buffer using little-endian encoding. The `'id'` type accepts an `Identity` string and automatically converts it to its 32-byte public key representation using `identityToPublicKey` from `@qubic.org/crypto`.
 
 ### Low-level utilities
 
@@ -134,9 +134,9 @@ All three errors carry structured context:
 ### Plain QU transfer
 
 ```ts
-import { buildTransaction, signTransaction, encodeTransaction } from '@qubic.ts/tx'
-import { publicKeyFromSeed, identityToPublicKey } from '@qubic.ts/crypto'
-import { toSeed, toIdentity } from '@qubic.ts/types'
+import { buildTransaction, signTransaction, encodeTransaction } from '@qubic.org/tx'
+import { publicKeyFromSeed, identityToPublicKey } from '@qubic.org/crypto'
+import { toSeed, toIdentity } from '@qubic.org/types'
 
 const seed = toSeed('mysecrettwentyfivecharacterseeeed...')
 const sourcePublicKey = publicKeyFromSeed(seed)
@@ -165,9 +165,9 @@ const encoded = encodeTransaction(signedTx)
 ### Smart contract call with payload
 
 ```ts
-import { buildTransaction, signTransaction, encodeTransaction, buildPayload } from '@qubic.ts/tx'
-import { publicKeyFromSeed } from '@qubic.ts/crypto'
-import { toSeed, CONTRACT_INDEX, PROTOCOL } from '@qubic.ts/types'
+import { buildTransaction, signTransaction, encodeTransaction, buildPayload } from '@qubic.org/tx'
+import { publicKeyFromSeed } from '@qubic.org/crypto'
+import { toSeed, CONTRACT_INDEX, PROTOCOL } from '@qubic.org/types'
 
 const seed = toSeed('myseedaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
 const sourcePublicKey = publicKeyFromSeed(seed)
@@ -195,7 +195,7 @@ const encoded = encodeTransaction(signedTx)
 ### Compute and verify a transaction hash
 
 ```ts
-import { signTransaction, computeTransactionHash, verifyTransactionSignature } from '@qubic.ts/tx'
+import { signTransaction, computeTransactionHash, verifyTransactionSignature } from '@qubic.org/tx'
 
 const signedTx = await signTransaction(txBytes, seed)
 
@@ -209,8 +209,8 @@ console.log('Signature valid:', valid)  // true
 ### Decode a raw transaction for inspection
 
 ```ts
-import { decodeTransaction } from '@qubic.ts/tx'
-import { publicKeyToIdentity } from '@qubic.ts/crypto'
+import { decodeTransaction } from '@qubic.org/tx'
+import { publicKeyToIdentity } from '@qubic.org/crypto'
 
 const decoded = decodeTransaction(rawBytes)
 console.log('From:    ', publicKeyToIdentity(decoded.sourcePublicKey))

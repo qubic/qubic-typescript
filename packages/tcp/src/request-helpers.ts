@@ -1,5 +1,5 @@
-import { publicKeyToIdentity } from '@qubic.ts/crypto'
-import type { Identity } from '@qubic.ts/types'
+import { publicKeyToIdentity } from '@qubic.org/crypto'
+import type { Identity } from '@qubic.org/types'
 import type { NodeConnection } from './connection.js'
 import {
   type CurrentTickInfo,

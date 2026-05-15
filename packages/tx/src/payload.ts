@@ -1,5 +1,5 @@
-import { identityToPublicKey } from '@qubic.ts/crypto'
-import type { Identity } from '@qubic.ts/types'
+import { identityToPublicKey } from '@qubic.org/crypto'
+import type { Identity } from '@qubic.org/types'
 import { BinaryWriter } from './binary-writer.js'
 
 export type PayloadField =

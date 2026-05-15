@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test'
-import { identityToPublicKey, publicKeyToIdentity } from '@qubic.ts/crypto'
-import { toIdentity } from '@qubic.ts/types'
+import { identityToPublicKey, publicKeyToIdentity } from '@qubic.org/crypto'
+import { toIdentity } from '@qubic.org/types'
 import { buildPayload } from '../payload.js'
 
 describe('buildPayload', () => {

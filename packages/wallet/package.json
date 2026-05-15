@@ -1,5 +1,5 @@
 {
-  "name": "@qubic.ts/wallet",
+  "name": "@qubic.org/wallet",
   "version": "0.0.0",
   "type": "module",
   "sideEffects": false,
@@ -22,9 +22,9 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@qubic.ts/crypto": "workspace:^",
-    "@qubic.ts/tx": "workspace:^",
-    "@qubic.ts/types": "workspace:^"
+    "@qubic.org/crypto": "workspace:^",
+    "@qubic.org/tx": "workspace:^",
+    "@qubic.org/types": "workspace:^"
   },
   "devDependencies": {
     "typescript": "*"

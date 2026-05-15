@@ -1,4 +1,4 @@
-import type { AbiLookupResult, ContractAbiVersion } from '@qubic.ts/registry'
+import type { AbiLookupResult, ContractAbiVersion } from '@qubic.org/registry'
 
 const BASE = process.env.REGISTRY_API_URL ?? 'http://localhost:3001'
 

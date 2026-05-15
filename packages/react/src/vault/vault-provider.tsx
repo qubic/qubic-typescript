@@ -1,7 +1,7 @@
-import type { Identity, Seed } from '@qubic.ts/types'
-import type { Wallet } from '@qubic.ts/wallet'
-import { createWallet, unlockVault } from '@qubic.ts/wallet'
-import type { VaultData } from '@qubic.ts/wallet'
+import type { Identity, Seed } from '@qubic.org/types'
+import type { Wallet } from '@qubic.org/wallet'
+import { createWallet, unlockVault } from '@qubic.org/wallet'
+import type { VaultData } from '@qubic.org/wallet'
 import {
   type ReactNode,
   createContext,

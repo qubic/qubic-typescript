@@ -1,4 +1,4 @@
-import type { LiveTickInfo } from '@qubic.ts/rpc'
+import type { LiveTickInfo } from '@qubic.org/rpc'
 import { type UseQueryOptions, type UseQueryResult, useQuery } from '@tanstack/react-query'
 import { useQubic } from '../context.js'
 

@@ -1,4 +1,4 @@
-# `@qubic.ts/rpc`
+# `@qubic.org/rpc`
 
 Type-safe HTTP clients for the Qubic RPC API — live node data and archive query endpoints.
 
@@ -7,10 +7,10 @@ This package wraps the public Qubic RPC service (`rpc.qubic.org`) with two facto
 ## Installation
 
 ```sh
-bun add @qubic.ts/rpc
+bun add @qubic.org/rpc
 ```
 
-Dependencies: `openapi-fetch`, `@qubic.ts/types`
+Dependencies: `openapi-fetch`, `@qubic.org/types`
 
 ## API
 
@@ -43,7 +43,7 @@ Returns the balance and transfer history for the given identity string.
 ```ts
 broadcastTransaction(encodedTransaction: string): Promise<BroadcastTransactionResponse>
 ```
-Broadcasts a base64-encoded signed transaction. Use `encodeTransaction` from `@qubic.ts/tx` to produce the encoded string. Returns the peer count that accepted the transaction and the assigned transaction ID.
+Broadcasts a base64-encoded signed transaction. Use `encodeTransaction` from `@qubic.org/tx` to produce the encoded string. Returns the peer count that accepted the transaction and the assigned transaction ID.
 
 ```ts
 querySmartContract(req: QuerySmartContractRequest): Promise<QuerySmartContractResponse>
@@ -192,7 +192,7 @@ type QueryClient, QueryClientOptions
 ### Fetch current tick and account balance
 
 ```ts
-import { createLiveClient } from '@qubic.ts/rpc'
+import { createLiveClient } from '@qubic.org/rpc'
 
 const live = createLiveClient()
 
@@ -206,10 +206,10 @@ console.log('Balance:', balance)
 ### Build and broadcast a transaction
 
 ```ts
-import { createLiveClient } from '@qubic.ts/rpc'
-import { buildTransaction, signTransaction, encodeTransaction } from '@qubic.ts/tx'
-import { publicKeyFromSeed, identityToPublicKey } from '@qubic.ts/crypto'
-import { toSeed, toIdentity, PROTOCOL } from '@qubic.ts/types'
+import { createLiveClient } from '@qubic.org/rpc'
+import { buildTransaction, signTransaction, encodeTransaction } from '@qubic.org/tx'
+import { publicKeyFromSeed, identityToPublicKey } from '@qubic.org/crypto'
+import { toSeed, toIdentity, PROTOCOL } from '@qubic.org/types'
 
 const seed = toSeed('yourseedaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
 const live = createLiveClient()
@@ -236,8 +236,8 @@ console.log('Broadcast result:', result)
 ### Query event logs for QU transfers
 
 ```ts
-import { createQueryClient } from '@qubic.ts/rpc'
-import { LOG_TYPE } from '@qubic.ts/types'
+import { createQueryClient } from '@qubic.org/rpc'
+import { LOG_TYPE } from '@qubic.org/types'
 
 const query = createQueryClient()
 
@@ -258,7 +258,7 @@ console.log(`Found ${hits.totalCount} transfers, showing ${eventLogs.length}`)
 All methods throw `QubicRpcError` when the HTTP response is not 2xx. Catch it to distinguish RPC failures from unexpected runtime errors:
 
 ```ts
-import { createLiveClient, QubicRpcError } from '@qubic.ts/rpc'
+import { createLiveClient, QubicRpcError } from '@qubic.org/rpc'
 
 const live = createLiveClient()
 

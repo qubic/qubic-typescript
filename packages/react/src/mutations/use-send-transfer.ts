@@ -1,5 +1,5 @@
-import type { BroadcastTransactionResponse } from '@qubic.ts/rpc'
-import type { Identity } from '@qubic.ts/types'
+import type { BroadcastTransactionResponse } from '@qubic.org/rpc'
+import type { Identity } from '@qubic.org/types'
 import { type UseMutationResult, useMutation } from '@tanstack/react-query'
 import { useQubic } from '../context.js'
 import { useVaultSigning } from '../vault/vault-provider.js'

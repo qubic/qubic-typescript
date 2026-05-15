@@ -1,4 +1,4 @@
-import { QubicError } from '@qubic.ts/types'
+import { QubicError } from '@qubic.org/types'
 
 export class EventDecodeError extends QubicError {
   override readonly code: string = 'EVENT_DECODE_ERROR'

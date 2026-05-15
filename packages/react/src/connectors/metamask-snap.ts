@@ -64,7 +64,7 @@ type EventCallback = (payload: unknown) => void
  *
  * Usage:
  * ```ts
- * import { createMetaMaskSnapConnector } from '@qubic.ts/react'
+ * import { createMetaMaskSnapConnector } from '@qubic.org/react'
  *
  * const connector = createMetaMaskSnapConnector({
  *   broadcast: async (base64) => {

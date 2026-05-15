@@ -1,4 +1,4 @@
-import type { Base64, Identity, LogType, TxHash } from '@qubic.ts/types'
+import type { Base64, Identity, LogType, TxHash } from '@qubic.org/types'
 
 export interface BobLogFilter {
   contractIndex?: number
@@ -19,7 +19,7 @@ export interface BobLogEvent {
   logId: bigint
   contractIndex: number
   logType: LogType
-  /** Raw payload; decoded by @qubic.ts/events */
+  /** Raw payload; decoded by @qubic.org/events */
   data: Base64
   isCatchUp: boolean
 }

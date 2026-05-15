@@ -3,7 +3,7 @@
  * Used by extract-abi.ts (single contract) and backfill.ts (batch).
  */
 import { join } from 'node:path'
-import { contractIndexToIdentity } from '@qubic.ts/crypto'
+import { contractIndexToIdentity } from '@qubic.org/crypto'
 import type { BinaryField, ContractAbiVersion, FieldType, NamedStruct } from '../src/types.js'
 
 // ── Tree-sitter init (singleton) ──────────────────────────────────────────────

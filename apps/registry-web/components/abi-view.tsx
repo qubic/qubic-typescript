@@ -4,7 +4,7 @@ import type {
   ContractAbiVersion,
   ContractCallBase,
   NamedStruct,
-} from '@qubic.ts/registry'
+} from '@qubic.org/registry'
 import { useState } from 'react'
 import { CopyButton } from './copy-button'
 import { FieldTable } from './field-table'
@@ -86,10 +86,10 @@ function buildSnippet(call: ContractCallBase, contractIndex: number): string {
 
   if (call.kind === 'function') {
     L.push('')
-    L.push("import { createLiveClient } from '@qubic.ts/rpc'")
-    if (hasIn) L.push("import { BinaryReader, buildPayload } from '@qubic.ts/tx'")
-    else if (hasOut) L.push("import { BinaryReader } from '@qubic.ts/tx'")
-    if (hasIn) L.push("import type { Base64 } from '@qubic.ts/types'")
+    L.push("import { createLiveClient } from '@qubic.org/rpc'")
+    if (hasIn) L.push("import { BinaryReader, buildPayload } from '@qubic.org/tx'")
+    else if (hasOut) L.push("import { BinaryReader } from '@qubic.org/tx'")
+    if (hasIn) L.push("import type { Base64 } from '@qubic.org/types'")
     L.push('')
     L.push('const rpc = createLiveClient()')
 
@@ -136,10 +136,10 @@ function buildSnippet(call: ContractCallBase, contractIndex: number): string {
   } else {
     // procedure
     L.push('')
-    L.push("import { createLiveClient } from '@qubic.ts/rpc'")
-    L.push("import { createWallet } from '@qubic.ts/wallet'")
-    L.push("import { buildPayload } from '@qubic.ts/tx'")
-    L.push("import type { Identity, Seed } from '@qubic.ts/types'")
+    L.push("import { createLiveClient } from '@qubic.org/rpc'")
+    L.push("import { createWallet } from '@qubic.org/wallet'")
+    L.push("import { buildPayload } from '@qubic.org/tx'")
+    L.push("import type { Identity, Seed } from '@qubic.org/types'")
     L.push('')
     L.push("const CONTRACT_ID = 'CONTRACT_IDENTITY_HERE' as Identity")
     L.push('const rpc    = createLiveClient()')
@@ -310,8 +310,8 @@ function MethodBlock({
             </span>
             <span className="lbl">
               {call.kind === 'function'
-                ? 'TypeScript · @qubic.ts/rpc'
-                : 'TypeScript · @qubic.ts/rpc + @qubic.ts/wallet'}
+                ? 'TypeScript · @qubic.org/rpc'
+                : 'TypeScript · @qubic.org/rpc + @qubic.org/wallet'}
             </span>
             <span className="grow" />
             <CopyButton value={buildSnippet(call, contractIndex)} />

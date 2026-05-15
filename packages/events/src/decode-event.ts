@@ -1,6 +1,6 @@
-import type { BobLogEvent } from '@qubic.ts/bob'
-import { publicKeyToIdentity } from '@qubic.ts/crypto'
-import { LOG_TYPE } from '@qubic.ts/types'
+import type { BobLogEvent } from '@qubic.org/bob'
+import { publicKeyToIdentity } from '@qubic.org/crypto'
+import { LOG_TYPE } from '@qubic.org/types'
 import { EventDecodeError } from './errors.js'
 import type {
   AssetIssuanceData,

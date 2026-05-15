@@ -1,6 +1,6 @@
 import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import type { BinaryField, ContractAbiVersion, FieldType, NamedStruct } from '@qubic.ts/registry'
+import type { BinaryField, ContractAbiVersion, FieldType, NamedStruct } from '@qubic.org/registry'
 
 const epochsDir = join(import.meta.dir, '../../registry/data/epochs')
 
@@ -164,11 +164,11 @@ for (const version of versions) {
 
   const lines: string[] = [
     '// @generated — do not edit by hand. Run `bun run generate` to regenerate.',
-    "import type { BinaryField, FieldValue, NamedStruct } from '@qubic.ts/registry'",
-    "import { buildPayload, decodePayload } from '@qubic.ts/registry'",
+    "import type { BinaryField, FieldValue, NamedStruct } from '@qubic.org/registry'",
+    "import { buildPayload, decodePayload } from '@qubic.org/registry'",
     ...(needsCallRuntime
       ? [
-          "import type { QubicRpcError } from '@qubic.ts/rpc'",
+          "import type { QubicRpcError } from '@qubic.org/rpc'",
           "import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'",
           "import type { Result } from '../result.js'",
         ]

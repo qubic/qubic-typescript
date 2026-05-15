@@ -1,19 +1,19 @@
-# `@qubic.ts/contracts`
+# `@qubic.org/contracts`
 
 Generated typed TypeScript wrappers for every deployed Qubic smart contract.
 
-This package provides ready-to-use, fully-typed functions for every procedure and function exposed by Qubic's on-chain contracts. It is generated from the latest epoch snapshot in `@qubic.ts/registry` and eliminates the need to manually construct binary payloads or look up ABI field descriptors. The generated files are committed — consumers do not need to run the generator.
+This package provides ready-to-use, fully-typed functions for every procedure and function exposed by Qubic's on-chain contracts. It is generated from the latest epoch snapshot in `@qubic.org/registry` and eliminates the need to manually construct binary payloads or look up ABI field descriptors. The generated files are committed — consumers do not need to run the generator.
 
 ## Installation
 
 ```sh
-bun add @qubic.ts/contracts
+bun add @qubic.org/contracts
 ```
 
 In a monorepo workspace:
 
 ```json
-{ "dependencies": { "@qubic.ts/contracts": "workspace:*" } }
+{ "dependencies": { "@qubic.org/contracts": "workspace:*" } }
 ```
 
 ## Supported contracts
@@ -63,7 +63,7 @@ function err<E>(error: E): Err<E>
 
 ### `SmartContractCaller` interface
 
-Any live node client that implements `querySmartContract` satisfies this interface, including `createLiveClient()` from `@qubic.ts/rpc`.
+Any live node client that implements `querySmartContract` satisfies this interface, including `createLiveClient()` from `@qubic.org/rpc`.
 
 ```ts
 interface SmartContractCaller {
@@ -173,8 +173,8 @@ All other contracts export the same structure with names derived from their cont
 ### Query a contract function
 
 ```ts
-import { createLiveClient } from '@qubic.ts/rpc'
-import { qearnGetStateOfRound } from '@qubic.ts/contracts'
+import { createLiveClient } from '@qubic.org/rpc'
+import { qearnGetStateOfRound } from '@qubic.org/contracts'
 
 const live = createLiveClient({ baseUrl: 'https://rpc.qubic.org' })
 
@@ -190,8 +190,8 @@ if (result.ok) {
 ### Use the namespace object
 
 ```ts
-import { createLiveClient } from '@qubic.ts/rpc'
-import { qearn } from '@qubic.ts/contracts'
+import { createLiveClient } from '@qubic.org/rpc'
+import { qearn } from '@qubic.org/contracts'
 
 const live = createLiveClient({ baseUrl: 'https://rpc.qubic.org' })
 
@@ -204,8 +204,8 @@ if (result.ok) {
 ### Build a procedure input for a transaction
 
 ```ts
-import { buildQearnUnlockInput } from '@qubic.ts/contracts'
-import { identityToPublicKey } from '@qubic.ts/crypto'
+import { buildQearnUnlockInput } from '@qubic.org/contracts'
+import { identityToPublicKey } from '@qubic.org/crypto'
 
 const payload = buildQearnUnlockInput(
   { amount: 5_000_000n, lockedEpoch: 210 },
@@ -217,7 +217,7 @@ const payload = buildQearnUnlockInput(
 ### Decode a procedure output returned from a node
 
 ```ts
-import { decodeQearnLockOutput } from '@qubic.ts/contracts'
+import { decodeQearnLockOutput } from '@qubic.org/contracts'
 
 const output = decodeQearnLockOutput(responseBytes)
 console.log('returnCode:', output.returnCode)
@@ -226,8 +226,8 @@ console.log('returnCode:', output.returnCode)
 ### Pass identity converters for id-typed fields
 
 ```ts
-import { identityToPublicKey, publicKeyToIdentity } from '@qubic.ts/crypto'
-import { qearnGetUserLockedInfo } from '@qubic.ts/contracts'
+import { identityToPublicKey, publicKeyToIdentity } from '@qubic.org/crypto'
+import { qearnGetUserLockedInfo } from '@qubic.org/contracts'
 
 const result = await qearnGetUserLockedInfo(
   live,
@@ -241,7 +241,7 @@ const result = await qearnGetUserLockedInfo(
 Function callers never throw on network or RPC errors — they wrap them in `Result`:
 
 ```ts
-import { QubicRpcError } from '@qubic.ts/rpc'
+import { QubicRpcError } from '@qubic.org/rpc'
 
 const result = await qearnGetStateOfRound(live, { epoch: 212 })
 
@@ -254,7 +254,7 @@ if (!result.ok) {
 `PayloadBuildError` can still be thrown synchronously by procedure builders if the input object is malformed:
 
 ```ts
-import { PayloadBuildError } from '@qubic.ts/registry'
+import { PayloadBuildError } from '@qubic.org/registry'
 
 try {
   buildQearnUnlockInput({ amount: 'wrong' as any, lockedEpoch: 210 })
@@ -270,7 +270,7 @@ try {
 Generated files live in `src/__generated__/` and are committed to the repository.
 
 ```sh
-# Regenerate from the latest epoch snapshot in @qubic.ts/registry/data/epochs/
+# Regenerate from the latest epoch snapshot in @qubic.org/registry/data/epochs/
 bun run generate
 ```
 

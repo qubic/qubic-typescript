@@ -1,27 +1,27 @@
-# @qubic.ts/events
+# @qubic.org/events
 
 Typed event decoding, filter builder, and subscription helpers for Qubic log events.
 
 ## Overview
 
-`@qubic.ts/events` sits above the raw log APIs in `@qubic.ts/bob`, which return opaque base64 payloads, and provides a fully typed decoding layer over them. It handles all 17 Qubic log types using the exact C++ struct layouts from the core node.
+`@qubic.org/events` sits above the raw log APIs in `@qubic.org/bob`, which return opaque base64 payloads, and provides a fully typed decoding layer over them. It handles all 17 Qubic log types using the exact C++ struct layouts from the core node.
 
 ## Installation
 
 ```bash
-bun add @qubic.ts/events
+bun add @qubic.org/events
 ```
 
 ## Dependencies
 
-- `@qubic.ts/types` — `LOG_TYPE`, `LogType`, `Identity`, `Base64`
-- `@qubic.ts/crypto` — public key → identity conversion for binary payloads
-- `@qubic.ts/bob` — `BobSubscriptionClient`, `BobLogEvent`
+- `@qubic.org/types` — `LOG_TYPE`, `LogType`, `Identity`, `Base64`
+- `@qubic.org/crypto` — public key → identity conversion for binary payloads
+- `@qubic.org/bob` — `BobSubscriptionClient`, `BobLogEvent`
 
 ## Decoding a raw event
 
 ```ts
-import { decodeEvent, LOG_TYPE } from '@qubic.ts/events'
+import { decodeEvent, LOG_TYPE } from '@qubic.org/events'
 
 // BobLogEvent comes from bob.subscribeLogs()
 const typed = decodeEvent(bobLogEvent)
@@ -36,8 +36,8 @@ if (typed.logType === LOG_TYPE.QU_TRANSFER) {
 ## Subscription helpers
 
 ```ts
-import { subscribeQuTransfers, subscribeAssetEvents, subscribeContractLogs, subscribeAllEvents } from '@qubic.ts/events'
-import { createBobSubscriptionClient } from '@qubic.ts/bob'
+import { subscribeQuTransfers, subscribeAssetEvents, subscribeContractLogs, subscribeAllEvents } from '@qubic.org/events'
+import { createBobSubscriptionClient } from '@qubic.org/bob'
 
 const bob = createBobSubscriptionClient({ wsUrl: 'wss://bob.qubic.org/v1/ws' })
 
@@ -66,7 +66,7 @@ for await (const event of subscribeAllEvents(bob)) {
 ## Filter builder
 
 ```ts
-import { eventFilter, LOG_TYPE } from '@qubic.ts/events'
+import { eventFilter, LOG_TYPE } from '@qubic.org/events'
 
 const filter = eventFilter()
   .forIdentity(myIdentity)
@@ -104,6 +104,6 @@ All 17 log types from the Qubic protocol are decoded with fully typed data inter
 
 ## See also
 
-- [`@qubic.ts/bob`](../bob) — WebSocket subscription client that produces `BobLogEvent`
-- [`@qubic.ts/rpc`](../rpc) — archive query client for historical event logs
-- [`@qubic.ts/types`](../types) — `LOG_TYPE` constants and `LogType` union
+- [`@qubic.org/bob`](../bob) — WebSocket subscription client that produces `BobLogEvent`
+- [`@qubic.org/rpc`](../rpc) — archive query client for historical event logs
+- [`@qubic.org/types`](../types) — `LOG_TYPE` constants and `LogType` union

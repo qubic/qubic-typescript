@@ -1,4 +1,4 @@
-import { QubicError } from '@qubic.ts/types'
+import { QubicError } from '@qubic.org/types'
 
 export class QubicTcpError extends QubicError {
   override readonly code: string = 'TCP_ERROR'

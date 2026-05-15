@@ -1,5 +1,5 @@
-import type { BroadcastTransactionResponse } from '@qubic.ts/rpc'
-import type { Identity } from '@qubic.ts/types'
+import type { BroadcastTransactionResponse } from '@qubic.org/rpc'
+import type { Identity } from '@qubic.org/types'
 import { type UseMutationResult, useMutation } from '@tanstack/react-query'
 import { useQubic } from '../context.js'
 import { useVaultSigning } from '../vault/vault-provider.js'
@@ -12,7 +12,7 @@ export interface SendContractCallParams {
   from: Identity
   /** SC procedure input type index. */
   inputType: number
-  /** Encoded payload bytes — use a buildXxxInput helper from @qubic.ts/contracts. */
+  /** Encoded payload bytes — use a buildXxxInput helper from @qubic.org/contracts. */
   payload: Uint8Array
   /** Amount to attach (QU). Default: 0n. */
   amount?: bigint
@@ -36,7 +36,7 @@ export interface SendContractCallParams {
  *
  * @example
  * ```tsx
- * import { qearn } from '@qubic.ts/contracts'
+ * import { qearn } from '@qubic.org/contracts'
  *
  * const { mutate: send, isPending } = useSendContractCall()
  *

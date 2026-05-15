@@ -1,4 +1,4 @@
-# `@qubic.ts/types`
+# `@qubic.org/types`
 
 Shared types, branded primitives, protocol constants, and error classes for the Qubic TypeScript SDK.
 
@@ -7,7 +7,7 @@ This package is the foundation of the monorepo. Every other package imports from
 ## Installation
 
 ```sh
-bun add @qubic.ts/types
+bun add @qubic.org/types
 ```
 
 No peer dependencies.
@@ -141,7 +141,7 @@ interface ComputorList {
 ### Validate and brand user input
 
 ```ts
-import { toIdentity, toSeed, InvalidIdentityError } from '@qubic.ts/types'
+import { toIdentity, toSeed, InvalidIdentityError } from '@qubic.org/types'
 
 function parseInput(raw: { identity: string; seed: string }) {
   const identity = toIdentity(raw.identity)  // throws InvalidIdentityError if bad
@@ -153,8 +153,8 @@ function parseInput(raw: { identity: string; seed: string }) {
 ### Type guard in a conditional branch
 
 ```ts
-import { isIdentity, isIdentity as guard } from '@qubic.ts/types'
-import type { Identity } from '@qubic.ts/types'
+import { isIdentity, isIdentity as guard } from '@qubic.org/types'
+import type { Identity } from '@qubic.org/types'
 
 function display(s: string): string {
   if (isIdentity(s)) {
@@ -168,7 +168,7 @@ function display(s: string): string {
 ### Structured error handling
 
 ```ts
-import { toIdentity, QubicError, InvalidIdentityError } from '@qubic.ts/types'
+import { toIdentity, QubicError, InvalidIdentityError } from '@qubic.org/types'
 
 try {
   const id = toIdentity('not-valid')
@@ -185,7 +185,7 @@ try {
 ### Using protocol constants
 
 ```ts
-import { PROTOCOL, CONTRACT_INDEX } from '@qubic.ts/types'
+import { PROTOCOL, CONTRACT_INDEX } from '@qubic.org/types'
 
 const targetTick = currentTick + PROTOCOL.TICKS_TO_EXPIRY
 const contractId = CONTRACT_INDEX.QEARN  // 9
@@ -195,6 +195,6 @@ const contractId = CONTRACT_INDEX.QEARN  // 9
 
 **Why branded types instead of classes or wrappers?** Branded types have zero runtime cost — they are erased to plain `string` by TypeScript. Wrapper classes would allocate heap objects and require `.value` accessors everywhere. The brand approach gives full type safety at the call site while serialising/deserialising as ordinary strings.
 
-**Why `toX` functions that throw rather than returning `Result<T>`?** Validation at boundaries (parsing user input, loading config) is inherently exceptional. Throwing makes happy-path code linear and prevents callers from silently ignoring validation failures. Packages higher in the stack (e.g. `@qubic.ts/rpc`) catch and re-wrap errors where appropriate.
+**Why `toX` functions that throw rather than returning `Result<T>`?** Validation at boundaries (parsing user input, loading config) is inherently exceptional. Throwing makes happy-path code linear and prevents callers from silently ignoring validation failures. Packages higher in the stack (e.g. `@qubic.org/rpc`) catch and re-wrap errors where appropriate.
 
 **Why `QubicError` as an abstract base?** A common base class lets consumers write a single `instanceof QubicError` guard to distinguish SDK errors from unexpected `Error`s thrown by the runtime or third-party code. The `code` discriminant then enables switching on the specific case without string matching on `.message`.

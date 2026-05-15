@@ -1,8 +1,8 @@
-import type { Identity } from '@qubic.ts/types'
-import type { LOG_TYPE } from '@qubic.ts/types'
+import type { Identity } from '@qubic.org/types'
+import type { LOG_TYPE } from '@qubic.org/types'
 
-export type { LogType } from '@qubic.ts/types'
-export { LOG_TYPE } from '@qubic.ts/types'
+export type { LogType } from '@qubic.org/types'
+export { LOG_TYPE } from '@qubic.org/types'
 
 // ── Event data interfaces ─────────────────────────────────────────────────────
 

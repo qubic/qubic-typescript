@@ -1,5 +1,5 @@
 {
-  "name": "@qubic.ts/crypto",
+  "name": "@qubic.org/crypto",
   "version": "0.1.0",
   "type": "module",
   "sideEffects": false,
@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@noble/hashes": "^2.2.0",
-    "@qubic.ts/types": "workspace:^"
+    "@qubic.org/types": "workspace:^"
   },
   "devDependencies": {
     "typescript": "*"

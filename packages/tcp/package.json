@@ -1,5 +1,5 @@
 {
-  "name": "@qubic.ts/tcp",
+  "name": "@qubic.org/tcp",
   "version": "0.1.0",
   "type": "module",
   "sideEffects": false,
@@ -15,8 +15,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@qubic.ts/crypto": "workspace:^",
-    "@qubic.ts/types": "workspace:^"
+    "@qubic.org/crypto": "workspace:^",
+    "@qubic.org/types": "workspace:^"
   },
   "devDependencies": {
     "@types/node": "^25.8.0",

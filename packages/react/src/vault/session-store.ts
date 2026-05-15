@@ -1,5 +1,5 @@
-import { toSeed } from '@qubic.ts/types'
-import type { Seed } from '@qubic.ts/types'
+import { toSeed } from '@qubic.org/types'
+import type { Seed } from '@qubic.org/types'
 
 // ── Availability guard ────────────────────────────────────────────────────────
 

@@ -63,7 +63,7 @@ export interface WalletProviderProps {
  *
  * @example
  * ```tsx
- * import { extensionConnector, createWalletConnectConnector, WalletProvider } from '@qubic.ts/react'
+ * import { extensionConnector, createWalletConnectConnector, WalletProvider } from '@qubic.org/react'
  * import SignClient from '@walletconnect/sign-client'
  *
  * const connectors = [

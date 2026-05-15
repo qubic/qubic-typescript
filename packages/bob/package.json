@@ -1,5 +1,5 @@
 {
-  "name": "@qubic.ts/bob",
+  "name": "@qubic.org/bob",
   "version": "0.1.0",
   "type": "module",
   "sideEffects": false,
@@ -19,7 +19,7 @@
     "publish": "bun publish --access public"
   },
   "dependencies": {
-    "@qubic.ts/types": "workspace:^",
+    "@qubic.org/types": "workspace:^",
     "openapi-fetch": "^0.17.0"
   },
   "devDependencies": {

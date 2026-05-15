@@ -1,4 +1,4 @@
-import { QubicError } from '@qubic.ts/types'
+import { QubicError } from '@qubic.org/types'
 
 function causedBy(options?: { cause?: unknown }) {
   return options?.cause !== undefined ? { cause: options.cause } : {}

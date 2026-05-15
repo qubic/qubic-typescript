@@ -1,11 +1,11 @@
-import { deriveIdentityFromSeed, identityToPublicKey, publicKeyFromSeed } from '@qubic.ts/crypto'
+import { deriveIdentityFromSeed, identityToPublicKey, publicKeyFromSeed } from '@qubic.org/crypto'
 import {
   buildTransaction,
   computeTransactionHash,
   encodeTransaction,
   signTransaction,
-} from '@qubic.ts/tx'
-import type { Base64, Identity, Seed, TxHash } from '@qubic.ts/types'
+} from '@qubic.org/tx'
+import type { Base64, Identity, Seed, TxHash } from '@qubic.org/types'
 
 export interface SignedTransaction {
   /** Base64-encoded signed transaction, ready for broadcast. */

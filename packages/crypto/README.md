@@ -1,16 +1,16 @@
-# `@qubic.ts/crypto`
+# `@qubic.org/crypto`
 
 Qubic cryptographic primitives: KangarooTwelve hashing, FourQ elliptic curve arithmetic, SchnorrQ signatures, and seed/identity derivation.
 
-This package implements the full Qubic cryptographic stack in pure TypeScript, without native addons. It is a direct port of the Go and C++ reference implementations used by the Qubic network. `@qubic.ts/tx` depends on this package to sign and hash transactions.
+This package implements the full Qubic cryptographic stack in pure TypeScript, without native addons. It is a direct port of the Go and C++ reference implementations used by the Qubic network. `@qubic.org/tx` depends on this package to sign and hash transactions.
 
 ## Installation
 
 ```sh
-bun add @qubic.ts/crypto
+bun add @qubic.org/crypto
 ```
 
-Dependencies: `@noble/hashes`, `@qubic.ts/types`
+Dependencies: `@noble/hashes`, `@qubic.org/types`
 
 ## API
 
@@ -62,7 +62,7 @@ Decodes a 60-character identity back to its 32-byte public key. Validates the 4-
 function sign(message: Uint8Array, seed: Seed): Promise<Uint8Array>
 ```
 
-Signs a message digest using SchnorrQ over the FourQ elliptic curve. Internally runs key derivation to obtain the subseed and public key, then executes the SchnorrQ signing protocol. Returns a 64-byte signature (`R || s`). The `message` parameter is typically a 32-byte K12 digest computed by `@qubic.ts/tx` — it is not automatically hashed here.
+Signs a message digest using SchnorrQ over the FourQ elliptic curve. Internally runs key derivation to obtain the subseed and public key, then executes the SchnorrQ signing protocol. Returns a 64-byte signature (`R || s`). The `message` parameter is typically a 32-byte K12 digest computed by `@qubic.org/tx` — it is not automatically hashed here.
 
 ```ts
 function verify(message: Uint8Array, signature: Uint8Array, publicKey: Uint8Array): boolean
@@ -93,7 +93,7 @@ class SignatureVerificationError extends QubicError // code: 'SIGNATURE_VERIFICA
 ### Generate a fresh wallet
 
 ```ts
-import { generateRandomSeed, deriveIdentityFromSeed } from '@qubic.ts/crypto'
+import { generateRandomSeed, deriveIdentityFromSeed } from '@qubic.org/crypto'
 
 const seed = generateRandomSeed()
 const identity = deriveIdentityFromSeed(seed)
@@ -105,8 +105,8 @@ console.log('Address: ', identity)  // 60 uppercase letters
 ### Sign arbitrary data
 
 ```ts
-import { k12, sign, verify, publicKeyFromSeed } from '@qubic.ts/crypto'
-import { toSeed } from '@qubic.ts/types'
+import { k12, sign, verify, publicKeyFromSeed } from '@qubic.org/crypto'
+import { toSeed } from '@qubic.org/types'
 
 const seed = toSeed('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
 const message = new TextEncoder().encode('hello qubic')
@@ -122,8 +122,8 @@ console.log('Signature valid:', valid)  // true
 ### Decode an identity to its public key
 
 ```ts
-import { identityToPublicKey, publicKeyToIdentity } from '@qubic.ts/crypto'
-import { toIdentity } from '@qubic.ts/types'
+import { identityToPublicKey, publicKeyToIdentity } from '@qubic.org/crypto'
+import { toIdentity } from '@qubic.org/types'
 
 const identity = toIdentity('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
 const publicKey = identityToPublicKey(identity)
@@ -137,7 +137,7 @@ console.log('Round-trip match:', roundTripped === identity)  // true
 ### Hash data with K12
 
 ```ts
-import { k12 } from '@qubic.ts/crypto'
+import { k12 } from '@qubic.org/crypto'
 
 const data = new Uint8Array([1, 2, 3, 4])
 const digest32 = k12(data, 32)

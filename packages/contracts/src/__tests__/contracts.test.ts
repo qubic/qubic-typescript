@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test'
-import { QubicRpcError } from '@qubic.ts/rpc'
+import { QubicRpcError } from '@qubic.org/rpc'
 import {
   QEARN_CONTRACT_INDEX,
   QEARN_GET_STATE_OF_ROUND_INPUT_TYPE,

@@ -1,5 +1,5 @@
 {
-  "name": "@qubic.ts/registry",
+  "name": "@qubic.org/registry",
   "version": "0.1.0",
   "type": "module",
   "sideEffects": false,
@@ -28,8 +28,8 @@
     "publish": "bun publish --access public"
   },
   "dependencies": {
-    "@qubic.ts/crypto": "workspace:^",
-    "@qubic.ts/types": "workspace:^",
+    "@qubic.org/crypto": "workspace:^",
+    "@qubic.org/types": "workspace:^",
     "tree-sitter-cpp": "^0.23.4",
     "web-tree-sitter": "^0.26.8"
   },

@@ -1,4 +1,4 @@
-import { contractIndexToIdentity } from '@qubic.ts/crypto'
+import { contractIndexToIdentity } from '@qubic.org/crypto'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { AbiView } from '../../../components/abi-view'

@@ -38,7 +38,7 @@ export interface WalletConnectorState {
  *
  * @example
  * ```tsx
- * import { extensionConnector, useWalletConnector } from '@qubic.ts/react'
+ * import { extensionConnector, useWalletConnector } from '@qubic.org/react'
  *
  * function ConnectButton() {
  *   const { isAvailable, isConnected, isConnecting, account, connect, disconnect } =

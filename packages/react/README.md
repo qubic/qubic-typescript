@@ -1,11 +1,11 @@
-# @qubic.ts/react
+# @qubic.org/react
 
 React hooks and context providers for the Qubic SDK, powered by [TanStack Query](https://tanstack.com/query).
 
 ## Installation
 
 ```bash
-bun add @qubic.ts/react
+bun add @qubic.org/react
 ```
 
 Peer dependency: React 18+.
@@ -29,9 +29,9 @@ Seeds **never** appear in React state or component code:
 ## Setup
 
 ```tsx
-import { createLiveClient, createQueryClient } from '@qubic.ts/rpc'
-import { importVault } from '@qubic.ts/wallet'
-import { QubicProvider, VaultProvider } from '@qubic.ts/react'
+import { createLiveClient, createQueryClient } from '@qubic.org/rpc'
+import { importVault } from '@qubic.org/wallet'
+import { QubicProvider, VaultProvider } from '@qubic.org/react'
 
 const live = createLiveClient()
 const archive = createQueryClient()
@@ -68,7 +68,7 @@ export function App() {
 Lock/unlock the vault and read the active identities.
 
 ```tsx
-import { useVaultState } from '@qubic.ts/react'
+import { useVaultState } from '@qubic.org/react'
 
 function WalletPanel() {
   const { isUnlocked, identities, isUnlocking, error, unlock, lock } = useVaultState()
@@ -99,7 +99,7 @@ function WalletPanel() {
 Fetches the current tick, builds and signs a QU transfer, broadcasts. Zero wallet exposure.
 
 ```tsx
-import { useSendTransfer, useVaultState } from '@qubic.ts/react'
+import { useSendTransfer, useVaultState } from '@qubic.org/react'
 
 function SendPanel() {
   const { identities } = useVaultState()
@@ -125,8 +125,8 @@ function SendPanel() {
 Signs and broadcasts a smart contract procedure call.
 
 ```tsx
-import { useSendContractCall, useVaultState } from '@qubic.ts/react'
-import { QEARN_LOCK_INPUT_TYPE, buildQearnLockInput } from '@qubic.ts/contracts'
+import { useSendContractCall, useVaultState } from '@qubic.org/react'
+import { QEARN_LOCK_INPUT_TYPE, buildQearnLockInput } from '@qubic.org/contracts'
 
 function LockPanel() {
   const { identities } = useVaultState()
@@ -152,11 +152,11 @@ function LockPanel() {
 
 ### `useContractQuery(fn, input)`
 
-Wraps any typed contract read function from `@qubic.ts/contracts` as a TanStack Query. `identityToPublicKey` / `publicKeyToIdentity` are provided automatically.
+Wraps any typed contract read function from `@qubic.org/contracts` as a TanStack Query. `identityToPublicKey` / `publicKeyToIdentity` are provided automatically.
 
 ```tsx
-import { useContractQuery } from '@qubic.ts/react'
-import { qearnGetStateOfRound } from '@qubic.ts/contracts'
+import { useContractQuery } from '@qubic.org/react'
+import { qearnGetStateOfRound } from '@qubic.org/contracts'
 
 function RoundStats({ epoch }: { epoch: number }) {
   const { data, isLoading } = useContractQuery(qearnGetStateOfRound, { epoch })
@@ -254,8 +254,8 @@ import {
   extensionConnector,
   createWalletConnectConnector,
   createMetaMaskSnapConnector,
-} from '@qubic.ts/react'
-import type { Base64 } from '@qubic.ts/types'
+} from '@qubic.org/react'
+import type { Base64 } from '@qubic.org/types'
 
 // Create connectors outside the component tree (stable references)
 const connectors = [
@@ -299,7 +299,7 @@ export function App() {
 Single hook for all wallet state. Works with any connector registered in `WalletProvider`.
 
 ```tsx
-import { useWallet } from '@qubic.ts/react'
+import { useWallet } from '@qubic.org/react'
 
 function ConnectModal() {
   const [qrUri, setQrUri] = useState<string>()
@@ -356,7 +356,7 @@ function SendPanel() {
 Implement `WalletConnector` to add any other wallet backend:
 
 ```ts
-import type { WalletConnector } from '@qubic.ts/react'
+import type { WalletConnector } from '@qubic.org/react'
 
 export const myConnector: WalletConnector = {
   id: 'my-wallet',
@@ -376,7 +376,7 @@ export const myConnector: WalletConnector = {
 When you only need a single connector and don't want a provider:
 
 ```tsx
-import { extensionConnector, useWalletConnector } from '@qubic.ts/react'
+import { extensionConnector, useWalletConnector } from '@qubic.org/react'
 
 function ConnectButton() {
   const { isAvailable, isConnected, account, connect, disconnect } =
@@ -390,7 +390,7 @@ function ConnectButton() {
 
 ## See also
 
-- [`@qubic.ts/rpc`](../rpc) — `createLiveClient`, `createQueryClient`
-- [`@qubic.ts/wallet`](../wallet) — `createVault`, `importVault`, `unlockVault`
-- [`@qubic.ts/contracts`](../contracts) — typed contract builders, decoders, and readers
-- [`@qubic.ts/events`](../events) — typed Bob subscription helpers
+- [`@qubic.org/rpc`](../rpc) — `createLiveClient`, `createQueryClient`
+- [`@qubic.org/wallet`](../wallet) — `createVault`, `importVault`, `unlockVault`
+- [`@qubic.org/contracts`](../contracts) — typed contract builders, decoders, and readers
+- [`@qubic.org/events`](../events) — typed Bob subscription helpers

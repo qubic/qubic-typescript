@@ -1,6 +1,6 @@
-import { generateRandomSeed } from '@qubic.ts/crypto'
-import { isSeed, toSeed } from '@qubic.ts/types'
-import type { Seed } from '@qubic.ts/types'
+import { generateRandomSeed } from '@qubic.org/crypto'
+import { isSeed, toSeed } from '@qubic.org/types'
+import type { Seed } from '@qubic.org/types'
 
 /**
  * Generates a cryptographically secure random 55-character Qubic seed.

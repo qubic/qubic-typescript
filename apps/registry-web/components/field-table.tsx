@@ -1,4 +1,4 @@
-import type { BinaryField } from '@qubic.ts/registry'
+import type { BinaryField } from '@qubic.org/registry'
 import { TypeChip } from './type-chip'
 
 function fieldTypeDisplay(f: BinaryField): string {

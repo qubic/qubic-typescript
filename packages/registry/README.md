@@ -1,4 +1,4 @@
-# `@qubic.ts/registry`
+# `@qubic.org/registry`
 
 ABI registry and binary payload codec for Qubic smart contracts.
 
@@ -7,13 +7,13 @@ This package is the foundation of the Qubic TypeScript SDK's contract interactio
 ## Installation
 
 ```sh
-bun add @qubic.ts/registry
+bun add @qubic.org/registry
 ```
 
 In a monorepo workspace, reference it as:
 
 ```json
-{ "dependencies": { "@qubic.ts/registry": "workspace:*" } }
+{ "dependencies": { "@qubic.org/registry": "workspace:*" } }
 ```
 
 ## API Reference
@@ -99,7 +99,7 @@ import {
   findContractByName,
   validateRegistry,
   AbiNotFoundError,
-} from '@qubic.ts/registry'
+} from '@qubic.org/registry'
 ```
 
 | Function | Signature | Description |
@@ -121,7 +121,7 @@ import {
   decodePayload,
   buildPayloadManual,
   PayloadBuildError,
-} from '@qubic.ts/registry'
+} from '@qubic.org/registry'
 
 type FieldValue = number | bigint | string | Uint8Array | FieldValue[] | DecodedStruct
 type DecodedStruct = Record<string, unknown>
@@ -178,7 +178,7 @@ Encodes ordered fields without field names. For unknown or custom contracts wher
 ### Registry client
 
 ```ts
-import { createRegistryClient } from '@qubic.ts/registry'
+import { createRegistryClient } from '@qubic.org/registry'
 
 interface RegistryClientOptions {
   url?: string                              // default: 'https://registry.qubic.ts/registry.json'
@@ -204,7 +204,7 @@ Cache modes: `session` uses a module-level variable (server) or `sessionStorage`
 ### Look up a contract ABI at a specific epoch
 
 ```ts
-import { createRegistryClient, AbiNotFoundError } from '@qubic.ts/registry'
+import { createRegistryClient, AbiNotFoundError } from '@qubic.org/registry'
 
 const client = createRegistryClient()
 
@@ -217,8 +217,8 @@ console.log(result.isRegistryPossiblyStale)    // true if epoch is ahead of the 
 ### Encode a contract call input
 
 ```ts
-import { createRegistryClient, buildPayload } from '@qubic.ts/registry'
-import { identityToPublicKey } from '@qubic.ts/crypto'
+import { createRegistryClient, buildPayload } from '@qubic.org/registry'
+import { identityToPublicKey } from '@qubic.org/crypto'
 
 const client = createRegistryClient()
 const abi = await client.getCurrentAbi(9)
@@ -236,8 +236,8 @@ const payload = buildPayload(
 ### Decode a contract response
 
 ```ts
-import { decodePayload } from '@qubic.ts/registry'
-import { publicKeyToIdentity } from '@qubic.ts/crypto'
+import { decodePayload } from '@qubic.org/registry'
+import { publicKeyToIdentity } from '@qubic.org/crypto'
 
 const decoded = decodePayload(responseBytes, fn.outputFields, abi.structs, publicKeyToIdentity)
 console.log(decoded.returnCode) // number
@@ -246,7 +246,7 @@ console.log(decoded.returnCode) // number
 ### Build a payload without a registry (manual mode)
 
 ```ts
-import { buildPayloadManual } from '@qubic.ts/registry'
+import { buildPayloadManual } from '@qubic.org/registry'
 
 const payload = buildPayloadManual([
   { type: 'uint64', value: 5_000_000n },
@@ -266,7 +266,7 @@ for (const v of history) {
 ## Error handling
 
 ```ts
-import { AbiNotFoundError, PayloadBuildError } from '@qubic.ts/registry'
+import { AbiNotFoundError, PayloadBuildError } from '@qubic.org/registry'
 
 try {
   const result = await client.getAbi(9, 1)
@@ -316,6 +316,6 @@ bun scripts/validate.ts
 
 **Per-epoch snapshots** — Qubic contract ABIs change between epochs. Storing one `ContractAbiVersion` per epoch range means historical transactions from any epoch can be decoded against the correct struct layout, not the current one.
 
-**Injected identity converters** — `buildPayload` and `decodePayload` accept `identityToPublicKey` and `publicKeyToIdentity` as parameters rather than importing from `@qubic.ts/crypto` directly. This keeps the codec tree-shakeable and testable without cryptographic dependencies, and lets server and browser environments supply different implementations.
+**Injected identity converters** — `buildPayload` and `decodePayload` accept `identityToPublicKey` and `publicKeyToIdentity` as parameters rather than importing from `@qubic.org/crypto` directly. This keeps the codec tree-shakeable and testable without cryptographic dependencies, and lets server and browser environments supply different implementations.
 
 **`effectiveToEpoch: null`** — a sentinel value meaning "currently active." This avoids storing an arbitrary large epoch ceiling that would need updating with every new epoch.

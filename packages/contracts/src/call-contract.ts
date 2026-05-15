@@ -1,7 +1,7 @@
-import type { BinaryField, FieldValue, NamedStruct } from '@qubic.ts/registry'
-import { buildPayload, decodePayload } from '@qubic.ts/registry'
-import { QubicRpcError } from '@qubic.ts/rpc'
-import type { QuerySmartContractRequest, QuerySmartContractResponse } from '@qubic.ts/rpc'
+import type { BinaryField, FieldValue, NamedStruct } from '@qubic.org/registry'
+import { buildPayload, decodePayload } from '@qubic.org/registry'
+import { QubicRpcError } from '@qubic.org/rpc'
+import type { QuerySmartContractRequest, QuerySmartContractResponse } from '@qubic.org/rpc'
 import { err, ok } from './result.js'
 import type { Result } from './result.js'
 

@@ -1,5 +1,5 @@
 {
-  "name": "@qubic.ts/contracts",
+  "name": "@qubic.org/contracts",
   "version": "0.1.0",
   "type": "module",
   "sideEffects": false,
@@ -19,10 +19,10 @@
     "publish": "bun publish --access public"
   },
   "dependencies": {
-    "@qubic.ts/registry": "workspace:^",
-    "@qubic.ts/crypto": "workspace:^",
-    "@qubic.ts/rpc": "workspace:^",
-    "@qubic.ts/types": "workspace:^"
+    "@qubic.org/registry": "workspace:^",
+    "@qubic.org/crypto": "workspace:^",
+    "@qubic.org/rpc": "workspace:^",
+    "@qubic.org/types": "workspace:^"
   },
   "devDependencies": {
     "typescript": "*"

@@ -74,7 +74,7 @@ export interface WalletConnectConnectorOptions {
  * @example
  * ```ts
  * import SignClient from '@walletconnect/sign-client'
- * import { createWalletConnectConnector } from '@qubic.ts/react'
+ * import { createWalletConnectConnector } from '@qubic.org/react'
  *
  * const wcConnector = createWalletConnectConnector({
  *   createClient: () => SignClient.init({ projectId: 'YOUR_ID', metadata: { … } }),

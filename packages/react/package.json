@@ -1,5 +1,5 @@
 {
-  "name": "@qubic.ts/react",
+  "name": "@qubic.org/react",
   "version": "0.1.0",
   "type": "module",
   "sideEffects": false,
@@ -18,11 +18,11 @@
     "react": ">=18"
   },
   "dependencies": {
-    "@qubic.ts/contracts": "workspace:*",
-    "@qubic.ts/crypto": "workspace:*",
-    "@qubic.ts/rpc": "workspace:^",
-    "@qubic.ts/types": "workspace:^",
-    "@qubic.ts/wallet": "workspace:^",
+    "@qubic.org/contracts": "workspace:*",
+    "@qubic.org/crypto": "workspace:*",
+    "@qubic.org/rpc": "workspace:^",
+    "@qubic.org/types": "workspace:^",
+    "@qubic.org/wallet": "workspace:^",
     "@tanstack/react-query": "^5.100.10"
   },
   "devDependencies": {

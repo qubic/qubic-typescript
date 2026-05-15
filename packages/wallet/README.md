@@ -1,11 +1,11 @@
-# @qubic.ts/wallet
+# @qubic.org/wallet
 
 Wallet and key management for the Qubic network — seed generation, identity derivation, transaction signing, and AES-GCM encrypted vault storage.
 
 ## Installation
 
 ```bash
-bun add @qubic.ts/wallet
+bun add @qubic.org/wallet
 ```
 
 ## Wallet
@@ -15,7 +15,7 @@ bun add @qubic.ts/wallet
 Creates a wallet from a 55-character seed. Identity and public key are derived eagerly; signing is async.
 
 ```ts
-import { createWallet, generateSeed } from '@qubic.ts/wallet'
+import { createWallet, generateSeed } from '@qubic.org/wallet'
 
 const seed = generateSeed()
 const wallet = createWallet(seed)
@@ -29,8 +29,8 @@ console.log(wallet.publicKey)  // 32-byte Uint8Array
 Builds and signs a plain QU transfer.
 
 ```ts
-import { toSeed } from '@qubic.ts/wallet'
-import type { Identity } from '@qubic.ts/types'
+import { toSeed } from '@qubic.org/wallet'
+import type { Identity } from '@qubic.org/types'
 
 const wallet = createWallet(toSeed('your55charlowercaseseed...'))
 const { encoded, hash, bytes } = await wallet.buildTransfer({
@@ -50,7 +50,7 @@ const { encoded, hash, bytes } = await wallet.buildTransfer({
 Builds and signs a smart contract procedure call.
 
 ```ts
-import { qearn } from '@qubic.ts/contracts'
+import { qearn } from '@qubic.org/contracts'
 
 const payload = qearn.buildLockInput({ amount: 10_000_000n })
 
@@ -66,7 +66,7 @@ const { encoded } = await wallet.buildScTransaction({
 ## Seed utilities
 
 ```ts
-import { generateSeed, validateSeed, toSeed } from '@qubic.ts/wallet'
+import { generateSeed, validateSeed, toSeed } from '@qubic.org/wallet'
 
 const seed = generateSeed()         // cryptographically secure random seed
 validateSeed('abc')                 // false
@@ -80,7 +80,7 @@ toSeed(seed)                        // returns branded Seed
 Encrypted storage for seeds using AES-256-GCM with PBKDF2-SHA256 key derivation (600k iterations).
 
 ```ts
-import { createVault, unlockVault, addToVault, exportVault, importVault } from '@qubic.ts/wallet'
+import { createVault, unlockVault, addToVault, exportVault, importVault } from '@qubic.org/wallet'
 
 // Create a vault with one or more seeds
 const vault = await createVault('strong-password', [seed])
@@ -112,7 +112,7 @@ A wrong password or corrupted ciphertext throws `VaultDecryptionError`. A struct
 ## Errors
 
 ```ts
-import { WalletError, VaultDecryptionError, InvalidVaultError } from '@qubic.ts/wallet'
+import { WalletError, VaultDecryptionError, InvalidVaultError } from '@qubic.org/wallet'
 ```
 
 | Error | Thrown when |
@@ -123,6 +123,6 @@ import { WalletError, VaultDecryptionError, InvalidVaultError } from '@qubic.ts/
 
 ## Dependencies
 
-- [`@qubic.ts/crypto`](../crypto) — key derivation and signing
-- [`@qubic.ts/tx`](../tx) — transaction building
-- [`@qubic.ts/types`](../types) — branded types and validators
+- [`@qubic.org/crypto`](../crypto) — key derivation and signing
+- [`@qubic.org/tx`](../tx) — transaction building
+- [`@qubic.org/types`](../types) — branded types and validators

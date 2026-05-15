@@ -1,5 +1,5 @@
-import type { BobSubscriptionClient, SubscriptionEvent } from '@qubic.ts/bob'
-import { LOG_TYPE } from '@qubic.ts/types'
+import type { BobSubscriptionClient, SubscriptionEvent } from '@qubic.org/bob'
+import { LOG_TYPE } from '@qubic.org/types'
 import { decodeEvent } from './decode-event.js'
 import type { EventFilter, TypedEvent } from './types.js'
 
@@ -23,7 +23,7 @@ function toBobFilter(filter?: EventFilter) {
 }
 
 async function* decodeStream(
-  source: AsyncIterable<SubscriptionEvent<import('@qubic.ts/bob').BobLogEvent>>,
+  source: AsyncIterable<SubscriptionEvent<import('@qubic.org/bob').BobLogEvent>>,
   logTypeFilter?: ReadonlyArray<number>,
 ): AsyncGenerator<SubscriptionEvent<TypedEvent>> {
   for await (const item of source) {

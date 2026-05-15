@@ -6,12 +6,12 @@ import {
   getAbi,
   getAbiHistory,
   getCurrentAbi,
-} from '@qubic.ts/registry'
-import registry from '@qubic.ts/registry/registry.json'
+} from '@qubic.org/registry'
+import registry from '@qubic.org/registry/registry.json'
 import { Elysia } from 'elysia'
 
 // Resolve packages/registry root from the workspace-linked source entry
-const REGISTRY_SRC = Bun.resolveSync('@qubic.ts/registry', import.meta.dir) // .../packages/registry/src/index.ts
+const REGISTRY_SRC = Bun.resolveSync('@qubic.org/registry', import.meta.dir) // .../packages/registry/src/index.ts
 const DATA_DIR = REGISTRY_SRC.replace(/\/src\/index\.ts$/, '/data/')
 const EPOCHS_DIR = `${DATA_DIR}epochs/`
 const epochRefs: Record<string, string> = await Bun.file(`${DATA_DIR}epoch-refs.json`).json()

@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test'
-import type { Seed } from '@qubic.ts/types'
+import type { Seed } from '@qubic.org/types'
 import { InvalidVaultError, VaultDecryptionError } from '../errors.js'
 import { addToVault, createVault, exportVault, importVault, unlockVault } from '../vault.js'
 

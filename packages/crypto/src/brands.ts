@@ -1,1 +1,1 @@
-export type { Brand, Identity, Seed } from '@qubic.ts/types'
+export type { Brand, Identity, Seed } from '@qubic.org/types'

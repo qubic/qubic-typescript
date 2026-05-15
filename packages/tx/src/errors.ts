@@ -1,6 +1,6 @@
-import { PROTOCOL, QubicError } from '@qubic.ts/types'
+import { PROTOCOL, QubicError } from '@qubic.org/types'
 
-export { QubicError } from '@qubic.ts/types'
+export { QubicError } from '@qubic.org/types'
 
 export class PayloadTooLargeError extends QubicError {
   readonly code = 'PAYLOAD_TOO_LARGE' as const

@@ -1,4 +1,4 @@
-import type { LiveClient, QueryClient as RpcQueryClient } from '@qubic.ts/rpc'
+import type { LiveClient, QueryClient as RpcQueryClient } from '@qubic.org/rpc'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { type ReactNode, createContext, useContext, useMemo, useState } from 'react'
 

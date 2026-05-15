@@ -1,5 +1,5 @@
-import type { BobLogFilter } from '@qubic.ts/bob'
-import type { Identity, LogType } from '@qubic.ts/types'
+import type { BobLogFilter } from '@qubic.org/bob'
+import type { Identity, LogType } from '@qubic.org/types'
 import type { EventFilter } from './types.js'
 
 // ── Fluent builder ────────────────────────────────────────────────────────────

@@ -1,4 +1,5 @@
 import type {
+  ConnectOptions,
   SendTransactionResult,
   SignMessageResult,
   SignTransactionResult,
@@ -42,7 +43,7 @@ export const extensionConnector: WalletConnector = {
     return (globalThis as WindowWithQubic).qubic?.isQubic === true
   },
 
-  async connect(): Promise<WalletAccount> {
+  async connect(_options?: ConnectOptions): Promise<WalletAccount> {
     const provider = getProvider()
     await provider.connect()
     const account = await provider.getAccount()

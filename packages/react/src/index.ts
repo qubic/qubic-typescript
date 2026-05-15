@@ -32,10 +32,15 @@ export type {
   WalletAccount,
   WalletConnector,
   WalletConnectorEvent,
+  ConnectOptions,
   SendTransactionResult,
   SignTransactionResult,
   SignMessageResult,
 } from './connector.js'
 export { extensionConnector } from './extension-connector.js'
+export { createWalletConnectConnector } from './walletconnect-connector.js'
+export type { WalletConnectConnectorOptions } from './walletconnect-connector.js'
+export { createMetaMaskSnapConnector, DEFAULT_SNAP_ID } from './metamask-snap-connector.js'
+export type { MetaMaskSnapConnectorOptions } from './metamask-snap-connector.js'
 export { useWalletConnector } from './use-wallet-connector.js'
 export type { WalletConnectorState } from './use-wallet-connector.js'

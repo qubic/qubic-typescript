@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import type {
+  ConnectOptions,
   SendTransactionResult,
   SignMessageResult,
   SignTransactionResult,
@@ -18,7 +19,13 @@ export interface WalletConnectorState {
   account: WalletAccount | null
   /** Error from the last connect/disconnect attempt. */
   error: Error | undefined
-  connect(): Promise<void>
+  /**
+   * Connect to the wallet. For WalletConnect, pass `onUri` to display the QR code:
+   * ```ts
+   * connect({ onUri: (uri) => setQrUri(uri) })
+   * ```
+   */
+  connect(options?: ConnectOptions): Promise<void>
   disconnect(): Promise<void>
   sendTransaction(tx: unknown): Promise<SendTransactionResult>
   signTransaction(tx: unknown): Promise<SignTransactionResult>
@@ -98,18 +105,21 @@ export function useWalletConnector(connector: WalletConnector): WalletConnectorS
     }
   }, [connector, isAvailable])
 
-  const connect = useCallback(async () => {
-    setIsConnecting(true)
-    setError(undefined)
-    try {
-      const acc = await connector.connect()
-      setAccount(acc)
-    } catch (e) {
-      setError(e instanceof Error ? e : new Error(String(e)))
-    } finally {
-      setIsConnecting(false)
-    }
-  }, [connector])
+  const connect = useCallback(
+    async (options?: ConnectOptions) => {
+      setIsConnecting(true)
+      setError(undefined)
+      try {
+        const acc = await connector.connect(options)
+        setAccount(acc)
+      } catch (e) {
+        setError(e instanceof Error ? e : new Error(String(e)))
+      } finally {
+        setIsConnecting(false)
+      }
+    },
+    [connector],
+  )
 
   const disconnect = useCallback(async () => {
     setError(undefined)

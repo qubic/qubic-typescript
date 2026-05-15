@@ -1,6 +1,6 @@
 {
   "name": "@qubic.org/bob",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "sideEffects": false,
   "exports": {
@@ -10,7 +10,9 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "generate": "openapi-typescript ../../resources/core-bob/RESTAPI/openapi.json -o src/__generated__/bob-schema.d.ts",
     "build": "tsc -p tsconfig.json",

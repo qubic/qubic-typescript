@@ -236,6 +236,76 @@ const queryClient = new QueryClient()
 </QubicProvider>
 ```
 
+## Wallet connector (extension / WalletConnect / MetaMask Snap)
+
+### `extensionConnector` + `useWalletConnector(connector)`
+
+Connects to `window.qubic` (Qubic browser extension). The `WalletConnector` interface is designed for future backends — pass any connector that implements it.
+
+```tsx
+import { extensionConnector, useWalletConnector } from '@qubic.ts/react'
+
+function ConnectButton() {
+  const { isAvailable, isConnected, isConnecting, account, connect, disconnect, error } =
+    useWalletConnector(extensionConnector)
+
+  if (!isAvailable) return <p>Install the Qubic extension</p>
+
+  if (!isConnected) {
+    return (
+      <button onClick={connect} disabled={isConnecting}>
+        {isConnecting ? 'Connecting…' : 'Connect Wallet'}
+      </button>
+    )
+  }
+
+  return (
+    <div>
+      <p>{account?.name ?? account?.identity}</p>
+      <button onClick={disconnect}>Disconnect</button>
+      {error && <p>{error.message}</p>}
+    </div>
+  )
+}
+```
+
+### Signing with the connector
+
+```tsx
+function SignPanel() {
+  const { account, signMessage, sendTransaction } = useWalletConnector(extensionConnector)
+
+  const handleSign = async () => {
+    const result = await signMessage({ message: 'hello qubic' })
+    console.log(result.signatureHex)
+  }
+
+  const handleSend = async () => {
+    const result = await sendTransaction({
+      toIdentity: '...',
+      amount: '1000',
+      inputType: 0,
+    })
+    console.log(result.networkTxId)
+  }
+}
+```
+
+### Custom connector
+
+Implement `WalletConnector` to add WalletConnect, MetaMask Snap, or any other wallet:
+
+```ts
+import type { WalletConnector } from '@qubic.ts/react'
+
+export const myConnector: WalletConnector = {
+  id: 'my-wallet',
+  isAvailable: () => true,
+  connect: async () => ({ identity: '...' }),
+  // ...
+}
+```
+
 ## See also
 
 - [`@qubic.ts/rpc`](../rpc) — `createLiveClient`, `createQueryClient`

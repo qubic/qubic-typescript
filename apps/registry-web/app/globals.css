@@ -199,6 +199,9 @@ button:focus-visible {
   display: flex;
   flex-direction: column;
 }
+.shell > main {
+  padding-bottom: 80px;
+}
 .container {
   max-width: 1240px;
   margin: 0 auto;

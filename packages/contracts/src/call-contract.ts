@@ -14,9 +14,12 @@ export interface ContractCallOptions {
   publicKeyToIdentity?: (pk: Uint8Array) => string
 }
 
-const _EMPTY_IDENTITY = 'A'.repeat(60)
-const _defaultIdToPk = (_identity: string): Uint8Array => new Uint8Array(32)
-const _defaultPkToId = (_pk: Uint8Array): string => _EMPTY_IDENTITY
+const _defaultIdToPk = (_identity: string): Uint8Array => {
+  throw new Error('identityToPublicKey is required for contracts with id-type fields')
+}
+const _defaultPkToId = (_pk: Uint8Array): string => {
+  throw new Error('publicKeyToIdentity is required for contracts with id-type fields')
+}
 
 function toBase64(bytes: Uint8Array): string {
   let s = ''

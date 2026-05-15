@@ -52,13 +52,15 @@ export async function callContractFunction<TInput extends Record<string, unknown
 ): Promise<Result<TOutput, QubicRpcError>> {
   const idToPk = options.identityToPublicKey ?? _defaultIdToPk
   const pkToId = options.publicKeyToIdentity ?? _defaultPkToId
+  // buildPayload / decodePayload throw PayloadBuildError on bad input — those are
+  // programmer errors and must not be swallowed as QubicRpcError.
+  const payload = buildPayload(
+    options.inputFields,
+    options.structs,
+    options.input as Record<string, FieldValue | Uint8Array>,
+    idToPk,
+  )
   try {
-    const payload = buildPayload(
-      options.inputFields,
-      options.structs,
-      options.input as Record<string, FieldValue | Uint8Array>,
-      idToPk,
-    )
     const response = await options.live.querySmartContract({
       contractIndex: options.contractIndex,
       inputType: options.inputType,
@@ -70,6 +72,6 @@ export async function callContractFunction<TInput extends Record<string, unknown
     return ok(decoded as unknown as TOutput)
   } catch (cause) {
     if (cause instanceof QubicRpcError) return err(cause)
-    return err(new QubicRpcError(0, 'call-contract', String(cause)))
+    throw cause
   }
 }

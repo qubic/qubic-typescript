@@ -125,10 +125,7 @@ export function createBobRestClient(options: BobRestClientOptions = {}) {
       body: { nonce: number; scIndex: number; funcNumber: number; data: string },
       opts?: Opts,
     ): Promise<Result<components['schemas']['QuerySmartContractResponse'], BobRpcError>> {
-      return unwrap(
-        client.POST('/querySmartContract', { body, ...s(opts) }),
-        '/querySmartContract',
-      )
+      return unwrap(client.POST('/querySmartContract', { body, ...s(opts) }), '/querySmartContract')
     },
 
     /** Broadcasts a signed transaction. */

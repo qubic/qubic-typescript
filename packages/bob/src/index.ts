@@ -21,9 +21,17 @@ export type {
   SubscriptionEvent,
 } from './subscription-client.js'
 export type {
+  BobAllAssetTransferFilter,
+  BobAssetTransferFilter,
+  BobComputorList,
+  BobRpcEpochInfo,
+  BobFindLogFilter,
   BobLogEvent,
   BobLogFilter,
+  BobQuTransferFilter,
+  BobRestLogEvent,
   BobTickData,
+  BobTickLogRange,
   BobTickNotification,
   BobTransaction,
   BobTransferEvent,

@@ -30,6 +30,8 @@ export type {
 // ── Data hooks — live API ──────────────────────────────────────────────────────
 export { useTickInfo } from './queries/use-tick-info.js'
 export { useBalance } from './queries/use-balance.js'
+export { useBalances } from './queries/use-balances.js'
+export type { BalancesResult } from './queries/use-balances.js'
 export { useIssuedAssets, useOwnedAssets, usePossessedAssets } from './queries/use-assets.js'
 export { useContractQuery } from './queries/use-contract-query.js'
 

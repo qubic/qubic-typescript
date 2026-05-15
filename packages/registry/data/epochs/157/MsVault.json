@@ -2,8 +2,7 @@
   "contractIndex": 11,
   "contractName": "MsVault",
   "contractAddress": "LAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKPTJ",
-  "effectiveFromEpoch": 157,
-  "effectiveToEpoch": null,
+  "epoch": 157,
   "structs": {},
   "procedures": [
     {

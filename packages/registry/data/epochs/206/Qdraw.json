@@ -2,8 +2,7 @@
   "contractIndex": 15,
   "contractName": "Qdraw",
   "contractAddress": "PAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYVRC",
-  "effectiveFromEpoch": 206,
-  "effectiveToEpoch": null,
+  "epoch": 206,
   "structs": {},
   "procedures": [
     {

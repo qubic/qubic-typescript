@@ -2,8 +2,7 @@
   "contractIndex": 27,
   "contractName": "Escrow",
   "contractAddress": "BBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAXPZM",
-  "effectiveFromEpoch": 212,
-  "effectiveToEpoch": null,
+  "epoch": 212,
   "structs": {
     "AssetWithAmount": {
       "name": "AssetWithAmount",

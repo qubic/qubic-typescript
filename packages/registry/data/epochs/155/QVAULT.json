@@ -2,8 +2,7 @@
   "contractIndex": 10,
   "contractName": "QVAULT",
   "contractAddress": "KAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAXIUO",
-  "effectiveFromEpoch": 155,
-  "effectiveToEpoch": null,
+  "epoch": 155,
   "structs": {},
   "procedures": [
     {

@@ -2,8 +2,7 @@
   "contractIndex": 14,
   "contractName": "Nostromo",
   "contractAddress": "OAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAZTPD",
-  "effectiveFromEpoch": 211,
-  "effectiveToEpoch": null,
+  "epoch": 211,
   "structs": {
     "Asset": {
       "name": "Asset",

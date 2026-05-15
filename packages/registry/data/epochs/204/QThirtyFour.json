@@ -2,8 +2,7 @@
   "contractIndex": 22,
   "contractName": "QThirtyFour",
   "contractAddress": "WAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVDQA",
-  "effectiveFromEpoch": 204,
-  "effectiveToEpoch": null,
+  "epoch": 204,
   "structs": {
     "NextEpochData": {
       "name": "NextEpochData",

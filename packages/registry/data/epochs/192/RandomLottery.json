@@ -2,8 +2,7 @@
   "contractIndex": 16,
   "contractName": "RandomLottery",
   "contractAddress": "QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPIYE",
-  "effectiveFromEpoch": 192,
-  "effectiveToEpoch": null,
+  "epoch": 192,
   "structs": {
     "WinnerInfo": {
       "name": "WinnerInfo",

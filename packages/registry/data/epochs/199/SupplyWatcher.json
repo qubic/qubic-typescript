@@ -2,8 +2,7 @@
   "contractIndex": 7,
   "contractName": "SupplyWatcher",
   "contractAddress": "HAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHYCM",
-  "effectiveFromEpoch": 199,
-  "effectiveToEpoch": null,
+  "epoch": 199,
   "structs": {},
   "procedures": [],
   "functions": []

@@ -2,8 +2,7 @@
   "contractIndex": 4,
   "contractName": "QUtil",
   "contractAddress": "EAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVWRF",
-  "effectiveFromEpoch": 209,
-  "effectiveToEpoch": null,
+  "epoch": 209,
   "structs": {
     "Asset": {
       "name": "Asset",

@@ -2,8 +2,7 @@
   "contractIndex": 5,
   "contractName": "MyLastMatch",
   "contractAddress": "FAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYWJB",
-  "effectiveFromEpoch": 185,
-  "effectiveToEpoch": null,
+  "epoch": 185,
   "structs": {},
   "procedures": [],
   "functions": []

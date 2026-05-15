@@ -2,8 +2,7 @@
   "contractIndex": 9,
   "contractName": "Qearn",
   "contractAddress": "JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVKHO",
-  "effectiveFromEpoch": 138,
-  "effectiveToEpoch": null,
+  "epoch": 138,
   "structs": {},
   "procedures": [
     {

@@ -2,8 +2,7 @@
   "contractIndex": 24,
   "contractName": "Pulse",
   "contractAddress": "YAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMSME",
-  "effectiveFromEpoch": 207,
-  "effectiveToEpoch": null,
+  "epoch": 207,
   "structs": {
     "Ticket": {
       "name": "Ticket",

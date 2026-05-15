@@ -2,8 +2,7 @@
   "contractIndex": 2,
   "contractName": "Quottery",
   "contractAddress": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACNKL",
-  "effectiveFromEpoch": 211,
-  "effectiveToEpoch": null,
+  "epoch": 211,
   "structs": {
     "QtryEventInfo": {
       "name": "QtryEventInfo",

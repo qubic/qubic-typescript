@@ -2,8 +2,7 @@
   "contractIndex": 23,
   "contractName": "QDuel",
   "contractAddress": "XAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAXNMD",
-  "effectiveFromEpoch": 213,
-  "effectiveToEpoch": null,
+  "epoch": 213,
   "structs": {
     "RoomInfo": {
       "name": "RoomInfo",

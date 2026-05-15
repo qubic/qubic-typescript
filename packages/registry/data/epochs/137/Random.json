@@ -2,8 +2,7 @@
   "contractIndex": 3,
   "contractName": "Random",
   "contractAddress": "DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANMIG",
-  "effectiveFromEpoch": 137,
-  "effectiveToEpoch": null,
+  "epoch": 137,
   "structs": {},
   "procedures": [
     {

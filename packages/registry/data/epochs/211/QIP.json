@@ -2,8 +2,7 @@
   "contractIndex": 18,
   "contractName": "QIP",
   "contractAddress": "SAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI",
-  "effectiveFromEpoch": 211,
-  "effectiveToEpoch": null,
+  "epoch": 211,
   "structs": {
     "Asset": {
       "name": "Asset",

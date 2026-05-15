@@ -2,8 +2,7 @@
   "contractIndex": 17,
   "contractName": "QBond",
   "contractAddress": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
-  "effectiveFromEpoch": 212,
-  "effectiveToEpoch": null,
+  "epoch": 212,
   "structs": {
     "Order": {
       "name": "Order",

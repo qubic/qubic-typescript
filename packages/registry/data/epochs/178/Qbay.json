@@ -2,8 +2,7 @@
   "contractIndex": 12,
   "contractName": "Qbay",
   "contractAddress": "MAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWLWD",
-  "effectiveFromEpoch": 178,
-  "effectiveToEpoch": null,
+  "epoch": 178,
   "structs": {
     "Asset": {
       "name": "Asset",

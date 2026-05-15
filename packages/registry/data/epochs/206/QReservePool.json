@@ -2,8 +2,7 @@
   "contractIndex": 21,
   "contractName": "QReservePool",
   "contractAddress": "VAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAILLJ",
-  "effectiveFromEpoch": 206,
-  "effectiveToEpoch": null,
+  "epoch": 206,
   "structs": {},
   "procedures": [
     {

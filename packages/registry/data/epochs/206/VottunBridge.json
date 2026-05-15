@@ -2,8 +2,7 @@
   "contractIndex": 25,
   "contractName": "VottunBridge",
   "contractAddress": "ZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAZUQI",
-  "effectiveFromEpoch": 206,
-  "effectiveToEpoch": null,
+  "epoch": 206,
   "structs": {
     "OrderResponse": {
       "name": "OrderResponse",

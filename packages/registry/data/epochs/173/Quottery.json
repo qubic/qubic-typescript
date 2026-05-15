@@ -2,8 +2,7 @@
   "contractIndex": 2,
   "contractName": "Quottery",
   "contractAddress": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACNKL",
-  "effectiveFromEpoch": 173,
-  "effectiveToEpoch": null,
+  "epoch": 173,
   "structs": {},
   "procedures": [
     {

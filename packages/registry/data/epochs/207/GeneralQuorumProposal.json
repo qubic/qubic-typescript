@@ -2,8 +2,7 @@
   "contractIndex": 6,
   "contractName": "GeneralQuorumProposal",
   "contractAddress": "GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQGNM",
-  "effectiveFromEpoch": 207,
-  "effectiveToEpoch": null,
+  "epoch": 207,
   "structs": {
     "ProposalDataT": {
       "name": "ProposalDataT",

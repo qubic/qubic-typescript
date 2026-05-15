@@ -2,8 +2,7 @@
   "contractIndex": 1,
   "contractName": "Qx",
   "contractAddress": "BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARMID",
-  "effectiveFromEpoch": 163,
-  "effectiveToEpoch": null,
+  "epoch": 163,
   "structs": {
     "Asset": {
       "name": "Asset",

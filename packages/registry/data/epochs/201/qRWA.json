@@ -2,8 +2,7 @@
   "contractIndex": 20,
   "contractName": "qRWA",
   "contractAddress": "UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHQEE",
-  "effectiveFromEpoch": 201,
-  "effectiveToEpoch": null,
+  "epoch": 201,
   "structs": {
     "QRWAGovParams": {
       "name": "QRWAGovParams",

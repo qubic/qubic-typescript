@@ -2,8 +2,7 @@
   "contractIndex": 19,
   "contractName": "QRaffle",
   "contractAddress": "TAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAXRFC",
-  "effectiveFromEpoch": 197,
-  "effectiveToEpoch": null,
+  "epoch": 197,
   "structs": {},
   "procedures": [
     {

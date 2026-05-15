@@ -2,8 +2,7 @@
   "contractIndex": 13,
   "contractName": "Qswap",
   "contractAddress": "NAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAML",
-  "effectiveFromEpoch": 184,
-  "effectiveToEpoch": null,
+  "epoch": 184,
   "structs": {
     "Asset": {
       "name": "Asset",

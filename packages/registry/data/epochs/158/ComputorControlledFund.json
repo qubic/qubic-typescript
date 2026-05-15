@@ -2,8 +2,7 @@
   "contractIndex": 8,
   "contractName": "ComputorControlledFund",
   "contractAddress": "IAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABXSH",
-  "effectiveFromEpoch": 158,
-  "effectiveToEpoch": null,
+  "epoch": 158,
   "structs": {
     "ProposalDataT": {
       "name": "ProposalDataT",

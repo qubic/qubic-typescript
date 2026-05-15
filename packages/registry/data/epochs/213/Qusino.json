@@ -2,8 +2,7 @@
   "contractIndex": 26,
   "contractName": "Qusino",
   "contractAddress": "ABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYYHH",
-  "effectiveFromEpoch": 213,
-  "effectiveToEpoch": null,
+  "epoch": 213,
   "structs": {
     "Asset": {
       "name": "Asset",

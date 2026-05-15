@@ -1,8 +1,8 @@
 import type { BroadcastTransactionResponse } from '@qubic.ts/rpc'
 import type { Identity } from '@qubic.ts/types'
 import { type UseMutationResult, useMutation } from '@tanstack/react-query'
-import { useQubic } from './context.js'
-import { useVaultSigning } from './vault-provider.js'
+import { useQubic } from '../context.js'
+import { useVaultSigning } from '../vault/vault-provider.js'
 
 // 60-character zero identity — standard destination for Qubic contract calls.
 const SC_DESTINATION = 'A'.repeat(60) as Identity

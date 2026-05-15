@@ -1,7 +1,7 @@
 import type { LiveBalance } from '@qubic.ts/rpc'
 import type { Identity } from '@qubic.ts/types'
 import { type UseQueryOptions, type UseQueryResult, useQuery } from '@tanstack/react-query'
-import { useQubic } from './context.js'
+import { useQubic } from '../context.js'
 
 type Options = Omit<UseQueryOptions<LiveBalance>, 'queryKey' | 'queryFn' | 'enabled'>
 

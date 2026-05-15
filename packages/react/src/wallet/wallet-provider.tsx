@@ -14,7 +14,7 @@ import type {
   SignTransactionResult,
   WalletAccount,
   WalletConnector,
-} from './connector.js'
+} from '../connectors/connector.js'
 
 // ── Context ───────────────────────────────────────────────────────────────────
 

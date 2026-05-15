@@ -16,7 +16,7 @@ TypeScript SDK for the [Qubic](https://qubic.org) network. Modular, tree-shakeab
 | [`@qubic.ts/events`](packages/events) | 0.1.0 | Binary event decoder, filter builder, and typed Bob subscription helpers |
 | [`@qubic.ts/wallet`](packages/wallet) | 0.1.0 | Wallet, encrypted vault, and seed utilities |
 | [`@qubic.ts/tcp`](packages/tcp) | 0.1.0 | Direct TCP transport — framing, connection pool, typed request helpers |
-| [`@qubic.ts/react`](packages/react) | 0.1.0 | React hooks and providers — TanStack Query, VaultProvider, contract queries, send mutations |
+| [`@qubic.ts/react`](packages/react) | 0.1.0 | React hooks and providers — TanStack Query, VaultProvider, WalletProvider (extension / WalletConnect / MetaMask Snap), contract queries, send mutations |
 
 ## Quick start
 
@@ -195,6 +195,59 @@ console.log(identity, entity.incomingAmount - entity.outgoingAmount)
 await broadcastTransaction(pool, signedTxBytes)
 
 pool.close()
+```
+
+## End-to-end example: React dApp with wallet connector
+
+```tsx
+import SignClient from '@walletconnect/sign-client'
+import {
+  QubicProvider, WalletProvider, VaultProvider,
+  extensionConnector, createWalletConnectConnector,
+  useWallet, useBalance, useContractQuery, useSendTransfer,
+} from '@qubic.ts/react'
+import { createLiveClient, createQueryClient } from '@qubic.ts/rpc'
+import { qearnGetStateOfRound } from '@qubic.ts/contracts'
+
+const live = createLiveClient()
+const archive = createQueryClient()
+
+const connectors = [
+  extensionConnector,
+  createWalletConnectConnector({
+    createClient: () => SignClient.init({ projectId: 'YOUR_WC_PROJECT_ID', metadata: { ... } }),
+  }),
+]
+
+export function App() {
+  return (
+    <QubicProvider liveClient={live} archiveClient={archive}>
+      <WalletProvider connectors={connectors}>
+        <Dashboard />
+      </WalletProvider>
+    </QubicProvider>
+  )
+}
+
+function Dashboard() {
+  const { isConnected, account, connect, disconnect, connectors } = useWallet()
+  const { data: balance } = useBalance(account?.identity as Identity | undefined)
+  const { data: round } = useContractQuery(qearnGetStateOfRound, { epoch: 213 })
+
+  if (!isConnected) {
+    return connectors.filter(c => c.isAvailable()).map(c => (
+      <button key={c.id} onClick={() => connect(c.id)}>{c.id}</button>
+    ))
+  }
+
+  return (
+    <div>
+      <p>{account?.identity} — {balance?.balance?.toString()} QU</p>
+      <p>Round state: {round?.state}</p>
+      <button onClick={disconnect}>Disconnect</button>
+    </div>
+  )
+}
 ```
 
 ## End-to-end example: decode a historical transaction payload

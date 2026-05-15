@@ -1,6 +1,6 @@
 import type { QueryTransaction } from '@qubic.ts/rpc'
 import { type UseQueryOptions, type UseQueryResult, useQuery } from '@tanstack/react-query'
-import { useQubic } from './context.js'
+import { useQubic } from '../context.js'
 
 type Options = Omit<UseQueryOptions<QueryTransaction>, 'queryKey' | 'queryFn' | 'enabled'>
 

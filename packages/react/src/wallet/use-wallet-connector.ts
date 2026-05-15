@@ -6,7 +6,7 @@ import type {
   SignTransactionResult,
   WalletAccount,
   WalletConnector,
-} from './connector.js'
+} from '../connectors/connector.js'
 
 export interface WalletConnectorState {
   /** Whether the wallet backend is present in this environment. */

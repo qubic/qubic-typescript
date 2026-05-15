@@ -2,10 +2,24 @@
   "$schema": "https://unpkg.com/@changesets/config@3.0.0/schema.json",
   "changelog": ["@changesets/changelog-github", { "repo": "qubic-community/qubic-typescript" }],
   "commit": false,
-  "fixed": [],
+  "fixed": [
+    [
+      "@qubic.org/types",
+      "@qubic.org/crypto",
+      "@qubic.org/tx",
+      "@qubic.org/rpc",
+      "@qubic.org/bob",
+      "@qubic.org/registry",
+      "@qubic.org/contracts",
+      "@qubic.org/wallet",
+      "@qubic.org/events",
+      "@qubic.org/tcp",
+      "@qubic.org/react"
+    ]
+  ],
   "linked": [],
   "access": "public",
   "baseBranch": "main",
-  "updateInternalDependencies": "patch",
+  "updateInternalDependencies": "minor",
   "ignore": []
 }

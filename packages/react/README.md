@@ -236,126 +236,118 @@ const queryClient = new QueryClient()
 </QubicProvider>
 ```
 
-## Wallet connector (extension / WalletConnect / MetaMask Snap)
+## Wallet connectors (extension / WalletConnect / MetaMask Snap)
 
-### `extensionConnector` + `useWalletConnector(connector)`
+### Setup — `WalletProvider`
 
-Connects to `window.qubic` (Qubic browser extension). The `WalletConnector` interface is designed for future backends — pass any connector that implements it.
+Register all wallet backends once and wrap your app. Components call `useWallet()` with no arguments — no connector plumbing in every component.
+
+```bash
+bun add @walletconnect/sign-client   # only if using WalletConnect
+```
 
 ```tsx
-import { extensionConnector, useWalletConnector } from '@qubic.ts/react'
+import SignClient from '@walletconnect/sign-client'
+import {
+  QubicProvider,
+  WalletProvider,
+  extensionConnector,
+  createWalletConnectConnector,
+  createMetaMaskSnapConnector,
+} from '@qubic.ts/react'
+import type { Base64 } from '@qubic.ts/types'
 
-function ConnectButton() {
-  const { isAvailable, isConnected, isConnecting, account, connect, disconnect, error } =
-    useWalletConnector(extensionConnector)
+// Create connectors outside the component tree (stable references)
+const connectors = [
+  extensionConnector,
 
-  if (!isAvailable) return <p>Install the Qubic extension</p>
+  createWalletConnectConnector({
+    // SignClient is initialized lazily on first connect() — no upfront await
+    createClient: () => SignClient.init({
+      projectId: 'YOUR_WC_PROJECT_ID',
+      metadata: { name: 'My App', description: '…', url: 'https://myapp.com', icons: [] },
+    }),
+  }),
 
-  if (!isConnected) {
+  createMetaMaskSnapConnector({
+    broadcast: async (signedBase64) => {
+      const result = await liveClient.broadcastTransaction(signedBase64 as Base64)
+      if (!result.isOk()) throw result.error
+      return { networkTxId: result.value.transactionId, broadcast: result.value }
+    },
+  }),
+]
+
+export function App() {
+  return (
+    <QubicProvider liveClient={live} archiveClient={archive}>
+      <WalletProvider connectors={connectors}>
+        <YourApp />
+      </WalletProvider>
+    </QubicProvider>
+  )
+}
+```
+
+| Prop | Default | Description |
+|------|---------|-------------|
+| `connectors` | required | List of `WalletConnector` instances |
+| `storageKey` | `'qubic-active-connector'` | localStorage key for persisting the active connector |
+
+### `useWallet()`
+
+Single hook for all wallet state. Works with any connector registered in `WalletProvider`.
+
+```tsx
+import { useWallet } from '@qubic.ts/react'
+
+function ConnectModal() {
+  const [qrUri, setQrUri] = useState<string>()
+  const { connectors, isConnected, isConnecting, account, activeConnector, connect, disconnect, error } = useWallet()
+
+  if (isConnected) {
     return (
-      <button onClick={connect} disabled={isConnecting}>
-        {isConnecting ? 'Connecting…' : 'Connect Wallet'}
-      </button>
+      <div>
+        <p>{account?.name ?? account?.identity}</p>
+        <p>via {activeConnector?.id}</p>
+        <button onClick={disconnect}>Disconnect</button>
+      </div>
     )
   }
 
   return (
     <div>
-      <p>{account?.name ?? account?.identity}</p>
-      <button onClick={disconnect}>Disconnect</button>
+      {connectors.filter(c => c.isAvailable()).map(c => (
+        <button
+          key={c.id}
+          disabled={isConnecting}
+          onClick={() => connect(c.id, c.id === 'walletconnect' ? { onUri: setQrUri } : undefined)}
+        >
+          {c.id}
+        </button>
+      ))}
+      {qrUri && <QRCode value={qrUri} />}
       {error && <p>{error.message}</p>}
     </div>
   )
 }
 ```
 
-### Signing with the connector
+### Signing from any component
 
 ```tsx
-function SignPanel() {
-  const { account, signMessage, sendTransaction } = useWalletConnector(extensionConnector)
+function SendPanel() {
+  const { isConnected, sendTransaction, signMessage } = useWallet()
+
+  const handleSend = async () => {
+    const result = await sendTransaction({ toIdentity: '…', amount: '1000', inputType: 0 })
+    console.log(result.networkTxId)
+  }
 
   const handleSign = async () => {
     const result = await signMessage({ message: 'hello qubic' })
     console.log(result.signatureHex)
   }
-
-  const handleSend = async () => {
-    const result = await sendTransaction({
-      toIdentity: '...',
-      amount: '1000',
-      inputType: 0,
-    })
-    console.log(result.networkTxId)
-  }
-}
-```
-
-### WalletConnect v2
-
-Requires `@walletconnect/sign-client` installed in your app (not bundled by `@qubic.ts/react`):
-
-```bash
-bun add @walletconnect/sign-client
-```
-
-```tsx
-import SignClient from '@walletconnect/sign-client'
-import { createWalletConnectConnector, useWalletConnector } from '@qubic.ts/react'
-
-// Initialize once (outside component)
-const wcClient = await SignClient.init({
-  projectId: 'YOUR_PROJECT_ID',
-  metadata: {
-    name: 'My App',
-    description: '…',
-    url: 'https://myapp.com',
-    icons: ['https://myapp.com/icon.png'],
-  },
-})
-const wcConnector = createWalletConnectConnector(wcClient)
-
-// In a component — pass onUri to display the QR code
-function ConnectWC() {
-  const [qrUri, setQrUri] = useState<string>()
-  const { isConnected, account, connect, disconnect } = useWalletConnector(wcConnector)
-
-  if (!isConnected) {
-    return (
-      <>
-        <button onClick={() => connect({ onUri: setQrUri })}>Connect via WalletConnect</button>
-        {qrUri && <QRCode value={qrUri} />}
-      </>
-    )
-  }
-  return <p>{account?.identity}</p>
-}
-```
-
-Sessions persist in `localStorage` across page reloads. WalletConnect uses the Qubic namespace (`qubic:mainnet`) with methods `qubic_requestAccounts`, `qubic_signTransaction`, `qubic_sendQubic`, and `qubic_sign`.
-
-### MetaMask Snap
-
-Requires MetaMask Flask and the `@qubic-lib/qubic-mm-snap` snap. Broadcasting is handled by your app — pass a `broadcast` function:
-
-```tsx
-import { createMetaMaskSnapConnector, useWalletConnector } from '@qubic.ts/react'
-import type { Base64 } from '@qubic.ts/types'
-
-const snapConnector = createMetaMaskSnapConnector({
-  broadcast: async (signedBase64) => {
-    const result = await liveClient.broadcastTransaction(signedBase64 as Base64)
-    if (!result.isOk()) throw result.error
-    return { networkTxId: result.value.transactionId, broadcast: result.value }
-  },
-})
-
-function ConnectSnap() {
-  const { isAvailable, isConnected, account, connect, error } = useWalletConnector(snapConnector)
-
-  if (!isAvailable) return <p>MetaMask not detected</p>
-  if (!isConnected) return <button onClick={() => connect()}>Connect MetaMask Snap</button>
-  return <p>{account?.identity}</p>
 }
 ```
 
@@ -372,10 +364,27 @@ export const myConnector: WalletConnector = {
   connect: async () => ({ identity: '…' }),
   getAccount: async () => null,
   disconnect: async () => {},
-  sendTransaction: async (tx) => { /* … */ },
-  signTransaction: async (tx) => { /* … */ },
-  signMessage: async (msg) => { /* … */ },
-  on: (event, cb) => () => {},
+  sendTransaction: async (_tx) => { throw new Error('not implemented') },
+  signTransaction: async (_tx) => { throw new Error('not implemented') },
+  signMessage: async (_msg) => { throw new Error('not implemented') },
+  on: (_event, _cb) => () => {},
+}
+```
+
+### Lower-level: `useWalletConnector(connector)` (no provider)
+
+When you only need a single connector and don't want a provider:
+
+```tsx
+import { extensionConnector, useWalletConnector } from '@qubic.ts/react'
+
+function ConnectButton() {
+  const { isAvailable, isConnected, account, connect, disconnect } =
+    useWalletConnector(extensionConnector)
+
+  if (!isAvailable) return <p>Install the Qubic extension</p>
+  if (!isConnected) return <button onClick={() => connect()}>Connect</button>
+  return <button onClick={disconnect}>{account?.identity}</button>
 }
 ```
 

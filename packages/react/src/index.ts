@@ -27,7 +27,11 @@ export type { SendTransferParams } from './use-send-transfer.js'
 export { useSendContractCall } from './use-send-contract-call.js'
 export type { SendContractCallParams } from './use-send-contract-call.js'
 
-// Wallet connector — extension, WalletConnect, MetaMask Snap, etc.
+// Wallet connectors — unified multi-connector provider
+export { WalletProvider, useWallet } from './wallet-provider.js'
+export type { WalletProviderProps, WalletContextValue } from './wallet-provider.js'
+
+// Connector interface + built-in connectors
 export type {
   WalletAccount,
   WalletConnector,
@@ -42,5 +46,7 @@ export { createWalletConnectConnector } from './walletconnect-connector.js'
 export type { WalletConnectConnectorOptions } from './walletconnect-connector.js'
 export { createMetaMaskSnapConnector, DEFAULT_SNAP_ID } from './metamask-snap-connector.js'
 export type { MetaMaskSnapConnectorOptions } from './metamask-snap-connector.js'
+
+// Lower-level single-connector hook (no provider required)
 export { useWalletConnector } from './use-wallet-connector.js'
 export type { WalletConnectorState } from './use-wallet-connector.js'

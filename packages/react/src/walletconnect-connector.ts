@@ -8,8 +8,7 @@ import type {
   WalletConnectorEvent,
 } from './connector.js'
 
-// Duck-typed subset of @walletconnect/sign-client we actually use.
-// The user creates a SignClient and passes it in — no @walletconnect import needed here.
+// Duck-typed subset of @walletconnect/sign-client — no import needed.
 interface WcNamespace {
   accounts: string[]
   methods: string[]
@@ -36,14 +35,7 @@ interface WcSignClient {
   off(event: string, callback: () => void): void
 }
 
-export interface WalletConnectConnectorOptions {
-  /** Qubic chain identifier. Default: 'qubic:mainnet'. */
-  chainId?: string
-  /** sessionStorage / localStorage key for session persistence. Default: 'qubic-wc-session'. */
-  sessionStorageKey?: string
-}
-
-// WalletConnect method names used by Qubic wallets.
+// Qubic WalletConnect method names.
 const WC_METHODS = {
   requestAccounts: 'qubic_requestAccounts',
   signTransaction: 'qubic_signTransaction',
@@ -58,28 +50,39 @@ interface WcAccount {
 
 type EventCallback = (payload: unknown) => void
 
+export interface WalletConnectConnectorOptions {
+  /**
+   * Factory called once — lazily on the first connect() — to create and
+   * initialize the SignClient. This avoids blocking app startup.
+   *
+   * @example
+   * createClient: () => SignClient.init({ projectId: '…', metadata: { … } })
+   */
+  createClient: () => Promise<WcSignClient>
+  /** Qubic chain identifier. Default: 'qubic:mainnet'. */
+  chainId?: string
+  /** localStorage key used to persist the session topic. Default: 'qubic-wc-session'. */
+  sessionStorageKey?: string
+}
+
 /**
- * WalletConnector implementation for WalletConnect v2 (Qubic namespace).
+ * WalletConnector for WalletConnect v2 (Qubic namespace).
+ * The SignClient is initialized lazily on first connect() — no upfront await needed.
  *
- * Usage:
+ * Requires `@walletconnect/sign-client` installed in your app.
+ *
+ * @example
  * ```ts
  * import SignClient from '@walletconnect/sign-client'
  * import { createWalletConnectConnector } from '@qubic.ts/react'
  *
- * const client = await SignClient.init({ projectId: '...', metadata: { ... } })
- * const connector = createWalletConnectConnector(client)
- *
- * // In a component:
- * const state = useWalletConnector(connector)
- * // Pass onUri to display the QR code:
- * state.connect({ onUri: (uri) => setQrUri(uri) })
+ * const wcConnector = createWalletConnectConnector({
+ *   createClient: () => SignClient.init({ projectId: 'YOUR_ID', metadata: { … } }),
+ * })
  * ```
- *
- * Peer dependency: `@walletconnect/sign-client` — install it in your app.
  */
 export function createWalletConnectConnector(
-  signClient: WcSignClient,
-  options: WalletConnectConnectorOptions = {},
+  options: WalletConnectConnectorOptions,
 ): WalletConnector {
   const chainId = options.chainId ?? 'qubic:mainnet'
   const sessionKey = options.sessionStorageKey ?? 'qubic-wc-session'
@@ -90,18 +93,43 @@ export function createWalletConnectConnector(
     for (const cb of listeners.get(event) ?? []) cb(payload)
   }
 
-  function restoreSessionTopic(): string | null {
+  // Lazy client — initialized once on first use.
+  let clientPromise: Promise<WcSignClient> | null = null
+
+  async function getClient(): Promise<WcSignClient> {
+    if (!clientPromise) {
+      clientPromise = options
+        .createClient()
+        .then((client) => {
+          client.on('session_delete', () => {
+            clearSavedTopic()
+            emit('disconnect')
+          })
+          client.on('session_expire', () => {
+            clearSavedTopic()
+            emit('disconnect')
+          })
+          return client
+        })
+        .catch((err: unknown) => {
+          clientPromise = null // allow retry on next call
+          throw err
+        })
+    }
+    return clientPromise
+  }
+
+  // ── Session topic helpers ──────────────────────────────────────────────────
+
+  function getSavedTopic(): string | null {
     try {
-      const stored = localStorage.getItem(sessionKey)
-      if (!stored) return null
-      const session = signClient.session.get(stored)
-      return session ? stored : null
+      return localStorage.getItem(sessionKey)
     } catch {
       return null
     }
   }
 
-  function saveSessionTopic(topic: string) {
+  function saveTopic(topic: string) {
     try {
       localStorage.setItem(sessionKey, topic)
     } catch {
@@ -109,7 +137,7 @@ export function createWalletConnectConnector(
     }
   }
 
-  function clearSessionTopic() {
+  function clearSavedTopic() {
     try {
       localStorage.removeItem(sessionKey)
     } catch {
@@ -117,25 +145,18 @@ export function createWalletConnectConnector(
     }
   }
 
-  function accountFromNamespaces(session: WcSession): WalletAccount | null {
+  function accountFromSession(session: WcSession): WalletAccount | null {
     const ns = session.namespaces.qubic
     if (!ns?.accounts?.length) return null
-    // Format: "qubic:mainnet:<identity>"
     const raw = ns.accounts[0]
     if (!raw) return null
-    const parts = raw.split(':')
-    const identity = parts[parts.length - 1]
+    // Format: "qubic:mainnet:<identity>"
+    const identity = raw.split(':').at(-1)
     if (!identity) return null
     return { identity }
   }
 
-  // Wire up session lifecycle events once.
-  const handleSessionEnd = () => {
-    clearSessionTopic()
-    emit('disconnect')
-  }
-  signClient.on('session_delete', handleSessionEnd)
-  signClient.on('session_expire', handleSessionEnd)
+  // ── Connector ──────────────────────────────────────────────────────────────
 
   return {
     id: 'walletconnect',
@@ -145,17 +166,20 @@ export function createWalletConnectConnector(
     },
 
     async connect(connectOptions?: ConnectOptions): Promise<WalletAccount> {
-      // Try to reuse existing session first.
-      const existing = restoreSessionTopic()
-      if (existing) {
-        const session = signClient.session.get(existing)
-        if (session) {
-          const account = accountFromNamespaces(session)
+      // Reuse existing session if valid.
+      const savedTopic = getSavedTopic()
+      if (savedTopic) {
+        const client = await getClient()
+        const existing = client.session.get(savedTopic)
+        if (existing) {
+          const account = accountFromSession(existing)
           if (account) return account
         }
+        clearSavedTopic()
       }
 
-      const { uri, approval } = await signClient.connect({
+      const client = await getClient()
+      const { uri, approval } = await client.connect({
         requiredNamespaces: {
           qubic: {
             chains: [chainId],
@@ -168,26 +192,34 @@ export function createWalletConnectConnector(
       if (uri) connectOptions?.onUri?.(uri)
 
       const session = await approval()
-      saveSessionTopic(session.topic)
+      saveTopic(session.topic)
 
-      const account = accountFromNamespaces(session)
+      const account = accountFromSession(session)
       if (!account) throw new Error('WalletConnect: no account in session namespaces')
       return account
     },
 
     async getAccount(): Promise<WalletAccount | null> {
-      const topic = restoreSessionTopic()
-      if (!topic) return null
+      const savedTopic = getSavedTopic()
+      if (!savedTopic) return null
 
       try {
-        const accounts = await signClient.request<WcAccount[]>({
-          topic,
+        const client = await getClient()
+        const session = client.session.get(savedTopic)
+        if (!session) {
+          clearSavedTopic()
+          return null
+        }
+
+        const accounts = await client.request<WcAccount[]>({
+          topic: savedTopic,
           chainId,
           request: {
             method: WC_METHODS.requestAccounts,
             params: { nonce: Date.now().toString() },
           },
         })
+
         const first = accounts[0]
         if (!first) return null
         const acc: WalletAccount = { identity: first.address }
@@ -199,19 +231,23 @@ export function createWalletConnectConnector(
     },
 
     async disconnect(): Promise<void> {
-      const topic = restoreSessionTopic()
-      clearSessionTopic()
+      const topic = getSavedTopic()
+      clearSavedTopic()
       if (topic) {
-        await signClient
-          .disconnect({ topic, reason: { code: 6000, message: 'User disconnected' } })
-          .catch(() => {})
+        try {
+          const client = await getClient()
+          await client.disconnect({ topic, reason: { code: 6000, message: 'User disconnected' } })
+        } catch {
+          // ignore — session may already be gone
+        }
       }
     },
 
     async sendTransaction(tx: unknown): Promise<SendTransactionResult> {
-      const topic = restoreSessionTopic()
+      const topic = getSavedTopic()
       if (!topic) throw new Error('WalletConnect: not connected')
-      return signClient.request<SendTransactionResult>({
+      const client = await getClient()
+      return client.request<SendTransactionResult>({
         topic,
         chainId,
         request: { method: WC_METHODS.sendTransaction, params: tx },
@@ -219,9 +255,10 @@ export function createWalletConnectConnector(
     },
 
     async signTransaction(tx: unknown): Promise<SignTransactionResult> {
-      const topic = restoreSessionTopic()
+      const topic = getSavedTopic()
       if (!topic) throw new Error('WalletConnect: not connected')
-      return signClient.request<SignTransactionResult>({
+      const client = await getClient()
+      return client.request<SignTransactionResult>({
         topic,
         chainId,
         request: { method: WC_METHODS.signTransaction, params: tx },
@@ -229,9 +266,10 @@ export function createWalletConnectConnector(
     },
 
     async signMessage(message: unknown): Promise<SignMessageResult> {
-      const topic = restoreSessionTopic()
+      const topic = getSavedTopic()
       if (!topic) throw new Error('WalletConnect: not connected')
-      return signClient.request<SignMessageResult>({
+      const client = await getClient()
+      return client.request<SignMessageResult>({
         topic,
         chainId,
         request: { method: WC_METHODS.sign, params: message },

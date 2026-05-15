@@ -142,7 +142,7 @@ const MS_VAULT_REGISTER_VAULT_INPUT_FIELDS: BinaryField[] = [
 
 export function buildMsVaultRegisterVaultInput(
   input: MsVaultRegisterVaultInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): ContractCall {
   return { contractIndex: MS_VAULT_CONTRACT_INDEX, inputType: MS_VAULT_REGISTER_VAULT_INPUT_TYPE, payload: buildPayload(MS_VAULT_REGISTER_VAULT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
@@ -162,9 +162,8 @@ const MS_VAULT_REGISTER_VAULT_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMsVaultRegisterVaultOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): MsVaultRegisterVaultOutput {
-  return decodePayload(data, MS_VAULT_REGISTER_VAULT_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as MsVaultRegisterVaultOutput
+  return decodePayload(data, MS_VAULT_REGISTER_VAULT_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as MsVaultRegisterVaultOutput
 }
 
 export const MS_VAULT_DEPOSIT_INPUT_TYPE = 8
@@ -184,9 +183,8 @@ const MS_VAULT_DEPOSIT_INPUT_FIELDS: BinaryField[] = [
 
 export function buildMsVaultDepositInput(
   input: MsVaultDepositInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: MS_VAULT_CONTRACT_INDEX, inputType: MS_VAULT_DEPOSIT_INPUT_TYPE, payload: buildPayload(MS_VAULT_DEPOSIT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: MS_VAULT_CONTRACT_INDEX, inputType: MS_VAULT_DEPOSIT_INPUT_TYPE, payload: buildPayload(MS_VAULT_DEPOSIT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export interface MsVaultDepositOutput {
@@ -204,9 +202,8 @@ const MS_VAULT_DEPOSIT_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMsVaultDepositOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): MsVaultDepositOutput {
-  return decodePayload(data, MS_VAULT_DEPOSIT_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as MsVaultDepositOutput
+  return decodePayload(data, MS_VAULT_DEPOSIT_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as MsVaultDepositOutput
 }
 
 export const MS_VAULT_RELEASE_TO_INPUT_TYPE = 9
@@ -240,7 +237,7 @@ const MS_VAULT_RELEASE_TO_INPUT_FIELDS: BinaryField[] = [
 
 export function buildMsVaultReleaseToInput(
   input: MsVaultReleaseToInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): ContractCall {
   return { contractIndex: MS_VAULT_CONTRACT_INDEX, inputType: MS_VAULT_RELEASE_TO_INPUT_TYPE, payload: buildPayload(MS_VAULT_RELEASE_TO_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
@@ -260,9 +257,8 @@ const MS_VAULT_RELEASE_TO_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMsVaultReleaseToOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): MsVaultReleaseToOutput {
-  return decodePayload(data, MS_VAULT_RELEASE_TO_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as MsVaultReleaseToOutput
+  return decodePayload(data, MS_VAULT_RELEASE_TO_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as MsVaultReleaseToOutput
 }
 
 export const MS_VAULT_RESET_RELEASE_INPUT_TYPE = 10
@@ -282,9 +278,8 @@ const MS_VAULT_RESET_RELEASE_INPUT_FIELDS: BinaryField[] = [
 
 export function buildMsVaultResetReleaseInput(
   input: MsVaultResetReleaseInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: MS_VAULT_CONTRACT_INDEX, inputType: MS_VAULT_RESET_RELEASE_INPUT_TYPE, payload: buildPayload(MS_VAULT_RESET_RELEASE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: MS_VAULT_CONTRACT_INDEX, inputType: MS_VAULT_RESET_RELEASE_INPUT_TYPE, payload: buildPayload(MS_VAULT_RESET_RELEASE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export interface MsVaultResetReleaseOutput {
@@ -302,9 +297,8 @@ const MS_VAULT_RESET_RELEASE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMsVaultResetReleaseOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): MsVaultResetReleaseOutput {
-  return decodePayload(data, MS_VAULT_RESET_RELEASE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as MsVaultResetReleaseOutput
+  return decodePayload(data, MS_VAULT_RESET_RELEASE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as MsVaultResetReleaseOutput
 }
 
 export const MS_VAULT_VOTE_FEE_CHANGE_INPUT_TYPE = 11
@@ -359,9 +353,8 @@ const MS_VAULT_VOTE_FEE_CHANGE_INPUT_FIELDS: BinaryField[] = [
 
 export function buildMsVaultVoteFeeChangeInput(
   input: MsVaultVoteFeeChangeInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: MS_VAULT_CONTRACT_INDEX, inputType: MS_VAULT_VOTE_FEE_CHANGE_INPUT_TYPE, payload: buildPayload(MS_VAULT_VOTE_FEE_CHANGE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: MS_VAULT_CONTRACT_INDEX, inputType: MS_VAULT_VOTE_FEE_CHANGE_INPUT_TYPE, payload: buildPayload(MS_VAULT_VOTE_FEE_CHANGE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export interface MsVaultVoteFeeChangeOutput {
@@ -379,9 +372,8 @@ const MS_VAULT_VOTE_FEE_CHANGE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMsVaultVoteFeeChangeOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): MsVaultVoteFeeChangeOutput {
-  return decodePayload(data, MS_VAULT_VOTE_FEE_CHANGE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as MsVaultVoteFeeChangeOutput
+  return decodePayload(data, MS_VAULT_VOTE_FEE_CHANGE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as MsVaultVoteFeeChangeOutput
 }
 
 export const MS_VAULT_DEPOSIT_ASSET_INPUT_TYPE = 24
@@ -416,9 +408,8 @@ const MS_VAULT_DEPOSIT_ASSET_INPUT_FIELDS: BinaryField[] = [
 
 export function buildMsVaultDepositAssetInput(
   input: MsVaultDepositAssetInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: MS_VAULT_CONTRACT_INDEX, inputType: MS_VAULT_DEPOSIT_ASSET_INPUT_TYPE, payload: buildPayload(MS_VAULT_DEPOSIT_ASSET_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: MS_VAULT_CONTRACT_INDEX, inputType: MS_VAULT_DEPOSIT_ASSET_INPUT_TYPE, payload: buildPayload(MS_VAULT_DEPOSIT_ASSET_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export interface MsVaultDepositAssetOutput {
@@ -436,9 +427,8 @@ const MS_VAULT_DEPOSIT_ASSET_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMsVaultDepositAssetOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): MsVaultDepositAssetOutput {
-  return decodePayload(data, MS_VAULT_DEPOSIT_ASSET_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as MsVaultDepositAssetOutput
+  return decodePayload(data, MS_VAULT_DEPOSIT_ASSET_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as MsVaultDepositAssetOutput
 }
 
 export const MS_VAULT_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_TYPE = 25
@@ -466,9 +456,8 @@ const MS_VAULT_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildMsVaultRevokeAssetManagementRightsInput(
   input: MsVaultRevokeAssetManagementRightsInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: MS_VAULT_CONTRACT_INDEX, inputType: MS_VAULT_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_TYPE, payload: buildPayload(MS_VAULT_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: MS_VAULT_CONTRACT_INDEX, inputType: MS_VAULT_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_TYPE, payload: buildPayload(MS_VAULT_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export interface MsVaultRevokeAssetManagementRightsOutput {
@@ -493,9 +482,8 @@ const MS_VAULT_REVOKE_ASSET_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMsVaultRevokeAssetManagementRightsOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): MsVaultRevokeAssetManagementRightsOutput {
-  return decodePayload(data, MS_VAULT_REVOKE_ASSET_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as MsVaultRevokeAssetManagementRightsOutput
+  return decodePayload(data, MS_VAULT_REVOKE_ASSET_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as MsVaultRevokeAssetManagementRightsOutput
 }
 
 export const MS_VAULT_RELEASE_ASSET_TO_INPUT_TYPE = 26
@@ -537,7 +525,7 @@ const MS_VAULT_RELEASE_ASSET_TO_INPUT_FIELDS: BinaryField[] = [
 
 export function buildMsVaultReleaseAssetToInput(
   input: MsVaultReleaseAssetToInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): ContractCall {
   return { contractIndex: MS_VAULT_CONTRACT_INDEX, inputType: MS_VAULT_RELEASE_ASSET_TO_INPUT_TYPE, payload: buildPayload(MS_VAULT_RELEASE_ASSET_TO_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
@@ -557,9 +545,8 @@ const MS_VAULT_RELEASE_ASSET_TO_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMsVaultReleaseAssetToOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): MsVaultReleaseAssetToOutput {
-  return decodePayload(data, MS_VAULT_RELEASE_ASSET_TO_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as MsVaultReleaseAssetToOutput
+  return decodePayload(data, MS_VAULT_RELEASE_ASSET_TO_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as MsVaultReleaseAssetToOutput
 }
 
 export const MS_VAULT_RESET_ASSET_RELEASE_INPUT_TYPE = 27
@@ -579,9 +566,8 @@ const MS_VAULT_RESET_ASSET_RELEASE_INPUT_FIELDS: BinaryField[] = [
 
 export function buildMsVaultResetAssetReleaseInput(
   input: MsVaultResetAssetReleaseInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: MS_VAULT_CONTRACT_INDEX, inputType: MS_VAULT_RESET_ASSET_RELEASE_INPUT_TYPE, payload: buildPayload(MS_VAULT_RESET_ASSET_RELEASE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: MS_VAULT_CONTRACT_INDEX, inputType: MS_VAULT_RESET_ASSET_RELEASE_INPUT_TYPE, payload: buildPayload(MS_VAULT_RESET_ASSET_RELEASE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export interface MsVaultResetAssetReleaseOutput {
@@ -599,9 +585,8 @@ const MS_VAULT_RESET_ASSET_RELEASE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMsVaultResetAssetReleaseOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): MsVaultResetAssetReleaseOutput {
-  return decodePayload(data, MS_VAULT_RESET_ASSET_RELEASE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as MsVaultResetAssetReleaseOutput
+  return decodePayload(data, MS_VAULT_RESET_ASSET_RELEASE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as MsVaultResetAssetReleaseOutput
 }
 
 export const MS_VAULT_IS_SHARE_HOLDER_INPUT_TYPE = 5
@@ -622,7 +607,7 @@ const MS_VAULT_IS_SHARE_HOLDER_INPUT_FIELDS: BinaryField[] = [
 
 export function buildMsVaultIsShareHolderInput(
   input: MsVaultIsShareHolderInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): Uint8Array {
   return buildPayload(MS_VAULT_IS_SHARE_HOLDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -642,9 +627,8 @@ const MS_VAULT_IS_SHARE_HOLDER_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMsVaultIsShareHolderOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): MsVaultIsShareHolderOutput {
-  return decodePayload(data, MS_VAULT_IS_SHARE_HOLDER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as MsVaultIsShareHolderOutput
+  return decodePayload(data, MS_VAULT_IS_SHARE_HOLDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as MsVaultIsShareHolderOutput
 }
 
 export async function msVaultIsShareHolder(
@@ -691,7 +675,7 @@ const MS_VAULT_GET_MANAGED_ASSET_BALANCE_INPUT_FIELDS: BinaryField[] = [
 
 export function buildMsVaultGetManagedAssetBalanceInput(
   input: MsVaultGetManagedAssetBalanceInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): Uint8Array {
   return buildPayload(MS_VAULT_GET_MANAGED_ASSET_BALANCE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -711,9 +695,8 @@ const MS_VAULT_GET_MANAGED_ASSET_BALANCE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMsVaultGetManagedAssetBalanceOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): MsVaultGetManagedAssetBalanceOutput {
-  return decodePayload(data, MS_VAULT_GET_MANAGED_ASSET_BALANCE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as MsVaultGetManagedAssetBalanceOutput
+  return decodePayload(data, MS_VAULT_GET_MANAGED_ASSET_BALANCE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as MsVaultGetManagedAssetBalanceOutput
 }
 
 export async function msVaultGetManagedAssetBalance(
@@ -752,7 +735,7 @@ const MS_VAULT_GET_VAULTS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildMsVaultGetVaultsInput(
   input: MsVaultGetVaultsInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): Uint8Array {
   return buildPayload(MS_VAULT_GET_VAULTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -792,7 +775,7 @@ const MS_VAULT_GET_VAULTS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMsVaultGetVaultsOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): MsVaultGetVaultsOutput {
   return decodePayload(data, MS_VAULT_GET_VAULTS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as MsVaultGetVaultsOutput
 }
@@ -833,9 +816,8 @@ const MS_VAULT_GET_RELEASE_STATUS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildMsVaultGetReleaseStatusInput(
   input: MsVaultGetReleaseStatusInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
-  return buildPayload(MS_VAULT_GET_RELEASE_STATUS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+  return buildPayload(MS_VAULT_GET_RELEASE_STATUS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
 }
 
 export interface MsVaultGetReleaseStatusOutput {
@@ -873,7 +855,7 @@ const MS_VAULT_GET_RELEASE_STATUS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMsVaultGetReleaseStatusOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): MsVaultGetReleaseStatusOutput {
   return decodePayload(data, MS_VAULT_GET_RELEASE_STATUS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as MsVaultGetReleaseStatusOutput
 }
@@ -914,9 +896,8 @@ const MS_VAULT_GET_BALANCE_OF_INPUT_FIELDS: BinaryField[] = [
 
 export function buildMsVaultGetBalanceOfInput(
   input: MsVaultGetBalanceOfInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
-  return buildPayload(MS_VAULT_GET_BALANCE_OF_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+  return buildPayload(MS_VAULT_GET_BALANCE_OF_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
 }
 
 export interface MsVaultGetBalanceOfOutput {
@@ -941,9 +922,8 @@ const MS_VAULT_GET_BALANCE_OF_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMsVaultGetBalanceOfOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): MsVaultGetBalanceOfOutput {
-  return decodePayload(data, MS_VAULT_GET_BALANCE_OF_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as MsVaultGetBalanceOfOutput
+  return decodePayload(data, MS_VAULT_GET_BALANCE_OF_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as MsVaultGetBalanceOfOutput
 }
 
 export async function msVaultGetBalanceOf(
@@ -982,9 +962,8 @@ const MS_VAULT_GET_VAULT_NAME_INPUT_FIELDS: BinaryField[] = [
 
 export function buildMsVaultGetVaultNameInput(
   input: MsVaultGetVaultNameInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
-  return buildPayload(MS_VAULT_GET_VAULT_NAME_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+  return buildPayload(MS_VAULT_GET_VAULT_NAME_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
 }
 
 export interface MsVaultGetVaultNameOutput {
@@ -1009,7 +988,7 @@ const MS_VAULT_GET_VAULT_NAME_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMsVaultGetVaultNameOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): MsVaultGetVaultNameOutput {
   return decodePayload(data, MS_VAULT_GET_VAULT_NAME_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as MsVaultGetVaultNameOutput
 }
@@ -1071,9 +1050,8 @@ const MS_VAULT_GET_REVENUE_INFO_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMsVaultGetRevenueInfoOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): MsVaultGetRevenueInfoOutput {
-  return decodePayload(data, MS_VAULT_GET_REVENUE_INFO_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as MsVaultGetRevenueInfoOutput
+  return decodePayload(data, MS_VAULT_GET_REVENUE_INFO_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as MsVaultGetRevenueInfoOutput
 }
 
 export async function msVaultGetRevenueInfo(
@@ -1146,9 +1124,8 @@ const MS_VAULT_GET_FEES_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMsVaultGetFeesOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): MsVaultGetFeesOutput {
-  return decodePayload(data, MS_VAULT_GET_FEES_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as MsVaultGetFeesOutput
+  return decodePayload(data, MS_VAULT_GET_FEES_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as MsVaultGetFeesOutput
 }
 
 export async function msVaultGetFees(
@@ -1186,9 +1163,8 @@ const MS_VAULT_GET_VAULT_OWNERS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildMsVaultGetVaultOwnersInput(
   input: MsVaultGetVaultOwnersInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
-  return buildPayload(MS_VAULT_GET_VAULT_OWNERS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+  return buildPayload(MS_VAULT_GET_VAULT_OWNERS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
 }
 
 export interface MsVaultGetVaultOwnersOutput {
@@ -1230,7 +1206,7 @@ const MS_VAULT_GET_VAULT_OWNERS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMsVaultGetVaultOwnersOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): MsVaultGetVaultOwnersOutput {
   return decodePayload(data, MS_VAULT_GET_VAULT_OWNERS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as MsVaultGetVaultOwnersOutput
 }
@@ -1288,9 +1264,8 @@ const MS_VAULT_GET_FEE_VOTES_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMsVaultGetFeeVotesOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): MsVaultGetFeeVotesOutput {
-  return decodePayload(data, MS_VAULT_GET_FEE_VOTES_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as MsVaultGetFeeVotesOutput
+  return decodePayload(data, MS_VAULT_GET_FEE_VOTES_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as MsVaultGetFeeVotesOutput
 }
 
 export async function msVaultGetFeeVotes(
@@ -1345,7 +1320,7 @@ const MS_VAULT_GET_FEE_VOTES_OWNER_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMsVaultGetFeeVotesOwnerOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): MsVaultGetFeeVotesOwnerOutput {
   return decodePayload(data, MS_VAULT_GET_FEE_VOTES_OWNER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as MsVaultGetFeeVotesOwnerOutput
 }
@@ -1402,9 +1377,8 @@ const MS_VAULT_GET_FEE_VOTES_SCORE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMsVaultGetFeeVotesScoreOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): MsVaultGetFeeVotesScoreOutput {
-  return decodePayload(data, MS_VAULT_GET_FEE_VOTES_SCORE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as MsVaultGetFeeVotesScoreOutput
+  return decodePayload(data, MS_VAULT_GET_FEE_VOTES_SCORE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as MsVaultGetFeeVotesScoreOutput
 }
 
 export async function msVaultGetFeeVotesScore(
@@ -1459,9 +1433,8 @@ const MS_VAULT_GET_UNIQUE_FEE_VOTES_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMsVaultGetUniqueFeeVotesOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): MsVaultGetUniqueFeeVotesOutput {
-  return decodePayload(data, MS_VAULT_GET_UNIQUE_FEE_VOTES_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as MsVaultGetUniqueFeeVotesOutput
+  return decodePayload(data, MS_VAULT_GET_UNIQUE_FEE_VOTES_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as MsVaultGetUniqueFeeVotesOutput
 }
 
 export async function msVaultGetUniqueFeeVotes(
@@ -1516,9 +1489,8 @@ const MS_VAULT_GET_UNIQUE_FEE_VOTES_RANKING_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMsVaultGetUniqueFeeVotesRankingOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): MsVaultGetUniqueFeeVotesRankingOutput {
-  return decodePayload(data, MS_VAULT_GET_UNIQUE_FEE_VOTES_RANKING_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as MsVaultGetUniqueFeeVotesRankingOutput
+  return decodePayload(data, MS_VAULT_GET_UNIQUE_FEE_VOTES_RANKING_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as MsVaultGetUniqueFeeVotesRankingOutput
 }
 
 export async function msVaultGetUniqueFeeVotesRanking(
@@ -1556,9 +1528,8 @@ const MS_VAULT_GET_ASSET_RELEASE_STATUS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildMsVaultGetAssetReleaseStatusInput(
   input: MsVaultGetAssetReleaseStatusInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
-  return buildPayload(MS_VAULT_GET_ASSET_RELEASE_STATUS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+  return buildPayload(MS_VAULT_GET_ASSET_RELEASE_STATUS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
 }
 
 export interface MsVaultGetAssetReleaseStatusOutput {
@@ -1606,7 +1577,7 @@ const MS_VAULT_GET_ASSET_RELEASE_STATUS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMsVaultGetAssetReleaseStatusOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): MsVaultGetAssetReleaseStatusOutput {
   return decodePayload(data, MS_VAULT_GET_ASSET_RELEASE_STATUS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as MsVaultGetAssetReleaseStatusOutput
 }
@@ -1647,9 +1618,8 @@ const MS_VAULT_GET_VAULT_ASSET_BALANCES_INPUT_FIELDS: BinaryField[] = [
 
 export function buildMsVaultGetVaultAssetBalancesInput(
   input: MsVaultGetVaultAssetBalancesInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
-  return buildPayload(MS_VAULT_GET_VAULT_ASSET_BALANCES_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+  return buildPayload(MS_VAULT_GET_VAULT_ASSET_BALANCES_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
 }
 
 export interface MsVaultGetVaultAssetBalancesOutput {
@@ -1684,9 +1654,8 @@ const MS_VAULT_GET_VAULT_ASSET_BALANCES_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMsVaultGetVaultAssetBalancesOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): MsVaultGetVaultAssetBalancesOutput {
-  return decodePayload(data, MS_VAULT_GET_VAULT_ASSET_BALANCES_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as MsVaultGetVaultAssetBalancesOutput
+  return decodePayload(data, MS_VAULT_GET_VAULT_ASSET_BALANCES_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as MsVaultGetVaultAssetBalancesOutput
 }
 
 export async function msVaultGetVaultAssetBalances(

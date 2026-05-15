@@ -220,9 +220,8 @@ const GENERAL_QUORUM_PROPOSAL_SET_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
 
 export function buildGeneralQuorumProposalSetProposalInput(
   input: GeneralQuorumProposalSetProposalInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: GENERAL_QUORUM_PROPOSAL_CONTRACT_INDEX, inputType: GENERAL_QUORUM_PROPOSAL_SET_PROPOSAL_INPUT_TYPE, payload: buildPayload(GENERAL_QUORUM_PROPOSAL_SET_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: GENERAL_QUORUM_PROPOSAL_CONTRACT_INDEX, inputType: GENERAL_QUORUM_PROPOSAL_SET_PROPOSAL_INPUT_TYPE, payload: buildPayload(GENERAL_QUORUM_PROPOSAL_SET_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export interface GeneralQuorumProposalSetProposalOutput {
@@ -247,9 +246,8 @@ const GENERAL_QUORUM_PROPOSAL_SET_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeGeneralQuorumProposalSetProposalOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): GeneralQuorumProposalSetProposalOutput {
-  return decodePayload(data, GENERAL_QUORUM_PROPOSAL_SET_PROPOSAL_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as GeneralQuorumProposalSetProposalOutput
+  return decodePayload(data, GENERAL_QUORUM_PROPOSAL_SET_PROPOSAL_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as GeneralQuorumProposalSetProposalOutput
 }
 
 export const GENERAL_QUORUM_PROPOSAL_VOTE_INPUT_TYPE = 6
@@ -290,9 +288,8 @@ const GENERAL_QUORUM_PROPOSAL_VOTE_INPUT_FIELDS: BinaryField[] = [
 
 export function buildGeneralQuorumProposalVoteInput(
   input: GeneralQuorumProposalVoteInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: GENERAL_QUORUM_PROPOSAL_CONTRACT_INDEX, inputType: GENERAL_QUORUM_PROPOSAL_VOTE_INPUT_TYPE, payload: buildPayload(GENERAL_QUORUM_PROPOSAL_VOTE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: GENERAL_QUORUM_PROPOSAL_CONTRACT_INDEX, inputType: GENERAL_QUORUM_PROPOSAL_VOTE_INPUT_TYPE, payload: buildPayload(GENERAL_QUORUM_PROPOSAL_VOTE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export interface GeneralQuorumProposalVoteOutput {
@@ -310,9 +307,8 @@ const GENERAL_QUORUM_PROPOSAL_VOTE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeGeneralQuorumProposalVoteOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): GeneralQuorumProposalVoteOutput {
-  return decodePayload(data, GENERAL_QUORUM_PROPOSAL_VOTE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as GeneralQuorumProposalVoteOutput
+  return decodePayload(data, GENERAL_QUORUM_PROPOSAL_VOTE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as GeneralQuorumProposalVoteOutput
 }
 
 export const GENERAL_QUORUM_PROPOSAL_GET_PROPOSAL_INDICES_INPUT_TYPE = 4
@@ -340,9 +336,8 @@ const GENERAL_QUORUM_PROPOSAL_GET_PROPOSAL_INDICES_INPUT_FIELDS: BinaryField[] =
 
 export function buildGeneralQuorumProposalGetProposalIndicesInput(
   input: GeneralQuorumProposalGetProposalIndicesInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
-  return buildPayload(GENERAL_QUORUM_PROPOSAL_GET_PROPOSAL_INDICES_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+  return buildPayload(GENERAL_QUORUM_PROPOSAL_GET_PROPOSAL_INDICES_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
 }
 
 export interface GeneralQuorumProposalGetProposalIndicesOutput {
@@ -370,9 +365,8 @@ const GENERAL_QUORUM_PROPOSAL_GET_PROPOSAL_INDICES_OUTPUT_FIELDS: BinaryField[] 
 
 export function decodeGeneralQuorumProposalGetProposalIndicesOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): GeneralQuorumProposalGetProposalIndicesOutput {
-  return decodePayload(data, GENERAL_QUORUM_PROPOSAL_GET_PROPOSAL_INDICES_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as GeneralQuorumProposalGetProposalIndicesOutput
+  return decodePayload(data, GENERAL_QUORUM_PROPOSAL_GET_PROPOSAL_INDICES_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as GeneralQuorumProposalGetProposalIndicesOutput
 }
 
 export async function generalQuorumProposalGetProposalIndices(
@@ -411,9 +405,8 @@ const GENERAL_QUORUM_PROPOSAL_GET_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
 
 export function buildGeneralQuorumProposalGetProposalInput(
   input: GeneralQuorumProposalGetProposalInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
-  return buildPayload(GENERAL_QUORUM_PROPOSAL_GET_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+  return buildPayload(GENERAL_QUORUM_PROPOSAL_GET_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
 }
 
 export interface GeneralQuorumProposalGetProposalOutput {
@@ -476,7 +469,7 @@ const GENERAL_QUORUM_PROPOSAL_GET_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeGeneralQuorumProposalGetProposalOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): GeneralQuorumProposalGetProposalOutput {
   return decodePayload(data, GENERAL_QUORUM_PROPOSAL_GET_PROPOSAL_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as GeneralQuorumProposalGetProposalOutput
 }
@@ -524,7 +517,7 @@ const GENERAL_QUORUM_PROPOSAL_GET_VOTE_INPUT_FIELDS: BinaryField[] = [
 
 export function buildGeneralQuorumProposalGetVoteInput(
   input: GeneralQuorumProposalGetVoteInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): Uint8Array {
   return buildPayload(GENERAL_QUORUM_PROPOSAL_GET_VOTE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -552,9 +545,8 @@ const GENERAL_QUORUM_PROPOSAL_GET_VOTE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeGeneralQuorumProposalGetVoteOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): GeneralQuorumProposalGetVoteOutput {
-  return decodePayload(data, GENERAL_QUORUM_PROPOSAL_GET_VOTE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as GeneralQuorumProposalGetVoteOutput
+  return decodePayload(data, GENERAL_QUORUM_PROPOSAL_GET_VOTE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as GeneralQuorumProposalGetVoteOutput
 }
 
 export async function generalQuorumProposalGetVote(
@@ -593,9 +585,8 @@ const GENERAL_QUORUM_PROPOSAL_GET_VOTING_RESULTS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildGeneralQuorumProposalGetVotingResultsInput(
   input: GeneralQuorumProposalGetVotingResultsInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
-  return buildPayload(GENERAL_QUORUM_PROPOSAL_GET_VOTING_RESULTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+  return buildPayload(GENERAL_QUORUM_PROPOSAL_GET_VOTING_RESULTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
 }
 
 export interface GeneralQuorumProposalGetVotingResultsOutput {
@@ -621,9 +612,8 @@ const GENERAL_QUORUM_PROPOSAL_GET_VOTING_RESULTS_OUTPUT_FIELDS: BinaryField[] = 
 
 export function decodeGeneralQuorumProposalGetVotingResultsOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): GeneralQuorumProposalGetVotingResultsOutput {
-  return decodePayload(data, GENERAL_QUORUM_PROPOSAL_GET_VOTING_RESULTS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as GeneralQuorumProposalGetVotingResultsOutput
+  return decodePayload(data, GENERAL_QUORUM_PROPOSAL_GET_VOTING_RESULTS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as GeneralQuorumProposalGetVotingResultsOutput
 }
 
 export async function generalQuorumProposalGetVotingResults(
@@ -665,9 +655,8 @@ const GENERAL_QUORUM_PROPOSAL_GET_REVENUE_DONATION_OUTPUT_FIELDS: BinaryField[] 
 
 export function decodeGeneralQuorumProposalGetRevenueDonationOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): GeneralQuorumProposalGetRevenueDonationOutput {
-  return decodePayload(data, GENERAL_QUORUM_PROPOSAL_GET_REVENUE_DONATION_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as GeneralQuorumProposalGetRevenueDonationOutput
+  return decodePayload(data, GENERAL_QUORUM_PROPOSAL_GET_REVENUE_DONATION_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as GeneralQuorumProposalGetRevenueDonationOutput
 }
 
 export async function generalQuorumProposalGetRevenueDonation(

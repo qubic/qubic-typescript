@@ -232,9 +232,8 @@ const Q_THIRTY_FOUR_BUY_TICKET_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQThirtyFourBuyTicketInput(
   input: QThirtyFourBuyTicketInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: Q_THIRTY_FOUR_CONTRACT_INDEX, inputType: Q_THIRTY_FOUR_BUY_TICKET_INPUT_TYPE, payload: buildPayload(Q_THIRTY_FOUR_BUY_TICKET_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: Q_THIRTY_FOUR_CONTRACT_INDEX, inputType: Q_THIRTY_FOUR_BUY_TICKET_INPUT_TYPE, payload: buildPayload(Q_THIRTY_FOUR_BUY_TICKET_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export interface QThirtyFourBuyTicketOutput {
@@ -252,9 +251,8 @@ const Q_THIRTY_FOUR_BUY_TICKET_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQThirtyFourBuyTicketOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QThirtyFourBuyTicketOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_BUY_TICKET_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QThirtyFourBuyTicketOutput
+  return decodePayload(data, Q_THIRTY_FOUR_BUY_TICKET_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourBuyTicketOutput
 }
 
 export const Q_THIRTY_FOUR_BUY_TICKETS_BATCH_INPUT_TYPE = 7
@@ -277,9 +275,8 @@ const Q_THIRTY_FOUR_BUY_TICKETS_BATCH_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQThirtyFourBuyTicketsBatchInput(
   input: QThirtyFourBuyTicketsBatchInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: Q_THIRTY_FOUR_CONTRACT_INDEX, inputType: Q_THIRTY_FOUR_BUY_TICKETS_BATCH_INPUT_TYPE, payload: buildPayload(Q_THIRTY_FOUR_BUY_TICKETS_BATCH_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: Q_THIRTY_FOUR_CONTRACT_INDEX, inputType: Q_THIRTY_FOUR_BUY_TICKETS_BATCH_INPUT_TYPE, payload: buildPayload(Q_THIRTY_FOUR_BUY_TICKETS_BATCH_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export interface QThirtyFourBuyTicketsBatchOutput {
@@ -304,9 +301,8 @@ const Q_THIRTY_FOUR_BUY_TICKETS_BATCH_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQThirtyFourBuyTicketsBatchOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QThirtyFourBuyTicketsBatchOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_BUY_TICKETS_BATCH_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QThirtyFourBuyTicketsBatchOutput
+  return decodePayload(data, Q_THIRTY_FOUR_BUY_TICKETS_BATCH_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourBuyTicketsBatchOutput
 }
 
 export const Q_THIRTY_FOUR_BUY_TICKETS_BY_SELECTION_INPUT_TYPE = 8
@@ -329,9 +325,8 @@ const Q_THIRTY_FOUR_BUY_TICKETS_BY_SELECTION_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQThirtyFourBuyTicketsBySelectionInput(
   input: QThirtyFourBuyTicketsBySelectionInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: Q_THIRTY_FOUR_CONTRACT_INDEX, inputType: Q_THIRTY_FOUR_BUY_TICKETS_BY_SELECTION_INPUT_TYPE, payload: buildPayload(Q_THIRTY_FOUR_BUY_TICKETS_BY_SELECTION_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: Q_THIRTY_FOUR_CONTRACT_INDEX, inputType: Q_THIRTY_FOUR_BUY_TICKETS_BY_SELECTION_INPUT_TYPE, payload: buildPayload(Q_THIRTY_FOUR_BUY_TICKETS_BY_SELECTION_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export interface QThirtyFourBuyTicketsBySelectionOutput {
@@ -363,9 +358,8 @@ const Q_THIRTY_FOUR_BUY_TICKETS_BY_SELECTION_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQThirtyFourBuyTicketsBySelectionOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QThirtyFourBuyTicketsBySelectionOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_BUY_TICKETS_BY_SELECTION_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QThirtyFourBuyTicketsBySelectionOutput
+  return decodePayload(data, Q_THIRTY_FOUR_BUY_TICKETS_BY_SELECTION_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourBuyTicketsBySelectionOutput
 }
 
 export const Q_THIRTY_FOUR_SET_PRICE_INPUT_TYPE = 9
@@ -385,9 +379,8 @@ const Q_THIRTY_FOUR_SET_PRICE_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQThirtyFourSetPriceInput(
   input: QThirtyFourSetPriceInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: Q_THIRTY_FOUR_CONTRACT_INDEX, inputType: Q_THIRTY_FOUR_SET_PRICE_INPUT_TYPE, payload: buildPayload(Q_THIRTY_FOUR_SET_PRICE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: Q_THIRTY_FOUR_CONTRACT_INDEX, inputType: Q_THIRTY_FOUR_SET_PRICE_INPUT_TYPE, payload: buildPayload(Q_THIRTY_FOUR_SET_PRICE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export interface QThirtyFourSetPriceOutput {
@@ -405,9 +398,8 @@ const Q_THIRTY_FOUR_SET_PRICE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQThirtyFourSetPriceOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QThirtyFourSetPriceOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_SET_PRICE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QThirtyFourSetPriceOutput
+  return decodePayload(data, Q_THIRTY_FOUR_SET_PRICE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourSetPriceOutput
 }
 
 export const Q_THIRTY_FOUR_SET_SCHEDULE_INPUT_TYPE = 10
@@ -427,9 +419,8 @@ const Q_THIRTY_FOUR_SET_SCHEDULE_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQThirtyFourSetScheduleInput(
   input: QThirtyFourSetScheduleInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: Q_THIRTY_FOUR_CONTRACT_INDEX, inputType: Q_THIRTY_FOUR_SET_SCHEDULE_INPUT_TYPE, payload: buildPayload(Q_THIRTY_FOUR_SET_SCHEDULE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: Q_THIRTY_FOUR_CONTRACT_INDEX, inputType: Q_THIRTY_FOUR_SET_SCHEDULE_INPUT_TYPE, payload: buildPayload(Q_THIRTY_FOUR_SET_SCHEDULE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export interface QThirtyFourSetScheduleOutput {
@@ -447,9 +438,8 @@ const Q_THIRTY_FOUR_SET_SCHEDULE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQThirtyFourSetScheduleOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QThirtyFourSetScheduleOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_SET_SCHEDULE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QThirtyFourSetScheduleOutput
+  return decodePayload(data, Q_THIRTY_FOUR_SET_SCHEDULE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourSetScheduleOutput
 }
 
 export const Q_THIRTY_FOUR_SET_DRAW_HOUR_INPUT_TYPE = 11
@@ -469,9 +459,8 @@ const Q_THIRTY_FOUR_SET_DRAW_HOUR_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQThirtyFourSetDrawHourInput(
   input: QThirtyFourSetDrawHourInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: Q_THIRTY_FOUR_CONTRACT_INDEX, inputType: Q_THIRTY_FOUR_SET_DRAW_HOUR_INPUT_TYPE, payload: buildPayload(Q_THIRTY_FOUR_SET_DRAW_HOUR_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: Q_THIRTY_FOUR_CONTRACT_INDEX, inputType: Q_THIRTY_FOUR_SET_DRAW_HOUR_INPUT_TYPE, payload: buildPayload(Q_THIRTY_FOUR_SET_DRAW_HOUR_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export interface QThirtyFourSetDrawHourOutput {
@@ -489,9 +478,8 @@ const Q_THIRTY_FOUR_SET_DRAW_HOUR_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQThirtyFourSetDrawHourOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QThirtyFourSetDrawHourOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_SET_DRAW_HOUR_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QThirtyFourSetDrawHourOutput
+  return decodePayload(data, Q_THIRTY_FOUR_SET_DRAW_HOUR_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourSetDrawHourOutput
 }
 
 export const Q_THIRTY_FOUR_SET_TARGET_JACKPOT_INPUT_TYPE = 12
@@ -511,9 +499,8 @@ const Q_THIRTY_FOUR_SET_TARGET_JACKPOT_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQThirtyFourSetTargetJackpotInput(
   input: QThirtyFourSetTargetJackpotInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: Q_THIRTY_FOUR_CONTRACT_INDEX, inputType: Q_THIRTY_FOUR_SET_TARGET_JACKPOT_INPUT_TYPE, payload: buildPayload(Q_THIRTY_FOUR_SET_TARGET_JACKPOT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: Q_THIRTY_FOUR_CONTRACT_INDEX, inputType: Q_THIRTY_FOUR_SET_TARGET_JACKPOT_INPUT_TYPE, payload: buildPayload(Q_THIRTY_FOUR_SET_TARGET_JACKPOT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export interface QThirtyFourSetTargetJackpotOutput {
@@ -531,9 +518,8 @@ const Q_THIRTY_FOUR_SET_TARGET_JACKPOT_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQThirtyFourSetTargetJackpotOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QThirtyFourSetTargetJackpotOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_SET_TARGET_JACKPOT_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QThirtyFourSetTargetJackpotOutput
+  return decodePayload(data, Q_THIRTY_FOUR_SET_TARGET_JACKPOT_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourSetTargetJackpotOutput
 }
 
 export const Q_THIRTY_FOUR_SYNC_JACKPOT_INPUT_TYPE = 37
@@ -553,9 +539,8 @@ const Q_THIRTY_FOUR_SYNC_JACKPOT_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQThirtyFourSyncJackpotOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QThirtyFourSyncJackpotOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_SYNC_JACKPOT_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QThirtyFourSyncJackpotOutput
+  return decodePayload(data, Q_THIRTY_FOUR_SYNC_JACKPOT_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourSyncJackpotOutput
 }
 
 export const Q_THIRTY_FOUR_GET_TICKET_PRICE_INPUT_TYPE = 22
@@ -576,9 +561,8 @@ const Q_THIRTY_FOUR_GET_TICKET_PRICE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQThirtyFourGetTicketPriceOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QThirtyFourGetTicketPriceOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_GET_TICKET_PRICE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QThirtyFourGetTicketPriceOutput
+  return decodePayload(data, Q_THIRTY_FOUR_GET_TICKET_PRICE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourGetTicketPriceOutput
 }
 
 export async function qThirtyFourGetTicketPrice(
@@ -617,9 +601,8 @@ const Q_THIRTY_FOUR_GET_NEXT_EPOCH_DATA_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQThirtyFourGetNextEpochDataOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QThirtyFourGetNextEpochDataOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_GET_NEXT_EPOCH_DATA_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QThirtyFourGetNextEpochDataOutput
+  return decodePayload(data, Q_THIRTY_FOUR_GET_NEXT_EPOCH_DATA_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourGetNextEpochDataOutput
 }
 
 export async function qThirtyFourGetNextEpochData(
@@ -657,9 +640,8 @@ const Q_THIRTY_FOUR_GET_SCHEDULE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQThirtyFourGetScheduleOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QThirtyFourGetScheduleOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_GET_SCHEDULE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QThirtyFourGetScheduleOutput
+  return decodePayload(data, Q_THIRTY_FOUR_GET_SCHEDULE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourGetScheduleOutput
 }
 
 export async function qThirtyFourGetSchedule(
@@ -698,9 +680,8 @@ const Q_THIRTY_FOUR_GET_WINNER_DATA_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQThirtyFourGetWinnerDataOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QThirtyFourGetWinnerDataOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_GET_WINNER_DATA_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QThirtyFourGetWinnerDataOutput
+  return decodePayload(data, Q_THIRTY_FOUR_GET_WINNER_DATA_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourGetWinnerDataOutput
 }
 
 export async function qThirtyFourGetWinnerData(
@@ -739,9 +720,8 @@ const Q_THIRTY_FOUR_GET_POOLS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQThirtyFourGetPoolsOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QThirtyFourGetPoolsOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_GET_POOLS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QThirtyFourGetPoolsOutput
+  return decodePayload(data, Q_THIRTY_FOUR_GET_POOLS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourGetPoolsOutput
 }
 
 export async function qThirtyFourGetPools(
@@ -779,9 +759,8 @@ const Q_THIRTY_FOUR_GET_DRAW_HOUR_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQThirtyFourGetDrawHourOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QThirtyFourGetDrawHourOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_GET_DRAW_HOUR_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QThirtyFourGetDrawHourOutput
+  return decodePayload(data, Q_THIRTY_FOUR_GET_DRAW_HOUR_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourGetDrawHourOutput
 }
 
 export async function qThirtyFourGetDrawHour(
@@ -819,9 +798,8 @@ const Q_THIRTY_FOUR_GET_STATE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQThirtyFourGetStateOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QThirtyFourGetStateOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_GET_STATE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QThirtyFourGetStateOutput
+  return decodePayload(data, Q_THIRTY_FOUR_GET_STATE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourGetStateOutput
 }
 
 export async function qThirtyFourGetState(
@@ -887,9 +865,8 @@ const Q_THIRTY_FOUR_GET_FEES_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQThirtyFourGetFeesOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QThirtyFourGetFeesOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_GET_FEES_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QThirtyFourGetFeesOutput
+  return decodePayload(data, Q_THIRTY_FOUR_GET_FEES_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourGetFeesOutput
 }
 
 export async function qThirtyFourGetFees(
@@ -934,9 +911,8 @@ const Q_THIRTY_FOUR_ESTIMATE_PRIZE_PAYOUTS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQThirtyFourEstimatePrizePayoutsInput(
   input: QThirtyFourEstimatePrizePayoutsInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
-  return buildPayload(Q_THIRTY_FOUR_ESTIMATE_PRIZE_PAYOUTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+  return buildPayload(Q_THIRTY_FOUR_ESTIMATE_PRIZE_PAYOUTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
 }
 
 export interface QThirtyFourEstimatePrizePayoutsOutput {
@@ -1003,9 +979,8 @@ const Q_THIRTY_FOUR_ESTIMATE_PRIZE_PAYOUTS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQThirtyFourEstimatePrizePayoutsOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QThirtyFourEstimatePrizePayoutsOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_ESTIMATE_PRIZE_PAYOUTS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QThirtyFourEstimatePrizePayoutsOutput
+  return decodePayload(data, Q_THIRTY_FOUR_ESTIMATE_PRIZE_PAYOUTS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourEstimatePrizePayoutsOutput
 }
 
 export async function qThirtyFourEstimatePrizePayouts(
@@ -1054,9 +1029,8 @@ const Q_THIRTY_FOUR_GET_PLAYERS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQThirtyFourGetPlayersOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QThirtyFourGetPlayersOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_GET_PLAYERS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QThirtyFourGetPlayersOutput
+  return decodePayload(data, Q_THIRTY_FOUR_GET_PLAYERS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourGetPlayersOutput
 }
 
 export async function qThirtyFourGetPlayers(
@@ -1104,9 +1078,8 @@ const Q_THIRTY_FOUR_GET_WINNING_COMBINATIONS_HISTORY_OUTPUT_FIELDS: BinaryField[
 
 export function decodeQThirtyFourGetWinningCombinationsHistoryOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QThirtyFourGetWinningCombinationsHistoryOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_GET_WINNING_COMBINATIONS_HISTORY_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QThirtyFourGetWinningCombinationsHistoryOutput
+  return decodePayload(data, Q_THIRTY_FOUR_GET_WINNING_COMBINATIONS_HISTORY_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourGetWinningCombinationsHistoryOutput
 }
 
 export async function qThirtyFourGetWinningCombinationsHistory(

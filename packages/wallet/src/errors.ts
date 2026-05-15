@@ -1,4 +1,6 @@
-export class WalletError extends Error {
+import { QubicError } from '@qubic.org/types'
+
+export class WalletError extends QubicError {
   constructor(message: string, options?: { cause?: unknown }) {
     super(message, options)
     this.name = 'WalletError'

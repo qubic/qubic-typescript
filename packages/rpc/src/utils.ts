@@ -1,8 +1,8 @@
 import { QubicRpcError } from './errors.js'
-import type { LiveClient, LiveClientOptions, QueryClientOptions } from './live-client.js'
+import type { LiveClient, LiveClientOptions } from './live-client.js'
 import { createLiveClient } from './live-client.js'
 import { createQueryClient } from './query-client.js'
-import type { QueryClient } from './query-client.js'
+import type { QueryClient, QueryClientOptions } from './query-client.js'
 import { err } from './result.js'
 import type { Result } from './result.js'
 
@@ -25,8 +25,14 @@ export function createQubicClient(options: QubicClientOptions = {}): QubicClient
     ...(options.fetch !== undefined ? { fetch: options.fetch } : {}),
   }
   return {
-    live: createLiveClient({ baseUrl: options.liveBaseUrl, ...shared }),
-    archive: createQueryClient({ baseUrl: options.archiveBaseUrl, ...shared }),
+    live: createLiveClient({
+      ...shared,
+      ...(options.liveBaseUrl !== undefined ? { baseUrl: options.liveBaseUrl } : {}),
+    }),
+    archive: createQueryClient({
+      ...shared,
+      ...(options.archiveBaseUrl !== undefined ? { baseUrl: options.archiveBaseUrl } : {}),
+    }),
   }
 }
 
@@ -54,7 +60,7 @@ export async function waitForTick(
     if (signal?.aborted) return err(new QubicRpcError(-1, 'waitForTick', 'Aborted'))
     if (Date.now() >= deadline) return err(new QubicRpcError(-1, 'waitForTick', 'Timed out'))
 
-    const r = await live.getTickInfo({ signal })
+    const r = await live.getTickInfo(signal !== undefined ? { signal } : undefined)
     if (!r.ok) return r
     if ((r.value.tick ?? 0) >= targetTick) return { ok: true, value: targetTick }
 

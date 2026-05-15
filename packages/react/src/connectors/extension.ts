@@ -1,3 +1,4 @@
+import type { Identity } from '@qubic.org/types'
 import type {
   ConnectOptions,
   SendTransactionResult,
@@ -48,11 +49,13 @@ export const extensionConnector: WalletConnector = {
     await provider.connect()
     const account = await provider.getAccount()
     if (!account) throw new Error('No account after connect')
-    return account
+    return { ...account, identity: account.identity as Identity }
   },
 
   async getAccount(): Promise<WalletAccount | null> {
-    return getProvider().getAccount()
+    const account = await getProvider().getAccount()
+    if (!account) return null
+    return { ...account, identity: account.identity as Identity }
   },
 
   async disconnect(): Promise<void> {

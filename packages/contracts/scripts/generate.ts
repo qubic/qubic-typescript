@@ -108,6 +108,10 @@ function tsType(field: BinaryField, contractPascal: string): string {
   }
 }
 
+function hasIdFields(fields: BinaryField[]): boolean {
+  return fields.some((f) => f.type === 'id' || (f.type === 'array' && f.arrayItemType === 'id'))
+}
+
 function fieldsLiteral(fields: BinaryField[], indent = '  '): string {
   if (fields.length === 0) return '[]'
   const items = fields
@@ -213,6 +217,7 @@ for (const version of versions) {
     lines.push(`export const ${cSnake}_${callSnake}_INPUT_TYPE = ${call.inputType}`, '')
 
     if (call.inputFields.length > 0) {
+      const needsIdToPk = hasIdFields(call.inputFields)
       lines.push(
         `export interface ${cPascal}${callPascal}Input {`,
         interfaceFields(call.inputFields, cPascal),
@@ -222,15 +227,16 @@ for (const version of versions) {
         '',
         `export function build${cPascal}${callPascal}Input(`,
         `  input: ${cPascal}${callPascal}Input,`,
-        '  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),',
+        ...(needsIdToPk ? ['  identityToPublicKey: (identity: string) => Uint8Array,'] : []),
         '): ContractCall {',
-        `  return { contractIndex: ${cSnake}_CONTRACT_INDEX, inputType: ${cSnake}_${callSnake}_INPUT_TYPE, payload: buildPayload(${cSnake}_${callSnake}_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }`,
+        `  return { contractIndex: ${cSnake}_CONTRACT_INDEX, inputType: ${cSnake}_${callSnake}_INPUT_TYPE, payload: buildPayload(${cSnake}_${callSnake}_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, ${needsIdToPk ? 'identityToPublicKey' : '(_: string) => new Uint8Array(32)'}) }`,
         '}',
         '',
       )
     }
 
     if (call.outputFields.length > 0) {
+      const needsPkToId = hasIdFields(call.outputFields)
       lines.push(
         `export interface ${cPascal}${callPascal}Output {`,
         interfaceFields(call.outputFields, cPascal),
@@ -240,9 +246,9 @@ for (const version of versions) {
         '',
         `export function decode${cPascal}${callPascal}Output(`,
         '  data: Uint8Array,',
-        "  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),",
+        ...(needsPkToId ? ['  publicKeyToIdentity: (pk: Uint8Array) => string,'] : []),
         `): ${cPascal}${callPascal}Output {`,
-        `  return decodePayload(data, ${cSnake}_${callSnake}_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as ${cPascal}${callPascal}Output`,
+        `  return decodePayload(data, ${cSnake}_${callSnake}_OUTPUT_FIELDS, STRUCTS, ${needsPkToId ? 'publicKeyToIdentity' : "(_pk: Uint8Array) => 'A'.repeat(60)"}) as unknown as ${cPascal}${callPascal}Output`,
         '}',
         '',
       )
@@ -263,6 +269,7 @@ for (const version of versions) {
     )
 
     if (hasInput) {
+      const needsIdToPk = hasIdFields(call.inputFields)
       lines.push(
         `export interface ${cPascal}${callPascal}Input {`,
         interfaceFields(call.inputFields, cPascal),
@@ -272,15 +279,16 @@ for (const version of versions) {
         '',
         `export function build${cPascal}${callPascal}Input(`,
         `  input: ${cPascal}${callPascal}Input,`,
-        '  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),',
+        ...(needsIdToPk ? ['  identityToPublicKey: (identity: string) => Uint8Array,'] : []),
         '): Uint8Array {',
-        `  return buildPayload(${cSnake}_${callSnake}_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)`,
+        `  return buildPayload(${cSnake}_${callSnake}_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, ${needsIdToPk ? 'identityToPublicKey' : '(_: string) => new Uint8Array(32)'})`,
         '}',
         '',
       )
     }
 
     if (call.outputFields.length > 0) {
+      const needsPkToId = hasIdFields(call.outputFields)
       lines.push(
         `export interface ${cPascal}${callPascal}Output {`,
         interfaceFields(call.outputFields, cPascal),
@@ -290,9 +298,9 @@ for (const version of versions) {
         '',
         `export function decode${cPascal}${callPascal}Output(`,
         '  data: Uint8Array,',
-        "  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),",
+        ...(needsPkToId ? ['  publicKeyToIdentity: (pk: Uint8Array) => string,'] : []),
         `): ${cPascal}${callPascal}Output {`,
-        `  return decodePayload(data, ${cSnake}_${callSnake}_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as ${cPascal}${callPascal}Output`,
+        `  return decodePayload(data, ${cSnake}_${callSnake}_OUTPUT_FIELDS, STRUCTS, ${needsPkToId ? 'publicKeyToIdentity' : "(_pk: Uint8Array) => 'A'.repeat(60)"}) as unknown as ${cPascal}${callPascal}Output`,
         '}',
         '',
         // High-level async caller

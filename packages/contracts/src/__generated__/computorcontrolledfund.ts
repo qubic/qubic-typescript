@@ -491,9 +491,8 @@ const COMPUTOR_CONTROLLED_FUND_SET_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
 
 export function buildComputorControlledFundSetProposalInput(
   input: ComputorControlledFundSetProposalInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: COMPUTOR_CONTROLLED_FUND_CONTRACT_INDEX, inputType: COMPUTOR_CONTROLLED_FUND_SET_PROPOSAL_INPUT_TYPE, payload: buildPayload(COMPUTOR_CONTROLLED_FUND_SET_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: COMPUTOR_CONTROLLED_FUND_CONTRACT_INDEX, inputType: COMPUTOR_CONTROLLED_FUND_SET_PROPOSAL_INPUT_TYPE, payload: buildPayload(COMPUTOR_CONTROLLED_FUND_SET_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export interface ComputorControlledFundSetProposalOutput {
@@ -511,9 +510,8 @@ const COMPUTOR_CONTROLLED_FUND_SET_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeComputorControlledFundSetProposalOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): ComputorControlledFundSetProposalOutput {
-  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_SET_PROPOSAL_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as ComputorControlledFundSetProposalOutput
+  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_SET_PROPOSAL_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as ComputorControlledFundSetProposalOutput
 }
 
 export const COMPUTOR_CONTROLLED_FUND_VOTE_INPUT_TYPE = 4
@@ -554,9 +552,8 @@ const COMPUTOR_CONTROLLED_FUND_VOTE_INPUT_FIELDS: BinaryField[] = [
 
 export function buildComputorControlledFundVoteInput(
   input: ComputorControlledFundVoteInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: COMPUTOR_CONTROLLED_FUND_CONTRACT_INDEX, inputType: COMPUTOR_CONTROLLED_FUND_VOTE_INPUT_TYPE, payload: buildPayload(COMPUTOR_CONTROLLED_FUND_VOTE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: COMPUTOR_CONTROLLED_FUND_CONTRACT_INDEX, inputType: COMPUTOR_CONTROLLED_FUND_VOTE_INPUT_TYPE, payload: buildPayload(COMPUTOR_CONTROLLED_FUND_VOTE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export interface ComputorControlledFundVoteOutput {
@@ -574,9 +571,8 @@ const COMPUTOR_CONTROLLED_FUND_VOTE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeComputorControlledFundVoteOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): ComputorControlledFundVoteOutput {
-  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_VOTE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as ComputorControlledFundVoteOutput
+  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_VOTE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as ComputorControlledFundVoteOutput
 }
 
 export const COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_INDICES_INPUT_TYPE = 2
@@ -604,9 +600,8 @@ const COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_INDICES_INPUT_FIELDS: BinaryField[] 
 
 export function buildComputorControlledFundGetProposalIndicesInput(
   input: ComputorControlledFundGetProposalIndicesInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
-  return buildPayload(COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_INDICES_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+  return buildPayload(COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_INDICES_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
 }
 
 export interface ComputorControlledFundGetProposalIndicesOutput {
@@ -634,9 +629,8 @@ const COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_INDICES_OUTPUT_FIELDS: BinaryField[]
 
 export function decodeComputorControlledFundGetProposalIndicesOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): ComputorControlledFundGetProposalIndicesOutput {
-  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_INDICES_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as ComputorControlledFundGetProposalIndicesOutput
+  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_INDICES_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as ComputorControlledFundGetProposalIndicesOutput
 }
 
 export async function computorControlledFundGetProposalIndices(
@@ -682,7 +676,7 @@ const COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
 
 export function buildComputorControlledFundGetProposalInput(
   input: ComputorControlledFundGetProposalInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): Uint8Array {
   return buildPayload(COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -767,7 +761,7 @@ const COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeComputorControlledFundGetProposalOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): ComputorControlledFundGetProposalOutput {
   return decodePayload(data, COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as ComputorControlledFundGetProposalOutput
 }
@@ -815,7 +809,7 @@ const COMPUTOR_CONTROLLED_FUND_GET_VOTE_INPUT_FIELDS: BinaryField[] = [
 
 export function buildComputorControlledFundGetVoteInput(
   input: ComputorControlledFundGetVoteInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): Uint8Array {
   return buildPayload(COMPUTOR_CONTROLLED_FUND_GET_VOTE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -843,9 +837,8 @@ const COMPUTOR_CONTROLLED_FUND_GET_VOTE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeComputorControlledFundGetVoteOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): ComputorControlledFundGetVoteOutput {
-  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_GET_VOTE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as ComputorControlledFundGetVoteOutput
+  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_GET_VOTE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as ComputorControlledFundGetVoteOutput
 }
 
 export async function computorControlledFundGetVote(
@@ -884,9 +877,8 @@ const COMPUTOR_CONTROLLED_FUND_GET_VOTING_RESULTS_INPUT_FIELDS: BinaryField[] = 
 
 export function buildComputorControlledFundGetVotingResultsInput(
   input: ComputorControlledFundGetVotingResultsInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
-  return buildPayload(COMPUTOR_CONTROLLED_FUND_GET_VOTING_RESULTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+  return buildPayload(COMPUTOR_CONTROLLED_FUND_GET_VOTING_RESULTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
 }
 
 export interface ComputorControlledFundGetVotingResultsOutput {
@@ -912,9 +904,8 @@ const COMPUTOR_CONTROLLED_FUND_GET_VOTING_RESULTS_OUTPUT_FIELDS: BinaryField[] =
 
 export function decodeComputorControlledFundGetVotingResultsOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): ComputorControlledFundGetVotingResultsOutput {
-  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_GET_VOTING_RESULTS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as ComputorControlledFundGetVotingResultsOutput
+  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_GET_VOTING_RESULTS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as ComputorControlledFundGetVotingResultsOutput
 }
 
 export async function computorControlledFundGetVotingResults(
@@ -956,9 +947,8 @@ const COMPUTOR_CONTROLLED_FUND_GET_LATEST_TRANSFERS_OUTPUT_FIELDS: BinaryField[]
 
 export function decodeComputorControlledFundGetLatestTransfersOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): ComputorControlledFundGetLatestTransfersOutput {
-  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_GET_LATEST_TRANSFERS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as ComputorControlledFundGetLatestTransfersOutput
+  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_GET_LATEST_TRANSFERS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as ComputorControlledFundGetLatestTransfersOutput
 }
 
 export async function computorControlledFundGetLatestTransfers(
@@ -999,9 +989,8 @@ const COMPUTOR_CONTROLLED_FUND_GET_REGULAR_PAYMENTS_OUTPUT_FIELDS: BinaryField[]
 
 export function decodeComputorControlledFundGetRegularPaymentsOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): ComputorControlledFundGetRegularPaymentsOutput {
-  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_GET_REGULAR_PAYMENTS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as ComputorControlledFundGetRegularPaymentsOutput
+  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_GET_REGULAR_PAYMENTS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as ComputorControlledFundGetRegularPaymentsOutput
 }
 
 export async function computorControlledFundGetRegularPayments(
@@ -1039,9 +1028,8 @@ const COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_FEE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeComputorControlledFundGetProposalFeeOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): ComputorControlledFundGetProposalFeeOutput {
-  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_FEE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as ComputorControlledFundGetProposalFeeOutput
+  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_FEE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as ComputorControlledFundGetProposalFeeOutput
 }
 
 export async function computorControlledFundGetProposalFee(

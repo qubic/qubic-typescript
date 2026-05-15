@@ -218,9 +218,8 @@ const Q_RWA_DONATE_TO_TREASURY_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQRWADonateToTreasuryInput(
   input: QRWADonateToTreasuryInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: Q_RWA_CONTRACT_INDEX, inputType: Q_RWA_DONATE_TO_TREASURY_INPUT_TYPE, payload: buildPayload(Q_RWA_DONATE_TO_TREASURY_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: Q_RWA_CONTRACT_INDEX, inputType: Q_RWA_DONATE_TO_TREASURY_INPUT_TYPE, payload: buildPayload(Q_RWA_DONATE_TO_TREASURY_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export interface QRWADonateToTreasuryOutput {
@@ -238,9 +237,8 @@ const Q_RWA_DONATE_TO_TREASURY_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQRWADonateToTreasuryOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QRWADonateToTreasuryOutput {
-  return decodePayload(data, Q_RWA_DONATE_TO_TREASURY_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRWADonateToTreasuryOutput
+  return decodePayload(data, Q_RWA_DONATE_TO_TREASURY_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWADonateToTreasuryOutput
 }
 
 export const Q_RWA_VOTE_GOV_PARAMS_INPUT_TYPE = 2
@@ -261,9 +259,8 @@ const Q_RWA_VOTE_GOV_PARAMS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQRWAVoteGovParamsInput(
   input: QRWAVoteGovParamsInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: Q_RWA_CONTRACT_INDEX, inputType: Q_RWA_VOTE_GOV_PARAMS_INPUT_TYPE, payload: buildPayload(Q_RWA_VOTE_GOV_PARAMS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: Q_RWA_CONTRACT_INDEX, inputType: Q_RWA_VOTE_GOV_PARAMS_INPUT_TYPE, payload: buildPayload(Q_RWA_VOTE_GOV_PARAMS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export interface QRWAVoteGovParamsOutput {
@@ -281,9 +278,8 @@ const Q_RWA_VOTE_GOV_PARAMS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQRWAVoteGovParamsOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QRWAVoteGovParamsOutput {
-  return decodePayload(data, Q_RWA_VOTE_GOV_PARAMS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRWAVoteGovParamsOutput
+  return decodePayload(data, Q_RWA_VOTE_GOV_PARAMS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWAVoteGovParamsOutput
 }
 
 export const Q_RWA_DEPOSIT_GENERAL_ASSET_INPUT_TYPE = 3
@@ -311,9 +307,8 @@ const Q_RWA_DEPOSIT_GENERAL_ASSET_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQRWADepositGeneralAssetInput(
   input: QRWADepositGeneralAssetInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: Q_RWA_CONTRACT_INDEX, inputType: Q_RWA_DEPOSIT_GENERAL_ASSET_INPUT_TYPE, payload: buildPayload(Q_RWA_DEPOSIT_GENERAL_ASSET_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: Q_RWA_CONTRACT_INDEX, inputType: Q_RWA_DEPOSIT_GENERAL_ASSET_INPUT_TYPE, payload: buildPayload(Q_RWA_DEPOSIT_GENERAL_ASSET_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export interface QRWADepositGeneralAssetOutput {
@@ -331,9 +326,8 @@ const Q_RWA_DEPOSIT_GENERAL_ASSET_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQRWADepositGeneralAssetOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QRWADepositGeneralAssetOutput {
-  return decodePayload(data, Q_RWA_DEPOSIT_GENERAL_ASSET_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRWADepositGeneralAssetOutput
+  return decodePayload(data, Q_RWA_DEPOSIT_GENERAL_ASSET_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWADepositGeneralAssetOutput
 }
 
 export const Q_RWA_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_TYPE = 4
@@ -361,9 +355,8 @@ const Q_RWA_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQRWARevokeAssetManagementRightsInput(
   input: QRWARevokeAssetManagementRightsInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: Q_RWA_CONTRACT_INDEX, inputType: Q_RWA_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_TYPE, payload: buildPayload(Q_RWA_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: Q_RWA_CONTRACT_INDEX, inputType: Q_RWA_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_TYPE, payload: buildPayload(Q_RWA_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export interface QRWARevokeAssetManagementRightsOutput {
@@ -388,9 +381,8 @@ const Q_RWA_REVOKE_ASSET_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQRWARevokeAssetManagementRightsOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QRWARevokeAssetManagementRightsOutput {
-  return decodePayload(data, Q_RWA_REVOKE_ASSET_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRWARevokeAssetManagementRightsOutput
+  return decodePayload(data, Q_RWA_REVOKE_ASSET_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWARevokeAssetManagementRightsOutput
 }
 
 export const Q_RWA_SET_POOL_A_REVENUE_ADDRESS_INPUT_TYPE = 5
@@ -410,7 +402,7 @@ const Q_RWA_SET_POOL_A_REVENUE_ADDRESS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQRWASetPoolARevenueAddressInput(
   input: QRWASetPoolARevenueAddressInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): ContractCall {
   return { contractIndex: Q_RWA_CONTRACT_INDEX, inputType: Q_RWA_SET_POOL_A_REVENUE_ADDRESS_INPUT_TYPE, payload: buildPayload(Q_RWA_SET_POOL_A_REVENUE_ADDRESS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
@@ -430,9 +422,8 @@ const Q_RWA_SET_POOL_A_REVENUE_ADDRESS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQRWASetPoolARevenueAddressOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QRWASetPoolARevenueAddressOutput {
-  return decodePayload(data, Q_RWA_SET_POOL_A_REVENUE_ADDRESS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRWASetPoolARevenueAddressOutput
+  return decodePayload(data, Q_RWA_SET_POOL_A_REVENUE_ADDRESS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWASetPoolARevenueAddressOutput
 }
 
 export const Q_RWA_SET_POOL_D_REVENUE_ADDRESS_INPUT_TYPE = 6
@@ -452,7 +443,7 @@ const Q_RWA_SET_POOL_D_REVENUE_ADDRESS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQRWASetPoolDRevenueAddressInput(
   input: QRWASetPoolDRevenueAddressInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): ContractCall {
   return { contractIndex: Q_RWA_CONTRACT_INDEX, inputType: Q_RWA_SET_POOL_D_REVENUE_ADDRESS_INPUT_TYPE, payload: buildPayload(Q_RWA_SET_POOL_D_REVENUE_ADDRESS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
@@ -472,9 +463,8 @@ const Q_RWA_SET_POOL_D_REVENUE_ADDRESS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQRWASetPoolDRevenueAddressOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QRWASetPoolDRevenueAddressOutput {
-  return decodePayload(data, Q_RWA_SET_POOL_D_REVENUE_ADDRESS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRWASetPoolDRevenueAddressOutput
+  return decodePayload(data, Q_RWA_SET_POOL_D_REVENUE_ADDRESS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWASetPoolDRevenueAddressOutput
 }
 
 export const Q_RWA_GET_GOV_PARAMS_INPUT_TYPE = 7
@@ -496,9 +486,8 @@ const Q_RWA_GET_GOV_PARAMS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQRWAGetGovParamsOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QRWAGetGovParamsOutput {
-  return decodePayload(data, Q_RWA_GET_GOV_PARAMS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRWAGetGovParamsOutput
+  return decodePayload(data, Q_RWA_GET_GOV_PARAMS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWAGetGovParamsOutput
 }
 
 export async function qRWAGetGovParams(
@@ -536,9 +525,8 @@ const Q_RWA_GET_GOV_POLL_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQRWAGetGovPollInput(
   input: QRWAGetGovPollInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
-  return buildPayload(Q_RWA_GET_GOV_POLL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+  return buildPayload(Q_RWA_GET_GOV_POLL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
 }
 
 export interface QRWAGetGovPollOutput {
@@ -564,9 +552,8 @@ const Q_RWA_GET_GOV_POLL_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQRWAGetGovPollOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QRWAGetGovPollOutput {
-  return decodePayload(data, Q_RWA_GET_GOV_POLL_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRWAGetGovPollOutput
+  return decodePayload(data, Q_RWA_GET_GOV_POLL_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWAGetGovPollOutput
 }
 
 export async function qRWAGetGovPoll(
@@ -605,9 +592,8 @@ const Q_RWA_GET_TREASURY_BALANCE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQRWAGetTreasuryBalanceOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QRWAGetTreasuryBalanceOutput {
-  return decodePayload(data, Q_RWA_GET_TREASURY_BALANCE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRWAGetTreasuryBalanceOutput
+  return decodePayload(data, Q_RWA_GET_TREASURY_BALANCE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWAGetTreasuryBalanceOutput
 }
 
 export async function qRWAGetTreasuryBalance(
@@ -722,9 +708,8 @@ const Q_RWA_GET_DIVIDEND_BALANCES_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQRWAGetDividendBalancesOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QRWAGetDividendBalancesOutput {
-  return decodePayload(data, Q_RWA_GET_DIVIDEND_BALANCES_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRWAGetDividendBalancesOutput
+  return decodePayload(data, Q_RWA_GET_DIVIDEND_BALANCES_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWAGetDividendBalancesOutput
 }
 
 export async function qRWAGetDividendBalances(
@@ -790,9 +775,8 @@ const Q_RWA_GET_TOTAL_DISTRIBUTED_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQRWAGetTotalDistributedOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QRWAGetTotalDistributedOutput {
-  return decodePayload(data, Q_RWA_GET_TOTAL_DISTRIBUTED_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRWAGetTotalDistributedOutput
+  return decodePayload(data, Q_RWA_GET_TOTAL_DISTRIBUTED_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWAGetTotalDistributedOutput
 }
 
 export async function qRWAGetTotalDistributed(
@@ -858,7 +842,7 @@ const Q_RWA_GET_CONTRACT_ADDRESSES_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQRWAGetContractAddressesOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): QRWAGetContractAddressesOutput {
   return decodePayload(data, Q_RWA_GET_CONTRACT_ADDRESSES_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRWAGetContractAddressesOutput
 }
@@ -908,9 +892,8 @@ const Q_RWA_GET_ACTIVE_GOV_POLL_IDS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQRWAGetActiveGovPollIdsOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QRWAGetActiveGovPollIdsOutput {
-  return decodePayload(data, Q_RWA_GET_ACTIVE_GOV_POLL_IDS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRWAGetActiveGovPollIdsOutput
+  return decodePayload(data, Q_RWA_GET_ACTIVE_GOV_POLL_IDS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWAGetActiveGovPollIdsOutput
 }
 
 export async function qRWAGetActiveGovPollIds(
@@ -949,9 +932,8 @@ const Q_RWA_GET_GENERAL_ASSET_BALANCE_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQRWAGetGeneralAssetBalanceInput(
   input: QRWAGetGeneralAssetBalanceInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
-  return buildPayload(Q_RWA_GET_GENERAL_ASSET_BALANCE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+  return buildPayload(Q_RWA_GET_GENERAL_ASSET_BALANCE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
 }
 
 export interface QRWAGetGeneralAssetBalanceOutput {
@@ -976,9 +958,8 @@ const Q_RWA_GET_GENERAL_ASSET_BALANCE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQRWAGetGeneralAssetBalanceOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QRWAGetGeneralAssetBalanceOutput {
-  return decodePayload(data, Q_RWA_GET_GENERAL_ASSET_BALANCE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRWAGetGeneralAssetBalanceOutput
+  return decodePayload(data, Q_RWA_GET_GENERAL_ASSET_BALANCE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWAGetGeneralAssetBalanceOutput
 }
 
 export async function qRWAGetGeneralAssetBalance(
@@ -1037,9 +1018,8 @@ const Q_RWA_GET_GENERAL_ASSETS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQRWAGetGeneralAssetsOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QRWAGetGeneralAssetsOutput {
-  return decodePayload(data, Q_RWA_GET_GENERAL_ASSETS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRWAGetGeneralAssetsOutput
+  return decodePayload(data, Q_RWA_GET_GENERAL_ASSETS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWAGetGeneralAssetsOutput
 }
 
 export async function qRWAGetGeneralAssets(
@@ -1097,7 +1077,7 @@ const Q_RWA_GET_SC_DIVIDEND_TRACKING_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQRWAGetScDividendTrackingOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): QRWAGetScDividendTrackingOutput {
   return decodePayload(data, Q_RWA_GET_SC_DIVIDEND_TRACKING_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRWAGetScDividendTrackingOutput
 }
@@ -1137,9 +1117,8 @@ const Q_RWA_GET_PAYOUTS_QMINE_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQRWAGetPayoutsQmineInput(
   input: QRWAGetPayoutsQmineInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
-  return buildPayload(Q_RWA_GET_PAYOUTS_QMINE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+  return buildPayload(Q_RWA_GET_PAYOUTS_QMINE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
 }
 
 export interface QRWAGetPayoutsQmineOutput {
@@ -1188,9 +1167,8 @@ const Q_RWA_GET_PAYOUTS_QMINE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQRWAGetPayoutsQmineOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QRWAGetPayoutsQmineOutput {
-  return decodePayload(data, Q_RWA_GET_PAYOUTS_QMINE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRWAGetPayoutsQmineOutput
+  return decodePayload(data, Q_RWA_GET_PAYOUTS_QMINE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWAGetPayoutsQmineOutput
 }
 
 export async function qRWAGetPayoutsQmine(
@@ -1229,9 +1207,8 @@ const Q_RWA_GET_PAYOUTS_QRWA_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQRWAGetPayoutsQrwaInput(
   input: QRWAGetPayoutsQrwaInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
-  return buildPayload(Q_RWA_GET_PAYOUTS_QRWA_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+  return buildPayload(Q_RWA_GET_PAYOUTS_QRWA_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
 }
 
 export interface QRWAGetPayoutsQrwaOutput {
@@ -1280,9 +1257,8 @@ const Q_RWA_GET_PAYOUTS_QRWA_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQRWAGetPayoutsQrwaOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QRWAGetPayoutsQrwaOutput {
-  return decodePayload(data, Q_RWA_GET_PAYOUTS_QRWA_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRWAGetPayoutsQrwaOutput
+  return decodePayload(data, Q_RWA_GET_PAYOUTS_QRWA_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWAGetPayoutsQrwaOutput
 }
 
 export async function qRWAGetPayoutsQrwa(
@@ -1321,9 +1297,8 @@ const Q_RWA_GET_PAYOUTS_DEDICATED_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQRWAGetPayoutsDedicatedInput(
   input: QRWAGetPayoutsDedicatedInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
-  return buildPayload(Q_RWA_GET_PAYOUTS_DEDICATED_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+  return buildPayload(Q_RWA_GET_PAYOUTS_DEDICATED_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
 }
 
 export interface QRWAGetPayoutsDedicatedOutput {
@@ -1372,9 +1347,8 @@ const Q_RWA_GET_PAYOUTS_DEDICATED_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQRWAGetPayoutsDedicatedOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QRWAGetPayoutsDedicatedOutput {
-  return decodePayload(data, Q_RWA_GET_PAYOUTS_DEDICATED_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRWAGetPayoutsDedicatedOutput
+  return decodePayload(data, Q_RWA_GET_PAYOUTS_DEDICATED_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWAGetPayoutsDedicatedOutput
 }
 
 export async function qRWAGetPayoutsDedicated(
@@ -1413,9 +1387,8 @@ const Q_RWA_GET_PAYOUTS_POOL_D_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQRWAGetPayoutsPoolDInput(
   input: QRWAGetPayoutsPoolDInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
-  return buildPayload(Q_RWA_GET_PAYOUTS_POOL_D_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+  return buildPayload(Q_RWA_GET_PAYOUTS_POOL_D_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
 }
 
 export interface QRWAGetPayoutsPoolDOutput {
@@ -1464,9 +1437,8 @@ const Q_RWA_GET_PAYOUTS_POOL_D_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQRWAGetPayoutsPoolDOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QRWAGetPayoutsPoolDOutput {
-  return decodePayload(data, Q_RWA_GET_PAYOUTS_POOL_D_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRWAGetPayoutsPoolDOutput
+  return decodePayload(data, Q_RWA_GET_PAYOUTS_POOL_D_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWAGetPayoutsPoolDOutput
 }
 
 export async function qRWAGetPayoutsPoolD(

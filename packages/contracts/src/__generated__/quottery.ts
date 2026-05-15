@@ -317,9 +317,8 @@ const QUOTTERY_ADD_TO_ASK_ORDER_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQuotteryAddToAskOrderInput(
   input: QuotteryAddToAskOrderInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_ADD_TO_ASK_ORDER_INPUT_TYPE, payload: buildPayload(QUOTTERY_ADD_TO_ASK_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_ADD_TO_ASK_ORDER_INPUT_TYPE, payload: buildPayload(QUOTTERY_ADD_TO_ASK_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export interface QuotteryAddToAskOrderOutput {
@@ -337,9 +336,8 @@ const QUOTTERY_ADD_TO_ASK_ORDER_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQuotteryAddToAskOrderOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QuotteryAddToAskOrderOutput {
-  return decodePayload(data, QUOTTERY_ADD_TO_ASK_ORDER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QuotteryAddToAskOrderOutput
+  return decodePayload(data, QUOTTERY_ADD_TO_ASK_ORDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryAddToAskOrderOutput
 }
 
 export const QUOTTERY_REMOVE_ASK_ORDER_INPUT_TYPE = 10
@@ -380,9 +378,8 @@ const QUOTTERY_REMOVE_ASK_ORDER_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQuotteryRemoveAskOrderInput(
   input: QuotteryRemoveAskOrderInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_REMOVE_ASK_ORDER_INPUT_TYPE, payload: buildPayload(QUOTTERY_REMOVE_ASK_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_REMOVE_ASK_ORDER_INPUT_TYPE, payload: buildPayload(QUOTTERY_REMOVE_ASK_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export interface QuotteryRemoveAskOrderOutput {
@@ -400,9 +397,8 @@ const QUOTTERY_REMOVE_ASK_ORDER_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQuotteryRemoveAskOrderOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QuotteryRemoveAskOrderOutput {
-  return decodePayload(data, QUOTTERY_REMOVE_ASK_ORDER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QuotteryRemoveAskOrderOutput
+  return decodePayload(data, QUOTTERY_REMOVE_ASK_ORDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryRemoveAskOrderOutput
 }
 
 export const QUOTTERY_REMOVE_BID_ORDER_INPUT_TYPE = 11
@@ -443,9 +439,8 @@ const QUOTTERY_REMOVE_BID_ORDER_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQuotteryRemoveBidOrderInput(
   input: QuotteryRemoveBidOrderInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_REMOVE_BID_ORDER_INPUT_TYPE, payload: buildPayload(QUOTTERY_REMOVE_BID_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_REMOVE_BID_ORDER_INPUT_TYPE, payload: buildPayload(QUOTTERY_REMOVE_BID_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export interface QuotteryRemoveBidOrderOutput {
@@ -463,9 +458,8 @@ const QUOTTERY_REMOVE_BID_ORDER_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQuotteryRemoveBidOrderOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QuotteryRemoveBidOrderOutput {
-  return decodePayload(data, QUOTTERY_REMOVE_BID_ORDER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QuotteryRemoveBidOrderOutput
+  return decodePayload(data, QUOTTERY_REMOVE_BID_ORDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryRemoveBidOrderOutput
 }
 
 export const QUOTTERY_ADD_TO_BID_ORDER_INPUT_TYPE = 12
@@ -506,9 +500,8 @@ const QUOTTERY_ADD_TO_BID_ORDER_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQuotteryAddToBidOrderInput(
   input: QuotteryAddToBidOrderInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_ADD_TO_BID_ORDER_INPUT_TYPE, payload: buildPayload(QUOTTERY_ADD_TO_BID_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_ADD_TO_BID_ORDER_INPUT_TYPE, payload: buildPayload(QUOTTERY_ADD_TO_BID_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export interface QuotteryAddToBidOrderOutput {
@@ -526,9 +519,8 @@ const QUOTTERY_ADD_TO_BID_ORDER_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQuotteryAddToBidOrderOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QuotteryAddToBidOrderOutput {
-  return decodePayload(data, QUOTTERY_ADD_TO_BID_ORDER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QuotteryAddToBidOrderOutput
+  return decodePayload(data, QUOTTERY_ADD_TO_BID_ORDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryAddToBidOrderOutput
 }
 
 export const QUOTTERY_DISPUTE_INPUT_TYPE = 13
@@ -548,9 +540,8 @@ const QUOTTERY_DISPUTE_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQuotteryDisputeInput(
   input: QuotteryDisputeInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_DISPUTE_INPUT_TYPE, payload: buildPayload(QUOTTERY_DISPUTE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_DISPUTE_INPUT_TYPE, payload: buildPayload(QUOTTERY_DISPUTE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export const QUOTTERY_USER_CLAIM_REWARD_INPUT_TYPE = 14
@@ -570,9 +561,8 @@ const QUOTTERY_USER_CLAIM_REWARD_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQuotteryUserClaimRewardInput(
   input: QuotteryUserClaimRewardInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_USER_CLAIM_REWARD_INPUT_TYPE, payload: buildPayload(QUOTTERY_USER_CLAIM_REWARD_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_USER_CLAIM_REWARD_INPUT_TYPE, payload: buildPayload(QUOTTERY_USER_CLAIM_REWARD_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export const QUOTTERY_GO_FORCE_CLAIM_REWARD_INPUT_TYPE = 15
@@ -602,7 +592,7 @@ const QUOTTERY_GO_FORCE_CLAIM_REWARD_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQuotteryGOForceClaimRewardInput(
   input: QuotteryGOForceClaimRewardInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): ContractCall {
   return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_GO_FORCE_CLAIM_REWARD_INPUT_TYPE, payload: buildPayload(QUOTTERY_GO_FORCE_CLAIM_REWARD_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
@@ -631,9 +621,8 @@ const QUOTTERY_RESOLVE_DISPUTE_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQuotteryResolveDisputeInput(
   input: QuotteryResolveDisputeInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_RESOLVE_DISPUTE_INPUT_TYPE, payload: buildPayload(QUOTTERY_RESOLVE_DISPUTE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_RESOLVE_DISPUTE_INPUT_TYPE, payload: buildPayload(QUOTTERY_RESOLVE_DISPUTE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export const QUOTTERY_TRY_FINALIZE_EVENT_INPUT_TYPE = 18
@@ -653,9 +642,8 @@ const QUOTTERY_TRY_FINALIZE_EVENT_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQuotteryTryFinalizeEventInput(
   input: QuotteryTryFinalizeEventInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_TRY_FINALIZE_EVENT_INPUT_TYPE, payload: buildPayload(QUOTTERY_TRY_FINALIZE_EVENT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_TRY_FINALIZE_EVENT_INPUT_TYPE, payload: buildPayload(QUOTTERY_TRY_FINALIZE_EVENT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export const QUOTTERY_CREATE_EVENT_INPUT_TYPE = 21
@@ -676,9 +664,8 @@ const QUOTTERY_CREATE_EVENT_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQuotteryCreateEventInput(
   input: QuotteryCreateEventInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_CREATE_EVENT_INPUT_TYPE, payload: buildPayload(QUOTTERY_CREATE_EVENT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_CREATE_EVENT_INPUT_TYPE, payload: buildPayload(QUOTTERY_CREATE_EVENT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export const QUOTTERY_PUBLISH_RESULT_INPUT_TYPE = 22
@@ -705,9 +692,8 @@ const QUOTTERY_PUBLISH_RESULT_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQuotteryPublishResultInput(
   input: QuotteryPublishResultInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_PUBLISH_RESULT_INPUT_TYPE, payload: buildPayload(QUOTTERY_PUBLISH_RESULT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_PUBLISH_RESULT_INPUT_TYPE, payload: buildPayload(QUOTTERY_PUBLISH_RESULT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export const QUOTTERY_UPDATE_FEE_DISCOUNT_LIST_INPUT_TYPE = 24
@@ -741,7 +727,7 @@ const QUOTTERY_UPDATE_FEE_DISCOUNT_LIST_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQuotteryUpdateFeeDiscountListInput(
   input: QuotteryUpdateFeeDiscountListInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): ContractCall {
   return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_UPDATE_FEE_DISCOUNT_LIST_INPUT_TYPE, payload: buildPayload(QUOTTERY_UPDATE_FEE_DISCOUNT_LIST_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
@@ -766,9 +752,8 @@ const QUOTTERY_PROPOSAL_VOTE_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQuotteryProposalVoteInput(
   input: QuotteryProposalVoteInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_PROPOSAL_VOTE_INPUT_TYPE, payload: buildPayload(QUOTTERY_PROPOSAL_VOTE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_PROPOSAL_VOTE_INPUT_TYPE, payload: buildPayload(QUOTTERY_PROPOSAL_VOTE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export const QUOTTERY_TRANSFER_QUSD_INPUT_TYPE = 31
@@ -795,7 +780,7 @@ const QUOTTERY_TRANSFER_QUSD_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQuotteryTransferQUSDInput(
   input: QuotteryTransferQUSDInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): ContractCall {
   return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_TRANSFER_QUSD_INPUT_TYPE, payload: buildPayload(QUOTTERY_TRANSFER_QUSD_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
@@ -815,9 +800,8 @@ const QUOTTERY_TRANSFER_QUSD_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQuotteryTransferQUSDOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QuotteryTransferQUSDOutput {
-  return decodePayload(data, QUOTTERY_TRANSFER_QUSD_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QuotteryTransferQUSDOutput
+  return decodePayload(data, QUOTTERY_TRANSFER_QUSD_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryTransferQUSDOutput
 }
 
 export const QUOTTERY_TRANSFER_QTRYGOV_INPUT_TYPE = 32
@@ -844,7 +828,7 @@ const QUOTTERY_TRANSFER_QTRYGOV_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQuotteryTransferQTRYGOVInput(
   input: QuotteryTransferQTRYGOVInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): ContractCall {
   return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_TRANSFER_QTRYGOV_INPUT_TYPE, payload: buildPayload(QUOTTERY_TRANSFER_QTRYGOV_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
@@ -864,9 +848,8 @@ const QUOTTERY_TRANSFER_QTRYGOV_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQuotteryTransferQTRYGOVOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QuotteryTransferQTRYGOVOutput {
-  return decodePayload(data, QUOTTERY_TRANSFER_QTRYGOV_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QuotteryTransferQTRYGOVOutput
+  return decodePayload(data, QUOTTERY_TRANSFER_QTRYGOV_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryTransferQTRYGOVOutput
 }
 
 export const QUOTTERY_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE = 33
@@ -901,9 +884,8 @@ const QUOTTERY_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQuotteryTransferShareManagementRightsInput(
   input: QuotteryTransferShareManagementRightsInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE, payload: buildPayload(QUOTTERY_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE, payload: buildPayload(QUOTTERY_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export interface QuotteryTransferShareManagementRightsOutput {
@@ -921,9 +903,8 @@ const QUOTTERY_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQuotteryTransferShareManagementRightsOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QuotteryTransferShareManagementRightsOutput {
-  return decodePayload(data, QUOTTERY_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QuotteryTransferShareManagementRightsOutput
+  return decodePayload(data, QUOTTERY_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryTransferShareManagementRightsOutput
 }
 
 export const QUOTTERY_BASIC_INFO_INPUT_TYPE = 1
@@ -1014,7 +995,7 @@ const QUOTTERY_BASIC_INFO_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQuotteryBasicInfoOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): QuotteryBasicInfoOutput {
   return decodePayload(data, QUOTTERY_BASIC_INFO_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QuotteryBasicInfoOutput
 }
@@ -1054,9 +1035,8 @@ const QUOTTERY_GET_EVENT_INFO_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQuotteryGetEventInfoInput(
   input: QuotteryGetEventInfoInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
-  return buildPayload(QUOTTERY_GET_EVENT_INFO_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+  return buildPayload(QUOTTERY_GET_EVENT_INFO_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
 }
 
 export interface QuotteryGetEventInfoOutput {
@@ -1111,9 +1091,8 @@ const QUOTTERY_GET_EVENT_INFO_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQuotteryGetEventInfoOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QuotteryGetEventInfoOutput {
-  return decodePayload(data, QUOTTERY_GET_EVENT_INFO_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QuotteryGetEventInfoOutput
+  return decodePayload(data, QUOTTERY_GET_EVENT_INFO_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryGetEventInfoOutput
 }
 
 export async function quotteryGetEventInfo(
@@ -1155,9 +1134,8 @@ const QUOTTERY_GET_EVENT_INFO_BATCH_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQuotteryGetEventInfoBatchInput(
   input: QuotteryGetEventInfoBatchInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
-  return buildPayload(QUOTTERY_GET_EVENT_INFO_BATCH_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+  return buildPayload(QUOTTERY_GET_EVENT_INFO_BATCH_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
 }
 
 export interface QuotteryGetEventInfoBatchOutput {
@@ -1178,9 +1156,8 @@ const QUOTTERY_GET_EVENT_INFO_BATCH_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQuotteryGetEventInfoBatchOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QuotteryGetEventInfoBatchOutput {
-  return decodePayload(data, QUOTTERY_GET_EVENT_INFO_BATCH_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QuotteryGetEventInfoBatchOutput
+  return decodePayload(data, QUOTTERY_GET_EVENT_INFO_BATCH_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryGetEventInfoBatchOutput
 }
 
 export async function quotteryGetEventInfoBatch(
@@ -1222,9 +1199,8 @@ const QUOTTERY_GET_ACTIVE_EVENT_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQuotteryGetActiveEventOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QuotteryGetActiveEventOutput {
-  return decodePayload(data, QUOTTERY_GET_ACTIVE_EVENT_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QuotteryGetActiveEventOutput
+  return decodePayload(data, QUOTTERY_GET_ACTIVE_EVENT_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryGetActiveEventOutput
 }
 
 export async function quotteryGetActiveEvent(
@@ -1262,7 +1238,7 @@ const QUOTTERY_GET_USER_POSITION_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQuotteryGetUserPositionInput(
   input: QuotteryGetUserPositionInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): Uint8Array {
   return buildPayload(QUOTTERY_GET_USER_POSITION_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -1292,9 +1268,8 @@ const QUOTTERY_GET_USER_POSITION_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQuotteryGetUserPositionOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QuotteryGetUserPositionOutput {
-  return decodePayload(data, QUOTTERY_GET_USER_POSITION_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QuotteryGetUserPositionOutput
+  return decodePayload(data, QUOTTERY_GET_USER_POSITION_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryGetUserPositionOutput
 }
 
 export async function quotteryGetUserPosition(
@@ -1354,9 +1329,8 @@ const QUOTTERY_GET_ORDERS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQuotteryGetOrdersInput(
   input: QuotteryGetOrdersInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
-  return buildPayload(QUOTTERY_GET_ORDERS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+  return buildPayload(QUOTTERY_GET_ORDERS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
 }
 
 export interface QuotteryGetOrdersOutput {
@@ -1377,9 +1351,8 @@ const QUOTTERY_GET_ORDERS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQuotteryGetOrdersOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QuotteryGetOrdersOutput {
-  return decodePayload(data, QUOTTERY_GET_ORDERS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QuotteryGetOrdersOutput
+  return decodePayload(data, QUOTTERY_GET_ORDERS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryGetOrdersOutput
 }
 
 export async function quotteryGetOrders(
@@ -1428,9 +1401,8 @@ const QUOTTERY_GET_TOP_PROPOSALS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQuotteryGetTopProposalsOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QuotteryGetTopProposalsOutput {
-  return decodePayload(data, QUOTTERY_GET_TOP_PROPOSALS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QuotteryGetTopProposalsOutput
+  return decodePayload(data, QUOTTERY_GET_TOP_PROPOSALS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryGetTopProposalsOutput
 }
 
 export async function quotteryGetTopProposals(
@@ -1468,7 +1440,7 @@ const QUOTTERY_GET_APPROVED_AMOUNT_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQuotteryGetApprovedAmountInput(
   input: QuotteryGetApprovedAmountInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): Uint8Array {
   return buildPayload(QUOTTERY_GET_APPROVED_AMOUNT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -1488,9 +1460,8 @@ const QUOTTERY_GET_APPROVED_AMOUNT_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQuotteryGetApprovedAmountOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): QuotteryGetApprovedAmountOutput {
-  return decodePayload(data, QUOTTERY_GET_APPROVED_AMOUNT_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QuotteryGetApprovedAmountOutput
+  return decodePayload(data, QUOTTERY_GET_APPROVED_AMOUNT_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryGetApprovedAmountOutput
 }
 
 export async function quotteryGetApprovedAmount(

@@ -279,7 +279,7 @@ const VOTTUN_BRIDGE_CREATE_ORDER_INPUT_FIELDS: BinaryField[] = [
 
 export function buildVottunBridgeCreateOrderInput(
   input: VottunBridgeCreateOrderInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): ContractCall {
   return { contractIndex: VOTTUN_BRIDGE_CONTRACT_INDEX, inputType: VOTTUN_BRIDGE_CREATE_ORDER_INPUT_TYPE, payload: buildPayload(VOTTUN_BRIDGE_CREATE_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
@@ -306,9 +306,8 @@ const VOTTUN_BRIDGE_CREATE_ORDER_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeVottunBridgeCreateOrderOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): VottunBridgeCreateOrderOutput {
-  return decodePayload(data, VOTTUN_BRIDGE_CREATE_ORDER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as VottunBridgeCreateOrderOutput
+  return decodePayload(data, VOTTUN_BRIDGE_CREATE_ORDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as VottunBridgeCreateOrderOutput
 }
 
 export const VOTTUN_BRIDGE_COMPLETE_ORDER_INPUT_TYPE = 3
@@ -328,9 +327,8 @@ const VOTTUN_BRIDGE_COMPLETE_ORDER_INPUT_FIELDS: BinaryField[] = [
 
 export function buildVottunBridgeCompleteOrderInput(
   input: VottunBridgeCompleteOrderInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: VOTTUN_BRIDGE_CONTRACT_INDEX, inputType: VOTTUN_BRIDGE_COMPLETE_ORDER_INPUT_TYPE, payload: buildPayload(VOTTUN_BRIDGE_COMPLETE_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: VOTTUN_BRIDGE_CONTRACT_INDEX, inputType: VOTTUN_BRIDGE_COMPLETE_ORDER_INPUT_TYPE, payload: buildPayload(VOTTUN_BRIDGE_COMPLETE_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export interface VottunBridgeCompleteOrderOutput {
@@ -348,9 +346,8 @@ const VOTTUN_BRIDGE_COMPLETE_ORDER_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeVottunBridgeCompleteOrderOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): VottunBridgeCompleteOrderOutput {
-  return decodePayload(data, VOTTUN_BRIDGE_COMPLETE_ORDER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as VottunBridgeCompleteOrderOutput
+  return decodePayload(data, VOTTUN_BRIDGE_COMPLETE_ORDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as VottunBridgeCompleteOrderOutput
 }
 
 export const VOTTUN_BRIDGE_REFUND_ORDER_INPUT_TYPE = 4
@@ -370,9 +367,8 @@ const VOTTUN_BRIDGE_REFUND_ORDER_INPUT_FIELDS: BinaryField[] = [
 
 export function buildVottunBridgeRefundOrderInput(
   input: VottunBridgeRefundOrderInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: VOTTUN_BRIDGE_CONTRACT_INDEX, inputType: VOTTUN_BRIDGE_REFUND_ORDER_INPUT_TYPE, payload: buildPayload(VOTTUN_BRIDGE_REFUND_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: VOTTUN_BRIDGE_CONTRACT_INDEX, inputType: VOTTUN_BRIDGE_REFUND_ORDER_INPUT_TYPE, payload: buildPayload(VOTTUN_BRIDGE_REFUND_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export interface VottunBridgeRefundOrderOutput {
@@ -390,9 +386,8 @@ const VOTTUN_BRIDGE_REFUND_ORDER_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeVottunBridgeRefundOrderOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): VottunBridgeRefundOrderOutput {
-  return decodePayload(data, VOTTUN_BRIDGE_REFUND_ORDER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as VottunBridgeRefundOrderOutput
+  return decodePayload(data, VOTTUN_BRIDGE_REFUND_ORDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as VottunBridgeRefundOrderOutput
 }
 
 export const VOTTUN_BRIDGE_TRANSFER_TO_CONTRACT_INPUT_TYPE = 5
@@ -419,9 +414,8 @@ const VOTTUN_BRIDGE_TRANSFER_TO_CONTRACT_INPUT_FIELDS: BinaryField[] = [
 
 export function buildVottunBridgeTransferToContractInput(
   input: VottunBridgeTransferToContractInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: VOTTUN_BRIDGE_CONTRACT_INDEX, inputType: VOTTUN_BRIDGE_TRANSFER_TO_CONTRACT_INPUT_TYPE, payload: buildPayload(VOTTUN_BRIDGE_TRANSFER_TO_CONTRACT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: VOTTUN_BRIDGE_CONTRACT_INDEX, inputType: VOTTUN_BRIDGE_TRANSFER_TO_CONTRACT_INPUT_TYPE, payload: buildPayload(VOTTUN_BRIDGE_TRANSFER_TO_CONTRACT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export interface VottunBridgeTransferToContractOutput {
@@ -439,9 +433,8 @@ const VOTTUN_BRIDGE_TRANSFER_TO_CONTRACT_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeVottunBridgeTransferToContractOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): VottunBridgeTransferToContractOutput {
-  return decodePayload(data, VOTTUN_BRIDGE_TRANSFER_TO_CONTRACT_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as VottunBridgeTransferToContractOutput
+  return decodePayload(data, VOTTUN_BRIDGE_TRANSFER_TO_CONTRACT_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as VottunBridgeTransferToContractOutput
 }
 
 export const VOTTUN_BRIDGE_CREATE_PROPOSAL_INPUT_TYPE = 12
@@ -482,7 +475,7 @@ const VOTTUN_BRIDGE_CREATE_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
 
 export function buildVottunBridgeCreateProposalInput(
   input: VottunBridgeCreateProposalInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): ContractCall {
   return { contractIndex: VOTTUN_BRIDGE_CONTRACT_INDEX, inputType: VOTTUN_BRIDGE_CREATE_PROPOSAL_INPUT_TYPE, payload: buildPayload(VOTTUN_BRIDGE_CREATE_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
@@ -509,9 +502,8 @@ const VOTTUN_BRIDGE_CREATE_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeVottunBridgeCreateProposalOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): VottunBridgeCreateProposalOutput {
-  return decodePayload(data, VOTTUN_BRIDGE_CREATE_PROPOSAL_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as VottunBridgeCreateProposalOutput
+  return decodePayload(data, VOTTUN_BRIDGE_CREATE_PROPOSAL_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as VottunBridgeCreateProposalOutput
 }
 
 export const VOTTUN_BRIDGE_APPROVE_PROPOSAL_INPUT_TYPE = 13
@@ -531,9 +523,8 @@ const VOTTUN_BRIDGE_APPROVE_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
 
 export function buildVottunBridgeApproveProposalInput(
   input: VottunBridgeApproveProposalInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: VOTTUN_BRIDGE_CONTRACT_INDEX, inputType: VOTTUN_BRIDGE_APPROVE_PROPOSAL_INPUT_TYPE, payload: buildPayload(VOTTUN_BRIDGE_APPROVE_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: VOTTUN_BRIDGE_CONTRACT_INDEX, inputType: VOTTUN_BRIDGE_APPROVE_PROPOSAL_INPUT_TYPE, payload: buildPayload(VOTTUN_BRIDGE_APPROVE_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export interface VottunBridgeApproveProposalOutput {
@@ -558,9 +549,8 @@ const VOTTUN_BRIDGE_APPROVE_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeVottunBridgeApproveProposalOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): VottunBridgeApproveProposalOutput {
-  return decodePayload(data, VOTTUN_BRIDGE_APPROVE_PROPOSAL_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as VottunBridgeApproveProposalOutput
+  return decodePayload(data, VOTTUN_BRIDGE_APPROVE_PROPOSAL_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as VottunBridgeApproveProposalOutput
 }
 
 export const VOTTUN_BRIDGE_CANCEL_PROPOSAL_INPUT_TYPE = 15
@@ -580,9 +570,8 @@ const VOTTUN_BRIDGE_CANCEL_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
 
 export function buildVottunBridgeCancelProposalInput(
   input: VottunBridgeCancelProposalInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: VOTTUN_BRIDGE_CONTRACT_INDEX, inputType: VOTTUN_BRIDGE_CANCEL_PROPOSAL_INPUT_TYPE, payload: buildPayload(VOTTUN_BRIDGE_CANCEL_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: VOTTUN_BRIDGE_CONTRACT_INDEX, inputType: VOTTUN_BRIDGE_CANCEL_PROPOSAL_INPUT_TYPE, payload: buildPayload(VOTTUN_BRIDGE_CANCEL_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export interface VottunBridgeCancelProposalOutput {
@@ -600,9 +589,8 @@ const VOTTUN_BRIDGE_CANCEL_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeVottunBridgeCancelProposalOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): VottunBridgeCancelProposalOutput {
-  return decodePayload(data, VOTTUN_BRIDGE_CANCEL_PROPOSAL_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as VottunBridgeCancelProposalOutput
+  return decodePayload(data, VOTTUN_BRIDGE_CANCEL_PROPOSAL_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as VottunBridgeCancelProposalOutput
 }
 
 export const VOTTUN_BRIDGE_ADD_LIQUIDITY_INPUT_TYPE = 17
@@ -636,9 +624,8 @@ const VOTTUN_BRIDGE_ADD_LIQUIDITY_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeVottunBridgeAddLiquidityOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): VottunBridgeAddLiquidityOutput {
-  return decodePayload(data, VOTTUN_BRIDGE_ADD_LIQUIDITY_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as VottunBridgeAddLiquidityOutput
+  return decodePayload(data, VOTTUN_BRIDGE_ADD_LIQUIDITY_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as VottunBridgeAddLiquidityOutput
 }
 
 export const VOTTUN_BRIDGE_GET_TOTAL_RECEIVED_TOKENS_INPUT_TYPE = 2
@@ -659,9 +646,8 @@ const VOTTUN_BRIDGE_GET_TOTAL_RECEIVED_TOKENS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeVottunBridgeGetTotalReceivedTokensOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): VottunBridgeGetTotalReceivedTokensOutput {
-  return decodePayload(data, VOTTUN_BRIDGE_GET_TOTAL_RECEIVED_TOKENS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as VottunBridgeGetTotalReceivedTokensOutput
+  return decodePayload(data, VOTTUN_BRIDGE_GET_TOTAL_RECEIVED_TOKENS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as VottunBridgeGetTotalReceivedTokensOutput
 }
 
 export async function vottunBridgeGetTotalReceivedTokens(
@@ -713,9 +699,8 @@ const VOTTUN_BRIDGE_GET_AVAILABLE_FEES_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeVottunBridgeGetAvailableFeesOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): VottunBridgeGetAvailableFeesOutput {
-  return decodePayload(data, VOTTUN_BRIDGE_GET_AVAILABLE_FEES_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as VottunBridgeGetAvailableFeesOutput
+  return decodePayload(data, VOTTUN_BRIDGE_GET_AVAILABLE_FEES_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as VottunBridgeGetAvailableFeesOutput
 }
 
 export async function vottunBridgeGetAvailableFees(
@@ -753,9 +738,8 @@ const VOTTUN_BRIDGE_GET_ORDER_INPUT_FIELDS: BinaryField[] = [
 
 export function buildVottunBridgeGetOrderInput(
   input: VottunBridgeGetOrderInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
-  return buildPayload(VOTTUN_BRIDGE_GET_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+  return buildPayload(VOTTUN_BRIDGE_GET_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
 }
 
 export interface VottunBridgeGetOrderOutput {
@@ -791,9 +775,8 @@ const VOTTUN_BRIDGE_GET_ORDER_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeVottunBridgeGetOrderOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): VottunBridgeGetOrderOutput {
-  return decodePayload(data, VOTTUN_BRIDGE_GET_ORDER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as VottunBridgeGetOrderOutput
+  return decodePayload(data, VOTTUN_BRIDGE_GET_ORDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as VottunBridgeGetOrderOutput
 }
 
 export async function vottunBridgeGetOrder(
@@ -932,7 +915,7 @@ const VOTTUN_BRIDGE_GET_CONTRACT_INFO_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeVottunBridgeGetContractInfoOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): VottunBridgeGetContractInfoOutput {
   return decodePayload(data, VOTTUN_BRIDGE_GET_CONTRACT_INFO_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as VottunBridgeGetContractInfoOutput
 }
@@ -972,9 +955,8 @@ const VOTTUN_BRIDGE_GET_TOTAL_LOCKED_TOKENS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeVottunBridgeGetTotalLockedTokensOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): VottunBridgeGetTotalLockedTokensOutput {
-  return decodePayload(data, VOTTUN_BRIDGE_GET_TOTAL_LOCKED_TOKENS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as VottunBridgeGetTotalLockedTokensOutput
+  return decodePayload(data, VOTTUN_BRIDGE_GET_TOTAL_LOCKED_TOKENS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as VottunBridgeGetTotalLockedTokensOutput
 }
 
 export async function vottunBridgeGetTotalLockedTokens(
@@ -1012,9 +994,8 @@ const VOTTUN_BRIDGE_GET_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
 
 export function buildVottunBridgeGetProposalInput(
   input: VottunBridgeGetProposalInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
-  return buildPayload(VOTTUN_BRIDGE_GET_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+  return buildPayload(VOTTUN_BRIDGE_GET_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
 }
 
 export interface VottunBridgeGetProposalOutput {
@@ -1040,9 +1021,8 @@ const VOTTUN_BRIDGE_GET_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeVottunBridgeGetProposalOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): VottunBridgeGetProposalOutput {
-  return decodePayload(data, VOTTUN_BRIDGE_GET_PROPOSAL_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as VottunBridgeGetProposalOutput
+  return decodePayload(data, VOTTUN_BRIDGE_GET_PROPOSAL_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as VottunBridgeGetProposalOutput
 }
 
 export async function vottunBridgeGetProposal(
@@ -1098,9 +1078,8 @@ const VOTTUN_BRIDGE_GET_ORDER_BY_DETAILS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildVottunBridgeGetOrderByDetailsInput(
   input: VottunBridgeGetOrderByDetailsInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): Uint8Array {
-  return buildPayload(VOTTUN_BRIDGE_GET_ORDER_BY_DETAILS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+  return buildPayload(VOTTUN_BRIDGE_GET_ORDER_BY_DETAILS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
 }
 
 export interface VottunBridgeGetOrderByDetailsOutput {
@@ -1132,7 +1111,7 @@ const VOTTUN_BRIDGE_GET_ORDER_BY_DETAILS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeVottunBridgeGetOrderByDetailsOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): VottunBridgeGetOrderByDetailsOutput {
   return decodePayload(data, VOTTUN_BRIDGE_GET_ORDER_BY_DETAILS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as VottunBridgeGetOrderByDetailsOutput
 }

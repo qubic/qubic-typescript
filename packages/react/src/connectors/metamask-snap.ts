@@ -132,7 +132,7 @@ export function createMetaMaskSnapConnector(
         })
         const identity = typeof result === 'string' ? result : result?.identity
         if (!identity) return null
-        return { identity }
+        return { identity: identity as import('@qubic.org/types').Identity }
       } catch {
         return null
       }

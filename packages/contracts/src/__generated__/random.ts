@@ -31,7 +31,7 @@ const RANDOM_REVEAL_AND_COMMIT_INPUT_FIELDS: BinaryField[] = [
 
 export function buildRandomRevealAndCommitInput(
   input: RandomRevealAndCommitInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): ContractCall {
   return { contractIndex: RANDOM_CONTRACT_INDEX, inputType: RANDOM_REVEAL_AND_COMMIT_INPUT_TYPE, payload: buildPayload(RANDOM_REVEAL_AND_COMMIT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }

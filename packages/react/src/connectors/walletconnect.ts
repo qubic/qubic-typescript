@@ -1,3 +1,4 @@
+import type { Identity } from '@qubic.org/types'
 import type {
   ConnectOptions,
   SendTransactionResult,
@@ -153,7 +154,7 @@ export function createWalletConnectConnector(
     // Format: "qubic:mainnet:<identity>"
     const identity = raw.split(':').at(-1)
     if (!identity) return null
-    return { identity }
+    return { identity: identity as Identity }
   }
 
   // ── Connector ──────────────────────────────────────────────────────────────
@@ -222,7 +223,7 @@ export function createWalletConnectConnector(
 
         const first = accounts[0]
         if (!first) return null
-        const acc: WalletAccount = { identity: first.address }
+        const acc: WalletAccount = { identity: first.address as Identity }
         if (first.alias) acc.name = first.alias
         return acc
       } catch {

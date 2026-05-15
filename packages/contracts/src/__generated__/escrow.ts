@@ -206,7 +206,7 @@ const ESCROW_CREATE_DEAL_INPUT_FIELDS: BinaryField[] = [
 
 export function buildEscrowCreateDealInput(
   input: EscrowCreateDealInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): ContractCall {
   return { contractIndex: ESCROW_CONTRACT_INDEX, inputType: ESCROW_CREATE_DEAL_INPUT_TYPE, payload: buildPayload(ESCROW_CREATE_DEAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
@@ -228,9 +228,8 @@ const ESCROW_ACCEPT_DEAL_INPUT_FIELDS: BinaryField[] = [
 
 export function buildEscrowAcceptDealInput(
   input: EscrowAcceptDealInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: ESCROW_CONTRACT_INDEX, inputType: ESCROW_ACCEPT_DEAL_INPUT_TYPE, payload: buildPayload(ESCROW_ACCEPT_DEAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: ESCROW_CONTRACT_INDEX, inputType: ESCROW_ACCEPT_DEAL_INPUT_TYPE, payload: buildPayload(ESCROW_ACCEPT_DEAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export const ESCROW_MAKE_DEAL_PUBLIC_INPUT_TYPE = 3
@@ -250,9 +249,8 @@ const ESCROW_MAKE_DEAL_PUBLIC_INPUT_FIELDS: BinaryField[] = [
 
 export function buildEscrowMakeDealPublicInput(
   input: EscrowMakeDealPublicInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: ESCROW_CONTRACT_INDEX, inputType: ESCROW_MAKE_DEAL_PUBLIC_INPUT_TYPE, payload: buildPayload(ESCROW_MAKE_DEAL_PUBLIC_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: ESCROW_CONTRACT_INDEX, inputType: ESCROW_MAKE_DEAL_PUBLIC_INPUT_TYPE, payload: buildPayload(ESCROW_MAKE_DEAL_PUBLIC_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export const ESCROW_CANCEL_DEAL_INPUT_TYPE = 4
@@ -272,9 +270,8 @@ const ESCROW_CANCEL_DEAL_INPUT_FIELDS: BinaryField[] = [
 
 export function buildEscrowCancelDealInput(
   input: EscrowCancelDealInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: ESCROW_CONTRACT_INDEX, inputType: ESCROW_CANCEL_DEAL_INPUT_TYPE, payload: buildPayload(ESCROW_CANCEL_DEAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: ESCROW_CONTRACT_INDEX, inputType: ESCROW_CANCEL_DEAL_INPUT_TYPE, payload: buildPayload(ESCROW_CANCEL_DEAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export const ESCROW_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE = 5
@@ -309,9 +306,8 @@ const ESCROW_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildEscrowTransferShareManagementRightsInput(
   input: EscrowTransferShareManagementRightsInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: ESCROW_CONTRACT_INDEX, inputType: ESCROW_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE, payload: buildPayload(ESCROW_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: ESCROW_CONTRACT_INDEX, inputType: ESCROW_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE, payload: buildPayload(ESCROW_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export interface EscrowTransferShareManagementRightsOutput {
@@ -329,9 +325,8 @@ const ESCROW_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeEscrowTransferShareManagementRightsOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): EscrowTransferShareManagementRightsOutput {
-  return decodePayload(data, ESCROW_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as EscrowTransferShareManagementRightsOutput
+  return decodePayload(data, ESCROW_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as EscrowTransferShareManagementRightsOutput
 }
 
 export const ESCROW_GET_DEALS_INPUT_TYPE = 6
@@ -366,7 +361,7 @@ const ESCROW_GET_DEALS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildEscrowGetDealsInput(
   input: EscrowGetDealsInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): Uint8Array {
   return buildPayload(ESCROW_GET_DEALS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -430,9 +425,8 @@ const ESCROW_GET_DEALS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeEscrowGetDealsOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): EscrowGetDealsOutput {
-  return decodePayload(data, ESCROW_GET_DEALS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as EscrowGetDealsOutput
+  return decodePayload(data, ESCROW_GET_DEALS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as EscrowGetDealsOutput
 }
 
 export async function escrowGetDeals(
@@ -479,7 +473,7 @@ const ESCROW_GET_FREE_ASSET_AMOUNT_INPUT_FIELDS: BinaryField[] = [
 
 export function buildEscrowGetFreeAssetAmountInput(
   input: EscrowGetFreeAssetAmountInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): Uint8Array {
   return buildPayload(ESCROW_GET_FREE_ASSET_AMOUNT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
@@ -499,9 +493,8 @@ const ESCROW_GET_FREE_ASSET_AMOUNT_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeEscrowGetFreeAssetAmountOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
 ): EscrowGetFreeAssetAmountOutput {
-  return decodePayload(data, ESCROW_GET_FREE_ASSET_AMOUNT_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as EscrowGetFreeAssetAmountOutput
+  return decodePayload(data, ESCROW_GET_FREE_ASSET_AMOUNT_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as EscrowGetFreeAssetAmountOutput
 }
 
 export async function escrowGetFreeAssetAmount(

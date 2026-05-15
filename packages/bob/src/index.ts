@@ -1,3 +1,5 @@
+export { createBobClient } from './client.js'
+export type { BobClient, BobClientOptions } from './client.js'
 export { BobConnectionError, BobRpcError, BobSubscriptionError } from './errors.js'
 export { createBobRestClient } from './rest-client.js'
 export type {

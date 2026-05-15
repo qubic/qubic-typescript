@@ -1,5 +1,7 @@
+import type { Identity } from '@qubic.org/types'
+
 export interface WalletAccount {
-  identity: string
+  identity: Identity
   name?: string
 }
 

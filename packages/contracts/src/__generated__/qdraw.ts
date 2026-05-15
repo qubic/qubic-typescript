@@ -26,9 +26,8 @@ const QDRAW_BUY_TICKET_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQdrawBuyTicketInput(
   input: QdrawBuyTicketInput,
-  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
 ): ContractCall {
-  return { contractIndex: QDRAW_CONTRACT_INDEX, inputType: QDRAW_BUY_TICKET_INPUT_TYPE, payload: buildPayload(QDRAW_BUY_TICKET_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: QDRAW_CONTRACT_INDEX, inputType: QDRAW_BUY_TICKET_INPUT_TYPE, payload: buildPayload(QDRAW_BUY_TICKET_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export const QDRAW_GET_INFO_INPUT_TYPE = 2
@@ -91,7 +90,7 @@ const QDRAW_GET_INFO_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQdrawGetInfoOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): QdrawGetInfoOutput {
   return decodePayload(data, QDRAW_GET_INFO_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QdrawGetInfoOutput
 }
@@ -158,7 +157,7 @@ const QDRAW_GET_PARTICIPANTS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQdrawGetParticipantsOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = (_pk: Uint8Array) => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): QdrawGetParticipantsOutput {
   return decodePayload(data, QDRAW_GET_PARTICIPANTS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QdrawGetParticipantsOutput
 }

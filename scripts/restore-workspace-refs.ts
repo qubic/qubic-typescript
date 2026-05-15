@@ -64,4 +64,6 @@ for (const entry of readdirSync(packagesDir, { withFileTypes: true })) {
   } catch {}
 }
 
-console.log(`Restored ${updated} package(s) to workspace:* refs${targetVersion ? ` at v${targetVersion}` : ''}.`)
+console.log(
+  `Restored ${updated} package(s) to workspace:* refs${targetVersion ? ` at v${targetVersion}` : ''}.`,
+)

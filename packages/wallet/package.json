@@ -1,6 +1,6 @@
 {
   "name": "@qubic.org/wallet",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "type": "module",
   "sideEffects": false,
   "exports": {
@@ -10,9 +10,7 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc --noEmit",
@@ -23,9 +21,9 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@qubic.org/crypto": "workspace:*",
-    "@qubic.org/tx": "workspace:*",
-    "@qubic.org/types": "workspace:*"
+    "@qubic.org/crypto": "^0.2.1",
+    "@qubic.org/tx": "^0.2.1",
+    "@qubic.org/types": "^0.2.1"
   },
   "devDependencies": {
     "typescript": "*"

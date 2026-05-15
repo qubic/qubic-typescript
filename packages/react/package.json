@@ -1,6 +1,6 @@
 {
   "name": "@qubic.org/react",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "type": "module",
   "sideEffects": false,
   "exports": {
@@ -9,9 +9,7 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc --noEmit"
@@ -20,11 +18,11 @@
     "react": ">=18"
   },
   "dependencies": {
-    "@qubic.org/contracts": "workspace:*",
-    "@qubic.org/crypto": "workspace:*",
-    "@qubic.org/rpc": "workspace:*",
-    "@qubic.org/types": "workspace:*",
-    "@qubic.org/wallet": "workspace:*",
+    "@qubic.org/contracts": "^0.2.1",
+    "@qubic.org/crypto": "^0.2.1",
+    "@qubic.org/rpc": "^0.2.1",
+    "@qubic.org/types": "^0.2.1",
+    "@qubic.org/wallet": "^0.2.1",
     "@tanstack/react-query": "^5.100.10"
   },
   "devDependencies": {

@@ -133,32 +133,32 @@ export function WalletProvider({
 
   // ── Session restore on mount ───────────────────────────────────────────────
 
-  const restoreSession = useCallback(async () => {
-    let savedId: string | null = null
-    try {
-      savedId = localStorage.getItem(storageKey)
-    } catch {
-      return
-    }
-    if (!savedId) return
-
-    const connector = connectors.find((c) => c.id === savedId)
-    if (!connector?.isAvailable()) return
-
-    try {
-      const acc = await connector.getAccount()
-      if (!acc) return
-      setAccount(acc)
-      setActiveConnectorId(savedId)
-      subscribeToConnector(connector)
-    } catch {
-      // silently ignore — stale session
+  useEffect(() => {
+    let mounted = true
+    void (async () => {
+      let savedId: string | null = null
+      try {
+        savedId = localStorage.getItem(storageKey)
+      } catch {
+        return
+      }
+      if (!savedId) return
+      const connector = connectors.find((c) => c.id === savedId)
+      if (!connector?.isAvailable()) return
+      try {
+        const acc = await connector.getAccount()
+        if (!acc || !mounted) return
+        setAccount(acc)
+        setActiveConnectorId(savedId)
+        subscribeToConnector(connector)
+      } catch {
+        // silently ignore — stale session
+      }
+    })()
+    return () => {
+      mounted = false
     }
   }, [connectors, storageKey, subscribeToConnector])
-
-  useEffect(() => {
-    void restoreSession()
-  }, [restoreSession])
 
   // ── Cleanup on unmount ─────────────────────────────────────────────────────
 

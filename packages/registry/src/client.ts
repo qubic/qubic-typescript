@@ -23,8 +23,9 @@ export interface RegistryClient {
 const DEFAULT_URL = 'https://registry.qubic.ts/registry.json'
 const DEFAULT_TTL = 3_600_000
 
-/** Module-level session cache shared across all clients in the same process. */
-let sessionCache: { registry: ContractRegistry; expiresAt: number } | undefined
+type CacheEntry = { registry: ContractRegistry; expiresAt: number }
+/** Keyed by URL so clients with different URLs don't share each other's cache. */
+const sessionCacheByUrl = new Map<string, CacheEntry>()
 
 /**
  * Creates a client that fetches registry.json from a remote URL and caches it.
@@ -52,14 +53,15 @@ export function createRegistryClient(options: RegistryClientOptions = {}): Regis
     const now = Date.now()
 
     if (cacheMode === 'session') {
-      if (sessionCache && now < sessionCache.expiresAt) return sessionCache.registry
+      const memEntry = sessionCacheByUrl.get(url)
+      if (memEntry && now < memEntry.expiresAt) return memEntry.registry
       if (typeof globalThis.sessionStorage !== 'undefined') {
         try {
           const raw = globalThis.sessionStorage.getItem(STORAGE_KEY)
           if (raw) {
-            const cached = JSON.parse(raw) as { registry: ContractRegistry; expiresAt: number }
+            const cached = JSON.parse(raw) as CacheEntry
             if (now < cached.expiresAt) {
-              sessionCache = cached
+              sessionCacheByUrl.set(url, cached)
               return cached.registry
             }
           }
@@ -85,7 +87,7 @@ export function createRegistryClient(options: RegistryClientOptions = {}): Regis
     const entry = { registry, expiresAt: now + ttlMs }
 
     if (cacheMode === 'session') {
-      sessionCache = entry
+      sessionCacheByUrl.set(url, entry)
       if (typeof globalThis.sessionStorage !== 'undefined') {
         try {
           globalThis.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(entry))

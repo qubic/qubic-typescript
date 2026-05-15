@@ -2,7 +2,7 @@
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.org/registry'
 import { buildPayload, decodePayload } from '@qubic.org/registry'
 import type { QubicRpcError } from '@qubic.org/rpc'
-import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import { type ContractCall, type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
 import type { Result } from '../result.js'
 
 export const Q_RWA_CONTRACT_INDEX = 20
@@ -219,8 +219,8 @@ const Q_RWA_DONATE_TO_TREASURY_INPUT_FIELDS: BinaryField[] = [
 export function buildQRWADonateToTreasuryInput(
   input: QRWADonateToTreasuryInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_RWA_DONATE_TO_TREASURY_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_RWA_CONTRACT_INDEX, inputType: Q_RWA_DONATE_TO_TREASURY_INPUT_TYPE, payload: buildPayload(Q_RWA_DONATE_TO_TREASURY_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QRWADonateToTreasuryOutput {
@@ -262,8 +262,8 @@ const Q_RWA_VOTE_GOV_PARAMS_INPUT_FIELDS: BinaryField[] = [
 export function buildQRWAVoteGovParamsInput(
   input: QRWAVoteGovParamsInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_RWA_VOTE_GOV_PARAMS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_RWA_CONTRACT_INDEX, inputType: Q_RWA_VOTE_GOV_PARAMS_INPUT_TYPE, payload: buildPayload(Q_RWA_VOTE_GOV_PARAMS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QRWAVoteGovParamsOutput {
@@ -312,8 +312,8 @@ const Q_RWA_DEPOSIT_GENERAL_ASSET_INPUT_FIELDS: BinaryField[] = [
 export function buildQRWADepositGeneralAssetInput(
   input: QRWADepositGeneralAssetInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_RWA_DEPOSIT_GENERAL_ASSET_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_RWA_CONTRACT_INDEX, inputType: Q_RWA_DEPOSIT_GENERAL_ASSET_INPUT_TYPE, payload: buildPayload(Q_RWA_DEPOSIT_GENERAL_ASSET_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QRWADepositGeneralAssetOutput {
@@ -362,8 +362,8 @@ const Q_RWA_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
 export function buildQRWARevokeAssetManagementRightsInput(
   input: QRWARevokeAssetManagementRightsInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_RWA_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_RWA_CONTRACT_INDEX, inputType: Q_RWA_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_TYPE, payload: buildPayload(Q_RWA_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QRWARevokeAssetManagementRightsOutput {
@@ -411,8 +411,8 @@ const Q_RWA_SET_POOL_A_REVENUE_ADDRESS_INPUT_FIELDS: BinaryField[] = [
 export function buildQRWASetPoolARevenueAddressInput(
   input: QRWASetPoolARevenueAddressInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_RWA_SET_POOL_A_REVENUE_ADDRESS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_RWA_CONTRACT_INDEX, inputType: Q_RWA_SET_POOL_A_REVENUE_ADDRESS_INPUT_TYPE, payload: buildPayload(Q_RWA_SET_POOL_A_REVENUE_ADDRESS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QRWASetPoolARevenueAddressOutput {
@@ -453,8 +453,8 @@ const Q_RWA_SET_POOL_D_REVENUE_ADDRESS_INPUT_FIELDS: BinaryField[] = [
 export function buildQRWASetPoolDRevenueAddressInput(
   input: QRWASetPoolDRevenueAddressInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_RWA_SET_POOL_D_REVENUE_ADDRESS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_RWA_CONTRACT_INDEX, inputType: Q_RWA_SET_POOL_D_REVENUE_ADDRESS_INPUT_TYPE, payload: buildPayload(Q_RWA_SET_POOL_D_REVENUE_ADDRESS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QRWASetPoolDRevenueAddressOutput {

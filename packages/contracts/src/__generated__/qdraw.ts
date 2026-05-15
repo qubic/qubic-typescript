@@ -2,7 +2,7 @@
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.org/registry'
 import { buildPayload, decodePayload } from '@qubic.org/registry'
 import type { QubicRpcError } from '@qubic.org/rpc'
-import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import { type ContractCall, type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
 import type { Result } from '../result.js'
 
 export const QDRAW_CONTRACT_INDEX = 15
@@ -27,8 +27,8 @@ const QDRAW_BUY_TICKET_INPUT_FIELDS: BinaryField[] = [
 export function buildQdrawBuyTicketInput(
   input: QdrawBuyTicketInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QDRAW_BUY_TICKET_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QDRAW_CONTRACT_INDEX, inputType: QDRAW_BUY_TICKET_INPUT_TYPE, payload: buildPayload(QDRAW_BUY_TICKET_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export const QDRAW_GET_INFO_INPUT_TYPE = 2

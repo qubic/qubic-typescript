@@ -2,7 +2,7 @@
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.org/registry'
 import { buildPayload, decodePayload } from '@qubic.org/registry'
 import type { QubicRpcError } from '@qubic.org/rpc'
-import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import { type ContractCall, type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
 import type { Result } from '../result.js'
 
 export const Q_RAFFLE_CONTRACT_INDEX = 19
@@ -27,8 +27,8 @@ const Q_RAFFLE_REGISTER_IN_SYSTEM_INPUT_FIELDS: BinaryField[] = [
 export function buildQRaffleRegisterInSystemInput(
   input: QRaffleRegisterInSystemInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_RAFFLE_REGISTER_IN_SYSTEM_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_RAFFLE_CONTRACT_INDEX, inputType: Q_RAFFLE_REGISTER_IN_SYSTEM_INPUT_TYPE, payload: buildPayload(Q_RAFFLE_REGISTER_IN_SYSTEM_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QRaffleRegisterInSystemOutput {
@@ -91,8 +91,8 @@ const Q_RAFFLE_SUBMIT_ENTRY_AMOUNT_INPUT_FIELDS: BinaryField[] = [
 export function buildQRaffleSubmitEntryAmountInput(
   input: QRaffleSubmitEntryAmountInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_RAFFLE_SUBMIT_ENTRY_AMOUNT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_RAFFLE_CONTRACT_INDEX, inputType: Q_RAFFLE_SUBMIT_ENTRY_AMOUNT_INPUT_TYPE, payload: buildPayload(Q_RAFFLE_SUBMIT_ENTRY_AMOUNT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QRaffleSubmitEntryAmountOutput {
@@ -147,8 +147,8 @@ const Q_RAFFLE_SUBMIT_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
 export function buildQRaffleSubmitProposalInput(
   input: QRaffleSubmitProposalInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_RAFFLE_SUBMIT_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_RAFFLE_CONTRACT_INDEX, inputType: Q_RAFFLE_SUBMIT_PROPOSAL_INPUT_TYPE, payload: buildPayload(Q_RAFFLE_SUBMIT_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QRaffleSubmitProposalOutput {
@@ -196,8 +196,8 @@ const Q_RAFFLE_VOTE_IN_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
 export function buildQRaffleVoteInProposalInput(
   input: QRaffleVoteInProposalInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_RAFFLE_VOTE_IN_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_RAFFLE_CONTRACT_INDEX, inputType: Q_RAFFLE_VOTE_IN_PROPOSAL_INPUT_TYPE, payload: buildPayload(Q_RAFFLE_VOTE_IN_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QRaffleVoteInProposalOutput {
@@ -260,8 +260,8 @@ const Q_RAFFLE_DEPOSIT_IN_TOKEN_RAFFLE_INPUT_FIELDS: BinaryField[] = [
 export function buildQRaffleDepositInTokenRaffleInput(
   input: QRaffleDepositInTokenRaffleInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_RAFFLE_DEPOSIT_IN_TOKEN_RAFFLE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_RAFFLE_CONTRACT_INDEX, inputType: Q_RAFFLE_DEPOSIT_IN_TOKEN_RAFFLE_INPUT_TYPE, payload: buildPayload(Q_RAFFLE_DEPOSIT_IN_TOKEN_RAFFLE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QRaffleDepositInTokenRaffleOutput {
@@ -323,8 +323,8 @@ const Q_RAFFLE_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
 export function buildQRaffleTransferShareManagementRightsInput(
   input: QRaffleTransferShareManagementRightsInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_RAFFLE_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_RAFFLE_CONTRACT_INDEX, inputType: Q_RAFFLE_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE, payload: buildPayload(Q_RAFFLE_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QRaffleTransferShareManagementRightsOutput {

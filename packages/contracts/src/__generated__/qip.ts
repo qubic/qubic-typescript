@@ -2,7 +2,7 @@
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.org/registry'
 import { buildPayload, decodePayload } from '@qubic.org/registry'
 import type { QubicRpcError } from '@qubic.org/rpc'
-import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import { type ContractCall, type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
 import type { Result } from '../result.js'
 
 export const QIP_CONTRACT_INDEX = 18
@@ -121,8 +121,8 @@ const QIP_CREATE_ICO_INPUT_FIELDS: BinaryField[] = [
 export function buildQIPCreateICOInput(
   input: QIPCreateICOInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QIP_CREATE_ICO_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QIP_CONTRACT_INDEX, inputType: QIP_CREATE_ICO_INPUT_TYPE, payload: buildPayload(QIP_CREATE_ICO_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QIPCreateICOOutput {
@@ -170,8 +170,8 @@ const QIP_BUY_TOKEN_INPUT_FIELDS: BinaryField[] = [
 export function buildQIPBuyTokenInput(
   input: QIPBuyTokenInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QIP_BUY_TOKEN_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QIP_CONTRACT_INDEX, inputType: QIP_BUY_TOKEN_INPUT_TYPE, payload: buildPayload(QIP_BUY_TOKEN_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QIPBuyTokenOutput {
@@ -227,8 +227,8 @@ const QIP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
 export function buildQIPTransferShareManagementRightsInput(
   input: QIPTransferShareManagementRightsInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QIP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QIP_CONTRACT_INDEX, inputType: QIP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE, payload: buildPayload(QIP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QIPTransferShareManagementRightsOutput {

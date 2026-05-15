@@ -2,7 +2,7 @@
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.org/registry'
 import { buildPayload, decodePayload } from '@qubic.org/registry'
 import type { QubicRpcError } from '@qubic.org/rpc'
-import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import { type ContractCall, type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
 import type { Result } from '../result.js'
 
 export const Q_BOND_CONTRACT_INDEX = 17
@@ -125,8 +125,8 @@ const Q_BOND_STAKE_INPUT_FIELDS: BinaryField[] = [
 export function buildQBondStakeInput(
   input: QBondStakeInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_BOND_STAKE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_BOND_CONTRACT_INDEX, inputType: Q_BOND_STAKE_INPUT_TYPE, payload: buildPayload(Q_BOND_STAKE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export const Q_BOND_TRANSFER_M_BOND_OWNERSHIP_AND_POSSESSION_INPUT_TYPE = 3
@@ -161,8 +161,8 @@ const Q_BOND_TRANSFER_M_BOND_OWNERSHIP_AND_POSSESSION_INPUT_FIELDS: BinaryField[
 export function buildQBondTransferMBondOwnershipAndPossessionInput(
   input: QBondTransferMBondOwnershipAndPossessionInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_BOND_TRANSFER_M_BOND_OWNERSHIP_AND_POSSESSION_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_BOND_CONTRACT_INDEX, inputType: Q_BOND_TRANSFER_M_BOND_OWNERSHIP_AND_POSSESSION_INPUT_TYPE, payload: buildPayload(Q_BOND_TRANSFER_M_BOND_OWNERSHIP_AND_POSSESSION_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QBondTransferMBondOwnershipAndPossessionOutput {
@@ -217,8 +217,8 @@ const Q_BOND_ADD_ASK_ORDER_INPUT_FIELDS: BinaryField[] = [
 export function buildQBondAddAskOrderInput(
   input: QBondAddAskOrderInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_BOND_ADD_ASK_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_BOND_CONTRACT_INDEX, inputType: Q_BOND_ADD_ASK_ORDER_INPUT_TYPE, payload: buildPayload(Q_BOND_ADD_ASK_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QBondAddAskOrderOutput {
@@ -273,8 +273,8 @@ const Q_BOND_REMOVE_ASK_ORDER_INPUT_FIELDS: BinaryField[] = [
 export function buildQBondRemoveAskOrderInput(
   input: QBondRemoveAskOrderInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_BOND_REMOVE_ASK_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_BOND_CONTRACT_INDEX, inputType: Q_BOND_REMOVE_ASK_ORDER_INPUT_TYPE, payload: buildPayload(Q_BOND_REMOVE_ASK_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QBondRemoveAskOrderOutput {
@@ -329,8 +329,8 @@ const Q_BOND_ADD_BID_ORDER_INPUT_FIELDS: BinaryField[] = [
 export function buildQBondAddBidOrderInput(
   input: QBondAddBidOrderInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_BOND_ADD_BID_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_BOND_CONTRACT_INDEX, inputType: Q_BOND_ADD_BID_ORDER_INPUT_TYPE, payload: buildPayload(Q_BOND_ADD_BID_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QBondAddBidOrderOutput {
@@ -385,8 +385,8 @@ const Q_BOND_REMOVE_BID_ORDER_INPUT_FIELDS: BinaryField[] = [
 export function buildQBondRemoveBidOrderInput(
   input: QBondRemoveBidOrderInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_BOND_REMOVE_BID_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_BOND_CONTRACT_INDEX, inputType: Q_BOND_REMOVE_BID_ORDER_INPUT_TYPE, payload: buildPayload(Q_BOND_REMOVE_BID_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QBondRemoveBidOrderOutput {
@@ -427,8 +427,8 @@ const Q_BOND_BURN_QU_INPUT_FIELDS: BinaryField[] = [
 export function buildQBondBurnQUInput(
   input: QBondBurnQUInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_BOND_BURN_QU_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_BOND_CONTRACT_INDEX, inputType: Q_BOND_BURN_QU_INPUT_TYPE, payload: buildPayload(Q_BOND_BURN_QU_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QBondBurnQUOutput {
@@ -476,8 +476,8 @@ const Q_BOND_UPDATE_CFA_INPUT_FIELDS: BinaryField[] = [
 export function buildQBondUpdateCFAInput(
   input: QBondUpdateCFAInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_BOND_UPDATE_CFA_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_BOND_CONTRACT_INDEX, inputType: Q_BOND_UPDATE_CFA_INPUT_TYPE, payload: buildPayload(Q_BOND_UPDATE_CFA_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QBondUpdateCFAOutput {

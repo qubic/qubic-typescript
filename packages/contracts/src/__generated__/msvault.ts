@@ -2,7 +2,7 @@
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.org/registry'
 import { buildPayload, decodePayload } from '@qubic.org/registry'
 import type { QubicRpcError } from '@qubic.org/rpc'
-import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import { type ContractCall, type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
 import type { Result } from '../result.js'
 
 export const MS_VAULT_CONTRACT_INDEX = 11
@@ -143,8 +143,8 @@ const MS_VAULT_REGISTER_VAULT_INPUT_FIELDS: BinaryField[] = [
 export function buildMsVaultRegisterVaultInput(
   input: MsVaultRegisterVaultInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(MS_VAULT_REGISTER_VAULT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: MS_VAULT_CONTRACT_INDEX, inputType: MS_VAULT_REGISTER_VAULT_INPUT_TYPE, payload: buildPayload(MS_VAULT_REGISTER_VAULT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface MsVaultRegisterVaultOutput {
@@ -185,8 +185,8 @@ const MS_VAULT_DEPOSIT_INPUT_FIELDS: BinaryField[] = [
 export function buildMsVaultDepositInput(
   input: MsVaultDepositInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(MS_VAULT_DEPOSIT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: MS_VAULT_CONTRACT_INDEX, inputType: MS_VAULT_DEPOSIT_INPUT_TYPE, payload: buildPayload(MS_VAULT_DEPOSIT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface MsVaultDepositOutput {
@@ -241,8 +241,8 @@ const MS_VAULT_RELEASE_TO_INPUT_FIELDS: BinaryField[] = [
 export function buildMsVaultReleaseToInput(
   input: MsVaultReleaseToInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(MS_VAULT_RELEASE_TO_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: MS_VAULT_CONTRACT_INDEX, inputType: MS_VAULT_RELEASE_TO_INPUT_TYPE, payload: buildPayload(MS_VAULT_RELEASE_TO_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface MsVaultReleaseToOutput {
@@ -283,8 +283,8 @@ const MS_VAULT_RESET_RELEASE_INPUT_FIELDS: BinaryField[] = [
 export function buildMsVaultResetReleaseInput(
   input: MsVaultResetReleaseInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(MS_VAULT_RESET_RELEASE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: MS_VAULT_CONTRACT_INDEX, inputType: MS_VAULT_RESET_RELEASE_INPUT_TYPE, payload: buildPayload(MS_VAULT_RESET_RELEASE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface MsVaultResetReleaseOutput {
@@ -360,8 +360,8 @@ const MS_VAULT_VOTE_FEE_CHANGE_INPUT_FIELDS: BinaryField[] = [
 export function buildMsVaultVoteFeeChangeInput(
   input: MsVaultVoteFeeChangeInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(MS_VAULT_VOTE_FEE_CHANGE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: MS_VAULT_CONTRACT_INDEX, inputType: MS_VAULT_VOTE_FEE_CHANGE_INPUT_TYPE, payload: buildPayload(MS_VAULT_VOTE_FEE_CHANGE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface MsVaultVoteFeeChangeOutput {
@@ -417,8 +417,8 @@ const MS_VAULT_DEPOSIT_ASSET_INPUT_FIELDS: BinaryField[] = [
 export function buildMsVaultDepositAssetInput(
   input: MsVaultDepositAssetInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(MS_VAULT_DEPOSIT_ASSET_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: MS_VAULT_CONTRACT_INDEX, inputType: MS_VAULT_DEPOSIT_ASSET_INPUT_TYPE, payload: buildPayload(MS_VAULT_DEPOSIT_ASSET_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface MsVaultDepositAssetOutput {
@@ -467,8 +467,8 @@ const MS_VAULT_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
 export function buildMsVaultRevokeAssetManagementRightsInput(
   input: MsVaultRevokeAssetManagementRightsInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(MS_VAULT_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: MS_VAULT_CONTRACT_INDEX, inputType: MS_VAULT_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_TYPE, payload: buildPayload(MS_VAULT_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface MsVaultRevokeAssetManagementRightsOutput {
@@ -538,8 +538,8 @@ const MS_VAULT_RELEASE_ASSET_TO_INPUT_FIELDS: BinaryField[] = [
 export function buildMsVaultReleaseAssetToInput(
   input: MsVaultReleaseAssetToInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(MS_VAULT_RELEASE_ASSET_TO_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: MS_VAULT_CONTRACT_INDEX, inputType: MS_VAULT_RELEASE_ASSET_TO_INPUT_TYPE, payload: buildPayload(MS_VAULT_RELEASE_ASSET_TO_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface MsVaultReleaseAssetToOutput {
@@ -580,8 +580,8 @@ const MS_VAULT_RESET_ASSET_RELEASE_INPUT_FIELDS: BinaryField[] = [
 export function buildMsVaultResetAssetReleaseInput(
   input: MsVaultResetAssetReleaseInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(MS_VAULT_RESET_ASSET_RELEASE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: MS_VAULT_CONTRACT_INDEX, inputType: MS_VAULT_RESET_ASSET_RELEASE_INPUT_TYPE, payload: buildPayload(MS_VAULT_RESET_ASSET_RELEASE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface MsVaultResetAssetReleaseOutput {

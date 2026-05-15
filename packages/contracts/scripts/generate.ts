@@ -161,6 +161,8 @@ for (const version of versions) {
   // Determine which runtime helpers are needed
   const functionsWithOutput = version.functions.filter((f) => f.outputFields.length > 0)
   const needsCallRuntime = functionsWithOutput.length > 0
+  const proceduresWithInput = version.procedures.filter((p) => p.inputFields.length > 0)
+  const needsContractCallType = proceduresWithInput.length > 0
 
   const lines: string[] = [
     '// @generated — do not edit by hand. Run `bun run generate` to regenerate.',
@@ -169,10 +171,14 @@ for (const version of versions) {
     ...(needsCallRuntime
       ? [
           "import type { QubicRpcError } from '@qubic.org/rpc'",
-          "import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'",
+          needsContractCallType
+            ? "import { type ContractCall, type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'"
+            : "import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'",
           "import type { Result } from '../result.js'",
         ]
-      : []),
+      : needsContractCallType
+        ? ["import type { ContractCall } from '../call-contract.js'"]
+        : []),
     '',
     `export const ${cSnake}_CONTRACT_INDEX = ${version.contractIndex}`,
     '',
@@ -217,8 +223,8 @@ for (const version of versions) {
         `export function build${cPascal}${callPascal}Input(`,
         `  input: ${cPascal}${callPascal}Input,`,
         '  identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),',
-        '): Uint8Array {',
-        `  return buildPayload(${cSnake}_${callSnake}_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)`,
+        '): ContractCall {',
+        `  return { contractIndex: ${cSnake}_CONTRACT_INDEX, inputType: ${cSnake}_${callSnake}_INPUT_TYPE, payload: buildPayload(${cSnake}_${callSnake}_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }`,
         '}',
         '',
       )

@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test'
-import { QubicRpcError, ok, err } from '@qubic.org/rpc'
+import { QubicRpcError, err, ok } from '@qubic.org/rpc'
 import {
   QEARN_CONTRACT_INDEX,
   QEARN_GET_STATE_OF_ROUND_INPUT_TYPE,
@@ -30,18 +30,24 @@ describe('generated constants', () => {
 })
 
 describe('buildQearnUnlockInput', () => {
-  test('produces 12-byte payload', () => {
-    const payload = buildQearnUnlockInput({ amount: 5_000_000n, lockedEpoch: 150 })
+  test('returns ContractCall with correct contractIndex and inputType', () => {
+    const call = buildQearnUnlockInput({ amount: 5_000_000n, lockedEpoch: 150 })
+    expect(call.contractIndex).toBe(QEARN_CONTRACT_INDEX)
+    expect(call.inputType).toBe(QEARN_UNLOCK_INPUT_TYPE)
+  })
+
+  test('payload is 12 bytes', () => {
+    const { payload } = buildQearnUnlockInput({ amount: 5_000_000n, lockedEpoch: 150 })
     expect(payload.byteLength).toBe(12)
   })
 
   test('encodes amount as uint64 LE', () => {
-    const payload = buildQearnUnlockInput({ amount: 5_000_000n, lockedEpoch: 150 })
+    const { payload } = buildQearnUnlockInput({ amount: 5_000_000n, lockedEpoch: 150 })
     expect(new DataView(payload.buffer).getBigUint64(0, true)).toBe(5_000_000n)
   })
 
   test('encodes lockedEpoch as uint32 LE', () => {
-    const payload = buildQearnUnlockInput({ amount: 5_000_000n, lockedEpoch: 150 })
+    const { payload } = buildQearnUnlockInput({ amount: 5_000_000n, lockedEpoch: 150 })
     expect(new DataView(payload.buffer).getUint32(8, true)).toBe(150)
   })
 })
@@ -68,6 +74,13 @@ describe('buildQearnGetStateOfRoundInput', () => {
     const payload = buildQearnGetStateOfRoundInput({ epoch: 137 })
     expect(payload.byteLength).toBe(4)
     expect(new DataView(payload.buffer).getUint32(0, true)).toBe(137)
+  })
+
+  test('buildUnlockInput in namespace returns ContractCall', () => {
+    const call = qearn.buildUnlockInput({ amount: 1000n, lockedEpoch: 212 })
+    expect(call.contractIndex).toBe(QEARN_CONTRACT_INDEX)
+    expect(call.inputType).toBe(QEARN_UNLOCK_INPUT_TYPE)
+    expect(call.payload.byteLength).toBe(12)
   })
 })
 
@@ -107,9 +120,11 @@ describe('high-level function wrappers', () => {
     expect(qearn.contractIndex).toBe(9)
   })
 
-  test('qearn.buildUnlockInput is the procedure builder', () => {
-    const payload = qearn.buildUnlockInput({ amount: 1000n, lockedEpoch: 212 })
-    expect(payload.byteLength).toBe(12)
+  test('qearn.buildUnlockInput returns ContractCall', () => {
+    const call = qearn.buildUnlockInput({ amount: 1000n, lockedEpoch: 212 })
+    expect(call.contractIndex).toBe(QEARN_CONTRACT_INDEX)
+    expect(call.inputType).toBe(QEARN_UNLOCK_INPUT_TYPE)
+    expect(call.payload.byteLength).toBe(12)
   })
 })
 

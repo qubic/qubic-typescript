@@ -2,7 +2,7 @@
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.org/registry'
 import { buildPayload, decodePayload } from '@qubic.org/registry'
 import type { QubicRpcError } from '@qubic.org/rpc'
-import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import { type ContractCall, type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
 import type { Result } from '../result.js'
 
 export const QSWAP_CONTRACT_INDEX = 13
@@ -51,8 +51,8 @@ const QSWAP_SET_INVEST_REWARDS_INFO_INPUT_FIELDS: BinaryField[] = [
 export function buildQswapSetInvestRewardsInfoInput(
   input: QswapSetInvestRewardsInfoInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QSWAP_SET_INVEST_REWARDS_INFO_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QSWAP_CONTRACT_INDEX, inputType: QSWAP_SET_INVEST_REWARDS_INFO_INPUT_TYPE, payload: buildPayload(QSWAP_SET_INVEST_REWARDS_INFO_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QswapSetInvestRewardsInfoOutput {
@@ -114,8 +114,8 @@ const QSWAP_ISSUE_ASSET_INPUT_FIELDS: BinaryField[] = [
 export function buildQswapIssueAssetInput(
   input: QswapIssueAssetInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QSWAP_ISSUE_ASSET_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QSWAP_CONTRACT_INDEX, inputType: QSWAP_ISSUE_ASSET_INPUT_TYPE, payload: buildPayload(QSWAP_ISSUE_ASSET_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QswapIssueAssetOutput {
@@ -163,8 +163,8 @@ const QSWAP_CREATE_POOL_INPUT_FIELDS: BinaryField[] = [
 export function buildQswapCreatePoolInput(
   input: QswapCreatePoolInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QSWAP_CREATE_POOL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QSWAP_CONTRACT_INDEX, inputType: QSWAP_CREATE_POOL_INPUT_TYPE, payload: buildPayload(QSWAP_CREATE_POOL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QswapCreatePoolOutput {
@@ -226,8 +226,8 @@ const QSWAP_TRANSFER_SHARE_OWNERSHIP_AND_POSSESSION_INPUT_FIELDS: BinaryField[] 
 export function buildQswapTransferShareOwnershipAndPossessionInput(
   input: QswapTransferShareOwnershipAndPossessionInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QSWAP_TRANSFER_SHARE_OWNERSHIP_AND_POSSESSION_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QSWAP_CONTRACT_INDEX, inputType: QSWAP_TRANSFER_SHARE_OWNERSHIP_AND_POSSESSION_INPUT_TYPE, payload: buildPayload(QSWAP_TRANSFER_SHARE_OWNERSHIP_AND_POSSESSION_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QswapTransferShareOwnershipAndPossessionOutput {
@@ -296,8 +296,8 @@ const QSWAP_ADD_LIQUIDITY_INPUT_FIELDS: BinaryField[] = [
 export function buildQswapAddLiquidityInput(
   input: QswapAddLiquidityInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QSWAP_ADD_LIQUIDITY_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QSWAP_CONTRACT_INDEX, inputType: QSWAP_ADD_LIQUIDITY_INPUT_TYPE, payload: buildPayload(QSWAP_ADD_LIQUIDITY_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QswapAddLiquidityOutput {
@@ -380,8 +380,8 @@ const QSWAP_REMOVE_LIQUIDITY_INPUT_FIELDS: BinaryField[] = [
 export function buildQswapRemoveLiquidityInput(
   input: QswapRemoveLiquidityInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QSWAP_REMOVE_LIQUIDITY_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QSWAP_CONTRACT_INDEX, inputType: QSWAP_REMOVE_LIQUIDITY_INPUT_TYPE, payload: buildPayload(QSWAP_REMOVE_LIQUIDITY_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QswapRemoveLiquidityOutput {
@@ -443,8 +443,8 @@ const QSWAP_SWAP_EXACT_QU_FOR_ASSET_INPUT_FIELDS: BinaryField[] = [
 export function buildQswapSwapExactQuForAssetInput(
   input: QswapSwapExactQuForAssetInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QSWAP_SWAP_EXACT_QU_FOR_ASSET_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QSWAP_CONTRACT_INDEX, inputType: QSWAP_SWAP_EXACT_QU_FOR_ASSET_INPUT_TYPE, payload: buildPayload(QSWAP_SWAP_EXACT_QU_FOR_ASSET_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QswapSwapExactQuForAssetOutput {
@@ -499,8 +499,8 @@ const QSWAP_SWAP_QU_FOR_EXACT_ASSET_INPUT_FIELDS: BinaryField[] = [
 export function buildQswapSwapQuForExactAssetInput(
   input: QswapSwapQuForExactAssetInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QSWAP_SWAP_QU_FOR_EXACT_ASSET_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QSWAP_CONTRACT_INDEX, inputType: QSWAP_SWAP_QU_FOR_EXACT_ASSET_INPUT_TYPE, payload: buildPayload(QSWAP_SWAP_QU_FOR_EXACT_ASSET_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QswapSwapQuForExactAssetOutput {
@@ -562,8 +562,8 @@ const QSWAP_SWAP_EXACT_ASSET_FOR_QU_INPUT_FIELDS: BinaryField[] = [
 export function buildQswapSwapExactAssetForQuInput(
   input: QswapSwapExactAssetForQuInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QSWAP_SWAP_EXACT_ASSET_FOR_QU_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QSWAP_CONTRACT_INDEX, inputType: QSWAP_SWAP_EXACT_ASSET_FOR_QU_INPUT_TYPE, payload: buildPayload(QSWAP_SWAP_EXACT_ASSET_FOR_QU_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QswapSwapExactAssetForQuOutput {
@@ -625,8 +625,8 @@ const QSWAP_SWAP_ASSET_FOR_EXACT_QU_INPUT_FIELDS: BinaryField[] = [
 export function buildQswapSwapAssetForExactQuInput(
   input: QswapSwapAssetForExactQuInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QSWAP_SWAP_ASSET_FOR_EXACT_QU_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QSWAP_CONTRACT_INDEX, inputType: QSWAP_SWAP_ASSET_FOR_EXACT_QU_INPUT_TYPE, payload: buildPayload(QSWAP_SWAP_ASSET_FOR_EXACT_QU_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QswapSwapAssetForExactQuOutput {
@@ -682,8 +682,8 @@ const QSWAP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
 export function buildQswapTransferShareManagementRightsInput(
   input: QswapTransferShareManagementRightsInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QSWAP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QSWAP_CONTRACT_INDEX, inputType: QSWAP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE, payload: buildPayload(QSWAP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QswapTransferShareManagementRightsOutput {

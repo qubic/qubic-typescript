@@ -2,7 +2,7 @@
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.org/registry'
 import { buildPayload, decodePayload } from '@qubic.org/registry'
 import type { QubicRpcError } from '@qubic.org/rpc'
-import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import { type ContractCall, type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
 import type { Result } from '../result.js'
 
 export const Q_THIRTY_FOUR_CONTRACT_INDEX = 22
@@ -233,8 +233,8 @@ const Q_THIRTY_FOUR_BUY_TICKET_INPUT_FIELDS: BinaryField[] = [
 export function buildQThirtyFourBuyTicketInput(
   input: QThirtyFourBuyTicketInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_THIRTY_FOUR_BUY_TICKET_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_THIRTY_FOUR_CONTRACT_INDEX, inputType: Q_THIRTY_FOUR_BUY_TICKET_INPUT_TYPE, payload: buildPayload(Q_THIRTY_FOUR_BUY_TICKET_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QThirtyFourBuyTicketOutput {
@@ -278,8 +278,8 @@ const Q_THIRTY_FOUR_BUY_TICKETS_BATCH_INPUT_FIELDS: BinaryField[] = [
 export function buildQThirtyFourBuyTicketsBatchInput(
   input: QThirtyFourBuyTicketsBatchInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_THIRTY_FOUR_BUY_TICKETS_BATCH_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_THIRTY_FOUR_CONTRACT_INDEX, inputType: Q_THIRTY_FOUR_BUY_TICKETS_BATCH_INPUT_TYPE, payload: buildPayload(Q_THIRTY_FOUR_BUY_TICKETS_BATCH_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QThirtyFourBuyTicketsBatchOutput {
@@ -330,8 +330,8 @@ const Q_THIRTY_FOUR_BUY_TICKETS_BY_SELECTION_INPUT_FIELDS: BinaryField[] = [
 export function buildQThirtyFourBuyTicketsBySelectionInput(
   input: QThirtyFourBuyTicketsBySelectionInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_THIRTY_FOUR_BUY_TICKETS_BY_SELECTION_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_THIRTY_FOUR_CONTRACT_INDEX, inputType: Q_THIRTY_FOUR_BUY_TICKETS_BY_SELECTION_INPUT_TYPE, payload: buildPayload(Q_THIRTY_FOUR_BUY_TICKETS_BY_SELECTION_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QThirtyFourBuyTicketsBySelectionOutput {
@@ -386,8 +386,8 @@ const Q_THIRTY_FOUR_SET_PRICE_INPUT_FIELDS: BinaryField[] = [
 export function buildQThirtyFourSetPriceInput(
   input: QThirtyFourSetPriceInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_THIRTY_FOUR_SET_PRICE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_THIRTY_FOUR_CONTRACT_INDEX, inputType: Q_THIRTY_FOUR_SET_PRICE_INPUT_TYPE, payload: buildPayload(Q_THIRTY_FOUR_SET_PRICE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QThirtyFourSetPriceOutput {
@@ -428,8 +428,8 @@ const Q_THIRTY_FOUR_SET_SCHEDULE_INPUT_FIELDS: BinaryField[] = [
 export function buildQThirtyFourSetScheduleInput(
   input: QThirtyFourSetScheduleInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_THIRTY_FOUR_SET_SCHEDULE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_THIRTY_FOUR_CONTRACT_INDEX, inputType: Q_THIRTY_FOUR_SET_SCHEDULE_INPUT_TYPE, payload: buildPayload(Q_THIRTY_FOUR_SET_SCHEDULE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QThirtyFourSetScheduleOutput {
@@ -470,8 +470,8 @@ const Q_THIRTY_FOUR_SET_DRAW_HOUR_INPUT_FIELDS: BinaryField[] = [
 export function buildQThirtyFourSetDrawHourInput(
   input: QThirtyFourSetDrawHourInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_THIRTY_FOUR_SET_DRAW_HOUR_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_THIRTY_FOUR_CONTRACT_INDEX, inputType: Q_THIRTY_FOUR_SET_DRAW_HOUR_INPUT_TYPE, payload: buildPayload(Q_THIRTY_FOUR_SET_DRAW_HOUR_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QThirtyFourSetDrawHourOutput {
@@ -512,8 +512,8 @@ const Q_THIRTY_FOUR_SET_TARGET_JACKPOT_INPUT_FIELDS: BinaryField[] = [
 export function buildQThirtyFourSetTargetJackpotInput(
   input: QThirtyFourSetTargetJackpotInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_THIRTY_FOUR_SET_TARGET_JACKPOT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_THIRTY_FOUR_CONTRACT_INDEX, inputType: Q_THIRTY_FOUR_SET_TARGET_JACKPOT_INPUT_TYPE, payload: buildPayload(Q_THIRTY_FOUR_SET_TARGET_JACKPOT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QThirtyFourSetTargetJackpotOutput {

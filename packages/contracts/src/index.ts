@@ -1,5 +1,5 @@
 export type { Result, Ok, Err } from './result.js'
 export { ok, err } from './result.js'
-export type { SmartContractCaller, CallContractFunctionOptions } from './call-contract.js'
+export type { SmartContractCaller, CallContractFunctionOptions, ContractCall } from './call-contract.js'
 export { callContractFunction } from './call-contract.js'
 export * from './__generated__/index.js'

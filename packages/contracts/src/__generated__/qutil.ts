@@ -2,7 +2,7 @@
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.org/registry'
 import { buildPayload, decodePayload } from '@qubic.org/registry'
 import type { QubicRpcError } from '@qubic.org/rpc'
-import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import { type ContractCall, type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
 import type { Result } from '../result.js'
 
 export const Q_UTIL_CONTRACT_INDEX = 4
@@ -173,8 +173,8 @@ const Q_UTIL_SEND_TO_MANY_V1_INPUT_FIELDS: BinaryField[] = [
 export function buildQUtilSendToManyV1Input(
   input: QUtilSendToManyV1Input,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_UTIL_SEND_TO_MANY_V1_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_UTIL_CONTRACT_INDEX, inputType: Q_UTIL_SEND_TO_MANY_V1_INPUT_TYPE, payload: buildPayload(Q_UTIL_SEND_TO_MANY_V1_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QUtilSendToManyV1Output {
@@ -236,8 +236,8 @@ const Q_UTIL_TRANSFER_SHARES_TO_MANY_V1_INPUT_FIELDS: BinaryField[] = [
 export function buildQUtilTransferSharesToManyV1Input(
   input: QUtilTransferSharesToManyV1Input,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_UTIL_TRANSFER_SHARES_TO_MANY_V1_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_UTIL_CONTRACT_INDEX, inputType: Q_UTIL_TRANSFER_SHARES_TO_MANY_V1_INPUT_TYPE, payload: buildPayload(Q_UTIL_TRANSFER_SHARES_TO_MANY_V1_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QUtilTransferSharesToManyV1Output {
@@ -293,8 +293,8 @@ const Q_UTIL_TRANSFER_SHARES_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
 export function buildQUtilTransferSharesManagementRightsInput(
   input: QUtilTransferSharesManagementRightsInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_UTIL_TRANSFER_SHARES_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_UTIL_CONTRACT_INDEX, inputType: Q_UTIL_TRANSFER_SHARES_MANAGEMENT_RIGHTS_INPUT_TYPE, payload: buildPayload(Q_UTIL_TRANSFER_SHARES_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QUtilTransferSharesManagementRightsOutput {
@@ -342,8 +342,8 @@ const Q_UTIL_SEND_TO_MANY_BENCHMARK_INPUT_FIELDS: BinaryField[] = [
 export function buildQUtilSendToManyBenchmarkInput(
   input: QUtilSendToManyBenchmarkInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_UTIL_SEND_TO_MANY_BENCHMARK_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_UTIL_CONTRACT_INDEX, inputType: Q_UTIL_SEND_TO_MANY_BENCHMARK_INPUT_TYPE, payload: buildPayload(Q_UTIL_SEND_TO_MANY_BENCHMARK_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QUtilSendToManyBenchmarkOutput {
@@ -398,8 +398,8 @@ const Q_UTIL_BURN_QUBIC_INPUT_FIELDS: BinaryField[] = [
 export function buildQUtilBurnQubicInput(
   input: QUtilBurnQubicInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_UTIL_BURN_QUBIC_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_UTIL_CONTRACT_INDEX, inputType: Q_UTIL_BURN_QUBIC_INPUT_TYPE, payload: buildPayload(Q_UTIL_BURN_QUBIC_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QUtilBurnQubicOutput {
@@ -440,8 +440,8 @@ const Q_UTIL_BURN_QUBIC_FOR_CONTRACT_INPUT_FIELDS: BinaryField[] = [
 export function buildQUtilBurnQubicForContractInput(
   input: QUtilBurnQubicForContractInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_UTIL_BURN_QUBIC_FOR_CONTRACT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_UTIL_CONTRACT_INDEX, inputType: Q_UTIL_BURN_QUBIC_FOR_CONTRACT_INPUT_TYPE, payload: buildPayload(Q_UTIL_BURN_QUBIC_FOR_CONTRACT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QUtilBurnQubicForContractOutput {
@@ -523,8 +523,8 @@ const Q_UTIL_CREATE_POLL_INPUT_FIELDS: BinaryField[] = [
 export function buildQUtilCreatePollInput(
   input: QUtilCreatePollInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_UTIL_CREATE_POLL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_UTIL_CONTRACT_INDEX, inputType: Q_UTIL_CREATE_POLL_INPUT_TYPE, payload: buildPayload(Q_UTIL_CREATE_POLL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QUtilCreatePollOutput {
@@ -586,8 +586,8 @@ const Q_UTIL_VOTE_INPUT_FIELDS: BinaryField[] = [
 export function buildQUtilVoteInput(
   input: QUtilVoteInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_UTIL_VOTE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_UTIL_CONTRACT_INDEX, inputType: Q_UTIL_VOTE_INPUT_TYPE, payload: buildPayload(Q_UTIL_VOTE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QUtilVoteOutput {
@@ -628,8 +628,8 @@ const Q_UTIL_CANCEL_POLL_INPUT_FIELDS: BinaryField[] = [
 export function buildQUtilCancelPollInput(
   input: QUtilCancelPollInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_UTIL_CANCEL_POLL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_UTIL_CONTRACT_INDEX, inputType: Q_UTIL_CANCEL_POLL_INPUT_TYPE, payload: buildPayload(Q_UTIL_CANCEL_POLL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QUtilCancelPollOutput {
@@ -671,8 +671,8 @@ const Q_UTIL_DISTRIBUTE_QU_TO_SHAREHOLDERS_INPUT_FIELDS: BinaryField[] = [
 export function buildQUtilDistributeQuToShareholdersInput(
   input: QUtilDistributeQuToShareholdersInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_UTIL_DISTRIBUTE_QU_TO_SHAREHOLDERS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_UTIL_CONTRACT_INDEX, inputType: Q_UTIL_DISTRIBUTE_QU_TO_SHAREHOLDERS_INPUT_TYPE, payload: buildPayload(Q_UTIL_DISTRIBUTE_QU_TO_SHAREHOLDERS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QUtilDistributeQuToShareholdersOutput {
@@ -742,8 +742,8 @@ const Q_UTIL_QUERY_PRICE_ORACLE_INPUT_FIELDS: BinaryField[] = [
 export function buildQUtilQueryPriceOracleInput(
   input: QUtilQueryPriceOracleInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_UTIL_QUERY_PRICE_ORACLE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_UTIL_CONTRACT_INDEX, inputType: Q_UTIL_QUERY_PRICE_ORACLE_INPUT_TYPE, payload: buildPayload(Q_UTIL_QUERY_PRICE_ORACLE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QUtilQueryPriceOracleOutput {
@@ -799,8 +799,8 @@ const Q_UTIL_SUBSCRIBE_PRICE_ORACLE_INPUT_FIELDS: BinaryField[] = [
 export function buildQUtilSubscribePriceOracleInput(
   input: QUtilSubscribePriceOracleInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_UTIL_SUBSCRIBE_PRICE_ORACLE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_UTIL_CONTRACT_INDEX, inputType: Q_UTIL_SUBSCRIBE_PRICE_ORACLE_INPUT_TYPE, payload: buildPayload(Q_UTIL_SUBSCRIBE_PRICE_ORACLE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QUtilSubscribePriceOracleOutput {
@@ -841,8 +841,8 @@ const Q_UTIL_UNSUBSCRIBE_ORACLE_INPUT_FIELDS: BinaryField[] = [
 export function buildQUtilUnsubscribeOracleInput(
   input: QUtilUnsubscribeOracleInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_UTIL_UNSUBSCRIBE_ORACLE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_UTIL_CONTRACT_INDEX, inputType: Q_UTIL_UNSUBSCRIBE_ORACLE_INPUT_TYPE, payload: buildPayload(Q_UTIL_UNSUBSCRIBE_ORACLE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QUtilUnsubscribeOracleOutput {

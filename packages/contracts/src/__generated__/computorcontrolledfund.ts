@@ -2,7 +2,7 @@
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.org/registry'
 import { buildPayload, decodePayload } from '@qubic.org/registry'
 import type { QubicRpcError } from '@qubic.org/rpc'
-import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import { type ContractCall, type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
 import type { Result } from '../result.js'
 
 export const COMPUTOR_CONTROLLED_FUND_CONTRACT_INDEX = 8
@@ -492,8 +492,8 @@ const COMPUTOR_CONTROLLED_FUND_SET_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
 export function buildComputorControlledFundSetProposalInput(
   input: ComputorControlledFundSetProposalInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(COMPUTOR_CONTROLLED_FUND_SET_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: COMPUTOR_CONTROLLED_FUND_CONTRACT_INDEX, inputType: COMPUTOR_CONTROLLED_FUND_SET_PROPOSAL_INPUT_TYPE, payload: buildPayload(COMPUTOR_CONTROLLED_FUND_SET_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface ComputorControlledFundSetProposalOutput {
@@ -555,8 +555,8 @@ const COMPUTOR_CONTROLLED_FUND_VOTE_INPUT_FIELDS: BinaryField[] = [
 export function buildComputorControlledFundVoteInput(
   input: ComputorControlledFundVoteInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(COMPUTOR_CONTROLLED_FUND_VOTE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: COMPUTOR_CONTROLLED_FUND_CONTRACT_INDEX, inputType: COMPUTOR_CONTROLLED_FUND_VOTE_INPUT_TYPE, payload: buildPayload(COMPUTOR_CONTROLLED_FUND_VOTE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface ComputorControlledFundVoteOutput {

@@ -2,7 +2,7 @@
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.org/registry'
 import { buildPayload, decodePayload } from '@qubic.org/registry'
 import type { QubicRpcError } from '@qubic.org/rpc'
-import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import { type ContractCall, type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
 import type { Result } from '../result.js'
 
 export const QX_CONTRACT_INDEX = 1
@@ -102,8 +102,8 @@ const QX_ISSUE_ASSET_INPUT_FIELDS: BinaryField[] = [
 export function buildQxIssueAssetInput(
   input: QxIssueAssetInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QX_ISSUE_ASSET_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QX_CONTRACT_INDEX, inputType: QX_ISSUE_ASSET_INPUT_TYPE, payload: buildPayload(QX_ISSUE_ASSET_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QxIssueAssetOutput {
@@ -165,8 +165,8 @@ const QX_TRANSFER_SHARE_OWNERSHIP_AND_POSSESSION_INPUT_FIELDS: BinaryField[] = [
 export function buildQxTransferShareOwnershipAndPossessionInput(
   input: QxTransferShareOwnershipAndPossessionInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QX_TRANSFER_SHARE_OWNERSHIP_AND_POSSESSION_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QX_CONTRACT_INDEX, inputType: QX_TRANSFER_SHARE_OWNERSHIP_AND_POSSESSION_INPUT_TYPE, payload: buildPayload(QX_TRANSFER_SHARE_OWNERSHIP_AND_POSSESSION_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QxTransferShareOwnershipAndPossessionOutput {
@@ -228,8 +228,8 @@ const QX_ADD_TO_ASK_ORDER_INPUT_FIELDS: BinaryField[] = [
 export function buildQxAddToAskOrderInput(
   input: QxAddToAskOrderInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QX_ADD_TO_ASK_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QX_CONTRACT_INDEX, inputType: QX_ADD_TO_ASK_ORDER_INPUT_TYPE, payload: buildPayload(QX_ADD_TO_ASK_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QxAddToAskOrderOutput {
@@ -291,8 +291,8 @@ const QX_ADD_TO_BID_ORDER_INPUT_FIELDS: BinaryField[] = [
 export function buildQxAddToBidOrderInput(
   input: QxAddToBidOrderInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QX_ADD_TO_BID_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QX_CONTRACT_INDEX, inputType: QX_ADD_TO_BID_ORDER_INPUT_TYPE, payload: buildPayload(QX_ADD_TO_BID_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QxAddToBidOrderOutput {
@@ -354,8 +354,8 @@ const QX_REMOVE_FROM_ASK_ORDER_INPUT_FIELDS: BinaryField[] = [
 export function buildQxRemoveFromAskOrderInput(
   input: QxRemoveFromAskOrderInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QX_REMOVE_FROM_ASK_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QX_CONTRACT_INDEX, inputType: QX_REMOVE_FROM_ASK_ORDER_INPUT_TYPE, payload: buildPayload(QX_REMOVE_FROM_ASK_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QxRemoveFromAskOrderOutput {
@@ -417,8 +417,8 @@ const QX_REMOVE_FROM_BID_ORDER_INPUT_FIELDS: BinaryField[] = [
 export function buildQxRemoveFromBidOrderInput(
   input: QxRemoveFromBidOrderInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QX_REMOVE_FROM_BID_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QX_CONTRACT_INDEX, inputType: QX_REMOVE_FROM_BID_ORDER_INPUT_TYPE, payload: buildPayload(QX_REMOVE_FROM_BID_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QxRemoveFromBidOrderOutput {
@@ -474,8 +474,8 @@ const QX_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
 export function buildQxTransferShareManagementRightsInput(
   input: QxTransferShareManagementRightsInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QX_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QX_CONTRACT_INDEX, inputType: QX_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE, payload: buildPayload(QX_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QxTransferShareManagementRightsOutput {

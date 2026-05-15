@@ -2,7 +2,7 @@
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.org/registry'
 import { buildPayload, decodePayload } from '@qubic.org/registry'
 import type { QubicRpcError } from '@qubic.org/rpc'
-import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import { type ContractCall, type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
 import type { Result } from '../result.js'
 
 export const QVAULT_CONTRACT_INDEX = 10
@@ -653,8 +653,8 @@ const QVAULT_STAKE_INPUT_FIELDS: BinaryField[] = [
 export function buildQVAULTStakeInput(
   input: QVAULTStakeInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QVAULT_STAKE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QVAULT_CONTRACT_INDEX, inputType: QVAULT_STAKE_INPUT_TYPE, payload: buildPayload(QVAULT_STAKE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QVAULTStakeOutput {
@@ -695,8 +695,8 @@ const QVAULT_UN_STAKE_INPUT_FIELDS: BinaryField[] = [
 export function buildQVAULTUnStakeInput(
   input: QVAULTUnStakeInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QVAULT_UN_STAKE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QVAULT_CONTRACT_INDEX, inputType: QVAULT_UN_STAKE_INPUT_TYPE, payload: buildPayload(QVAULT_UN_STAKE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QVAULTUnStakeOutput {
@@ -740,8 +740,8 @@ const QVAULT_SUBMIT_GP_INPUT_FIELDS: BinaryField[] = [
 export function buildQVAULTSubmitGPInput(
   input: QVAULTSubmitGPInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QVAULT_SUBMIT_GP_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QVAULT_CONTRACT_INDEX, inputType: QVAULT_SUBMIT_GP_INPUT_TYPE, payload: buildPayload(QVAULT_SUBMIT_GP_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QVAULTSubmitGPOutput {
@@ -792,8 +792,8 @@ const QVAULT_SUBMIT_QCP_INPUT_FIELDS: BinaryField[] = [
 export function buildQVAULTSubmitQCPInput(
   input: QVAULTSubmitQCPInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QVAULT_SUBMIT_QCP_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QVAULT_CONTRACT_INDEX, inputType: QVAULT_SUBMIT_QCP_INPUT_TYPE, payload: buildPayload(QVAULT_SUBMIT_QCP_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QVAULTSubmitQCPOutput {
@@ -844,8 +844,8 @@ const QVAULT_SUBMIT_IPOP_INPUT_FIELDS: BinaryField[] = [
 export function buildQVAULTSubmitIPOPInput(
   input: QVAULTSubmitIPOPInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QVAULT_SUBMIT_IPOP_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QVAULT_CONTRACT_INDEX, inputType: QVAULT_SUBMIT_IPOP_INPUT_TYPE, payload: buildPayload(QVAULT_SUBMIT_IPOP_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QVAULTSubmitIPOPOutput {
@@ -903,8 +903,8 @@ const QVAULT_SUBMIT_Q_EARN_P_INPUT_FIELDS: BinaryField[] = [
 export function buildQVAULTSubmitQEarnPInput(
   input: QVAULTSubmitQEarnPInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QVAULT_SUBMIT_Q_EARN_P_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QVAULT_CONTRACT_INDEX, inputType: QVAULT_SUBMIT_Q_EARN_P_INPUT_TYPE, payload: buildPayload(QVAULT_SUBMIT_Q_EARN_P_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QVAULTSubmitQEarnPOutput {
@@ -962,8 +962,8 @@ const QVAULT_SUBMIT_FUND_P_INPUT_FIELDS: BinaryField[] = [
 export function buildQVAULTSubmitFundPInput(
   input: QVAULTSubmitFundPInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QVAULT_SUBMIT_FUND_P_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QVAULT_CONTRACT_INDEX, inputType: QVAULT_SUBMIT_FUND_P_INPUT_TYPE, payload: buildPayload(QVAULT_SUBMIT_FUND_P_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QVAULTSubmitFundPOutput {
@@ -1042,8 +1042,8 @@ const QVAULT_SUBMIT_MKTP_INPUT_FIELDS: BinaryField[] = [
 export function buildQVAULTSubmitMKTPInput(
   input: QVAULTSubmitMKTPInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QVAULT_SUBMIT_MKTP_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QVAULT_CONTRACT_INDEX, inputType: QVAULT_SUBMIT_MKTP_INPUT_TYPE, payload: buildPayload(QVAULT_SUBMIT_MKTP_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QVAULTSubmitMKTPOutput {
@@ -1108,8 +1108,8 @@ const QVAULT_SUBMIT_ALLO_P_INPUT_FIELDS: BinaryField[] = [
 export function buildQVAULTSubmitAlloPInput(
   input: QVAULTSubmitAlloPInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QVAULT_SUBMIT_ALLO_P_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QVAULT_CONTRACT_INDEX, inputType: QVAULT_SUBMIT_ALLO_P_INPUT_TYPE, payload: buildPayload(QVAULT_SUBMIT_ALLO_P_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QVAULTSubmitAlloPOutput {
@@ -1171,8 +1171,8 @@ const QVAULT_VOTE_IN_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
 export function buildQVAULTVoteInProposalInput(
   input: QVAULTVoteInProposalInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QVAULT_VOTE_IN_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QVAULT_CONTRACT_INDEX, inputType: QVAULT_VOTE_IN_PROPOSAL_INPUT_TYPE, payload: buildPayload(QVAULT_VOTE_IN_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QVAULTVoteInProposalOutput {
@@ -1213,8 +1213,8 @@ const QVAULT_BUY_QCAP_INPUT_FIELDS: BinaryField[] = [
 export function buildQVAULTBuyQcapInput(
   input: QVAULTBuyQcapInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QVAULT_BUY_QCAP_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QVAULT_CONTRACT_INDEX, inputType: QVAULT_BUY_QCAP_INPUT_TYPE, payload: buildPayload(QVAULT_BUY_QCAP_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QVAULTBuyQcapOutput {
@@ -1270,8 +1270,8 @@ const QVAULT_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
 export function buildQVAULTTransferShareManagementRightsInput(
   input: QVAULTTransferShareManagementRightsInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QVAULT_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QVAULT_CONTRACT_INDEX, inputType: QVAULT_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE, payload: buildPayload(QVAULT_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QVAULTTransferShareManagementRightsOutput {

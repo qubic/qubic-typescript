@@ -2,7 +2,7 @@
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.org/registry'
 import { buildPayload, decodePayload } from '@qubic.org/registry'
 import type { QubicRpcError } from '@qubic.org/rpc'
-import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import { type ContractCall, type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
 import type { Result } from '../result.js'
 
 export const VOTTUN_BRIDGE_CONTRACT_INDEX = 25
@@ -280,8 +280,8 @@ const VOTTUN_BRIDGE_CREATE_ORDER_INPUT_FIELDS: BinaryField[] = [
 export function buildVottunBridgeCreateOrderInput(
   input: VottunBridgeCreateOrderInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(VOTTUN_BRIDGE_CREATE_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: VOTTUN_BRIDGE_CONTRACT_INDEX, inputType: VOTTUN_BRIDGE_CREATE_ORDER_INPUT_TYPE, payload: buildPayload(VOTTUN_BRIDGE_CREATE_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface VottunBridgeCreateOrderOutput {
@@ -329,8 +329,8 @@ const VOTTUN_BRIDGE_COMPLETE_ORDER_INPUT_FIELDS: BinaryField[] = [
 export function buildVottunBridgeCompleteOrderInput(
   input: VottunBridgeCompleteOrderInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(VOTTUN_BRIDGE_COMPLETE_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: VOTTUN_BRIDGE_CONTRACT_INDEX, inputType: VOTTUN_BRIDGE_COMPLETE_ORDER_INPUT_TYPE, payload: buildPayload(VOTTUN_BRIDGE_COMPLETE_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface VottunBridgeCompleteOrderOutput {
@@ -371,8 +371,8 @@ const VOTTUN_BRIDGE_REFUND_ORDER_INPUT_FIELDS: BinaryField[] = [
 export function buildVottunBridgeRefundOrderInput(
   input: VottunBridgeRefundOrderInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(VOTTUN_BRIDGE_REFUND_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: VOTTUN_BRIDGE_CONTRACT_INDEX, inputType: VOTTUN_BRIDGE_REFUND_ORDER_INPUT_TYPE, payload: buildPayload(VOTTUN_BRIDGE_REFUND_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface VottunBridgeRefundOrderOutput {
@@ -420,8 +420,8 @@ const VOTTUN_BRIDGE_TRANSFER_TO_CONTRACT_INPUT_FIELDS: BinaryField[] = [
 export function buildVottunBridgeTransferToContractInput(
   input: VottunBridgeTransferToContractInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(VOTTUN_BRIDGE_TRANSFER_TO_CONTRACT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: VOTTUN_BRIDGE_CONTRACT_INDEX, inputType: VOTTUN_BRIDGE_TRANSFER_TO_CONTRACT_INPUT_TYPE, payload: buildPayload(VOTTUN_BRIDGE_TRANSFER_TO_CONTRACT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface VottunBridgeTransferToContractOutput {
@@ -483,8 +483,8 @@ const VOTTUN_BRIDGE_CREATE_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
 export function buildVottunBridgeCreateProposalInput(
   input: VottunBridgeCreateProposalInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(VOTTUN_BRIDGE_CREATE_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: VOTTUN_BRIDGE_CONTRACT_INDEX, inputType: VOTTUN_BRIDGE_CREATE_PROPOSAL_INPUT_TYPE, payload: buildPayload(VOTTUN_BRIDGE_CREATE_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface VottunBridgeCreateProposalOutput {
@@ -532,8 +532,8 @@ const VOTTUN_BRIDGE_APPROVE_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
 export function buildVottunBridgeApproveProposalInput(
   input: VottunBridgeApproveProposalInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(VOTTUN_BRIDGE_APPROVE_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: VOTTUN_BRIDGE_CONTRACT_INDEX, inputType: VOTTUN_BRIDGE_APPROVE_PROPOSAL_INPUT_TYPE, payload: buildPayload(VOTTUN_BRIDGE_APPROVE_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface VottunBridgeApproveProposalOutput {
@@ -581,8 +581,8 @@ const VOTTUN_BRIDGE_CANCEL_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
 export function buildVottunBridgeCancelProposalInput(
   input: VottunBridgeCancelProposalInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(VOTTUN_BRIDGE_CANCEL_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: VOTTUN_BRIDGE_CONTRACT_INDEX, inputType: VOTTUN_BRIDGE_CANCEL_PROPOSAL_INPUT_TYPE, payload: buildPayload(VOTTUN_BRIDGE_CANCEL_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface VottunBridgeCancelProposalOutput {

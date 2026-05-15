@@ -2,7 +2,7 @@
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.org/registry'
 import { buildPayload, decodePayload } from '@qubic.org/registry'
 import type { QubicRpcError } from '@qubic.org/rpc'
-import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import { type ContractCall, type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
 import type { Result } from '../result.js'
 
 export const NOSTROMO_CONTRACT_INDEX = 14
@@ -281,8 +281,8 @@ const NOSTROMO_REGISTER_IN_TIER_INPUT_FIELDS: BinaryField[] = [
 export function buildNostromoRegisterInTierInput(
   input: NostromoRegisterInTierInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(NOSTROMO_REGISTER_IN_TIER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: NOSTROMO_CONTRACT_INDEX, inputType: NOSTROMO_REGISTER_IN_TIER_INPUT_TYPE, payload: buildPayload(NOSTROMO_REGISTER_IN_TIER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface NostromoRegisterInTierOutput {
@@ -408,8 +408,8 @@ const NOSTROMO_CREATE_PROJECT_INPUT_FIELDS: BinaryField[] = [
 export function buildNostromoCreateProjectInput(
   input: NostromoCreateProjectInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(NOSTROMO_CREATE_PROJECT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: NOSTROMO_CONTRACT_INDEX, inputType: NOSTROMO_CREATE_PROJECT_INPUT_TYPE, payload: buildPayload(NOSTROMO_CREATE_PROJECT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface NostromoCreateProjectOutput {
@@ -457,8 +457,8 @@ const NOSTROMO_VOTE_IN_PROJECT_INPUT_FIELDS: BinaryField[] = [
 export function buildNostromoVoteInProjectInput(
   input: NostromoVoteInProjectInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(NOSTROMO_VOTE_IN_PROJECT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: NOSTROMO_CONTRACT_INDEX, inputType: NOSTROMO_VOTE_IN_PROJECT_INPUT_TYPE, payload: buildPayload(NOSTROMO_VOTE_IN_PROJECT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export const NOSTROMO_CREATE_FUNDRAISING_INPUT_TYPE = 5
@@ -773,8 +773,8 @@ const NOSTROMO_CREATE_FUNDRAISING_INPUT_FIELDS: BinaryField[] = [
 export function buildNostromoCreateFundraisingInput(
   input: NostromoCreateFundraisingInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(NOSTROMO_CREATE_FUNDRAISING_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: NOSTROMO_CONTRACT_INDEX, inputType: NOSTROMO_CREATE_FUNDRAISING_INPUT_TYPE, payload: buildPayload(NOSTROMO_CREATE_FUNDRAISING_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export const NOSTROMO_INVEST_IN_PROJECT_INPUT_TYPE = 6
@@ -795,8 +795,8 @@ const NOSTROMO_INVEST_IN_PROJECT_INPUT_FIELDS: BinaryField[] = [
 export function buildNostromoInvestInProjectInput(
   input: NostromoInvestInProjectInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(NOSTROMO_INVEST_IN_PROJECT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: NOSTROMO_CONTRACT_INDEX, inputType: NOSTROMO_INVEST_IN_PROJECT_INPUT_TYPE, payload: buildPayload(NOSTROMO_INVEST_IN_PROJECT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export const NOSTROMO_CLAIM_TOKEN_INPUT_TYPE = 7
@@ -824,8 +824,8 @@ const NOSTROMO_CLAIM_TOKEN_INPUT_FIELDS: BinaryField[] = [
 export function buildNostromoClaimTokenInput(
   input: NostromoClaimTokenInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(NOSTROMO_CLAIM_TOKEN_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: NOSTROMO_CONTRACT_INDEX, inputType: NOSTROMO_CLAIM_TOKEN_INPUT_TYPE, payload: buildPayload(NOSTROMO_CLAIM_TOKEN_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface NostromoClaimTokenOutput {
@@ -866,8 +866,8 @@ const NOSTROMO_UPGRADE_TIER_INPUT_FIELDS: BinaryField[] = [
 export function buildNostromoUpgradeTierInput(
   input: NostromoUpgradeTierInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(NOSTROMO_UPGRADE_TIER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: NOSTROMO_CONTRACT_INDEX, inputType: NOSTROMO_UPGRADE_TIER_INPUT_TYPE, payload: buildPayload(NOSTROMO_UPGRADE_TIER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export const NOSTROMO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE = 9
@@ -903,8 +903,8 @@ const NOSTROMO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
 export function buildNostromoTransferShareManagementRightsInput(
   input: NostromoTransferShareManagementRightsInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(NOSTROMO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: NOSTROMO_CONTRACT_INDEX, inputType: NOSTROMO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE, payload: buildPayload(NOSTROMO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface NostromoTransferShareManagementRightsOutput {

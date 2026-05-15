@@ -2,7 +2,7 @@
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.org/registry'
 import { buildPayload, decodePayload } from '@qubic.org/registry'
 import type { QubicRpcError } from '@qubic.org/rpc'
-import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import { type ContractCall, type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
 import type { Result } from '../result.js'
 
 export const PULSE_CONTRACT_INDEX = 24
@@ -117,8 +117,8 @@ const PULSE_BUY_TICKET_INPUT_FIELDS: BinaryField[] = [
 export function buildPulseBuyTicketInput(
   input: PulseBuyTicketInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(PULSE_BUY_TICKET_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: PULSE_CONTRACT_INDEX, inputType: PULSE_BUY_TICKET_INPUT_TYPE, payload: buildPayload(PULSE_BUY_TICKET_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface PulseBuyTicketOutput {
@@ -159,8 +159,8 @@ const PULSE_BUY_RANDOM_TICKETS_INPUT_FIELDS: BinaryField[] = [
 export function buildPulseBuyRandomTicketsInput(
   input: PulseBuyRandomTicketsInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(PULSE_BUY_RANDOM_TICKETS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: PULSE_CONTRACT_INDEX, inputType: PULSE_BUY_RANDOM_TICKETS_INPUT_TYPE, payload: buildPayload(PULSE_BUY_RANDOM_TICKETS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface PulseBuyRandomTicketsOutput {
@@ -215,8 +215,8 @@ const PULSE_DEPOSIT_AUTO_PARTICIPATION_INPUT_FIELDS: BinaryField[] = [
 export function buildPulseDepositAutoParticipationInput(
   input: PulseDepositAutoParticipationInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(PULSE_DEPOSIT_AUTO_PARTICIPATION_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: PULSE_CONTRACT_INDEX, inputType: PULSE_DEPOSIT_AUTO_PARTICIPATION_INPUT_TYPE, payload: buildPayload(PULSE_DEPOSIT_AUTO_PARTICIPATION_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface PulseDepositAutoParticipationOutput {
@@ -257,8 +257,8 @@ const PULSE_WITHDRAW_AUTO_PARTICIPATION_INPUT_FIELDS: BinaryField[] = [
 export function buildPulseWithdrawAutoParticipationInput(
   input: PulseWithdrawAutoParticipationInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(PULSE_WITHDRAW_AUTO_PARTICIPATION_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: PULSE_CONTRACT_INDEX, inputType: PULSE_WITHDRAW_AUTO_PARTICIPATION_INPUT_TYPE, payload: buildPayload(PULSE_WITHDRAW_AUTO_PARTICIPATION_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface PulseWithdrawAutoParticipationOutput {
@@ -299,8 +299,8 @@ const PULSE_SET_AUTO_CONFIG_INPUT_FIELDS: BinaryField[] = [
 export function buildPulseSetAutoConfigInput(
   input: PulseSetAutoConfigInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(PULSE_SET_AUTO_CONFIG_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: PULSE_CONTRACT_INDEX, inputType: PULSE_SET_AUTO_CONFIG_INPUT_TYPE, payload: buildPayload(PULSE_SET_AUTO_CONFIG_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface PulseSetAutoConfigOutput {
@@ -341,8 +341,8 @@ const PULSE_SET_AUTO_LIMITS_INPUT_FIELDS: BinaryField[] = [
 export function buildPulseSetAutoLimitsInput(
   input: PulseSetAutoLimitsInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(PULSE_SET_AUTO_LIMITS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: PULSE_CONTRACT_INDEX, inputType: PULSE_SET_AUTO_LIMITS_INPUT_TYPE, payload: buildPayload(PULSE_SET_AUTO_LIMITS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface PulseSetAutoLimitsOutput {
@@ -383,8 +383,8 @@ const PULSE_DEPOSIT_MANAGED_Q_HEART_INPUT_FIELDS: BinaryField[] = [
 export function buildPulseDepositManagedQHeartInput(
   input: PulseDepositManagedQHeartInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(PULSE_DEPOSIT_MANAGED_Q_HEART_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: PULSE_CONTRACT_INDEX, inputType: PULSE_DEPOSIT_MANAGED_Q_HEART_INPUT_TYPE, payload: buildPayload(PULSE_DEPOSIT_MANAGED_Q_HEART_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface PulseDepositManagedQHeartOutput {
@@ -425,8 +425,8 @@ const PULSE_TRANSFER_TOKEN_TO_QX_INPUT_FIELDS: BinaryField[] = [
 export function buildPulseTransferTokenToQxInput(
   input: PulseTransferTokenToQxInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(PULSE_TRANSFER_TOKEN_TO_QX_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: PULSE_CONTRACT_INDEX, inputType: PULSE_TRANSFER_TOKEN_TO_QX_INPUT_TYPE, payload: buildPayload(PULSE_TRANSFER_TOKEN_TO_QX_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface PulseTransferTokenToQxOutput {
@@ -467,8 +467,8 @@ const PULSE_SET_PRICE_INPUT_FIELDS: BinaryField[] = [
 export function buildPulseSetPriceInput(
   input: PulseSetPriceInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(PULSE_SET_PRICE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: PULSE_CONTRACT_INDEX, inputType: PULSE_SET_PRICE_INPUT_TYPE, payload: buildPayload(PULSE_SET_PRICE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface PulseSetPriceOutput {
@@ -509,8 +509,8 @@ const PULSE_SET_SCHEDULE_INPUT_FIELDS: BinaryField[] = [
 export function buildPulseSetScheduleInput(
   input: PulseSetScheduleInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(PULSE_SET_SCHEDULE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: PULSE_CONTRACT_INDEX, inputType: PULSE_SET_SCHEDULE_INPUT_TYPE, payload: buildPayload(PULSE_SET_SCHEDULE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface PulseSetScheduleOutput {
@@ -551,8 +551,8 @@ const PULSE_SET_DRAW_HOUR_INPUT_FIELDS: BinaryField[] = [
 export function buildPulseSetDrawHourInput(
   input: PulseSetDrawHourInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(PULSE_SET_DRAW_HOUR_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: PULSE_CONTRACT_INDEX, inputType: PULSE_SET_DRAW_HOUR_INPUT_TYPE, payload: buildPayload(PULSE_SET_DRAW_HOUR_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface PulseSetDrawHourOutput {
@@ -614,8 +614,8 @@ const PULSE_SET_FEES_INPUT_FIELDS: BinaryField[] = [
 export function buildPulseSetFeesInput(
   input: PulseSetFeesInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(PULSE_SET_FEES_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: PULSE_CONTRACT_INDEX, inputType: PULSE_SET_FEES_INPUT_TYPE, payload: buildPayload(PULSE_SET_FEES_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface PulseSetFeesOutput {
@@ -656,8 +656,8 @@ const PULSE_SET_Q_HEART_HOLD_LIMIT_INPUT_FIELDS: BinaryField[] = [
 export function buildPulseSetQHeartHoldLimitInput(
   input: PulseSetQHeartHoldLimitInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(PULSE_SET_Q_HEART_HOLD_LIMIT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: PULSE_CONTRACT_INDEX, inputType: PULSE_SET_Q_HEART_HOLD_LIMIT_INPUT_TYPE, payload: buildPayload(PULSE_SET_Q_HEART_HOLD_LIMIT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface PulseSetQHeartHoldLimitOutput {

@@ -2,7 +2,7 @@
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.org/registry'
 import { buildPayload, decodePayload } from '@qubic.org/registry'
 import type { QubicRpcError } from '@qubic.org/rpc'
-import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import { type ContractCall, type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
 import type { Result } from '../result.js'
 
 export const QBAY_CONTRACT_INDEX = 12
@@ -58,8 +58,8 @@ const QBAY_SETTING_CFB_AND_QUBIC_PRICE_INPUT_FIELDS: BinaryField[] = [
 export function buildQbaySettingCFBAndQubicPriceInput(
   input: QbaySettingCFBAndQubicPriceInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QBAY_SETTING_CFB_AND_QUBIC_PRICE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QBAY_CONTRACT_INDEX, inputType: QBAY_SETTING_CFB_AND_QUBIC_PRICE_INPUT_TYPE, payload: buildPayload(QBAY_SETTING_CFB_AND_QUBIC_PRICE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QbaySettingCFBAndQubicPriceOutput {
@@ -138,8 +138,8 @@ const QBAY_CREATE_COLLECTION_INPUT_FIELDS: BinaryField[] = [
 export function buildQbayCreateCollectionInput(
   input: QbayCreateCollectionInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QBAY_CREATE_COLLECTION_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QBAY_CONTRACT_INDEX, inputType: QBAY_CREATE_COLLECTION_INPUT_TYPE, payload: buildPayload(QBAY_CREATE_COLLECTION_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QbayCreateCollectionOutput {
@@ -204,8 +204,8 @@ const QBAY_MINT_INPUT_FIELDS: BinaryField[] = [
 export function buildQbayMintInput(
   input: QbayMintInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QBAY_MINT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QBAY_CONTRACT_INDEX, inputType: QBAY_MINT_INPUT_TYPE, payload: buildPayload(QBAY_MINT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QbayMintOutput {
@@ -256,8 +256,8 @@ const QBAY_MINT_OF_DROP_INPUT_FIELDS: BinaryField[] = [
 export function buildQbayMintOfDropInput(
   input: QbayMintOfDropInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QBAY_MINT_OF_DROP_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QBAY_CONTRACT_INDEX, inputType: QBAY_MINT_OF_DROP_INPUT_TYPE, payload: buildPayload(QBAY_MINT_OF_DROP_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QbayMintOfDropOutput {
@@ -305,8 +305,8 @@ const QBAY_TRANSFER_INPUT_FIELDS: BinaryField[] = [
 export function buildQbayTransferInput(
   input: QbayTransferInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QBAY_TRANSFER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QBAY_CONTRACT_INDEX, inputType: QBAY_TRANSFER_INPUT_TYPE, payload: buildPayload(QBAY_TRANSFER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QbayTransferOutput {
@@ -354,8 +354,8 @@ const QBAY_LIST_IN_MARKET_INPUT_FIELDS: BinaryField[] = [
 export function buildQbayListInMarketInput(
   input: QbayListInMarketInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QBAY_LIST_IN_MARKET_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QBAY_CONTRACT_INDEX, inputType: QBAY_LIST_IN_MARKET_INPUT_TYPE, payload: buildPayload(QBAY_LIST_IN_MARKET_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QbayListInMarketOutput {
@@ -403,8 +403,8 @@ const QBAY_BUY_INPUT_FIELDS: BinaryField[] = [
 export function buildQbayBuyInput(
   input: QbayBuyInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QBAY_BUY_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QBAY_CONTRACT_INDEX, inputType: QBAY_BUY_INPUT_TYPE, payload: buildPayload(QBAY_BUY_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QbayBuyOutput {
@@ -445,8 +445,8 @@ const QBAY_CANCEL_SALE_INPUT_FIELDS: BinaryField[] = [
 export function buildQbayCancelSaleInput(
   input: QbayCancelSaleInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QBAY_CANCEL_SALE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QBAY_CONTRACT_INDEX, inputType: QBAY_CANCEL_SALE_INPUT_TYPE, payload: buildPayload(QBAY_CANCEL_SALE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QbayCancelSaleOutput {
@@ -494,8 +494,8 @@ const QBAY_LIST_IN_EXCHANGE_INPUT_FIELDS: BinaryField[] = [
 export function buildQbayListInExchangeInput(
   input: QbayListInExchangeInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QBAY_LIST_IN_EXCHANGE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QBAY_CONTRACT_INDEX, inputType: QBAY_LIST_IN_EXCHANGE_INPUT_TYPE, payload: buildPayload(QBAY_LIST_IN_EXCHANGE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QbayListInExchangeOutput {
@@ -543,8 +543,8 @@ const QBAY_CANCEL_EXCHANGE_INPUT_FIELDS: BinaryField[] = [
 export function buildQbayCancelExchangeInput(
   input: QbayCancelExchangeInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QBAY_CANCEL_EXCHANGE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QBAY_CONTRACT_INDEX, inputType: QBAY_CANCEL_EXCHANGE_INPUT_TYPE, payload: buildPayload(QBAY_CANCEL_EXCHANGE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QbayCancelExchangeOutput {
@@ -599,8 +599,8 @@ const QBAY_MAKE_OFFER_INPUT_FIELDS: BinaryField[] = [
 export function buildQbayMakeOfferInput(
   input: QbayMakeOfferInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QBAY_MAKE_OFFER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QBAY_CONTRACT_INDEX, inputType: QBAY_MAKE_OFFER_INPUT_TYPE, payload: buildPayload(QBAY_MAKE_OFFER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QbayMakeOfferOutput {
@@ -641,8 +641,8 @@ const QBAY_ACCEPT_OFFER_INPUT_FIELDS: BinaryField[] = [
 export function buildQbayAcceptOfferInput(
   input: QbayAcceptOfferInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QBAY_ACCEPT_OFFER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QBAY_CONTRACT_INDEX, inputType: QBAY_ACCEPT_OFFER_INPUT_TYPE, payload: buildPayload(QBAY_ACCEPT_OFFER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QbayAcceptOfferOutput {
@@ -683,8 +683,8 @@ const QBAY_CANCEL_OFFER_INPUT_FIELDS: BinaryField[] = [
 export function buildQbayCancelOfferInput(
   input: QbayCancelOfferInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QBAY_CANCEL_OFFER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QBAY_CONTRACT_INDEX, inputType: QBAY_CANCEL_OFFER_INPUT_TYPE, payload: buildPayload(QBAY_CANCEL_OFFER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QbayCancelOfferOutput {
@@ -795,8 +795,8 @@ const QBAY_CREATE_TRADITIONAL_AUCTION_INPUT_FIELDS: BinaryField[] = [
 export function buildQbayCreateTraditionalAuctionInput(
   input: QbayCreateTraditionalAuctionInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QBAY_CREATE_TRADITIONAL_AUCTION_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QBAY_CONTRACT_INDEX, inputType: QBAY_CREATE_TRADITIONAL_AUCTION_INPUT_TYPE, payload: buildPayload(QBAY_CREATE_TRADITIONAL_AUCTION_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QbayCreateTraditionalAuctionOutput {
@@ -851,8 +851,8 @@ const QBAY_BID_ON_TRADITIONAL_AUCTION_INPUT_FIELDS: BinaryField[] = [
 export function buildQbayBidOnTraditionalAuctionInput(
   input: QbayBidOnTraditionalAuctionInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QBAY_BID_ON_TRADITIONAL_AUCTION_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QBAY_CONTRACT_INDEX, inputType: QBAY_BID_ON_TRADITIONAL_AUCTION_INPUT_TYPE, payload: buildPayload(QBAY_BID_ON_TRADITIONAL_AUCTION_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QbayBidOnTraditionalAuctionOutput {
@@ -908,8 +908,8 @@ const QBAY_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
 export function buildQbayTransferShareManagementRightsInput(
   input: QbayTransferShareManagementRightsInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QBAY_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QBAY_CONTRACT_INDEX, inputType: QBAY_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE, payload: buildPayload(QBAY_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QbayTransferShareManagementRightsOutput {
@@ -957,8 +957,8 @@ const QBAY_CHANGE_STATUS_OF_MARKET_PLACE_INPUT_FIELDS: BinaryField[] = [
 export function buildQbayChangeStatusOfMarketPlaceInput(
   input: QbayChangeStatusOfMarketPlaceInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(QBAY_CHANGE_STATUS_OF_MARKET_PLACE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: QBAY_CONTRACT_INDEX, inputType: QBAY_CHANGE_STATUS_OF_MARKET_PLACE_INPUT_TYPE, payload: buildPayload(QBAY_CHANGE_STATUS_OF_MARKET_PLACE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QbayChangeStatusOfMarketPlaceOutput {

@@ -2,7 +2,7 @@
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.org/registry'
 import { buildPayload, decodePayload } from '@qubic.org/registry'
 import type { QubicRpcError } from '@qubic.org/rpc'
-import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import { type ContractCall, type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
 import type { Result } from '../result.js'
 
 export const GENERAL_QUORUM_PROPOSAL_CONTRACT_INDEX = 6
@@ -221,8 +221,8 @@ const GENERAL_QUORUM_PROPOSAL_SET_PROPOSAL_INPUT_FIELDS: BinaryField[] = [
 export function buildGeneralQuorumProposalSetProposalInput(
   input: GeneralQuorumProposalSetProposalInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(GENERAL_QUORUM_PROPOSAL_SET_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: GENERAL_QUORUM_PROPOSAL_CONTRACT_INDEX, inputType: GENERAL_QUORUM_PROPOSAL_SET_PROPOSAL_INPUT_TYPE, payload: buildPayload(GENERAL_QUORUM_PROPOSAL_SET_PROPOSAL_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface GeneralQuorumProposalSetProposalOutput {
@@ -291,8 +291,8 @@ const GENERAL_QUORUM_PROPOSAL_VOTE_INPUT_FIELDS: BinaryField[] = [
 export function buildGeneralQuorumProposalVoteInput(
   input: GeneralQuorumProposalVoteInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(GENERAL_QUORUM_PROPOSAL_VOTE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: GENERAL_QUORUM_PROPOSAL_CONTRACT_INDEX, inputType: GENERAL_QUORUM_PROPOSAL_VOTE_INPUT_TYPE, payload: buildPayload(GENERAL_QUORUM_PROPOSAL_VOTE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface GeneralQuorumProposalVoteOutput {

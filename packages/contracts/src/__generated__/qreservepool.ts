@@ -2,7 +2,7 @@
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.org/registry'
 import { buildPayload, decodePayload } from '@qubic.org/registry'
 import type { QubicRpcError } from '@qubic.org/rpc'
-import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import { type ContractCall, type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
 import type { Result } from '../result.js'
 
 export const Q_RESERVE_POOL_CONTRACT_INDEX = 21
@@ -27,8 +27,8 @@ const Q_RESERVE_POOL_WITHDRAW_RESERVE_INPUT_FIELDS: BinaryField[] = [
 export function buildQReservePoolWithdrawReserveInput(
   input: QReservePoolWithdrawReserveInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_RESERVE_POOL_WITHDRAW_RESERVE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_RESERVE_POOL_CONTRACT_INDEX, inputType: Q_RESERVE_POOL_WITHDRAW_RESERVE_INPUT_TYPE, payload: buildPayload(Q_RESERVE_POOL_WITHDRAW_RESERVE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QReservePoolWithdrawReserveOutput {
@@ -76,8 +76,8 @@ const Q_RESERVE_POOL_ADD_ALLOWED_SC_INPUT_FIELDS: BinaryField[] = [
 export function buildQReservePoolAddAllowedSCInput(
   input: QReservePoolAddAllowedSCInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_RESERVE_POOL_ADD_ALLOWED_SC_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_RESERVE_POOL_CONTRACT_INDEX, inputType: Q_RESERVE_POOL_ADD_ALLOWED_SC_INPUT_TYPE, payload: buildPayload(Q_RESERVE_POOL_ADD_ALLOWED_SC_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QReservePoolAddAllowedSCOutput {
@@ -118,8 +118,8 @@ const Q_RESERVE_POOL_REMOVE_ALLOWED_SC_INPUT_FIELDS: BinaryField[] = [
 export function buildQReservePoolRemoveAllowedSCInput(
   input: QReservePoolRemoveAllowedSCInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_RESERVE_POOL_REMOVE_ALLOWED_SC_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_RESERVE_POOL_CONTRACT_INDEX, inputType: Q_RESERVE_POOL_REMOVE_ALLOWED_SC_INPUT_TYPE, payload: buildPayload(Q_RESERVE_POOL_REMOVE_ALLOWED_SC_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QReservePoolRemoveAllowedSCOutput {
@@ -167,8 +167,8 @@ const Q_RESERVE_POOL_SEND_RESERVE_INPUT_FIELDS: BinaryField[] = [
 export function buildQReservePoolSendReserveInput(
   input: QReservePoolSendReserveInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_RESERVE_POOL_SEND_RESERVE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_RESERVE_POOL_CONTRACT_INDEX, inputType: Q_RESERVE_POOL_SEND_RESERVE_INPUT_TYPE, payload: buildPayload(Q_RESERVE_POOL_SEND_RESERVE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QReservePoolSendReserveOutput {

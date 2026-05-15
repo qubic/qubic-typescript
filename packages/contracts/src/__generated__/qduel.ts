@@ -2,7 +2,7 @@
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.org/registry'
 import { buildPayload, decodePayload } from '@qubic.org/registry'
 import type { QubicRpcError } from '@qubic.org/rpc'
-import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import { type ContractCall, type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
 import type { Result } from '../result.js'
 
 export const Q_DUEL_CONTRACT_INDEX = 23
@@ -154,8 +154,8 @@ const Q_DUEL_CREATE_ROOM_INPUT_FIELDS: BinaryField[] = [
 export function buildQDuelCreateRoomInput(
   input: QDuelCreateRoomInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_DUEL_CREATE_ROOM_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_DUEL_CONTRACT_INDEX, inputType: Q_DUEL_CREATE_ROOM_INPUT_TYPE, payload: buildPayload(Q_DUEL_CREATE_ROOM_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QDuelCreateRoomOutput {
@@ -196,8 +196,8 @@ const Q_DUEL_CONNECT_TO_ROOM_INPUT_FIELDS: BinaryField[] = [
 export function buildQDuelConnectToRoomInput(
   input: QDuelConnectToRoomInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_DUEL_CONNECT_TO_ROOM_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_DUEL_CONTRACT_INDEX, inputType: Q_DUEL_CONNECT_TO_ROOM_INPUT_TYPE, payload: buildPayload(Q_DUEL_CONNECT_TO_ROOM_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QDuelConnectToRoomOutput {
@@ -288,8 +288,8 @@ const Q_DUEL_SET_PERCENT_FEES_INPUT_FIELDS: BinaryField[] = [
 export function buildQDuelSetPercentFeesInput(
   input: QDuelSetPercentFeesInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_DUEL_SET_PERCENT_FEES_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_DUEL_CONTRACT_INDEX, inputType: Q_DUEL_SET_PERCENT_FEES_INPUT_TYPE, payload: buildPayload(Q_DUEL_SET_PERCENT_FEES_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QDuelSetPercentFeesOutput {
@@ -330,8 +330,8 @@ const Q_DUEL_SET_TTL_HOURS_INPUT_FIELDS: BinaryField[] = [
 export function buildQDuelSetTTLHoursInput(
   input: QDuelSetTTLHoursInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_DUEL_SET_TTL_HOURS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_DUEL_CONTRACT_INDEX, inputType: Q_DUEL_SET_TTL_HOURS_INPUT_TYPE, payload: buildPayload(Q_DUEL_SET_TTL_HOURS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QDuelSetTTLHoursOutput {
@@ -394,8 +394,8 @@ const Q_DUEL_WITHDRAW_INPUT_FIELDS: BinaryField[] = [
 export function buildQDuelWithdrawInput(
   input: QDuelWithdrawInput,
   identityToPublicKey: (identity: string) => Uint8Array = (_identity: string) => new Uint8Array(32),
-): Uint8Array {
-  return buildPayload(Q_DUEL_WITHDRAW_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+): ContractCall {
+  return { contractIndex: Q_DUEL_CONTRACT_INDEX, inputType: Q_DUEL_WITHDRAW_INPUT_TYPE, payload: buildPayload(Q_DUEL_WITHDRAW_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QDuelWithdrawOutput {

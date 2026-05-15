@@ -15,7 +15,7 @@ TypeScript SDK for the [Qubic](https://qubic.org) network. Modular, tree-shakeab
 | [`@qubic.ts/contracts`](packages/contracts) | 0.1.0 | Generated typed wrappers for every deployed contract |
 | [`@qubic.ts/events`](packages/events) | 0.0.0 | Typed event bus |
 | [`@qubic.ts/wallet`](packages/wallet) | 0.1.0 | Wallet, encrypted vault, and seed utilities |
-| [`@qubic.ts/tcp`](packages/tcp) | 0.0.0 | Direct TCP transport — framing, connection pool, typed request helpers |
+| [`@qubic.ts/tcp`](packages/tcp) | 0.1.0 | Direct TCP transport — framing, connection pool, typed request helpers |
 | [`@qubic.ts/react`](packages/react) | 0.0.0 | React hooks and context providers |
 
 ## Quick start

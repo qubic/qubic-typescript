@@ -130,14 +130,17 @@ function readScalar(
 ): FieldValue {
   switch (type) {
     case 'uint8':
-    case 'sint8':
       return view.getUint8(offset)
+    case 'sint8':
+      return view.getInt8(offset)
     case 'uint16':
-    case 'sint16':
       return view.getUint16(offset, true)
+    case 'sint16':
+      return view.getInt16(offset, true)
     case 'uint32':
-    case 'sint32':
       return view.getUint32(offset, true)
+    case 'sint32':
+      return view.getInt32(offset, true)
     case 'uint64':
       return view.getBigUint64(offset, true)
     case 'sint64':

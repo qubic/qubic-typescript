@@ -46,10 +46,10 @@ jobs:
             FROM=$FROM_EPOCH_INPUT
           else
             FROM=$(bun -e "
-              import { readFileSync } from 'node:fs';
-              const reg = JSON.parse(readFileSync('packages/registry/data/registry.json', 'utf-8'));
-              const max = Math.max(...reg.versions.map(v => v.effectiveFromEpoch));
-              console.log(max + 1);
+              import { readdirSync } from 'node:fs';
+              const dirs = readdirSync('packages/registry/data/epochs')
+                .map(Number).filter(n => !isNaN(n));
+              console.log(Math.max(...dirs) + 1);
             ")
           fi
 

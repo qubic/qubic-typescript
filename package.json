@@ -13,7 +13,7 @@
     "clean": "find . -name dist -not -path '*/node_modules/*' -exec rm -rf {} +",
     "changeset": "changeset",
     "version": "changeset version && bun install",
-    "release": "bun run build && changeset publish",
+    "release": "bun run build && changeset publish --no-provenance",
     "postinstall": "simple-git-hooks"
   },
   "simple-git-hooks": {

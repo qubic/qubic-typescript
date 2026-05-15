@@ -159,8 +159,9 @@ export function createBobRpcClient(options: BobRpcClientOptions): BobRpcClient {
       return call<BobTransferEvent[]>('qubic_getTransfers', [filter], options?.signal)
     },
 
-    getBalance(identity, options) {
-      return call<bigint>('qubic_getBalance', [identity], options?.signal)
+    async getBalance(identity, options) {
+      const r = await call<number | string>('qubic_getBalance', [identity], options?.signal)
+      return r.ok ? ok(BigInt(r.value)) : r
     },
 
     getTransactionByHash(hash, options) {

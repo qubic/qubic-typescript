@@ -13,7 +13,7 @@ TypeScript SDK for the [Qubic](https://qubic.org) network. Modular, tree-shakeab
 | [`@qubic.ts/bob`](packages/bob) | 0.1.0 | Live node client — JSON-RPC 2.0, REST, WebSocket subscriptions |
 | [`@qubic.ts/registry`](packages/registry) | 0.1.0 | Versioned ABI registry for all Qubic smart contracts across all epochs |
 | [`@qubic.ts/contracts`](packages/contracts) | 0.1.0 | Generated typed wrappers for every deployed contract |
-| [`@qubic.ts/events`](packages/events) | 0.0.0 | Typed event bus |
+| [`@qubic.ts/events`](packages/events) | 0.1.0 | Binary event decoder, filter builder, and typed Bob subscription helpers |
 | [`@qubic.ts/wallet`](packages/wallet) | 0.1.0 | Wallet, encrypted vault, and seed utilities |
 | [`@qubic.ts/tcp`](packages/tcp) | 0.1.0 | Direct TCP transport — framing, connection pool, typed request helpers |
 | [`@qubic.ts/react`](packages/react) | 0.0.0 | React hooks and context providers |
@@ -49,13 +49,14 @@ graph TD
   types --> registry
   types --> bob
   types --> tcp
+  types --> events
   crypto --> tx
   crypto --> wallet
   crypto --> tcp
+  crypto --> events
   tx --> wallet
   registry --> contracts
   rpc --> contracts
-  rpc --> events
   bob --> events
   wallet --> react
   events --> react
@@ -138,6 +139,34 @@ if (result.ok) {
   console.log('state:', result.value.state)
 } else {
   console.error('RPC error:', result.error.status, result.error.endpoint)
+}
+```
+
+## End-to-end example: subscribe to live events
+
+```ts
+import { subscribeQuTransfers, subscribeAssetEvents, eventFilter, LOG_TYPE } from '@qubic.ts/events'
+import { createBobSubscriptionClient } from '@qubic.ts/bob'
+import type { Identity } from '@qubic.ts/types'
+
+const bob = createBobSubscriptionClient({ wsUrl: 'wss://bob.qubic.org/v1/ws' })
+
+// Stream QU transfers to/from a specific identity — decoded and typed
+for await (const event of subscribeQuTransfers(bob, { identity: 'BZBQFLL...' as Identity })) {
+  const { source, destination, amount } = event.data.data
+  console.log(`${source} → ${destination}: ${amount} QU at tick ${event.data.tick}`)
+}
+
+// Build a filter for asset events from a specific tick
+const filter = eventFilter()
+  .ofTypes(LOG_TYPE.ASSET_ISSUANCE, LOG_TYPE.ASSET_OWNERSHIP_CHANGE)
+  .fromTick(25_000_000)
+  .build()
+
+for await (const event of subscribeAssetEvents(bob, filter)) {
+  if (event.data.logType === LOG_TYPE.ASSET_ISSUANCE) {
+    console.log('New asset:', event.data.data.assetName, 'by', event.data.data.issuer)
+  }
 }
 ```
 

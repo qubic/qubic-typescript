@@ -87,6 +87,12 @@ export function createMetaMaskSnapConnector(
 
   const listeners = new Map<WalletConnectorEvent, Set<EventCallback>>()
 
+  // Eagerly check Snaps support so isAvailable() can be synchronous.
+  let snapsAvailable = false
+  hasSnapsSupport().then((v) => {
+    snapsAvailable = v
+  })
+
   async function invokeSnap<T>(method: string, params?: unknown): Promise<T> {
     return getEthereum().request<T>({
       method: 'wallet_invokeSnap',
@@ -98,7 +104,7 @@ export function createMetaMaskSnapConnector(
     id: 'metamask-snap',
 
     isAvailable(): boolean {
-      return typeof (globalThis as WindowWithEthereum).ethereum !== 'undefined'
+      return snapsAvailable
     },
 
     async connect(_options?: ConnectOptions): Promise<WalletAccount> {

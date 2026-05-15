@@ -392,6 +392,11 @@ export function buildPayloadManual(
   }
   let totalSize = 0
   for (const f of fields) {
+    if (f.type === 'struct' || f.type === 'array') {
+      throw new PayloadBuildError(
+        `buildPayloadManual does not support '${f.type}' fields — use buildPayload with a full BinaryField descriptor instead`,
+      )
+    }
     totalSize += f.value instanceof Uint8Array ? f.value.byteLength : (sizes[f.type] ?? 0)
   }
   const buf = new Uint8Array(totalSize)

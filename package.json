@@ -12,7 +12,7 @@
     "ci:lint": "bunx biome ci .",
     "clean": "find . -name dist -not -path '*/node_modules/*' -exec rm -rf {} +",
     "changeset": "changeset",
-    "version": "changeset version && bunx biome format --write . && bun install",
+    "version": "changeset version && bun scripts/replace-workspace-refs.ts && bunx biome format --write . && bun install",
     "check:no-workspace-refs": "node -e \"const g=require('node:fs').globSync('packages/*/package.json');const bad=g.filter(f=>{const t=require('node:fs').readFileSync(f,'utf8');return t.includes('workspace:')});if(bad.length){console.error('workspace: refs found — run bun run version first:\\n'+bad.join('\\n'));process.exit(1)}\"",
     "release": "bun run check:no-workspace-refs && bun run build && changeset publish",
     "postinstall": "simple-git-hooks"

@@ -1,6 +1,6 @@
 {
   "name": "@qubic.org/tx",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "sideEffects": false,
   "exports": {
@@ -10,7 +10,9 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc --noEmit",
@@ -21,8 +23,8 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@qubic.org/crypto": "workspace:^",
-    "@qubic.org/types": "workspace:^"
+    "@qubic.org/crypto": "workspace:*",
+    "@qubic.org/types": "workspace:*"
   },
   "devDependencies": {
     "typescript": "*"

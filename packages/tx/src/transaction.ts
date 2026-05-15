@@ -51,6 +51,16 @@ export interface DecodedTransaction {
 export function buildTransaction(input: TransactionInput): Uint8Array {
   const payload = input.payload ?? new Uint8Array(0)
 
+  if (input.sourcePublicKey.byteLength !== PK_SIZE) {
+    throw new InvalidTransactionError(
+      `sourcePublicKey must be exactly ${PK_SIZE} bytes, got ${input.sourcePublicKey.byteLength}`,
+    )
+  }
+  if (input.destinationPublicKey.byteLength !== PK_SIZE) {
+    throw new InvalidTransactionError(
+      `destinationPublicKey must be exactly ${PK_SIZE} bytes, got ${input.destinationPublicKey.byteLength}`,
+    )
+  }
   if (payload.byteLength > PROTOCOL.MAX_INPUT_SIZE) {
     throw new PayloadTooLargeError(payload.byteLength)
   }
@@ -59,8 +69,8 @@ export function buildTransaction(input: TransactionInput): Uint8Array {
   }
 
   const writer = new BinaryWriter(HEADER_SIZE + payload.byteLength)
-  writer.writeBytes(input.sourcePublicKey.slice(0, PK_SIZE))
-  writer.writeBytes(input.destinationPublicKey.slice(0, PK_SIZE))
+  writer.writeBytes(input.sourcePublicKey)
+  writer.writeBytes(input.destinationPublicKey)
   writer.writeInt64(input.amount)
   writer.writeUint32(input.targetTick)
   writer.writeUint16(input.inputType)

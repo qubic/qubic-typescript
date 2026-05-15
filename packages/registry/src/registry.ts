@@ -18,6 +18,18 @@ export class AbiNotFoundError extends Error {
   }
 }
 
+export class EntryNotFoundError extends AbiNotFoundError {
+  constructor(
+    readonly kind: 'procedure' | 'function',
+    readonly contractName: string,
+    readonly inputType: number,
+  ) {
+    super(-1, -1)
+    this.message = `${kind} inputType ${inputType} not found in contract ${contractName}`
+    this.name = 'EntryNotFoundError'
+  }
+}
+
 /**
  * Returns the ABI version active at the given epoch for the given contract.
  * @throws {AbiNotFoundError} if no version covers the epoch.
@@ -75,21 +87,17 @@ export function getCurrentAbi(
  */
 export function getProcedure(version: ContractAbiVersion, inputType: number): ContractCallBase {
   const proc = version.procedures.find((p) => p.inputType === inputType)
-  if (!proc)
-    throw new Error(
-      `Procedure inputType ${inputType} not found in contract ${version.contractName}`,
-    )
+  if (!proc) throw new EntryNotFoundError('procedure', version.contractName, inputType)
   return proc
 }
 
 /**
  * Finds a function by inputType ordinal.
- * @throws if not found.
+ * @throws {EntryNotFoundError} if not found.
  */
 export function getFunction(version: ContractAbiVersion, inputType: number): ContractCallBase {
   const fn = version.functions.find((f) => f.inputType === inputType)
-  if (!fn)
-    throw new Error(`Function inputType ${inputType} not found in contract ${version.contractName}`)
+  if (!fn) throw new EntryNotFoundError('function', version.contractName, inputType)
   return fn
 }
 

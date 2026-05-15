@@ -1,6 +1,6 @@
 {
   "name": "@qubic.org/rpc",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "sideEffects": false,
   "exports": {
@@ -10,7 +10,9 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "generate": "openapi-typescript ../../resources/live-api.json -o src/live-schema.d.ts && openapi-typescript ../../resources/query-api.json -o src/query-schema.d.ts",
     "build": "tsc -p tsconfig.json",
@@ -22,7 +24,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@qubic.org/types": "workspace:^",
+    "@qubic.org/types": "workspace:*",
     "openapi-fetch": "^0.17.0"
   },
   "devDependencies": {

@@ -44,7 +44,7 @@ export function deriveKeys(seed: Seed): DerivedKeys {
  */
 export function publicKeyToIdentity(publicKey: Uint8Array): Identity {
   if (publicKey.byteLength !== 32) {
-    throw new Error('Public keys must be exactly 32 bytes')
+    throw new InvalidIdentityError('Public keys must be exactly 32 bytes')
   }
 
   const identity = new Uint16Array(IDENTITY_LENGTH)

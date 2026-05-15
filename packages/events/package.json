@@ -1,6 +1,6 @@
 {
   "name": "@qubic.org/events",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "sideEffects": false,
   "exports": {
@@ -9,15 +9,17 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@qubic.org/bob": "workspace:^",
-    "@qubic.org/crypto": "workspace:^",
-    "@qubic.org/types": "workspace:^"
+    "@qubic.org/bob": "workspace:*",
+    "@qubic.org/crypto": "workspace:*",
+    "@qubic.org/types": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^25.8.0",

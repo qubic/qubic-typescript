@@ -1,11 +1,9 @@
 import type { BroadcastTransactionResponse } from '@qubic.org/rpc'
 import type { Identity } from '@qubic.org/types'
+import { SC_DESTINATION } from '@qubic.org/wallet'
 import { type UseMutationResult, useMutation } from '@tanstack/react-query'
 import { useQubic } from '../context.js'
 import { useVaultSigning } from '../vault/vault-provider.js'
-
-// 60-character zero identity — standard destination for Qubic contract calls.
-const SC_DESTINATION = 'A'.repeat(60) as Identity
 
 export interface SendContractCallParams {
   /** Identity of the sender — must correspond to a wallet in the active vault. */

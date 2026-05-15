@@ -1,3 +1,4 @@
+import type { BroadcastTransactionResponse } from '@qubic.org/rpc'
 import type { Identity } from '@qubic.org/types'
 
 export interface WalletAccount {
@@ -14,7 +15,7 @@ export interface SignTransactionResult {
 
 export interface SendTransactionResult extends SignTransactionResult {
   networkTxId: string
-  broadcast: unknown
+  broadcast: BroadcastTransactionResponse
 }
 
 export interface SignMessageResult {

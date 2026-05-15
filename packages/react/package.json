@@ -18,9 +18,9 @@
     "react": ">=18"
   },
   "dependencies": {
-    "@qubic.ts/events": "workspace:^",
     "@qubic.ts/rpc": "workspace:^",
-    "@qubic.ts/wallet": "workspace:^"
+    "@qubic.ts/wallet": "workspace:^",
+    "@tanstack/react-query": "^5.100.10"
   },
   "devDependencies": {
     "@types/react": "^19.0.0",

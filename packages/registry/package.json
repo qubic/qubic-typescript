@@ -24,8 +24,7 @@
     "test": "bun test",
     "validate": "bun scripts/validate.ts",
     "backfill": "bun scripts/backfill.ts",
-    "extract-abi": "bun scripts/extract-abi.ts",
-    "publish": "bun publish --access public"
+    "extract-abi": "bun scripts/extract-abi.ts"
   },
   "dependencies": {
     "@qubic.org/crypto": "workspace:^",

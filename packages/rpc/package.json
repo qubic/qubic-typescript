@@ -15,8 +15,7 @@
     "generate": "openapi-typescript ../../resources/live-api.json -o src/live-schema.d.ts && openapi-typescript ../../resources/query-api.json -o src/query-schema.d.ts",
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc --noEmit",
-    "test": "bun test",
-    "publish": "bun publish --access public"
+    "test": "bun test"
   },
   "publishConfig": {
     "access": "public",

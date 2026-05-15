@@ -15,8 +15,7 @@
     "generate": "bun scripts/generate.ts",
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc --noEmit",
-    "test": "bun test",
-    "publish": "bun publish --access public"
+    "test": "bun test"
   },
   "dependencies": {
     "@qubic.org/registry": "workspace:^",

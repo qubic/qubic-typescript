@@ -14,8 +14,7 @@
   "scripts": {
     "build": "tsc --emitDeclarationOnly && bun build src/index.ts --outdir dist --target browser --format esm --sourcemap",
     "typecheck": "tsc --noEmit",
-    "test": "bun test",
-    "publish": "bun publish --access public"
+    "test": "bun test"
   },
   "publishConfig": {
     "access": "public",

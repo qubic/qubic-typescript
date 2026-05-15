@@ -28,6 +28,7 @@
     "publish": "bun publish --access public"
   },
   "dependencies": {
+    "@qubic.ts/crypto": "workspace:^",
     "@qubic.ts/types": "workspace:^",
     "tree-sitter-cpp": "^0.23.4",
     "web-tree-sitter": "^0.26.8"

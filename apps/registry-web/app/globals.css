@@ -1288,6 +1288,13 @@ button:focus-visible {
   display: flex;
   gap: 6px;
 }
+.contract-address {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
 .contract-meta {
   display: grid;
   grid-template-columns: repeat(4, 1fr);

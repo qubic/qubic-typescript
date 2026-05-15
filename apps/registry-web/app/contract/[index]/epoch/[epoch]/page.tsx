@@ -1,6 +1,8 @@
+import { contractIndexToIdentity } from '@qubic.ts/crypto'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { AbiView } from '../../../../../components/abi-view'
+import { CopyButton } from '../../../../../components/copy-button'
 import { Crumbs } from '../../../../../components/crumbs'
 import { api } from '../../../../../lib/api'
 
@@ -22,6 +24,7 @@ export default async function AbiSnapshotPage({
   const { version } = result
   const name = current?.contractName ?? version.contractName
   const isCurrent = result.isCurrent
+  const address = contractIndexToIdentity(idx)
 
   return (
     <main className="container">
@@ -52,6 +55,12 @@ export default async function AbiSnapshotPage({
               contractIndex {idx} · effective e{version.effectiveFromEpoch}
               {version.effectiveToEpoch !== null ? ` – e${version.effectiveToEpoch}` : ' → now'}
             </p>
+            <div className="contract-address" style={{ marginTop: 6 }}>
+              <span className="mono fmuted" style={{ fontSize: 11, letterSpacing: '0.03em' }}>
+                {address}
+              </span>
+              <CopyButton value={address} label="copy address" />
+            </div>
           </div>
           <span style={{ flex: 1 }} />
           <div style={{ display: 'flex', gap: 6 }}>

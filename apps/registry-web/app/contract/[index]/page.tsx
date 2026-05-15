@@ -1,6 +1,8 @@
+import { contractIndexToIdentity } from '@qubic.ts/crypto'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { AbiView } from '../../../components/abi-view'
+import { CopyButton } from '../../../components/copy-button'
 import { Crumbs } from '../../../components/crumbs'
 import { Sigil } from '../../../components/sigil'
 import { api } from '../../../lib/api'
@@ -9,6 +11,7 @@ export default async function ContractPage({ params }: { params: Promise<{ index
   const { index } = await params
   const idx = Number(index)
 
+  const address = contractIndexToIdentity(idx)
   const [current, history] = await Promise.all([
     api.contract(idx).catch(() => null),
     api.contractHistory(idx).catch(() => []),
@@ -37,6 +40,12 @@ export default async function ContractPage({ params }: { params: Promise<{ index
             <span>
               {history.length} ABI version{history.length !== 1 ? 's' : ''}
             </span>
+          </div>
+          <div className="contract-address">
+            <span className="mono fmuted" style={{ fontSize: 11, letterSpacing: '0.03em' }}>
+              {address}
+            </span>
+            <CopyButton value={address} label="copy address" />
           </div>
         </div>
         <div className="actions">

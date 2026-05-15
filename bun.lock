@@ -34,6 +34,7 @@
       "name": "registry-web",
       "version": "0.0.0",
       "dependencies": {
+        "@qubic.ts/crypto": "workspace:^",
         "@qubic.ts/registry": "workspace:^",
         "@radix-ui/react-dialog": "^1.1.15",
         "cmdk": "^1.1.1",
@@ -117,6 +118,7 @@
       "name": "@qubic.ts/registry",
       "version": "0.1.0",
       "dependencies": {
+        "@qubic.ts/crypto": "workspace:^",
         "@qubic.ts/types": "workspace:^",
         "tree-sitter-cpp": "^0.23.4",
         "web-tree-sitter": "^0.26.8",

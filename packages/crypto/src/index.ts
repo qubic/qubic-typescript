@@ -7,7 +7,7 @@ export {
 } from './errors.js'
 export { k12 } from './k12.js'
 export { generateRandomSeed, getRandomBytes } from './random.js'
-export { identityToPublicKey, publicKeyToIdentity } from './identity.js'
+export { contractIndexToIdentity, identityToPublicKey, publicKeyToIdentity } from './identity.js'
 
 import type { Identity, Seed } from './brands.js'
 import { deriveKeys, publicKeyToIdentity } from './identity.js'

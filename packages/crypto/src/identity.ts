@@ -116,3 +116,21 @@ function encodeChecksum(publicKey: Uint8Array): number[] {
 
   return output
 }
+
+/**
+ * Returns the deterministic Qubic identity for a smart contract at a given index.
+ *
+ * Contract addresses are the identity of a 32-byte little-endian integer equal
+ * to the contractIndex — i.e. index 1 → publicKey [1,0,...,0].
+ *
+ * @param contractIndex - Integer contract index (1-based, must be ≥ 1).
+ * @returns The 60-character uppercase identity string.
+ */
+export function contractIndexToIdentity(contractIndex: number): Identity {
+  if (!Number.isInteger(contractIndex) || contractIndex < 1) {
+    throw new Error(`contractIndex must be a positive integer, got ${contractIndex}`)
+  }
+  const publicKey = new Uint8Array(32)
+  new DataView(publicKey.buffer).setUint32(0, contractIndex, true)
+  return publicKeyToIdentity(publicKey)
+}

@@ -56,6 +56,8 @@ export interface ContractCallBase {
 export interface ContractAbiVersion {
   contractIndex: number
   contractName: string
+  /** Deterministic 60-char Qubic identity derived from contractIndex. */
+  contractAddress?: string
   effectiveFromEpoch: number
   /** null = currently active */
   effectiveToEpoch: number | null

@@ -3,6 +3,7 @@
  * Used by extract-abi.ts (single contract) and backfill.ts (batch).
  */
 import { join } from 'node:path'
+import { contractIndexToIdentity } from '@qubic.ts/crypto'
 import type { BinaryField, ContractAbiVersion, FieldType, NamedStruct } from '../src/types.js'
 
 // ── Tree-sitter init (singleton) ──────────────────────────────────────────────
@@ -694,6 +695,7 @@ export function parseContractHeader(options: ParseHeaderOptions): ContractAbiVer
   return {
     contractIndex,
     contractName,
+    contractAddress: contractIndexToIdentity(contractIndex),
     effectiveFromEpoch,
     effectiveToEpoch: null,
     structs,

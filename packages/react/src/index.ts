@@ -26,3 +26,16 @@ export { useSendTransfer } from './use-send-transfer.js'
 export type { SendTransferParams } from './use-send-transfer.js'
 export { useSendContractCall } from './use-send-contract-call.js'
 export type { SendContractCallParams } from './use-send-contract-call.js'
+
+// Wallet connector — extension, WalletConnect, MetaMask Snap, etc.
+export type {
+  WalletAccount,
+  WalletConnector,
+  WalletConnectorEvent,
+  SendTransactionResult,
+  SignTransactionResult,
+  SignMessageResult,
+} from './connector.js'
+export { extensionConnector } from './extension-connector.js'
+export { useWalletConnector } from './use-wallet-connector.js'
+export type { WalletConnectorState } from './use-wallet-connector.js'

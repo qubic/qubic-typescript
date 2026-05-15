@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'bun:test'
-import { LOG_TYPE } from '@qubic.ts/types'
-import { EventDecodeError } from '../src/errors.js'
-import { decodeEvent } from '../src/decode-event.js'
 import type { BobLogEvent } from '@qubic.ts/bob'
+import { LOG_TYPE } from '@qubic.ts/types'
+import { decodeEvent } from '../src/decode-event.js'
+import { EventDecodeError } from '../src/errors.js'
 
 // ── helpers ───────────────────────────────────────────────────────────────────
 
@@ -48,8 +48,8 @@ function writeUint16LE(buf: Uint8Array, offset: number, value: number) {
 describe('decodeEvent', () => {
   test('QU_TRANSFER decodes source, destination, amount', () => {
     const buf = new Uint8Array(72)
-    writeIdentity(buf, 0, 0x01)   // source public key
-    writeIdentity(buf, 32, 0x02)  // destination public key
+    writeIdentity(buf, 0, 0x01) // source public key
+    writeIdentity(buf, 32, 0x02) // destination public key
     writeInt64LE(buf, 64, 1_000_000n)
 
     const event = decodeEvent(makeEvent(LOG_TYPE.QU_TRANSFER, buf))

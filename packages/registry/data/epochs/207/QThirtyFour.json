@@ -1,6 +1,7 @@
 {
   "contractIndex": 22,
   "contractName": "QThirtyFour",
+  "contractAddress": "WAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVDQA",
   "effectiveFromEpoch": 207,
   "effectiveToEpoch": null,
   "structs": {
@@ -602,6 +603,5 @@
       "inputSize": 0,
       "outputSize": 1
     }
-  ],
-  "contractAddress": "WAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVDQA"
+  ]
 }

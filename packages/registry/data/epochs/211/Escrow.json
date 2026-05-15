@@ -1,6 +1,7 @@
 {
   "contractIndex": 27,
   "contractName": "Escrow",
+  "contractAddress": "BBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAXPZM",
   "effectiveFromEpoch": 211,
   "effectiveToEpoch": null,
   "structs": {
@@ -362,6 +363,5 @@
       "inputSize": 72,
       "outputSize": 8
     }
-  ],
-  "contractAddress": "BBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAXPZM"
+  ]
 }

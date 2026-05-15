@@ -1,0 +1,33 @@
+{
+  "contractIndex": 3,
+  "contractName": "Random",
+  "contractAddress": "DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANMIG",
+  "effectiveFromEpoch": 213,
+  "effectiveToEpoch": null,
+  "structs": {},
+  "procedures": [
+    {
+      "kind": "procedure",
+      "inputType": 1,
+      "name": "RevealAndCommit",
+      "inputFields": [
+        {
+          "name": "reveal",
+          "type": "bytes",
+          "offset": 0,
+          "byteLength": 512
+        },
+        {
+          "name": "commit",
+          "type": "id",
+          "offset": 512,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [],
+      "inputSize": 544,
+      "outputSize": 0
+    }
+  ],
+  "functions": []
+}

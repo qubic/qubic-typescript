@@ -1,6 +1,7 @@
 {
   "contractIndex": 12,
   "contractName": "Qbay",
+  "contractAddress": "MAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWLWD",
   "effectiveFromEpoch": 210,
   "effectiveToEpoch": null,
   "structs": {
@@ -1320,6 +1321,5 @@
       "inputSize": 40,
       "outputSize": 4096
     }
-  ],
-  "contractAddress": "MAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWLWD"
+  ]
 }

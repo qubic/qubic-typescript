@@ -1,6 +1,7 @@
 {
   "contractIndex": 1,
   "contractName": "Qx",
+  "contractAddress": "BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARMID",
   "effectiveFromEpoch": 156,
   "effectiveToEpoch": null,
   "structs": {
@@ -500,6 +501,5 @@
       "inputSize": 40,
       "outputSize": 12288
     }
-  ],
-  "contractAddress": "BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARMID"
+  ]
 }

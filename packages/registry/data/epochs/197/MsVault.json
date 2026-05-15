@@ -1,6 +1,7 @@
 {
   "contractIndex": 11,
   "contractName": "MsVault",
+  "contractAddress": "LAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKPTJ",
   "effectiveFromEpoch": 197,
   "effectiveToEpoch": null,
   "structs": {
@@ -956,6 +957,5 @@
       "inputSize": 8,
       "outputSize": 400
     }
-  ],
-  "contractAddress": "LAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKPTJ"
+  ]
 }

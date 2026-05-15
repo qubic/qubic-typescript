@@ -1,0 +1,1739 @@
+{
+  "contractIndex": 10,
+  "contractName": "QVAULT",
+  "contractAddress": "KAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAXIUO",
+  "effectiveFromEpoch": 213,
+  "effectiveToEpoch": null,
+  "structs": {
+    "Asset": {
+      "name": "Asset",
+      "byteLength": 40,
+      "fields": [
+        {
+          "name": "issuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        }
+      ]
+    },
+    "GPInfo": {
+      "name": "GPInfo",
+      "fields": [
+        {
+          "name": "proposer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "currentTotalVotingPower",
+          "type": "uint32",
+          "offset": 32,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfYes",
+          "type": "uint32",
+          "offset": 36,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfNo",
+          "type": "uint32",
+          "offset": 40,
+          "byteLength": 4
+        },
+        {
+          "name": "proposedEpoch",
+          "type": "uint32",
+          "offset": 44,
+          "byteLength": 4
+        },
+        {
+          "name": "currentQuorumPercent",
+          "type": "uint32",
+          "offset": 48,
+          "byteLength": 4
+        },
+        {
+          "name": "url",
+          "type": "array",
+          "offset": 52,
+          "byteLength": 256,
+          "arrayLength": 256,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        },
+        {
+          "name": "result",
+          "type": "uint8",
+          "offset": 308,
+          "byteLength": 1
+        }
+      ],
+      "byteLength": 309
+    },
+    "QCPInfo": {
+      "name": "QCPInfo",
+      "fields": [
+        {
+          "name": "proposer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "currentTotalVotingPower",
+          "type": "uint32",
+          "offset": 32,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfYes",
+          "type": "uint32",
+          "offset": 36,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfNo",
+          "type": "uint32",
+          "offset": 40,
+          "byteLength": 4
+        },
+        {
+          "name": "proposedEpoch",
+          "type": "uint32",
+          "offset": 44,
+          "byteLength": 4
+        },
+        {
+          "name": "currentQuorumPercent",
+          "type": "uint32",
+          "offset": 48,
+          "byteLength": 4
+        },
+        {
+          "name": "newQuorumPercent",
+          "type": "uint32",
+          "offset": 52,
+          "byteLength": 4
+        },
+        {
+          "name": "url",
+          "type": "array",
+          "offset": 56,
+          "byteLength": 256,
+          "arrayLength": 256,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        },
+        {
+          "name": "result",
+          "type": "uint8",
+          "offset": 312,
+          "byteLength": 1
+        }
+      ],
+      "byteLength": 313
+    },
+    "IPOPInfo": {
+      "name": "IPOPInfo",
+      "fields": [
+        {
+          "name": "proposer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "totalWeight",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "assignedFund",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "currentTotalVotingPower",
+          "type": "uint32",
+          "offset": 48,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfYes",
+          "type": "uint32",
+          "offset": 52,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfNo",
+          "type": "uint32",
+          "offset": 56,
+          "byteLength": 4
+        },
+        {
+          "name": "proposedEpoch",
+          "type": "uint32",
+          "offset": 60,
+          "byteLength": 4
+        },
+        {
+          "name": "ipoContractIndex",
+          "type": "uint32",
+          "offset": 64,
+          "byteLength": 4
+        },
+        {
+          "name": "currentQuorumPercent",
+          "type": "uint32",
+          "offset": 68,
+          "byteLength": 4
+        },
+        {
+          "name": "url",
+          "type": "array",
+          "offset": 72,
+          "byteLength": 256,
+          "arrayLength": 256,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        },
+        {
+          "name": "result",
+          "type": "uint8",
+          "offset": 328,
+          "byteLength": 1
+        }
+      ],
+      "byteLength": 329
+    },
+    "QEarnPInfo": {
+      "name": "QEarnPInfo",
+      "fields": [
+        {
+          "name": "proposer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "amountOfInvestPerEpoch",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "assignedFundPerEpoch",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "currentTotalVotingPower",
+          "type": "uint32",
+          "offset": 48,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfYes",
+          "type": "uint32",
+          "offset": 52,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfNo",
+          "type": "uint32",
+          "offset": 56,
+          "byteLength": 4
+        },
+        {
+          "name": "proposedEpoch",
+          "type": "uint32",
+          "offset": 60,
+          "byteLength": 4
+        },
+        {
+          "name": "currentQuorumPercent",
+          "type": "uint32",
+          "offset": 64,
+          "byteLength": 4
+        },
+        {
+          "name": "url",
+          "type": "array",
+          "offset": 68,
+          "byteLength": 256,
+          "arrayLength": 256,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        },
+        {
+          "name": "numberOfEpoch",
+          "type": "uint8",
+          "offset": 324,
+          "byteLength": 1
+        },
+        {
+          "name": "result",
+          "type": "uint8",
+          "offset": 325,
+          "byteLength": 1
+        }
+      ],
+      "byteLength": 326
+    },
+    "FundPInfo": {
+      "name": "FundPInfo",
+      "fields": [
+        {
+          "name": "proposer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "pricePerOneQcap",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "currentTotalVotingPower",
+          "type": "uint32",
+          "offset": 40,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfYes",
+          "type": "uint32",
+          "offset": 44,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfNo",
+          "type": "uint32",
+          "offset": 48,
+          "byteLength": 4
+        },
+        {
+          "name": "amountOfQcap",
+          "type": "uint32",
+          "offset": 52,
+          "byteLength": 4
+        },
+        {
+          "name": "restSaleAmount",
+          "type": "uint32",
+          "offset": 56,
+          "byteLength": 4
+        },
+        {
+          "name": "proposedEpoch",
+          "type": "uint32",
+          "offset": 60,
+          "byteLength": 4
+        },
+        {
+          "name": "currentQuorumPercent",
+          "type": "uint32",
+          "offset": 64,
+          "byteLength": 4
+        },
+        {
+          "name": "url",
+          "type": "array",
+          "offset": 68,
+          "byteLength": 256,
+          "arrayLength": 256,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        },
+        {
+          "name": "result",
+          "type": "uint8",
+          "offset": 324,
+          "byteLength": 1
+        }
+      ],
+      "byteLength": 325
+    },
+    "MKTPInfo": {
+      "name": "MKTPInfo",
+      "fields": [
+        {
+          "name": "proposer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "amountOfQubic",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "shareName",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "currentTotalVotingPower",
+          "type": "uint32",
+          "offset": 48,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfYes",
+          "type": "uint32",
+          "offset": 52,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfNo",
+          "type": "uint32",
+          "offset": 56,
+          "byteLength": 4
+        },
+        {
+          "name": "amountOfQcap",
+          "type": "uint32",
+          "offset": 60,
+          "byteLength": 4
+        },
+        {
+          "name": "currentQuorumPercent",
+          "type": "uint32",
+          "offset": 64,
+          "byteLength": 4
+        },
+        {
+          "name": "proposedEpoch",
+          "type": "uint32",
+          "offset": 68,
+          "byteLength": 4
+        },
+        {
+          "name": "shareIndex",
+          "type": "uint32",
+          "offset": 72,
+          "byteLength": 4
+        },
+        {
+          "name": "amountOfShare",
+          "type": "uint32",
+          "offset": 76,
+          "byteLength": 4
+        },
+        {
+          "name": "url",
+          "type": "array",
+          "offset": 80,
+          "byteLength": 256,
+          "arrayLength": 256,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        },
+        {
+          "name": "result",
+          "type": "uint8",
+          "offset": 336,
+          "byteLength": 1
+        }
+      ],
+      "byteLength": 337
+    },
+    "AlloPInfo": {
+      "name": "AlloPInfo",
+      "fields": [
+        {
+          "name": "proposer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "currentTotalVotingPower",
+          "type": "uint32",
+          "offset": 32,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfYes",
+          "type": "uint32",
+          "offset": 36,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfNo",
+          "type": "uint32",
+          "offset": 40,
+          "byteLength": 4
+        },
+        {
+          "name": "proposedEpoch",
+          "type": "uint32",
+          "offset": 44,
+          "byteLength": 4
+        },
+        {
+          "name": "currentQuorumPercent",
+          "type": "uint32",
+          "offset": 48,
+          "byteLength": 4
+        },
+        {
+          "name": "reinvested",
+          "type": "uint32",
+          "offset": 52,
+          "byteLength": 4
+        },
+        {
+          "name": "distributed",
+          "type": "uint32",
+          "offset": 56,
+          "byteLength": 4
+        },
+        {
+          "name": "burnQcap",
+          "type": "uint32",
+          "offset": 60,
+          "byteLength": 4
+        },
+        {
+          "name": "url",
+          "type": "array",
+          "offset": 64,
+          "byteLength": 256,
+          "arrayLength": 256,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        },
+        {
+          "name": "result",
+          "type": "uint8",
+          "offset": 320,
+          "byteLength": 1
+        }
+      ],
+      "byteLength": 321
+    }
+  },
+  "procedures": [
+    {
+      "kind": "procedure",
+      "inputType": 2,
+      "name": "stake",
+      "inputFields": [
+        {
+          "name": "amount",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 3,
+      "name": "unStake",
+      "inputFields": [
+        {
+          "name": "amount",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 4,
+      "name": "submitGP",
+      "inputFields": [
+        {
+          "name": "url",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 256,
+          "arrayLength": 256,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 256,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 5,
+      "name": "submitQCP",
+      "inputFields": [
+        {
+          "name": "newQuorumPercent",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "url",
+          "type": "array",
+          "offset": 4,
+          "byteLength": 256,
+          "arrayLength": 256,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 260,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 6,
+      "name": "submitIPOP",
+      "inputFields": [
+        {
+          "name": "ipoContractIndex",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "url",
+          "type": "array",
+          "offset": 4,
+          "byteLength": 256,
+          "arrayLength": 256,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 260,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 7,
+      "name": "submitQEarnP",
+      "inputFields": [
+        {
+          "name": "amountPerEpoch",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "numberOfEpoch",
+          "type": "uint32",
+          "offset": 8,
+          "byteLength": 4
+        },
+        {
+          "name": "url",
+          "type": "array",
+          "offset": 12,
+          "byteLength": 256,
+          "arrayLength": 256,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 268,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 8,
+      "name": "submitFundP",
+      "inputFields": [
+        {
+          "name": "priceOfOneQcap",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "amountOfQcap",
+          "type": "uint32",
+          "offset": 8,
+          "byteLength": 4
+        },
+        {
+          "name": "url",
+          "type": "array",
+          "offset": 12,
+          "byteLength": 256,
+          "arrayLength": 256,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 268,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 9,
+      "name": "submitMKTP",
+      "inputFields": [
+        {
+          "name": "amountOfQubic",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "shareName",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "amountOfQcap",
+          "type": "uint32",
+          "offset": 16,
+          "byteLength": 4
+        },
+        {
+          "name": "indexOfShare",
+          "type": "uint32",
+          "offset": 20,
+          "byteLength": 4
+        },
+        {
+          "name": "amountOfShare",
+          "type": "uint32",
+          "offset": 24,
+          "byteLength": 4
+        },
+        {
+          "name": "url",
+          "type": "array",
+          "offset": 28,
+          "byteLength": 256,
+          "arrayLength": 256,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 284,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 10,
+      "name": "submitAlloP",
+      "inputFields": [
+        {
+          "name": "reinvested",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "burn",
+          "type": "uint32",
+          "offset": 4,
+          "byteLength": 4
+        },
+        {
+          "name": "distribute",
+          "type": "uint32",
+          "offset": 8,
+          "byteLength": 4
+        },
+        {
+          "name": "url",
+          "type": "array",
+          "offset": 12,
+          "byteLength": 256,
+          "arrayLength": 256,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 268,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 11,
+      "name": "voteInProposal",
+      "inputFields": [
+        {
+          "name": "priceOfIPO",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "proposalType",
+          "type": "uint32",
+          "offset": 8,
+          "byteLength": 4
+        },
+        {
+          "name": "proposalId",
+          "type": "uint32",
+          "offset": 12,
+          "byteLength": 4
+        },
+        {
+          "name": "yes",
+          "type": "uint8",
+          "offset": 16,
+          "byteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 17,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 12,
+      "name": "buyQcap",
+      "inputFields": [
+        {
+          "name": "amount",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 13,
+      "name": "TransferShareManagementRights",
+      "inputFields": [
+        {
+          "name": "asset",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 40,
+          "structRef": "Asset"
+        },
+        {
+          "name": "numberOfShares",
+          "type": "sint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "newManagingContractIndex",
+          "type": "uint32",
+          "offset": 48,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "transferredNumberOfShares",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 8,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 52,
+      "outputSize": 12
+    }
+  ],
+  "functions": [
+    {
+      "kind": "function",
+      "inputType": 1,
+      "name": "getData",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "totalVotingPower",
+          "type": "uint64",
+          "offset": 4,
+          "byteLength": 8
+        },
+        {
+          "name": "proposalCreateFund",
+          "type": "uint64",
+          "offset": 12,
+          "byteLength": 8
+        },
+        {
+          "name": "reinvestingFund",
+          "type": "uint64",
+          "offset": 20,
+          "byteLength": 8
+        },
+        {
+          "name": "totalEpochRevenue",
+          "type": "uint64",
+          "offset": 28,
+          "byteLength": 8
+        },
+        {
+          "name": "fundForBurn",
+          "type": "uint64",
+          "offset": 36,
+          "byteLength": 8
+        },
+        {
+          "name": "totalStakedQcapAmount",
+          "type": "uint64",
+          "offset": 44,
+          "byteLength": 8
+        },
+        {
+          "name": "qcapMarketCap",
+          "type": "uint64",
+          "offset": 52,
+          "byteLength": 8
+        },
+        {
+          "name": "raisedFundByQcap",
+          "type": "uint64",
+          "offset": 60,
+          "byteLength": 8
+        },
+        {
+          "name": "lastRoundPriceOfQcap",
+          "type": "uint64",
+          "offset": 68,
+          "byteLength": 8
+        },
+        {
+          "name": "revenueByQearn",
+          "type": "uint64",
+          "offset": 76,
+          "byteLength": 8
+        },
+        {
+          "name": "qcapSoldAmount",
+          "type": "uint32",
+          "offset": 84,
+          "byteLength": 4
+        },
+        {
+          "name": "shareholderDividend",
+          "type": "uint32",
+          "offset": 88,
+          "byteLength": 4
+        },
+        {
+          "name": "QCAPHolderPermille",
+          "type": "uint32",
+          "offset": 92,
+          "byteLength": 4
+        },
+        {
+          "name": "reinvestingPermille",
+          "type": "uint32",
+          "offset": 96,
+          "byteLength": 4
+        },
+        {
+          "name": "burnPermille",
+          "type": "uint32",
+          "offset": 100,
+          "byteLength": 4
+        },
+        {
+          "name": "qcapBurnPermille",
+          "type": "uint32",
+          "offset": 104,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfStaker",
+          "type": "uint32",
+          "offset": 108,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfVotingPower",
+          "type": "uint32",
+          "offset": 112,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfGP",
+          "type": "uint32",
+          "offset": 116,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfQCP",
+          "type": "uint32",
+          "offset": 120,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfIPOP",
+          "type": "uint32",
+          "offset": 124,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfQEarnP",
+          "type": "uint32",
+          "offset": 128,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfFundP",
+          "type": "uint32",
+          "offset": 132,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfMKTP",
+          "type": "uint32",
+          "offset": 136,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfAlloP",
+          "type": "uint32",
+          "offset": 140,
+          "byteLength": 4
+        },
+        {
+          "name": "transferRightsFee",
+          "type": "uint32",
+          "offset": 144,
+          "byteLength": 4
+        },
+        {
+          "name": "minQuorumRq",
+          "type": "uint32",
+          "offset": 148,
+          "byteLength": 4
+        },
+        {
+          "name": "maxQuorumRq",
+          "type": "uint32",
+          "offset": 152,
+          "byteLength": 4
+        },
+        {
+          "name": "totalQcapBurntAmount",
+          "type": "uint32",
+          "offset": 156,
+          "byteLength": 4
+        },
+        {
+          "name": "circulatingSupply",
+          "type": "uint32",
+          "offset": 160,
+          "byteLength": 4
+        },
+        {
+          "name": "quorumPercent",
+          "type": "uint32",
+          "offset": 164,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 168
+    },
+    {
+      "kind": "function",
+      "inputType": 14,
+      "name": "getStakedAmountAndVotingPower",
+      "inputFields": [
+        {
+          "name": "address",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "stakedAmount",
+          "type": "uint32",
+          "offset": 4,
+          "byteLength": 4
+        },
+        {
+          "name": "votingPower",
+          "type": "uint32",
+          "offset": 8,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 32,
+      "outputSize": 12
+    },
+    {
+      "kind": "function",
+      "inputType": 15,
+      "name": "getGP",
+      "inputFields": [
+        {
+          "name": "proposalId",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "proposal",
+          "type": "struct",
+          "offset": 4,
+          "byteLength": 309,
+          "structRef": "GPInfo"
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 313
+    },
+    {
+      "kind": "function",
+      "inputType": 16,
+      "name": "getQCP",
+      "inputFields": [
+        {
+          "name": "proposalId",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "proposal",
+          "type": "struct",
+          "offset": 4,
+          "byteLength": 313,
+          "structRef": "QCPInfo"
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 317
+    },
+    {
+      "kind": "function",
+      "inputType": 17,
+      "name": "getIPOP",
+      "inputFields": [
+        {
+          "name": "proposalId",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "proposal",
+          "type": "struct",
+          "offset": 4,
+          "byteLength": 329,
+          "structRef": "IPOPInfo"
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 333
+    },
+    {
+      "kind": "function",
+      "inputType": 18,
+      "name": "getQEarnP",
+      "inputFields": [
+        {
+          "name": "proposalId",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "proposal",
+          "type": "struct",
+          "offset": 4,
+          "byteLength": 326,
+          "structRef": "QEarnPInfo"
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 330
+    },
+    {
+      "kind": "function",
+      "inputType": 19,
+      "name": "getFundP",
+      "inputFields": [
+        {
+          "name": "proposalId",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "proposal",
+          "type": "struct",
+          "offset": 4,
+          "byteLength": 325,
+          "structRef": "FundPInfo"
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 329
+    },
+    {
+      "kind": "function",
+      "inputType": 20,
+      "name": "getMKTP",
+      "inputFields": [
+        {
+          "name": "proposalId",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "proposal",
+          "type": "struct",
+          "offset": 4,
+          "byteLength": 337,
+          "structRef": "MKTPInfo"
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 341
+    },
+    {
+      "kind": "function",
+      "inputType": 21,
+      "name": "getAlloP",
+      "inputFields": [
+        {
+          "name": "proposalId",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "proposal",
+          "type": "struct",
+          "offset": 4,
+          "byteLength": 321,
+          "structRef": "AlloPInfo"
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 325
+    },
+    {
+      "kind": "function",
+      "inputType": 22,
+      "name": "getIdentitiesHvVtPw",
+      "inputFields": [
+        {
+          "name": "offset",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "count",
+          "type": "uint32",
+          "offset": 4,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "idList",
+          "type": "array",
+          "offset": 4,
+          "byteLength": 8192,
+          "arrayLength": 256,
+          "arrayItemType": "id",
+          "arrayItemByteLength": 32
+        },
+        {
+          "name": "amountList",
+          "type": "array",
+          "offset": 8196,
+          "byteLength": 1024,
+          "arrayLength": 256,
+          "arrayItemType": "uint32",
+          "arrayItemByteLength": 4
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 9220
+    },
+    {
+      "kind": "function",
+      "inputType": 23,
+      "name": "ppCreationPower",
+      "inputFields": [
+        {
+          "name": "address",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "status",
+          "type": "uint8",
+          "offset": 4,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 32,
+      "outputSize": 5
+    },
+    {
+      "kind": "function",
+      "inputType": 24,
+      "name": "getQcapBurntAmountInLastEpoches",
+      "inputFields": [
+        {
+          "name": "numberOfLastEpoches",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "burntAmount",
+          "type": "uint32",
+          "offset": 4,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 8
+    },
+    {
+      "kind": "function",
+      "inputType": 25,
+      "name": "getAmountToBeSoldPerYear",
+      "inputFields": [
+        {
+          "name": "year",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "amount",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 4
+    },
+    {
+      "kind": "function",
+      "inputType": 26,
+      "name": "getTotalRevenueInQcap",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "revenue",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 8
+    },
+    {
+      "kind": "function",
+      "inputType": 27,
+      "name": "getRevenueInQcapPerEpoch",
+      "inputFields": [
+        {
+          "name": "epoch",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "epochTotalRevenue",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "epochOneQcapRevenue",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "epochOneQvaultRevenue",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "epochReinvestAmount",
+          "type": "uint64",
+          "offset": 24,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 32
+    },
+    {
+      "kind": "function",
+      "inputType": 28,
+      "name": "getRevenuePerShare",
+      "inputFields": [
+        {
+          "name": "contractIndex",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "revenue",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 8
+    },
+    {
+      "kind": "function",
+      "inputType": 29,
+      "name": "getAmountOfShareQvaultHold",
+      "inputFields": [
+        {
+          "name": "assetInfo",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 40,
+          "structRef": "Asset"
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "amount",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 40,
+      "outputSize": 4
+    },
+    {
+      "kind": "function",
+      "inputType": 30,
+      "name": "getNumberOfHolderAndAvgAm",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfQcapHolder",
+          "type": "uint32",
+          "offset": 4,
+          "byteLength": 4
+        },
+        {
+          "name": "avgAmount",
+          "type": "uint32",
+          "offset": 8,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 12
+    },
+    {
+      "kind": "function",
+      "inputType": 31,
+      "name": "getAmountForQearnInUpcomingEpoch",
+      "inputFields": [
+        {
+          "name": "epoch",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "amount",
+          "type": "uint64",
+          "offset": 4,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 12
+    },
+    {
+      "kind": "function",
+      "inputType": 32,
+      "name": "getVoteInProposal",
+      "inputFields": [
+        {
+          "name": "userID",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "proposalType",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "proposalId",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "isVoted",
+          "type": "sint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "votingDecision",
+          "type": "sint64",
+          "offset": 16,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 48,
+      "outputSize": 24
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 {
   "contractIndex": 3,
   "contractName": "Random",
+  "contractAddress": "DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANMIG",
   "effectiveFromEpoch": 163,
   "effectiveToEpoch": null,
   "structs": {},
@@ -28,6 +29,5 @@
       "outputSize": 0
     }
   ],
-  "functions": [],
-  "contractAddress": "DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANMIG"
+  "functions": []
 }

@@ -1,0 +1,455 @@
+{
+  "contractIndex": 26,
+  "contractName": "Qusino",
+  "contractAddress": "ABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYYHH",
+  "effectiveFromEpoch": 213,
+  "effectiveToEpoch": null,
+  "structs": {
+    "Asset": {
+      "name": "Asset",
+      "byteLength": 40,
+      "fields": [
+        {
+          "name": "issuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        }
+      ]
+    },
+    "GameInfo": {
+      "name": "GameInfo",
+      "fields": [
+        {
+          "name": "URI",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 64,
+          "arrayLength": 64,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        },
+        {
+          "name": "proposer",
+          "type": "id",
+          "offset": 64,
+          "byteLength": 32
+        },
+        {
+          "name": "yesVotes",
+          "type": "uint32",
+          "offset": 96,
+          "byteLength": 4
+        },
+        {
+          "name": "noVotes",
+          "type": "uint32",
+          "offset": 100,
+          "byteLength": 4
+        },
+        {
+          "name": "proposedEpoch",
+          "type": "uint32",
+          "offset": 104,
+          "byteLength": 4
+        }
+      ],
+      "byteLength": 108
+    }
+  },
+  "procedures": [
+    {
+      "kind": "procedure",
+      "inputType": 1,
+      "name": "earnSTAR",
+      "inputFields": [
+        {
+          "name": "amount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 2,
+      "name": "transferSTAROrQSC",
+      "inputFields": [
+        {
+          "name": "dest",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "amount",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "type",
+          "type": "uint8",
+          "offset": 40,
+          "byteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 41,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 3,
+      "name": "submitGame",
+      "inputFields": [
+        {
+          "name": "URI",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 64,
+          "arrayLength": 64,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 64,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 4,
+      "name": "voteInGameProposal",
+      "inputFields": [
+        {
+          "name": "URI",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 64,
+          "arrayLength": 64,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        },
+        {
+          "name": "gameIndex",
+          "type": "uint64",
+          "offset": 64,
+          "byteLength": 8
+        },
+        {
+          "name": "yesNo",
+          "type": "uint8",
+          "offset": 72,
+          "byteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 73,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 5,
+      "name": "depositBonus",
+      "inputFields": [
+        {
+          "name": "amount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 6,
+      "name": "dailyClaimBonus",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 7,
+      "name": "redemptionQSCToQubic",
+      "inputFields": [
+        {
+          "name": "amount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 12,
+      "name": "TransferShareManagementRights",
+      "inputFields": [
+        {
+          "name": "asset",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 40,
+          "structRef": "Asset"
+        },
+        {
+          "name": "numberOfShares",
+          "type": "sint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "newManagingContractIndex",
+          "type": "uint32",
+          "offset": 48,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "transferredNumberOfShares",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 52,
+      "outputSize": 8
+    }
+  ],
+  "functions": [
+    {
+      "kind": "function",
+      "inputType": 8,
+      "name": "getUserAssetVolume",
+      "inputFields": [
+        {
+          "name": "user",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "STARAmount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "QSCAmount",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 32,
+      "outputSize": 16
+    },
+    {
+      "kind": "function",
+      "inputType": 9,
+      "name": "getFailedGameList",
+      "inputFields": [
+        {
+          "name": "offset",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "games",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 3456,
+          "arrayLength": 32,
+          "arrayItemStructRef": "GameInfo",
+          "arrayItemByteLength": 108
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 3456
+    },
+    {
+      "kind": "function",
+      "inputType": 10,
+      "name": "getSCInfo",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "QSCCirclatingSupply",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "STARCirclatingSupply",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "burntSTAR",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "epochRevenue",
+          "type": "uint64",
+          "offset": 24,
+          "byteLength": 8
+        },
+        {
+          "name": "maxGameIndex",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "bonusAmount",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 48
+    },
+    {
+      "kind": "function",
+      "inputType": 11,
+      "name": "getActiveGameList",
+      "inputFields": [
+        {
+          "name": "offset",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "games",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 3456,
+          "arrayLength": 32,
+          "arrayItemStructRef": "GameInfo",
+          "arrayItemByteLength": 108
+        },
+        {
+          "name": "gameIndexes",
+          "type": "array",
+          "offset": 3456,
+          "byteLength": 256,
+          "arrayLength": 32,
+          "arrayItemType": "uint64",
+          "arrayItemByteLength": 8
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 3712
+    },
+    {
+      "kind": "function",
+      "inputType": 13,
+      "name": "getProposerEarnedQSCInfo",
+      "inputFields": [
+        {
+          "name": "proposer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "epoch",
+          "type": "uint32",
+          "offset": 32,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "earnedQSC",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 36,
+      "outputSize": 8
+    }
+  ]
+}

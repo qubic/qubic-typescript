@@ -1,6 +1,7 @@
 {
   "contractIndex": 25,
   "contractName": "VottunBridge",
+  "contractAddress": "ZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAZUQI",
   "effectiveFromEpoch": 209,
   "effectiveToEpoch": null,
   "structs": {
@@ -734,6 +735,5 @@
       "inputSize": 73,
       "outputSize": 41
     }
-  ],
-  "contractAddress": "ZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAZUQI"
+  ]
 }

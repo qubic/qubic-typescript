@@ -1,6 +1,7 @@
 {
   "contractIndex": 10,
   "contractName": "QVAULT",
+  "contractAddress": "KAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAXIUO",
   "effectiveFromEpoch": 164,
   "effectiveToEpoch": null,
   "structs": {},
@@ -281,6 +282,5 @@
       "inputSize": 0,
       "outputSize": 204
     }
-  ],
-  "contractAddress": "KAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAXIUO"
+  ]
 }

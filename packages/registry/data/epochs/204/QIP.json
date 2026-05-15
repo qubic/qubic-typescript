@@ -1,6 +1,7 @@
 {
   "contractIndex": 18,
   "contractName": "QIP",
+  "contractAddress": "SAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI",
   "effectiveFromEpoch": 204,
   "effectiveToEpoch": null,
   "structs": {
@@ -281,6 +282,5 @@
       "inputSize": 4,
       "outputSize": 184
     }
-  ],
-  "contractAddress": "SAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI"
+  ]
 }

@@ -1,6 +1,7 @@
 {
   "contractIndex": 6,
   "contractName": "GeneralQuorumProposal",
+  "contractAddress": "GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQGNM",
   "effectiveFromEpoch": 205,
   "effectiveToEpoch": null,
   "structs": {
@@ -423,6 +424,5 @@
       "inputSize": 0,
       "outputSize": 5376
     }
-  ],
-  "contractAddress": "GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQGNM"
+  ]
 }

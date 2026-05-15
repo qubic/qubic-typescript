@@ -1,6 +1,7 @@
 {
   "contractIndex": 21,
   "contractName": "QReservePool",
+  "contractAddress": "VAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAILLJ",
   "effectiveFromEpoch": 200,
   "effectiveToEpoch": null,
   "structs": {},
@@ -117,6 +118,5 @@
       "inputSize": 0,
       "outputSize": 4096
     }
-  ],
-  "contractAddress": "VAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAILLJ"
+  ]
 }

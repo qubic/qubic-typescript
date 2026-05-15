@@ -1,6 +1,7 @@
 {
   "contractIndex": 15,
   "contractName": "Qdraw",
+  "contractAddress": "PAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYVRC",
   "effectiveFromEpoch": 188,
   "effectiveToEpoch": null,
   "structs": {},
@@ -115,6 +116,5 @@
       "inputSize": 0,
       "outputSize": 40976
     }
-  ],
-  "contractAddress": "PAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYVRC"
+  ]
 }

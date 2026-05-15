@@ -492,12 +492,16 @@ function patchAddresses() {
         continue
       }
       const expected = contractIndexToIdentity(v.contractIndex)
-      if (v.contractAddress === expected) {
+      const alreadyCorrect =
+        v.contractAddress === expected &&
+        Object.keys(v).indexOf('contractAddress') === Object.keys(v).indexOf('contractName') + 1
+      if (alreadyCorrect) {
         skipped++
         continue
       }
-      v.contractAddress = expected
-      if (!args['dry-run']) writeFileSync(filePath, `${JSON.stringify(v, null, 2)}\n`)
+      const { contractIndex, contractName, contractAddress: _old, ...rest } = v
+      const ordered = { contractIndex, contractName, contractAddress: expected, ...rest }
+      if (!args['dry-run']) writeFileSync(filePath, `${JSON.stringify(ordered, null, 2)}\n`)
       patched++
     }
   }
@@ -507,9 +511,15 @@ function patchAddresses() {
   // Patch registry.json in-place too
   try {
     const registry = JSON.parse(readFileSync(REGISTRY_PATH, 'utf-8')) as ContractRegistry
-    for (const v of registry.versions) {
-      v.contractAddress = contractIndexToIdentity(v.contractIndex)
-    }
+    registry.versions = registry.versions.map((v) => {
+      const { contractIndex, contractName, contractAddress: _old, ...rest } = v
+      return {
+        contractIndex,
+        contractName,
+        contractAddress: contractIndexToIdentity(contractIndex),
+        ...rest,
+      }
+    })
     if (!args['dry-run']) writeFileSync(REGISTRY_PATH, `${JSON.stringify(registry, null, 2)}\n`)
     console.log(`Patched ${registry.versions.length} registry.json version entries.`)
   } catch {

@@ -1,6 +1,7 @@
 {
   "contractIndex": 20,
   "contractName": "qRWA",
+  "contractAddress": "UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHQEE",
   "effectiveFromEpoch": 197,
   "effectiveToEpoch": null,
   "structs": {
@@ -619,6 +620,5 @@
       "inputSize": 0,
       "outputSize": 49160
     }
-  ],
-  "contractAddress": "UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHQEE"
+  ]
 }

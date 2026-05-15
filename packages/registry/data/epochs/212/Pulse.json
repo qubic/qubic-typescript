@@ -1,6 +1,7 @@
 {
   "contractIndex": 24,
   "contractName": "Pulse",
+  "contractAddress": "YAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMSME",
   "effectiveFromEpoch": 212,
   "effectiveToEpoch": null,
   "structs": {
@@ -831,6 +832,5 @@
       "inputSize": 0,
       "outputSize": 43017
     }
-  ],
-  "contractAddress": "YAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMSME"
+  ]
 }

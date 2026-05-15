@@ -1,6 +1,7 @@
 {
   "contractIndex": 4,
   "contractName": "QUtil",
+  "contractAddress": "EAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVWRF",
   "effectiveFromEpoch": 184,
   "effectiveToEpoch": null,
   "structs": {
@@ -523,6 +524,5 @@
       "inputSize": 8,
       "outputSize": 1000
     }
-  ],
-  "contractAddress": "EAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVWRF"
+  ]
 }

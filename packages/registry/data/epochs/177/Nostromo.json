@@ -1,6 +1,7 @@
 {
   "contractIndex": 14,
   "contractName": "Nostromo",
+  "contractAddress": "OAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAZTPD",
   "effectiveFromEpoch": 177,
   "effectiveToEpoch": null,
   "structs": {
@@ -973,6 +974,5 @@
       "inputSize": 36,
       "outputSize": 8
     }
-  ],
-  "contractAddress": "OAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAZTPD"
+  ]
 }

@@ -1,6 +1,7 @@
 {
   "contractIndex": 26,
   "contractName": "Qusino",
+  "contractAddress": "ABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYYHH",
   "effectiveFromEpoch": 208,
   "effectiveToEpoch": null,
   "structs": {
@@ -450,6 +451,5 @@
       "inputSize": 36,
       "outputSize": 8
     }
-  ],
-  "contractAddress": "ABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYYHH"
+  ]
 }

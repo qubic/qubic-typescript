@@ -1,6 +1,7 @@
 {
   "contractIndex": 13,
   "contractName": "Qswap",
+  "contractAddress": "NAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAML",
   "effectiveFromEpoch": 179,
   "effectiveToEpoch": null,
   "structs": {},
@@ -695,6 +696,5 @@
       "inputSize": 48,
       "outputSize": 8
     }
-  ],
-  "contractAddress": "NAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAML"
+  ]
 }

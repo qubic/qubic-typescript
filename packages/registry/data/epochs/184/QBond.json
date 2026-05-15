@@ -1,6 +1,7 @@
 {
   "contractIndex": 17,
   "contractName": "QBond",
+  "contractAddress": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
   "effectiveFromEpoch": 184,
   "effectiveToEpoch": null,
   "structs": {
@@ -584,6 +585,5 @@
       "inputSize": 0,
       "outputSize": 32768
     }
-  ],
-  "contractAddress": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH"
+  ]
 }

@@ -1,6 +1,7 @@
 {
   "contractIndex": 16,
   "contractName": "RandomLottery",
+  "contractAddress": "QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPIYE",
   "effectiveFromEpoch": 185,
   "effectiveToEpoch": null,
   "structs": {
@@ -156,6 +157,5 @@
       "inputSize": 0,
       "outputSize": 47113
     }
-  ],
-  "contractAddress": "QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPIYE"
+  ]
 }

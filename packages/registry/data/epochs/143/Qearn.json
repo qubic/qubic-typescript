@@ -1,6 +1,7 @@
 {
   "contractIndex": 9,
   "contractName": "Qearn",
+  "contractAddress": "JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVKHO",
   "effectiveFromEpoch": 143,
   "effectiveToEpoch": null,
   "structs": {},
@@ -256,6 +257,5 @@
       "inputSize": 4,
       "outputSize": 32
     }
-  ],
-  "contractAddress": "JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVKHO"
+  ]
 }

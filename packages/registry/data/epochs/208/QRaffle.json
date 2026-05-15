@@ -1,6 +1,7 @@
 {
   "contractIndex": 19,
   "contractName": "QRaffle",
+  "contractAddress": "TAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAXRFC",
   "effectiveFromEpoch": 208,
   "effectiveToEpoch": null,
   "structs": {},
@@ -651,6 +652,5 @@
       "inputSize": 0,
       "outputSize": 12
     }
-  ],
-  "contractAddress": "TAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAXRFC"
+  ]
 }

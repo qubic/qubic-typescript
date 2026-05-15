@@ -1,6 +1,7 @@
 {
   "contractIndex": 8,
   "contractName": "ComputorControlledFund",
+  "contractAddress": "IAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABXSH",
   "effectiveFromEpoch": 210,
   "effectiveToEpoch": null,
   "structs": {
@@ -707,6 +708,5 @@
       "inputSize": 0,
       "outputSize": 4
     }
-  ],
-  "contractAddress": "IAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABXSH"
+  ]
 }

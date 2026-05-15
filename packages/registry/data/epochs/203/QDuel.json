@@ -1,6 +1,7 @@
 {
   "contractIndex": 23,
   "contractName": "QDuel",
+  "contractAddress": "XAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAXNMD",
   "effectiveFromEpoch": 203,
   "effectiveToEpoch": null,
   "structs": {
@@ -482,6 +483,5 @@
       "inputSize": 0,
       "outputSize": 13313
     }
-  ],
-  "contractAddress": "XAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAXNMD"
+  ]
 }

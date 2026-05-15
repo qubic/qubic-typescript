@@ -15,7 +15,7 @@ TypeScript SDK for the [Qubic](https://qubic.org) network. Modular, tree-shakeab
 | [`@qubic.ts/contracts`](packages/contracts) | 0.1.0 | Generated typed wrappers for every deployed contract |
 | [`@qubic.ts/events`](packages/events) | 0.0.0 | Typed event bus |
 | [`@qubic.ts/wallet`](packages/wallet) | 0.1.0 | Wallet, encrypted vault, and seed utilities |
-| [`@qubic.ts/tcp`](packages/tcp) | 0.0.0 | Raw TCP transport for peer connections |
+| [`@qubic.ts/tcp`](packages/tcp) | 0.0.0 | Direct TCP transport — framing, connection pool, typed request helpers |
 | [`@qubic.ts/react`](packages/react) | 0.0.0 | React hooks and context providers |
 
 ## Quick start
@@ -41,14 +41,17 @@ graph TD
   bob["@qubic.ts/bob<br/><sub>live node client</sub>"]
   wallet["@qubic.ts/wallet<br/><sub>key management</sub>"]
   events["@qubic.ts/events<br/><sub>typed event bus</sub>"]
+  tcp["@qubic.ts/tcp<br/><sub>raw TCP transport</sub>"]
   react["@qubic.ts/react<br/><sub>React hooks</sub>"]
 
   types --> crypto
   types --> rpc
   types --> registry
   types --> bob
+  types --> tcp
   crypto --> tx
   crypto --> wallet
+  crypto --> tcp
   tx --> wallet
   registry --> contracts
   rpc --> contracts
@@ -138,6 +141,33 @@ if (result.ok) {
 }
 ```
 
+## End-to-end example: direct TCP node query
+
+```ts
+import { createNodePool, requestCurrentTickInfo, requestEntity, broadcastTransaction } from '@qubic.ts/tcp'
+import { identityToPublicKey } from '@qubic.ts/crypto'
+import type { Identity } from '@qubic.ts/types'
+
+const pool = createNodePool([
+  'node1.qubic.org',
+  'node2.qubic.org',
+  'node3.qubic.org',
+])
+
+// Current tick — retries automatically on peer failure
+const { epoch, tick } = await requestCurrentTickInfo(pool)
+
+// Entity balance directly from a peer
+const pk = identityToPublicKey('BZBQFLLBNCXEMGLOBHUVGPQVZEJYLR...' as Identity)
+const { entity, identity } = await requestEntity(pool, pk)
+console.log(identity, entity.incomingAmount - entity.outgoingAmount)
+
+// Broadcast a signed transaction
+await broadcastTransaction(pool, signedTxBytes)
+
+pool.close()
+```
+
 ## End-to-end example: decode a historical transaction payload
 
 ```ts
@@ -158,7 +188,7 @@ const decoded = decodePayload(payloadBytes, lockProc.inputFields, version.struct
 
 `@qubic.ts/registry` stores per-epoch ABI snapshots as JSON for every Qubic smart contract. Each snapshot records the exact binary field layout (`inputFields`, `outputFields`, nested structs) active in that epoch. The codec engine (`buildPayload` / `decodePayload`) handles all Qubic primitive types including `uint128` and FourQ identity fields.
 
-**Coverage**: epochs 122–212 (all epochs with deployed contracts since early mainnet)
+**Coverage**: epochs 122–213 (all epochs with deployed contracts since early mainnet)
 
 ```
 packages/registry/data/
@@ -219,7 +249,7 @@ graph LR
     contracts["contracts/\n@qubic.ts/contracts"]
     wallet["wallet/\n@qubic.ts/wallet"]
     events["events/\n@qubic.ts/events"]
-    tcp["tcp/\n@qubic.ts/tcp"]
+    tcp["tcp/\n@qubic.ts/tcp (direct TCP)"]
     react["react/\n@qubic.ts/react"]
   end
   subgraph apps

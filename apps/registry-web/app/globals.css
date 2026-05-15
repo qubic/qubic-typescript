@@ -238,7 +238,7 @@ button:focus-visible {
   opacity: 0.85;
 }
 .brand-logo {
-  height: 32px;
+  height: 30px;
   width: auto;
   display: block;
   flex: none;
@@ -283,7 +283,7 @@ button:focus-visible {
   color: var(--text-strong);
 }
 .nav-links a.active::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -1px;
   left: 14px;
@@ -301,13 +301,14 @@ button:focus-visible {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 8px 6px 12px;
+  padding: 0 8px 0 10px;
+  height: 32px;
   background: var(--bg-soft);
   border: 1px solid var(--line);
   border-radius: var(--r-2);
   color: var(--text-faint);
   font-size: 12.5px;
-  width: 220px;
+  width: 210px;
   cursor: text;
   white-space: nowrap;
   flex: none;
@@ -512,7 +513,10 @@ button:focus-visible {
   line-height: 1.4;
 }
 .btn.icon {
-  padding: 5px;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  justify-content: center;
 }
 .btn[disabled],
 .btn.disabled {
@@ -817,15 +821,34 @@ button:focus-visible {
 }
 
 /* TypeScript syntax tokens */
-.tok-kw  { color: #ff7b72; }           /* keywords: import, const, await … */
-.tok-s   { color: #a5d6ff; }           /* strings */
-.tok-tpl { color: #a5d6ff; }           /* template literals */
-.tok-n   { color: #ffa657; }           /* numbers / bigint */
-.tok-c   { color: var(--text-faint); font-style: italic; }
-.tok-fn  { color: #d2a8ff; }           /* function calls */
-.tok-type { color: #ffa657; }          /* PascalCase types */
-.tok-prop { color: var(--text-muted); }/* .property access */
-.tok-op  { color: var(--j-punct); }    /* operators / dots */
+.tok-kw {
+  color: #ff7b72;
+} /* keywords: import, const, await … */
+.tok-s {
+  color: #a5d6ff;
+} /* strings */
+.tok-tpl {
+  color: #a5d6ff;
+} /* template literals */
+.tok-n {
+  color: #ffa657;
+} /* numbers / bigint */
+.tok-c {
+  color: var(--text-faint);
+  font-style: italic;
+}
+.tok-fn {
+  color: #d2a8ff;
+} /* function calls */
+.tok-type {
+  color: #ffa657;
+} /* PascalCase types */
+.tok-prop {
+  color: var(--text-muted);
+} /* .property access */
+.tok-op {
+  color: var(--j-punct);
+} /* operators / dots */
 
 /* ── Copy button ──────────────────────────────────────── */
 .copy {
@@ -2039,7 +2062,7 @@ button:focus-visible {
   padding: 0;
   margin: -1px;
   overflow: hidden;
-  clip: rect(0,0,0,0);
+  clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
 }
@@ -2069,7 +2092,7 @@ button:focus-visible {
   border: 1px solid var(--line-strong);
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 24px 64px rgba(0,0,0,0.6), 0 0 0 1px rgba(94,234,212,0.08);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(94, 234, 212, 0.08);
 }
 
 .cmd-input-wrap {
@@ -2130,13 +2153,13 @@ button:focus-visible {
   transition: background 60ms ease;
 }
 
-.cmd-item[aria-selected='true'],
+.cmd-item[aria-selected="true"],
 .cmd-item:hover {
   background: var(--bg-strong);
   color: var(--text-strong);
 }
 
-.cmd-item[aria-selected='true'] .cmd-item-meta,
+.cmd-item[aria-selected="true"] .cmd-item-meta,
 .cmd-item:hover .cmd-item-meta {
   color: var(--text-muted);
 }
@@ -2189,11 +2212,21 @@ button:focus-visible {
 }
 
 @keyframes fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slide-up {
-  from { opacity: 0; transform: translateX(-50%) translateY(8px); }
-  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
 }

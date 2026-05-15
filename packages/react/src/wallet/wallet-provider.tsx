@@ -4,6 +4,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react'
@@ -232,19 +233,33 @@ export function WalletProvider({
     [activeConnector],
   )
 
-  const value: WalletContextValue = {
-    connectors,
-    account,
-    activeConnector,
-    isConnected: account !== null,
-    isConnecting,
-    error,
-    connect,
-    disconnect,
-    sendTransaction,
-    signTransaction,
-    signMessage,
-  }
+  const value = useMemo<WalletContextValue>(
+    () => ({
+      connectors,
+      account,
+      activeConnector,
+      isConnected: account !== null,
+      isConnecting,
+      error,
+      connect,
+      disconnect,
+      sendTransaction,
+      signTransaction,
+      signMessage,
+    }),
+    [
+      connectors,
+      account,
+      activeConnector,
+      isConnecting,
+      error,
+      connect,
+      disconnect,
+      sendTransaction,
+      signTransaction,
+      signMessage,
+    ],
+  )
 
   return <WalletContext.Provider value={value}>{children}</WalletContext.Provider>
 }

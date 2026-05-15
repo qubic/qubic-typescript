@@ -8,6 +8,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react'
@@ -144,10 +145,11 @@ export function VaultProvider({
 
   useEffect(() => {
     if (!persistSession) return
+    let mounted = true
     setIsUnlocking(true)
     restoreSession(sessionStorageKey)
       .then(async (seeds) => {
-        if (!seeds) return
+        if (!mounted || !seeds) return
         const { map, ids } = buildWalletMap(seeds)
         walletsRef.current = map
         setIdentities(ids)
@@ -156,7 +158,12 @@ export function VaultProvider({
         resetLockTimer()
       })
       .catch(() => {})
-      .finally(() => setIsUnlocking(false))
+      .finally(() => {
+        if (mounted) setIsUnlocking(false)
+      })
+    return () => {
+      mounted = false
+    }
   }, [persistSession, sessionStorageKey, resetLockTimer])
 
   // ── Lock on page hide ───────────────────────────────────────────────────────
@@ -198,18 +205,16 @@ export function VaultProvider({
 
   // ── Context values ──────────────────────────────────────────────────────────
 
-  const signingValue: VaultSigningValue = {
-    getWallet: (identity) => walletsRef.current.get(identity),
-  }
+  // signingValue wraps a ref — stable across renders, no deps needed.
+  const signingValue = useMemo<VaultSigningValue>(
+    () => ({ getWallet: (identity) => walletsRef.current.get(identity) }),
+    [],
+  )
 
-  const stateValue: VaultStateValue = {
-    isUnlocked,
-    isUnlocking,
-    identities,
-    error,
-    unlock,
-    lock: performLock,
-  }
+  const stateValue = useMemo<VaultStateValue>(
+    () => ({ isUnlocked, isUnlocking, identities, error, unlock, lock: performLock }),
+    [isUnlocked, isUnlocking, identities, error, unlock, performLock],
+  )
 
   return (
     <VaultSigningContext.Provider value={signingValue}>

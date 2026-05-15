@@ -1,6 +1,6 @@
 # @qubic.ts/react
 
-React hooks and context provider for the Qubic SDK, powered by [TanStack Query](https://tanstack.com/query).
+React hooks and context providers for the Qubic SDK, powered by [TanStack Query](https://tanstack.com/query).
 
 ## Installation
 
@@ -10,151 +10,206 @@ bun add @qubic.ts/react
 
 Peer dependency: React 18+.
 
-## Dependencies
+## Security model
 
-- `@qubic.ts/rpc` — `createLiveClient`, `createQueryClient`
-- `@qubic.ts/wallet` — `createWallet`, vault encryption
-- `@qubic.ts/types` — `Identity`, `Seed` branded types
-- `@tanstack/react-query` — query cache, `useQuery`
+Seeds **never** appear in React state or component code:
+
+- `VaultProvider` stores wallets in a `Ref` — invisible to React DevTools, not serialisable, not part of the render cycle.
+- Components only receive `identities: Identity[]` (60-char strings).
+- `useSendTransfer` / `useSendContractCall` access signing internally — the component passes params but never touches a wallet.
+- Auto-lock on page hide (`visibilitychange`) and after a configurable idle timeout.
 
 ## Setup
 
-Wrap your app root with `QubicProvider`. Pass a `liveClient` (required) and an optional `archiveClient` for historical data. `QubicProvider` also acts as a `QueryClientProvider` — pass your own TanStack `queryClient` to share the cache with the rest of your app.
-
 ```tsx
 import { createLiveClient, createQueryClient } from '@qubic.ts/rpc'
-import { QubicProvider } from '@qubic.ts/react'
+import { importVault } from '@qubic.ts/wallet'
+import { QubicProvider, VaultProvider } from '@qubic.ts/react'
 
 const live = createLiveClient()
 const archive = createQueryClient()
+const vault = importVault(localStorage.getItem('qubic-vault')!)
 
 export function App() {
   return (
     <QubicProvider liveClient={live} archiveClient={archive}>
-      <YourApp />
+      <VaultProvider vaultData={vault} autoLockMs={15 * 60_000}>
+        <YourApp />
+      </VaultProvider>
     </QubicProvider>
   )
 }
 ```
 
-## Hooks
+`QubicProvider` also acts as a TanStack `QueryClientProvider`. Pass your own `queryClient` to share the cache with the rest of your app.
 
-### `useVault(vaultData)`
+## Vault hooks
 
-Manages an encrypted Qubic vault. Call `unlock(password)` to decrypt and derive `Wallet` objects. **Seeds are never stored in React state** — they are decrypted transiently inside `unlock`, wallets are derived, and the seeds fall out of scope immediately. The wallet closures retain the seed only for signing.
+### `useVaultState()`
+
+Lock/unlock the vault and read the active identities.
 
 ```tsx
-import { useVault } from '@qubic.ts/react'
-import { importVault } from '@qubic.ts/wallet'
-
-// Load vault from localStorage / file / network
-const vaultData = importVault(localStorage.getItem('qubic-vault')!)
+import { useVaultState } from '@qubic.ts/react'
 
 function WalletPanel() {
-  const { wallets, isUnlocked, isUnlocking, error, unlock, lock } = useVault(vaultData)
-
-  const handleUnlock = async () => {
-    await unlock('my-strong-password')
-  }
+  const { isUnlocked, identities, isUnlocking, error, unlock, lock } = useVaultState()
 
   if (!isUnlocked) {
     return (
-      <div>
-        <button onClick={handleUnlock} disabled={isUnlocking}>
-          {isUnlocking ? 'Unlocking…' : 'Unlock Wallet'}
-        </button>
-        {error && <p>Wrong password or corrupt vault</p>}
-      </div>
+      <form onSubmit={e => { e.preventDefault(); unlock(e.currentTarget.password.value) }}>
+        <input name="password" type="password" />
+        <button disabled={isUnlocking}>Unlock</button>
+        {error && <p>Wrong password</p>}
+      </form>
     )
   }
 
-  const [wallet] = wallets ?? []
   return (
     <div>
-      <p>Identity: {wallet?.identity}</p>
+      {identities.map(id => <p key={id}>{id}</p>)}
       <button onClick={lock}>Lock</button>
     </div>
   )
 }
 ```
 
-### `useTickInfo(refetchIntervalMs?)`
+## Send hooks
 
-Polls current tick, epoch, and timing from the live API.
+### `useSendTransfer()`
+
+Fetches the current tick, builds and signs a QU transfer, broadcasts. Zero wallet exposure.
 
 ```tsx
-import { useTickInfo } from '@qubic.ts/react'
+import { useSendTransfer, useVaultState } from '@qubic.ts/react'
 
-function TickDisplay() {
-  const { data, isLoading } = useTickInfo(3_000) // re-poll every 3s
-  if (isLoading) return <span>Loading…</span>
-  return <span>Tick: {data?.tick} — Epoch: {data?.epoch}</span>
+function SendPanel() {
+  const { identities } = useVaultState()
+  const { mutate: send, isPending, data, error } = useSendTransfer()
+
+  return (
+    <button
+      disabled={isPending || !identities[0]}
+      onClick={() => send({
+        from: identities[0]!,
+        destination: '...' as Identity,
+        amount: 1_000_000n,
+      })}
+    >
+      Send
+    </button>
+  )
 }
+```
+
+### `useSendContractCall()`
+
+Signs and broadcasts a smart contract procedure call.
+
+```tsx
+import { useSendContractCall, useVaultState } from '@qubic.ts/react'
+import { QEARN_LOCK_INPUT_TYPE, buildQearnLockInput } from '@qubic.ts/contracts'
+
+function LockPanel() {
+  const { identities } = useVaultState()
+  const { mutate: send, isPending } = useSendContractCall()
+
+  return (
+    <button
+      disabled={isPending}
+      onClick={() => send({
+        from: identities[0]!,
+        inputType: QEARN_LOCK_INPUT_TYPE,
+        payload: buildQearnLockInput({ amount: 10_000_000n }),
+        amount: 10_000_000n,
+      })}
+    >
+      Lock QU
+    </button>
+  )
+}
+```
+
+## Contract query hook
+
+### `useContractQuery(fn, input)`
+
+Wraps any typed contract read function from `@qubic.ts/contracts` as a TanStack Query. `identityToPublicKey` / `publicKeyToIdentity` are provided automatically.
+
+```tsx
+import { useContractQuery } from '@qubic.ts/react'
+import { qearnGetStateOfRound } from '@qubic.ts/contracts'
+
+function RoundStats({ epoch }: { epoch: number }) {
+  const { data, isLoading } = useContractQuery(qearnGetStateOfRound, { epoch })
+
+  if (isLoading) return <span>Loading…</span>
+  return <span>Locked: {data?.totalLockedAmount?.toString()}</span>
+}
+```
+
+## Live API hooks
+
+### `useTickInfo(refetchIntervalMs?)`
+
+```tsx
+const { data } = useTickInfo(3_000)
+// data.tick, data.epoch, data.duration
 ```
 
 ### `useBalance(identity)`
 
-Fetches the balance for a Qubic identity. Disabled when identity is null/undefined.
+```tsx
+const { data } = useBalance(identities[0])
+// data.balance
+```
+
+### `useIssuedAssets(identity)` / `useOwnedAssets(identity)` / `usePossessedAssets(identity)`
 
 ```tsx
-import { useBalance } from '@qubic.ts/react'
-
-function Balance({ identity }: { identity: string }) {
-  const { data } = useBalance(identity)
-  return <span>{data?.balance ?? '—'} QU</span>
-}
+const { data: issued } = useIssuedAssets(identity)
+const { data: owned } = useOwnedAssets(identity)
+const { data: possessed } = usePossessedAssets(identity)
 ```
+
+## Archive API hooks (require `archiveClient`)
 
 ### `useTransaction(hash)`
 
-Fetches a transaction from the archive by its 60-char hash. Requires `archiveClient`.
-
 ```tsx
-import { useTransaction } from '@qubic.ts/react'
-
-function TxInfo({ hash }: { hash: string }) {
-  const { data, error } = useTransaction(hash)
-  if (error) return <span>Not found</span>
-  return <pre>{JSON.stringify(data, null, 2)}</pre>
-}
+const { data } = useTransaction(txHash)
 ```
 
 ### `useEventLogs(request)`
 
-Queries historical event logs from the archive with rich filtering. Requires `archiveClient`.
+```tsx
+const { data } = useEventLogs({
+  filters: { eventType: '0' },
+  pagination: { offset: 0, size: 20 },
+})
+```
+
+### `useTransactionsForIdentity(request)`
 
 ```tsx
-import { useEventLogs } from '@qubic.ts/react'
-
-function RecentTransfers() {
-  const { data } = useEventLogs({
-    filters: { eventType: '0' },   // 0 = QU_TRANSFER
-    pagination: { offset: 0, size: 20 },
-  })
-  return <ul>{data?.eventLogs.map(e => <li key={e.eventId}>{e.eventId}</li>)}</ul>
-}
+const { data } = useTransactionsForIdentity({
+  addressId: identity,
+  pagination: { offset: 0, size: 20 },
+})
 ```
 
 ### `useQubic()`
 
-Returns the raw context value — access `liveClient` and `archiveClient` directly for custom queries.
+Direct access to `liveClient` and `archiveClient` for one-off queries.
 
 ```tsx
-import { useQubic } from '@qubic.ts/react'
-
-function Custom() {
-  const { liveClient, archiveClient } = useQubic()
-  // call any client method directly
-}
+const { liveClient, archiveClient } = useQubic()
 ```
 
 ## Sharing your TanStack Query cache
 
-If your app already uses TanStack Query, pass your `QueryClient` so Qubic hooks share the same cache and devtools:
-
 ```tsx
 import { QueryClient } from '@tanstack/react-query'
-import { QubicProvider } from '@qubic.ts/react'
 
 const queryClient = new QueryClient()
 
@@ -163,15 +218,9 @@ const queryClient = new QueryClient()
 </QubicProvider>
 ```
 
-## Security notes
-
-- `useVault` never exposes seeds to component code or React state.
-- Seeds live only in the `Wallet` closure created inside `unlock` — required for signing.
-- Call `lock()` when the user logs out to remove wallet references from memory.
-- Vault encryption: AES-256-GCM with PBKDF2-SHA256 (600k iterations) via `globalThis.crypto`.
-
 ## See also
 
 - [`@qubic.ts/rpc`](../rpc) — `createLiveClient`, `createQueryClient`
-- [`@qubic.ts/wallet`](../wallet) — `createWallet`, `createVault`, `unlockVault`
-- [`@qubic.ts/events`](../events) — typed event decoder for Bob subscriptions
+- [`@qubic.ts/wallet`](../wallet) — `createVault`, `importVault`, `unlockVault`
+- [`@qubic.ts/contracts`](../contracts) — typed contract builders, decoders, and readers
+- [`@qubic.ts/events`](../events) — typed Bob subscription helpers

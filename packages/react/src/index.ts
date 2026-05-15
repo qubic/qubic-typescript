@@ -1,9 +1,28 @@
+// Context
 export { QubicProvider, useQubic } from './context.js'
 export type { QubicContextValue, QubicProviderProps } from './context.js'
+
+// Vault
 export { VaultProvider, useVaultState } from './vault-provider.js'
 export type { VaultProviderProps, VaultStateValue } from './vault-provider.js'
+
+// Data hooks — live API
 export { useTickInfo } from './use-tick-info.js'
 export { useBalance } from './use-balance.js'
+export { useIssuedAssets, useOwnedAssets, usePossessedAssets } from './use-assets.js'
+
+// Data hooks — archive API (require archiveClient)
 export { useTransaction } from './use-transaction.js'
 export { useEventLogs } from './use-event-logs.js'
 export type { EventLogsResult } from './use-event-logs.js'
+export { useTransactionsForIdentity } from './use-transactions-for-identity.js'
+export type { TransactionsForIdentityResult } from './use-transactions-for-identity.js'
+
+// Contract hooks
+export { useContractQuery } from './use-contract-query.js'
+
+// Send mutations (require VaultProvider)
+export { useSendTransfer } from './use-send-transfer.js'
+export type { SendTransferParams } from './use-send-transfer.js'
+export { useSendContractCall } from './use-send-contract-call.js'
+export type { SendContractCallParams } from './use-send-contract-call.js'

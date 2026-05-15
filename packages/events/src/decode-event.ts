@@ -6,7 +6,6 @@ import type {
   AssetIssuanceData,
   AssetOwnershipChangeData,
   AssetOwnershipManagingContractChangeData,
-  AssetPossessionChangeData,
   AssetPossessionManagingContractChangeData,
   BurningData,
   ContractReserveDeductionData,
@@ -76,21 +75,8 @@ function decodeAssetIssuance(v: DataView, logType: number): AssetIssuanceData {
   }
 }
 
-function decodeAssetOwnershipChange(v: DataView, logType: number): AssetOwnershipChangeData {
-  assertMinSize(logType, v.byteLength, 127)
-  return {
-    source: readIdentity(v, 0),
-    destination: readIdentity(v, 32),
-    issuer: readIdentity(v, 64),
-    numberOfShares: v.getBigInt64(96, true),
-    managingContractIndex: Number(v.getBigInt64(104, true)),
-    assetName: readAssetName(v, 112),
-    numberOfDecimalPlaces: v.getUint8(119),
-    unitOfMeasurement: readAssetName(v, 120),
-  }
-}
-
-function decodeAssetPossessionChange(v: DataView, logType: number): AssetPossessionChangeData {
+// Ownership and possession change events share the exact same 127-byte wire layout.
+function decodeAssetChangeEvent(v: DataView, logType: number): AssetOwnershipChangeData {
   assertMinSize(logType, v.byteLength, 127)
   return {
     source: readIdentity(v, 0),
@@ -221,7 +207,10 @@ function decodeOracleSubscriberLogMessage(
  * @throws {EventDecodeError} if the payload is too short or the logType is unknown.
  */
 export function decodeEvent(event: BobLogEvent): TypedEvent {
-  const bytes = base64ToBytes(event.data as string)
+  if (typeof event.data !== 'string') {
+    throw new EventDecodeError(event.logType, 'event.data is not a string')
+  }
+  const bytes = base64ToBytes(event.data)
   const v = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength)
   const { tick, logType } = event
 
@@ -231,9 +220,9 @@ export function decodeEvent(event: BobLogEvent): TypedEvent {
     case LOG_TYPE.ASSET_ISSUANCE:
       return { logType, tick, data: decodeAssetIssuance(v, logType) }
     case LOG_TYPE.ASSET_OWNERSHIP_CHANGE:
-      return { logType, tick, data: decodeAssetOwnershipChange(v, logType) }
+      return { logType, tick, data: decodeAssetChangeEvent(v, logType) }
     case LOG_TYPE.ASSET_POSSESSION_CHANGE:
-      return { logType, tick, data: decodeAssetPossessionChange(v, logType) }
+      return { logType, tick, data: decodeAssetChangeEvent(v, logType) }
     case LOG_TYPE.CONTRACT_ERROR_MESSAGE:
       return { logType, tick, data: decodeSmartContractMessage(v, logType) }
     case LOG_TYPE.CONTRACT_WARNING_MESSAGE:

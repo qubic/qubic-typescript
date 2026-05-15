@@ -53,6 +53,23 @@ export interface ContractCallBase {
   sourceRef?: string
 }
 
+/** Per-epoch snapshot stored in data/epochs/{epoch}/{name}.json. No range metadata — epoch is the folder. */
+export interface ContractSnapshot {
+  contractIndex: number
+  contractName: string
+  /** Deterministic 60-char Qubic identity derived from contractIndex. */
+  contractAddress?: string
+  /** Epoch this snapshot was taken at; matches the parent folder name. */
+  epoch: number
+  coreVersion?: string
+  coreCommit?: string
+  structs: Record<string, NamedStruct>
+  procedures: ContractCallBase[]
+  functions: ContractCallBase[]
+  changelog?: string
+}
+
+/** Version-range entry stored in registry.json. Spans one or more epochs where ABI was identical. */
 export interface ContractAbiVersion {
   contractIndex: number
   contractName: string

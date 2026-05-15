@@ -27,7 +27,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 
 import { join } from 'node:path'
 import { parseArgs } from 'node:util'
 import { contractIndexToIdentity } from '@qubic.ts/crypto'
-import type { ContractAbiVersion, ContractRegistry } from '../src/types.js'
+import type { ContractAbiVersion, ContractRegistry, ContractSnapshot } from '../src/types.js'
 import { cloneForBackfill, fetchCoreTags } from './_git-utils.js'
 import { parseContractHeader } from './_parse-header.js'
 
@@ -38,6 +38,7 @@ const { values: args } = parseArgs({
     'fill-gaps': { type: 'boolean', default: false },
     'rebuild-registry': { type: 'boolean', default: false },
     'patch-addresses': { type: 'boolean', default: false },
+    'migrate-snapshots': { type: 'boolean', default: false },
     'use-local-git': { type: 'boolean', default: false },
     'from-epoch': { type: 'string' },
     'to-epoch': { type: 'string' },
@@ -95,14 +96,43 @@ function readEpochFromSource(source: string): number | null {
   return m ? Number(m[1]) : null
 }
 
+function versionToSnapshot(
+  epoch: number,
+  version: ContractAbiVersion,
+  coreVersion?: string,
+): ContractSnapshot {
+  const {
+    contractIndex,
+    contractName,
+    contractAddress,
+    structs,
+    procedures,
+    functions,
+    changelog,
+  } = version
+  const snap: ContractSnapshot = { contractIndex, contractName }
+  if (contractAddress !== undefined) snap.contractAddress = contractAddress
+  snap.epoch = epoch
+  if (coreVersion) snap.coreVersion = coreVersion
+  else if (version.coreVersion) snap.coreVersion = version.coreVersion
+  if (version.coreCommit) snap.coreCommit = version.coreCommit
+  snap.structs = structs
+  snap.procedures = procedures
+  snap.functions = functions
+  if (changelog) snap.changelog = changelog
+  return snap
+}
+
 function writeEpochSnapshot(epoch: number, version: ContractAbiVersion, coreVersion?: string) {
   if (args['dry-run']) return
   const epochDir = join(EPOCHS_DIR, String(epoch))
   const snapshotPath = join(epochDir, `${version.contractName}.json`)
   if (!args.force && existsSync(snapshotPath)) return
-  const data = coreVersion ? { ...version, coreVersion } : version
   mkdirSync(epochDir, { recursive: true })
-  writeFileSync(snapshotPath, `${JSON.stringify(data, null, 2)}\n`)
+  writeFileSync(
+    snapshotPath,
+    `${JSON.stringify(versionToSnapshot(epoch, version, coreVersion), null, 2)}\n`,
+  )
 }
 
 async function showFileFromLocalGit(ref: string, path: string): Promise<string | null> {
@@ -157,12 +187,41 @@ async function runLocal() {
     }
   }
 
-  versions.sort(
+  console.log(`\nExtracted ${ok} contracts, ${failed} failed.`)
+
+  // Merge into existing registry: close out old versions on ABI changes, don't duplicate unchanged ones
+  let existing: ContractRegistry = {
+    schemaVersion: 1,
+    updatedAt: new Date().toISOString(),
+    versions: [],
+  }
+  try {
+    existing = JSON.parse(readFileSync(REGISTRY_PATH, 'utf-8')) as ContractRegistry
+  } catch {
+    /* fresh start */
+  }
+
+  const currentVersions = new Map<number, ContractAbiVersion>()
+  for (const v of existing.versions) {
+    if (v.effectiveToEpoch === null) currentVersions.set(v.contractIndex, v)
+  }
+
+  const toAdd: ContractAbiVersion[] = []
+  for (const version of versions) {
+    const prev = currentVersions.get(version.contractIndex)
+    if (prev === undefined) {
+      toAdd.push(version)
+    } else if (abiFingerprint(version) !== abiFingerprint(prev)) {
+      prev.effectiveToEpoch = epoch - 1
+      toAdd.push(version)
+    }
+    // else: unchanged — don't add a new version entry
+  }
+
+  const allVersions = [...existing.versions, ...toAdd].sort(
     (a, b) => a.contractIndex - b.contractIndex || a.effectiveFromEpoch - b.effectiveFromEpoch,
   )
-
-  console.log(`\nExtracted ${ok} contracts, ${failed} failed.`)
-  writeRegistry({ schemaVersion: 1, updatedAt: new Date().toISOString(), versions })
+  writeRegistry({ schemaVersion: 1, updatedAt: new Date().toISOString(), versions: allVersions })
 }
 
 // ── Mode: --from-epoch ────────────────────────────────────────────────────────
@@ -409,24 +468,30 @@ function rebuildRegistryFromSnapshots() {
           continue
       }
 
-      let version: ContractAbiVersion
+      let snap: ContractSnapshot
       try {
-        version = JSON.parse(readFileSync(join(epochDir, file), 'utf-8')) as ContractAbiVersion
+        snap = JSON.parse(readFileSync(join(epochDir, file), 'utf-8')) as ContractSnapshot
       } catch {
         console.warn(`  ⚠ Failed to parse ${epochDir}/${file}`)
         continue
+      }
+
+      // Use the folder epoch as authoritative effectiveFromEpoch (snapshot.epoch matches folder)
+      const snapEpoch = snap.epoch ?? epoch
+      const version: ContractAbiVersion = {
+        ...snap,
+        effectiveFromEpoch: snapEpoch,
+        effectiveToEpoch: null,
       }
 
       const fp = abiFingerprint(version)
       const prev = current.get(version.contractIndex)
 
       if (prev === undefined) {
-        version.effectiveToEpoch = null
         current.set(version.contractIndex, { fingerprint: fp, version })
         versions.push(version)
       } else if (fp !== prev.fingerprint) {
         prev.version.effectiveToEpoch = epoch - 1
-        version.effectiveToEpoch = null
         current.set(version.contractIndex, { fingerprint: fp, version })
         versions.push(version)
       }
@@ -466,6 +531,65 @@ function writeRegistry(registry: ContractRegistry) {
   }
 }
 
+// ── Mode: --migrate-snapshots ─────────────────────────────────────────────────
+
+function migrateSnapshots() {
+  console.log('Migrating snapshots to ContractSnapshot format (epoch key, no range fields)…')
+
+  const epochDirEntries = existsSync(EPOCHS_DIR)
+    ? readdirSync(EPOCHS_DIR, { withFileTypes: true })
+        .filter((d) => d.isDirectory())
+        .map((d) => Number(d.name))
+        .filter((n) => !Number.isNaN(n))
+        .sort((a, b) => a - b)
+    : []
+
+  let migrated = 0
+  let skipped = 0
+
+  for (const epoch of epochDirEntries) {
+    const epochDir = join(EPOCHS_DIR, String(epoch))
+    for (const file of readdirSync(epochDir).filter((f) => f.endsWith('.json'))) {
+      const filePath = join(epochDir, file)
+      let raw: Record<string, unknown>
+      try {
+        raw = JSON.parse(readFileSync(filePath, 'utf-8')) as Record<string, unknown>
+      } catch {
+        console.warn(`  ⚠ Failed to parse ${filePath}`)
+        continue
+      }
+
+      // Already in new format
+      if ('epoch' in raw && !('effectiveFromEpoch' in raw)) {
+        skipped++
+        continue
+      }
+
+      const contractIndex = raw.contractIndex as number
+      const contractName = raw.contractName as string
+      const contractAddress = raw.contractAddress as string | undefined
+      const coreVersion = raw.coreVersion as string | undefined
+      const coreCommit = raw.coreCommit as string | undefined
+      const changelog = raw.changelog as string | undefined
+
+      const snap: ContractSnapshot = { contractIndex, contractName }
+      if (contractAddress !== undefined) snap.contractAddress = contractAddress
+      snap.epoch = epoch
+      if (coreVersion) snap.coreVersion = coreVersion
+      if (coreCommit) snap.coreCommit = coreCommit
+      snap.structs = raw.structs as ContractSnapshot['structs']
+      snap.procedures = raw.procedures as ContractSnapshot['procedures']
+      snap.functions = raw.functions as ContractSnapshot['functions']
+      if (changelog) snap.changelog = changelog
+
+      if (!args['dry-run']) writeFileSync(filePath, `${JSON.stringify(snap, null, 2)}\n`)
+      migrated++
+    }
+  }
+
+  console.log(`Migrated ${migrated} snapshots, ${skipped} already up-to-date.`)
+}
+
 // ── Mode: --patch-addresses ───────────────────────────────────────────────────
 
 function patchAddresses() {
@@ -484,22 +608,23 @@ function patchAddresses() {
     const epochDir = join(EPOCHS_DIR, String(epoch))
     for (const file of readdirSync(epochDir).filter((f) => f.endsWith('.json'))) {
       const filePath = join(epochDir, file)
-      let v: ContractAbiVersion
+      let snap: ContractSnapshot
       try {
-        v = JSON.parse(readFileSync(filePath, 'utf-8')) as ContractAbiVersion
+        snap = JSON.parse(readFileSync(filePath, 'utf-8')) as ContractSnapshot
       } catch {
         console.warn(`  ⚠ Failed to parse ${filePath}`)
         continue
       }
-      const expected = contractIndexToIdentity(v.contractIndex)
+      const expected = contractIndexToIdentity(snap.contractIndex)
       const alreadyCorrect =
-        v.contractAddress === expected &&
-        Object.keys(v).indexOf('contractAddress') === Object.keys(v).indexOf('contractName') + 1
+        snap.contractAddress === expected &&
+        Object.keys(snap).indexOf('contractAddress') ===
+          Object.keys(snap).indexOf('contractName') + 1
       if (alreadyCorrect) {
         skipped++
         continue
       }
-      const { contractIndex, contractName, contractAddress: _old, ...rest } = v
+      const { contractIndex, contractName, contractAddress: _old, ...rest } = snap
       const ordered = { contractIndex, contractName, contractAddress: expected, ...rest }
       if (!args['dry-run']) writeFileSync(filePath, `${JSON.stringify(ordered, null, 2)}\n`)
       patched++
@@ -547,6 +672,8 @@ if (args.local) {
   rebuildRegistryFromSnapshots()
 } else if (args['patch-addresses']) {
   patchAddresses()
+} else if (args['migrate-snapshots']) {
+  migrateSnapshots()
 } else if (args['from-epoch'] !== undefined) {
   const fromEpoch = Number(args['from-epoch'])
   const toEpoch = args['to-epoch'] !== undefined ? Number(args['to-epoch']) : 9999
@@ -558,6 +685,7 @@ if (args.local) {
       '  bun scripts/backfill.ts --fill-gaps [--use-local-git] [--contracts A,B] [--force] [--dry-run]\n' +
       '  bun scripts/backfill.ts --rebuild-registry [--contracts A,B] [--dry-run]\n' +
       '  bun scripts/backfill.ts --patch-addresses [--dry-run]\n' +
+      '  bun scripts/backfill.ts --migrate-snapshots [--dry-run]\n' +
       '  bun scripts/backfill.ts --from-epoch <N> [--to-epoch <M>] [--contracts A,B] [--token GH_TOKEN] [--dry-run]',
   )
   process.exit(1)

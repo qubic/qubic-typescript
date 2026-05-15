@@ -1,6 +1,6 @@
 MIT License — Anti-Military Use
 
-Copyright (c) 2025 Qubic TypeScript Contributors
+Copyright (c) 2026 Qubic TypeScript Contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

@@ -12,7 +12,7 @@
     "ci:lint": "bunx biome ci .",
     "clean": "find . -name dist -not -path '*/node_modules/*' -exec rm -rf {} +",
     "changeset": "changeset",
-    "version": "changeset version && bun install --frozen-lockfile",
+    "version": "changeset version && bun install",
     "release": "bun run build && changeset publish",
     "postinstall": "simple-git-hooks"
   },

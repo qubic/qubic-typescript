@@ -15,7 +15,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@qubic.ts/rpc": "workspace:^",
+    "@qubic.ts/bob": "workspace:^",
+    "@qubic.ts/crypto": "workspace:^",
     "@qubic.ts/types": "workspace:^"
   },
   "devDependencies": {

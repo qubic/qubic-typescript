@@ -26,11 +26,21 @@ export function getRandomBytes(length: number): Uint8Array {
  * ```
  */
 export function generateRandomSeed(): Seed {
-  const bytes = getRandomBytes(55)
+  // Rejection sampling: discard bytes >= 234 (highest multiple of 26 that fits in 0-255 is
+  // 9*26=234). Without this, bytes 234-255 create ~2% bias toward 'a'-'f'.
+  const ALPHABET_SIZE = 26
+  const REJECT_THRESHOLD = 256 - (256 % ALPHABET_SIZE) // 234
+
   let seed = ''
-  for (const byte of bytes) {
-    seed += String.fromCharCode(97 + (byte % 26))
+  while (seed.length < 55) {
+    const bytes = getRandomBytes(Math.ceil((55 - seed.length) * 1.1 + 8))
+    for (const byte of bytes) {
+      if (byte >= REJECT_THRESHOLD) continue
+      seed += String.fromCharCode(97 + (byte % ALPHABET_SIZE))
+      if (seed.length === 55) break
+    }
   }
+
   if (seed.length !== 55 || !/^[a-z]+$/.test(seed)) {
     throw new InvalidSeedError(seed)
   }

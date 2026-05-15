@@ -16,7 +16,7 @@ TypeScript SDK for the [Qubic](https://qubic.org) network. Modular, tree-shakeab
 | [`@qubic.ts/events`](packages/events) | 0.1.0 | Binary event decoder, filter builder, and typed Bob subscription helpers |
 | [`@qubic.ts/wallet`](packages/wallet) | 0.1.0 | Wallet, encrypted vault, and seed utilities |
 | [`@qubic.ts/tcp`](packages/tcp) | 0.1.0 | Direct TCP transport — framing, connection pool, typed request helpers |
-| [`@qubic.ts/react`](packages/react) | 0.0.0 | React hooks and context providers |
+| [`@qubic.ts/react`](packages/react) | 0.1.0 | React hooks and context providers — TanStack Query, vault-based wallet |
 
 ## Quick start
 

@@ -1,6 +1,6 @@
 {
   "name": "@qubic.org/registry",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "sideEffects": false,
   "exports": {
@@ -17,7 +17,10 @@
     "./registry.json": "./data/registry.json",
     "./schema.json": "./data/schema.json"
   },
-  "files": ["dist", "data"],
+  "files": [
+    "dist",
+    "data"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc --noEmit",

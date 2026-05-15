@@ -2,6 +2,7 @@ import { readFileSync, readdirSync } from 'node:fs'
 import {
   AbiNotFoundError,
   type ContractAbiVersion,
+  type ContractSnapshot,
   getAbi,
   getAbiHistory,
   getCurrentAbi,
@@ -52,18 +53,18 @@ const CONTRACT_SUMMARIES = (() => {
     })
 })()
 
-function readEpochFromDisk(epoch: number): ContractAbiVersion[] | null {
+function readEpochFromDisk(epoch: number): ContractSnapshot[] | null {
   const dir = `${EPOCHS_DIR}${epoch}/`
   try {
     const files = readdirSync(dir).filter((f) => f.endsWith('.json'))
     if (files.length === 0) return null
-    const versions: ContractAbiVersion[] = []
+    const snapshots: ContractSnapshot[] = []
     for (const file of files) {
       try {
-        versions.push(JSON.parse(readFileSync(`${dir}${file}`, 'utf-8')) as ContractAbiVersion)
+        snapshots.push(JSON.parse(readFileSync(`${dir}${file}`, 'utf-8')) as ContractSnapshot)
       } catch {}
     }
-    return versions.sort((a, b) => a.contractIndex - b.contractIndex)
+    return snapshots.sort((a, b) => a.contractIndex - b.contractIndex)
   } catch {
     return null
   }
@@ -72,14 +73,33 @@ function readEpochFromDisk(epoch: number): ContractAbiVersion[] | null {
 function readContractAtEpochFromDisk(
   contractIndex: number,
   epoch: number,
-): ContractAbiVersion | null {
-  const contracts = readEpochFromDisk(epoch)
-  return contracts?.find((c) => c.contractIndex === contractIndex) ?? null
+): ContractSnapshot | null {
+  const snapshots = readEpochFromDisk(epoch)
+  return snapshots?.find((c) => c.contractIndex === contractIndex) ?? null
+}
+
+/** Augments a ContractSnapshot with version-range metadata from registry.json. */
+function snapshotToVersion(snap: ContractSnapshot, epoch: number): ContractAbiVersion {
+  try {
+    const { version } = getAbi(registry as Parameters<typeof getAbi>[0], snap.contractIndex, epoch)
+    return {
+      ...snap,
+      effectiveFromEpoch: version.effectiveFromEpoch,
+      effectiveToEpoch: version.effectiveToEpoch,
+    }
+  } catch {
+    // Registry doesn't cover this epoch — use snapshot epoch as both bounds
+    return {
+      ...snap,
+      effectiveFromEpoch: snap.epoch ?? epoch,
+      effectiveToEpoch: snap.epoch ?? epoch,
+    }
+  }
 }
 
 function allActiveAtEpoch(epoch: number): ContractAbiVersion[] {
   const fromDisk = readEpochFromDisk(epoch)
-  if (fromDisk) return fromDisk
+  if (fromDisk) return fromDisk.map((snap) => snapshotToVersion(snap, epoch))
   const indices = [...new Set(registry.versions.map((v) => v.contractIndex))]
   const result: ContractAbiVersion[] = []
   for (const idx of indices) {
@@ -142,9 +162,10 @@ export const apiRoutes = new Elysia({ prefix: '/v1' })
     const fromDisk = readContractAtEpochFromDisk(idx, epoch)
     if (fromDisk) {
       set.headers['cache-control'] = 'public, max-age=31536000, immutable'
+      const version = snapshotToVersion(fromDisk, epoch)
       return {
-        version: fromDisk,
-        isCurrent: fromDisk.effectiveToEpoch === null,
+        version,
+        isCurrent: version.effectiveToEpoch === null,
         isRegistryPossiblyStale: false,
       }
     }

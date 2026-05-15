@@ -85,34 +85,41 @@ export function createBobSubscriptionClient(
     },
   })
 
-  let closed = false
-  let ws: WebSocket | undefined
+  // Shared closed flag — set by close() to stop all active subscriptions.
+  let globalClosed = false
+  // All currently open sockets, one per active subscribe() call.
+  const activeSockets = new Set<WebSocket>()
 
-  function closeWs() {
-    closed = true
-    if (ws) {
-      ws.close()
-      ws = undefined
-    }
+  function enqueueStatus(status: 'connected' | 'disconnected' | 'reconnecting') {
     try {
-      statusController.enqueue('disconnected')
+      statusController.enqueue(status)
     } catch {
       // stream may already be closed
+    }
+  }
+
+  function closeAll() {
+    globalClosed = true
+    for (const socket of activeSockets) socket.close()
+    activeSockets.clear()
+    try {
+      statusController.enqueue('disconnected')
+      statusController.close()
+    } catch {
+      // ignore
     }
   }
 
   async function* subscribe<T>(p: WsSubscriptionParams): AsyncIterable<SubscriptionEvent<T>> {
     let lastLogId: bigint | undefined
     let reconnectAttempt = 0
+    // Per-subscription closed flag so one subscription can stop independently.
+    let subClosed = false
 
-    while (!closed && !p.signal?.aborted) {
+    while (!globalClosed && !subClosed && !p.signal?.aborted) {
       if (reconnectAttempt > 0) {
         if (!autoReconnect || reconnectAttempt > maxReconnects) break
-        try {
-          statusController.enqueue('reconnecting')
-        } catch {
-          // ignore
-        }
+        enqueueStatus('reconnecting')
         options.onReconnect?.(reconnectAttempt, lastLogId)
         await new Promise<void>((resolve) => setTimeout(resolve, backoff(reconnectAttempt - 1)))
       }
@@ -123,14 +130,10 @@ export function createBobSubscriptionClient(
       let wsError: Error | undefined
 
       const socket = new WebSocket(options.wsUrl)
-      ws = socket
+      activeSockets.add(socket)
 
       socket.onopen = () => {
-        try {
-          statusController.enqueue('connected')
-        } catch {
-          // ignore
-        }
+        enqueueStatus('connected')
 
         const subscribeParams: unknown[] = [p.topic, ...p.params]
         if (lastLogId !== undefined) {
@@ -195,13 +198,14 @@ export function createBobSubscriptionClient(
       }
 
       socket.onclose = () => {
+        activeSockets.delete(socket)
         done = true
         resolveNext?.()
         resolveNext = undefined
       }
 
       const abortHandler = () => {
-        done = true
+        subClosed = true
         socket.close()
         resolveNext?.()
         resolveNext = undefined
@@ -223,6 +227,7 @@ export function createBobSubscriptionClient(
         }
       } finally {
         p.signal?.removeEventListener('abort', abortHandler)
+        activeSockets.delete(socket)
         socket.close()
       }
 
@@ -234,11 +239,7 @@ export function createBobSubscriptionClient(
       reconnectAttempt++
     }
 
-    try {
-      statusController.enqueue('disconnected')
-    } catch {
-      // ignore
-    }
+    enqueueStatus('disconnected')
   }
 
   function isNotification(msg: unknown): msg is {
@@ -301,7 +302,7 @@ export function createBobSubscriptionClient(
     },
 
     close() {
-      closeWs()
+      closeAll()
     },
   }
 }

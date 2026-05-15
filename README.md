@@ -6,17 +6,17 @@ TypeScript SDK for the [Qubic](https://qubic.org) network. Modular, tree-shakeab
 
 | Package | Version | Description |
 |---|---|---|
-| [`@qubic.org/types`](packages/types) | 0.1.0 | Branded primitives, protocol constants, shared error types |
-| [`@qubic.org/crypto`](packages/crypto) | 0.1.0 | K12 hash, SchnorrQ signatures, FourQ key derivation |
-| [`@qubic.org/tx`](packages/tx) | 0.1.0 | Binary transaction builder, signer, and verifier |
-| [`@qubic.org/rpc`](packages/rpc) | 0.1.0 | Type-safe REST client for the Qubic RPC gateway |
-| [`@qubic.org/bob`](packages/bob) | 0.1.0 | Live node client — JSON-RPC 2.0, REST, WebSocket subscriptions |
-| [`@qubic.org/registry`](packages/registry) | 0.1.0 | Versioned ABI registry for all Qubic smart contracts across all epochs |
-| [`@qubic.org/contracts`](packages/contracts) | 0.1.0 | Generated typed wrappers for every deployed contract |
-| [`@qubic.org/events`](packages/events) | 0.1.0 | Binary event decoder, filter builder, and typed Bob subscription helpers |
-| [`@qubic.org/wallet`](packages/wallet) | 0.1.0 | Wallet, encrypted vault, and seed utilities |
-| [`@qubic.org/tcp`](packages/tcp) | 0.1.0 | Direct TCP transport — framing, connection pool, typed request helpers |
-| [`@qubic.org/react`](packages/react) | 0.1.0 | React hooks and providers — TanStack Query, VaultProvider, WalletProvider (extension / WalletConnect / MetaMask Snap), contract queries, send mutations |
+| [`@qubic.org/types`](packages/types) | 0.2.0 | Branded primitives, protocol constants, shared error types |
+| [`@qubic.org/crypto`](packages/crypto) | 0.2.0 | K12 hash, SchnorrQ signatures, FourQ key derivation |
+| [`@qubic.org/tx`](packages/tx) | 0.2.0 | Binary transaction builder, signer, and verifier |
+| [`@qubic.org/rpc`](packages/rpc) | 0.2.0 | Type-safe REST client for the Qubic RPC gateway |
+| [`@qubic.org/bob`](packages/bob) | 0.2.0 | Live node client — JSON-RPC 2.0, REST, WebSocket subscriptions |
+| [`@qubic.org/registry`](packages/registry) | 0.2.0 | Versioned ABI registry for all Qubic smart contracts across all epochs |
+| [`@qubic.org/contracts`](packages/contracts) | 0.2.0 | Generated typed wrappers for every deployed contract |
+| [`@qubic.org/events`](packages/events) | 0.2.0 | Binary event decoder, filter builder, and typed Bob subscription helpers |
+| [`@qubic.org/wallet`](packages/wallet) | 0.2.0 | Wallet, encrypted vault, and seed utilities |
+| [`@qubic.org/tcp`](packages/tcp) | 0.2.0 | Direct TCP transport — framing, connection pool, typed request helpers |
+| [`@qubic.org/react`](packages/react) | 0.2.0 | React hooks and providers — TanStack Query, VaultProvider, WalletProvider (extension / WalletConnect / MetaMask Snap), contract queries, send mutations |
 
 ## Quick start
 

@@ -883,5 +883,6 @@
       "inputSize": 512,
       "outputSize": 128
     }
-  ]
+  ],
+  "contractAddress": "EAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVWRF"
 }

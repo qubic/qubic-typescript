@@ -9,6 +9,7 @@
  *   --fill-gaps          Re-scan all epoch/contract combinations that have no snapshot yet,
  *                        using resources/core git (requires tags to be present locally)
  *   --rebuild-registry   Rebuild registry.json from all existing epoch snapshots on disk
+ *   --patch-addresses    Add/refresh contractAddress on every snapshot and registry.json
  *
  * Options:
  *   --use-local-git      Source files from resources/core via git-show instead of cloning
@@ -25,6 +26,7 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { parseArgs } from 'node:util'
+import { contractIndexToIdentity } from '@qubic.ts/crypto'
 import type { ContractAbiVersion, ContractRegistry } from '../src/types.js'
 import { cloneForBackfill, fetchCoreTags } from './_git-utils.js'
 import { parseContractHeader } from './_parse-header.js'
@@ -35,6 +37,7 @@ const { values: args } = parseArgs({
     local: { type: 'boolean', default: false },
     'fill-gaps': { type: 'boolean', default: false },
     'rebuild-registry': { type: 'boolean', default: false },
+    'patch-addresses': { type: 'boolean', default: false },
     'use-local-git': { type: 'boolean', default: false },
     'from-epoch': { type: 'string' },
     'to-epoch': { type: 'string' },
@@ -463,6 +466,57 @@ function writeRegistry(registry: ContractRegistry) {
   }
 }
 
+// ── Mode: --patch-addresses ───────────────────────────────────────────────────
+
+function patchAddresses() {
+  const epochDirs = existsSync(EPOCHS_DIR)
+    ? readdirSync(EPOCHS_DIR, { withFileTypes: true })
+        .filter((d) => d.isDirectory())
+        .map((d) => Number(d.name))
+        .filter((n) => !Number.isNaN(n))
+        .sort((a, b) => a - b)
+    : []
+
+  let patched = 0
+  let skipped = 0
+
+  for (const epoch of epochDirs) {
+    const epochDir = join(EPOCHS_DIR, String(epoch))
+    for (const file of readdirSync(epochDir).filter((f) => f.endsWith('.json'))) {
+      const filePath = join(epochDir, file)
+      let v: ContractAbiVersion
+      try {
+        v = JSON.parse(readFileSync(filePath, 'utf-8')) as ContractAbiVersion
+      } catch {
+        console.warn(`  ⚠ Failed to parse ${filePath}`)
+        continue
+      }
+      const expected = contractIndexToIdentity(v.contractIndex)
+      if (v.contractAddress === expected) {
+        skipped++
+        continue
+      }
+      v.contractAddress = expected
+      if (!args['dry-run']) writeFileSync(filePath, `${JSON.stringify(v, null, 2)}\n`)
+      patched++
+    }
+  }
+
+  console.log(`Patched ${patched} snapshots, ${skipped} already up-to-date.`)
+
+  // Patch registry.json in-place too
+  try {
+    const registry = JSON.parse(readFileSync(REGISTRY_PATH, 'utf-8')) as ContractRegistry
+    for (const v of registry.versions) {
+      v.contractAddress = contractIndexToIdentity(v.contractIndex)
+    }
+    if (!args['dry-run']) writeFileSync(REGISTRY_PATH, `${JSON.stringify(registry, null, 2)}\n`)
+    console.log(`Patched ${registry.versions.length} registry.json version entries.`)
+  } catch {
+    console.warn('registry.json not found — run --rebuild-registry after.')
+  }
+}
+
 // ── Dispatch ──────────────────────────────────────────────────────────────────
 
 if (args.local) {
@@ -481,6 +535,8 @@ if (args.local) {
   }
 } else if (args['rebuild-registry']) {
   rebuildRegistryFromSnapshots()
+} else if (args['patch-addresses']) {
+  patchAddresses()
 } else if (args['from-epoch'] !== undefined) {
   const fromEpoch = Number(args['from-epoch'])
   const toEpoch = args['to-epoch'] !== undefined ? Number(args['to-epoch']) : 9999
@@ -491,6 +547,7 @@ if (args.local) {
       '  bun scripts/backfill.ts --local [--dry-run]\n' +
       '  bun scripts/backfill.ts --fill-gaps [--use-local-git] [--contracts A,B] [--force] [--dry-run]\n' +
       '  bun scripts/backfill.ts --rebuild-registry [--contracts A,B] [--dry-run]\n' +
+      '  bun scripts/backfill.ts --patch-addresses [--dry-run]\n' +
       '  bun scripts/backfill.ts --from-epoch <N> [--to-epoch <M>] [--contracts A,B] [--token GH_TOKEN] [--dry-run]',
   )
   process.exit(1)

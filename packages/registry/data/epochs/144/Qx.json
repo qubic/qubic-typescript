@@ -446,5 +446,6 @@
       "inputSize": 40,
       "outputSize": 12288
     }
-  ]
+  ],
+  "contractAddress": "BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARMID"
 }

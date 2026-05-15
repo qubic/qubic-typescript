@@ -83,7 +83,8 @@
       "resources/**",
       "planning/**",
       ".claude/**",
-      "**/.next/**"
+      "**/.next/**",
+      "packages/registry/data/**"
     ]
   }
 }

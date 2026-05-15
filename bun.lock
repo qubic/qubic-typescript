@@ -101,8 +101,10 @@
     },
     "packages/react": {
       "name": "@qubic.ts/react",
-      "version": "0.0.0",
+      "version": "0.1.0",
       "dependencies": {
+        "@qubic.ts/contracts": "workspace:^",
+        "@qubic.ts/crypto": "workspace:^",
         "@qubic.ts/rpc": "workspace:^",
         "@qubic.ts/types": "workspace:^",
         "@qubic.ts/wallet": "workspace:^",

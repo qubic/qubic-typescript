@@ -1,0 +1,43 @@
+import type { GetTransactionsForIdentityRequest, Hits, QueryTransaction } from '@qubic.ts/rpc'
+import { type UseQueryOptions, type UseQueryResult, useQuery } from '@tanstack/react-query'
+import { useQubic } from './context.js'
+
+export interface TransactionsForIdentityResult {
+  transactions: QueryTransaction[]
+  hits: Hits
+  validForTick: number
+}
+
+type Options = Omit<
+  UseQueryOptions<TransactionsForIdentityResult>,
+  'queryKey' | 'queryFn' | 'enabled'
+>
+
+/**
+ * Fetches transactions for an identity from the archive API. Requires `archiveClient`.
+ * Query is disabled when `request` is null or undefined.
+ *
+ * @example
+ * ```tsx
+ * const { data } = useTransactionsForIdentity({
+ *   addressId: identity,
+ *   pagination: { offset: 0, size: 20 },
+ * })
+ * ```
+ */
+export function useTransactionsForIdentity(
+  request: GetTransactionsForIdentityRequest | null | undefined,
+  options?: Options,
+): UseQueryResult<TransactionsForIdentityResult> {
+  const { archiveClient } = useQubic()
+  return useQuery<TransactionsForIdentityResult>({
+    queryKey: ['qubic', 'transactionsForIdentity', request],
+    queryFn: () => {
+      if (archiveClient == null)
+        throw new Error('archiveClient is required for useTransactionsForIdentity')
+      return archiveClient.getTransactionsForIdentity(request as GetTransactionsForIdentityRequest)
+    },
+    enabled: request != null,
+    ...options,
+  })
+}

@@ -291,9 +291,77 @@ function SignPanel() {
 }
 ```
 
+### WalletConnect v2
+
+Requires `@walletconnect/sign-client` installed in your app (not bundled by `@qubic.ts/react`):
+
+```bash
+bun add @walletconnect/sign-client
+```
+
+```tsx
+import SignClient from '@walletconnect/sign-client'
+import { createWalletConnectConnector, useWalletConnector } from '@qubic.ts/react'
+
+// Initialize once (outside component)
+const wcClient = await SignClient.init({
+  projectId: 'YOUR_PROJECT_ID',
+  metadata: {
+    name: 'My App',
+    description: '…',
+    url: 'https://myapp.com',
+    icons: ['https://myapp.com/icon.png'],
+  },
+})
+const wcConnector = createWalletConnectConnector(wcClient)
+
+// In a component — pass onUri to display the QR code
+function ConnectWC() {
+  const [qrUri, setQrUri] = useState<string>()
+  const { isConnected, account, connect, disconnect } = useWalletConnector(wcConnector)
+
+  if (!isConnected) {
+    return (
+      <>
+        <button onClick={() => connect({ onUri: setQrUri })}>Connect via WalletConnect</button>
+        {qrUri && <QRCode value={qrUri} />}
+      </>
+    )
+  }
+  return <p>{account?.identity}</p>
+}
+```
+
+Sessions persist in `localStorage` across page reloads. WalletConnect uses the Qubic namespace (`qubic:mainnet`) with methods `qubic_requestAccounts`, `qubic_signTransaction`, `qubic_sendQubic`, and `qubic_sign`.
+
+### MetaMask Snap
+
+Requires MetaMask Flask and the `@qubic-lib/qubic-mm-snap` snap. Broadcasting is handled by your app — pass a `broadcast` function:
+
+```tsx
+import { createMetaMaskSnapConnector, useWalletConnector } from '@qubic.ts/react'
+import type { Base64 } from '@qubic.ts/types'
+
+const snapConnector = createMetaMaskSnapConnector({
+  broadcast: async (signedBase64) => {
+    const result = await liveClient.broadcastTransaction(signedBase64 as Base64)
+    if (!result.isOk()) throw result.error
+    return { networkTxId: result.value.transactionId, broadcast: result.value }
+  },
+})
+
+function ConnectSnap() {
+  const { isAvailable, isConnected, account, connect, error } = useWalletConnector(snapConnector)
+
+  if (!isAvailable) return <p>MetaMask not detected</p>
+  if (!isConnected) return <button onClick={() => connect()}>Connect MetaMask Snap</button>
+  return <p>{account?.identity}</p>
+}
+```
+
 ### Custom connector
 
-Implement `WalletConnector` to add WalletConnect, MetaMask Snap, or any other wallet:
+Implement `WalletConnector` to add any other wallet backend:
 
 ```ts
 import type { WalletConnector } from '@qubic.ts/react'
@@ -301,8 +369,13 @@ import type { WalletConnector } from '@qubic.ts/react'
 export const myConnector: WalletConnector = {
   id: 'my-wallet',
   isAvailable: () => true,
-  connect: async () => ({ identity: '...' }),
-  // ...
+  connect: async () => ({ identity: '…' }),
+  getAccount: async () => null,
+  disconnect: async () => {},
+  sendTransaction: async (tx) => { /* … */ },
+  signTransaction: async (tx) => { /* … */ },
+  signMessage: async (msg) => { /* … */ },
+  on: (event, cb) => () => {},
 }
 ```
 

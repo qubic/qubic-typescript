@@ -36,7 +36,7 @@ export function useContractQuery<TInput, TOutput>(
   const { liveClient } = useQubic()
 
   return useQuery<TOutput>({
-    queryKey: ['qubic', 'contract', fn.name, input],
+    queryKey: ['qubic', 'contract', fn, input],
     queryFn: async () => {
       const result = await fn(liveClient, input as TInput, {
         identityToPublicKey: identityToPublicKey as (id: string) => Uint8Array,

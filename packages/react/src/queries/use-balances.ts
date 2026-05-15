@@ -2,7 +2,7 @@ import { qUtilGetBalances16 } from '@qubic.ts/contracts'
 import { identityToPublicKey } from '@qubic.ts/crypto'
 import type { Identity } from '@qubic.ts/types'
 import { useQueries } from '@tanstack/react-query'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useQubic } from '../context.js'
 
 const BATCH_SIZE = 16
@@ -76,9 +76,9 @@ export function useBalances(
   const isLoading = results.some((r) => r.isPending)
   const error = results.find((r) => r.error)?.error as Error | undefined
 
-  function refetch() {
+  const refetch = useCallback(() => {
     for (const r of results) void r.refetch()
-  }
+  }, [results])
 
   return { balances, isLoading, error, refetch }
 }

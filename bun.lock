@@ -90,10 +90,12 @@
       "name": "@qubic.ts/events",
       "version": "0.0.0",
       "dependencies": {
-        "@qubic.ts/rpc": "workspace:^",
+        "@qubic.ts/bob": "workspace:^",
+        "@qubic.ts/crypto": "workspace:^",
         "@qubic.ts/types": "workspace:^",
       },
       "devDependencies": {
+        "@types/node": "^25.8.0",
         "typescript": "*",
       },
     },
@@ -141,7 +143,7 @@
     },
     "packages/tcp": {
       "name": "@qubic.ts/tcp",
-      "version": "0.0.0",
+      "version": "0.1.0",
       "dependencies": {
         "@qubic.ts/crypto": "workspace:^",
         "@qubic.ts/types": "workspace:^",

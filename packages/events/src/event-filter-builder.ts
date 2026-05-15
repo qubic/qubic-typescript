@@ -55,9 +55,8 @@ export function eventFilter(): EventFilterBuilder {
       const f: BobLogFilter = {}
       if (state.identity !== undefined) f.identity = state.identity
       if (state.contractIndex !== undefined) f.contractIndex = state.contractIndex
-      if (state.logTypes !== undefined && state.logTypes.length > 0) {
-        f.logType = state.logTypes[0]
-      }
+      const lt = state.logTypes?.[0]
+      if (lt !== undefined) f.logType = lt
       if (state.fromTick !== undefined) f.fromTick = state.fromTick
       if (state.toTick !== undefined) f.toTick = state.toTick
       return f

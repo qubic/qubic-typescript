@@ -235,8 +235,11 @@ export function decodeEvent(event: BobLogEvent): TypedEvent {
     case LOG_TYPE.ASSET_POSSESSION_CHANGE:
       return { logType, tick, data: decodeAssetPossessionChange(v, logType) }
     case LOG_TYPE.CONTRACT_ERROR_MESSAGE:
+      return { logType, tick, data: decodeSmartContractMessage(v, logType) }
     case LOG_TYPE.CONTRACT_WARNING_MESSAGE:
+      return { logType, tick, data: decodeSmartContractMessage(v, logType) }
     case LOG_TYPE.CONTRACT_INFORMATION_MESSAGE:
+      return { logType, tick, data: decodeSmartContractMessage(v, logType) }
     case LOG_TYPE.CONTRACT_DEBUG_MESSAGE:
       return { logType, tick, data: decodeSmartContractMessage(v, logType) }
     case LOG_TYPE.BURNING:

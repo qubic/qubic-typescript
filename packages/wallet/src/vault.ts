@@ -32,7 +32,11 @@ function fromHex(hex: string): Uint8Array<ArrayBuffer> {
   return out
 }
 
-async function deriveKey(password: string, salt: Uint8Array<ArrayBuffer>): Promise<CryptoKey> {
+async function deriveKey(
+  password: string,
+  salt: Uint8Array<ArrayBuffer>,
+  iterations: number,
+): Promise<CryptoKey> {
   const enc = new TextEncoder()
   const baseKey = await globalThis.crypto.subtle.importKey(
     'raw',
@@ -42,7 +46,7 @@ async function deriveKey(password: string, salt: Uint8Array<ArrayBuffer>): Promi
     ['deriveKey'],
   )
   return globalThis.crypto.subtle.deriveKey(
-    { name: 'PBKDF2', salt, iterations: PBKDF2_ITERATIONS, hash: 'SHA-256' },
+    { name: 'PBKDF2', salt, iterations, hash: 'SHA-256' },
     baseKey,
     { name: 'AES-GCM', length: 256 },
     false,
@@ -56,7 +60,7 @@ async function encryptPayload(
 ): Promise<{ salt: Uint8Array<ArrayBuffer>; iv: Uint8Array<ArrayBuffer>; ciphertext: Uint8Array }> {
   const salt = globalThis.crypto.getRandomValues(new Uint8Array(SALT_BYTES))
   const iv = globalThis.crypto.getRandomValues(new Uint8Array(IV_BYTES))
-  const key = await deriveKey(password, salt)
+  const key = await deriveKey(password, salt, PBKDF2_ITERATIONS)
 
   const payload: VaultPayload = { seeds: seeds as string[] }
   const plaintext = new TextEncoder().encode(JSON.stringify(payload))
@@ -79,7 +83,7 @@ async function decryptPayload(vaultData: VaultData, password: string): Promise<S
     throw new InvalidVaultError('malformed hex fields')
   }
 
-  const key = await deriveKey(password, salt)
+  const key = await deriveKey(password, salt, vaultData.iterations)
 
   let plaintext: ArrayBuffer
   try {
@@ -102,7 +106,7 @@ async function decryptPayload(vaultData: VaultData, password: string): Promise<S
 /**
  * Creates an encrypted vault containing the given seeds.
  *
- * Uses PBKDF2-SHA256 (100k iterations) to derive an AES-256-GCM key from the password.
+ * Uses PBKDF2-SHA256 (600k iterations) to derive an AES-256-GCM key from the password.
  *
  * @example
  * ```ts

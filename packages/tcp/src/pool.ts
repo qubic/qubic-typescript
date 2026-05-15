@@ -27,7 +27,7 @@ export function createNodePool(peers: readonly string[], options: NodePoolOption
 
   const maxRetries = options.maxRetries ?? peers.length
   const connections = new Map<string, NodeConnection>()
-  let robin = 0
+  let robin = 0  // always kept in [0, peers.length)
 
   async function getConn(hostname: string): Promise<NodeConnection> {
     const cached = connections.get(hostname)
@@ -41,13 +41,14 @@ export function createNodePool(peers: readonly string[], options: NodePoolOption
     async request(type, payload?, opts?) {
       let lastErr: Error | undefined
       for (let attempt = 0; attempt <= maxRetries; attempt++) {
-        const hostname = peers[robin % peers.length]
-        robin++
+        const hostname = peers[robin]
+        robin = (robin + 1) % peers.length
         if (!hostname) continue
         try {
           const conn = await getConn(hostname)
           return await conn.request(type, payload, opts)
         } catch (err) {
+          connections.get(hostname)?.close()
           connections.delete(hostname)
           lastErr = err instanceof Error ? err : new Error(String(err))
         }

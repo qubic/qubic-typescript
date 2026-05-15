@@ -174,9 +174,21 @@ export async function createNodeConnection(
             timer,
           }
 
+          let onAbort: (() => void) | undefined
           if (opts?.signal) {
-            const onAbort = () => destroySocket(new Error('Aborted'))
+            onAbort = () => destroySocket(new Error('Aborted'))
             opts.signal.addEventListener('abort', onAbort, { once: true })
+          }
+
+          const originalResolve = pending.resolve
+          const originalReject = pending.reject
+          pending.resolve = (r) => {
+            if (onAbort) opts?.signal?.removeEventListener('abort', onAbort)
+            originalResolve(r)
+          }
+          pending.reject = (e) => {
+            if (onAbort) opts?.signal?.removeEventListener('abort', onAbort)
+            originalReject(e)
           }
 
           s.write(Buffer.from(requestBytes))

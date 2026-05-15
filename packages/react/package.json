@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@qubic.ts/rpc": "workspace:^",
+    "@qubic.ts/types": "workspace:^",
     "@qubic.ts/wallet": "workspace:^",
     "@tanstack/react-query": "^5.100.10"
   },

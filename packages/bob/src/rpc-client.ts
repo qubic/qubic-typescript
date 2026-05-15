@@ -83,6 +83,16 @@ function isJsonRpcError<T>(r: JsonRpcResponse<T>): r is JsonRpcError {
   return 'error' in r
 }
 
+function combineSignals(a: AbortSignal, b: AbortSignal): AbortSignal {
+  if (typeof AbortSignal.any === 'function') return AbortSignal.any([a, b])
+  const controller = new AbortController()
+  if (a.aborted) { controller.abort(a.reason); return controller.signal }
+  if (b.aborted) { controller.abort(b.reason); return controller.signal }
+  a.addEventListener('abort', () => controller.abort(a.reason), { once: true })
+  b.addEventListener('abort', () => controller.abort(b.reason), { once: true })
+  return controller.signal
+}
+
 /** Creates a type-safe JSON-RPC 2.0 client for the Bob indexer. */
 export function createBobRpcClient(options: BobRpcClientOptions): BobRpcClient {
   const fetchFn = options.fetch ?? globalThis.fetch
@@ -105,7 +115,7 @@ export function createBobRpcClient(options: BobRpcClientOptions): BobRpcClient {
       const timeoutId = setTimeout(() => timeoutController.abort(), timeoutMs)
 
       const combinedSignal = signal
-        ? AbortSignal.any([signal, timeoutController.signal])
+        ? combineSignals(signal, timeoutController.signal)
         : timeoutController.signal
 
       try {

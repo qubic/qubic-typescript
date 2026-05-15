@@ -31,7 +31,10 @@ export function useEventLogs(
   const { archiveClient } = useQubic()
   return useQuery<EventLogsResult>({
     queryKey: ['qubic', 'eventLogs', request],
-    queryFn: () => archiveClient!.getEventLogs(request as GetEventLogsRequest),
+    queryFn: () => {
+      const client = archiveClient as NonNullable<typeof archiveClient>
+      return client.getEventLogs(request as GetEventLogsRequest)
+    },
     enabled: request != null && archiveClient != null,
     ...options,
   })

@@ -75,35 +75,42 @@ function writeScalar(
   switch (type) {
     case 'uint8':
     case 'sint8':
-      if (typeof value !== 'number') throw new PayloadBuildError(`Field "${fieldName}": expected number`)
+      if (typeof value !== 'number')
+        throw new PayloadBuildError(`Field "${fieldName}": expected number`)
       view.setUint8(offset, value)
       break
     case 'uint16':
     case 'sint16':
-      if (typeof value !== 'number') throw new PayloadBuildError(`Field "${fieldName}": expected number`)
+      if (typeof value !== 'number')
+        throw new PayloadBuildError(`Field "${fieldName}": expected number`)
       view.setUint16(offset, value, true)
       break
     case 'uint32':
     case 'sint32':
-      if (typeof value !== 'number') throw new PayloadBuildError(`Field "${fieldName}": expected number`)
+      if (typeof value !== 'number')
+        throw new PayloadBuildError(`Field "${fieldName}": expected number`)
       view.setUint32(offset, value, true)
       break
     case 'uint64':
-      if (typeof value !== 'bigint') throw new PayloadBuildError(`Field "${fieldName}": expected bigint`)
+      if (typeof value !== 'bigint')
+        throw new PayloadBuildError(`Field "${fieldName}": expected bigint`)
       view.setBigUint64(offset, value, true)
       break
     case 'sint64':
-      if (typeof value !== 'bigint') throw new PayloadBuildError(`Field "${fieldName}": expected bigint`)
+      if (typeof value !== 'bigint')
+        throw new PayloadBuildError(`Field "${fieldName}": expected bigint`)
       view.setBigInt64(offset, value, true)
       break
     case 'uint128': {
-      if (typeof value !== 'bigint') throw new PayloadBuildError(`Field "${fieldName}": expected bigint`)
+      if (typeof value !== 'bigint')
+        throw new PayloadBuildError(`Field "${fieldName}": expected bigint`)
       view.setBigUint64(offset, value & 0xffffffffffffffffn, true)
       view.setBigUint64(offset + 8, value >> 64n, true)
       break
     }
     case 'id': {
-      if (typeof value !== 'string') throw new PayloadBuildError(`Field "${fieldName}": expected Identity string`)
+      if (typeof value !== 'string')
+        throw new PayloadBuildError(`Field "${fieldName}": expected Identity string`)
       buf.set(identityToPublicKey(value).subarray(0, 32), offset)
       break
     }
@@ -198,7 +205,15 @@ function encodeField(
       for (const sf of namedStruct.fields) {
         const sv = nested[sf.name]
         if (sv === undefined) throw new PayloadBuildError(`Struct field "${sf.name}" missing`)
-        encodeField(sf, sv as FieldValue, buf, view, offset + sf.offset, structs, identityToPublicKey)
+        encodeField(
+          sf,
+          sv as FieldValue,
+          buf,
+          view,
+          offset + sf.offset,
+          structs,
+          identityToPublicKey,
+        )
       }
       break
     }
@@ -222,10 +237,26 @@ function encodeField(
             const sv = itemVal[sf.name]
             if (sv === undefined)
               throw new PayloadBuildError(`Array struct field "${sf.name}" missing`)
-            encodeField(sf, sv as FieldValue, buf, view, itemOffset + sf.offset, structs, identityToPublicKey)
+            encodeField(
+              sf,
+              sv as FieldValue,
+              buf,
+              view,
+              itemOffset + sf.offset,
+              structs,
+              identityToPublicKey,
+            )
           }
         } else {
-          writeScalar(itemType, field.name, value[i] as FieldValue, buf, view, itemOffset, identityToPublicKey)
+          writeScalar(
+            itemType,
+            field.name,
+            value[i] as FieldValue,
+            buf,
+            view,
+            itemOffset,
+            identityToPublicKey,
+          )
         }
       }
       break
@@ -285,7 +316,14 @@ function decodeField(
         throw new PayloadBuildError(`Field "${field.name}": struct "${field.structRef}" not found`)
       const nested: DecodedStruct = {}
       for (const sf of namedStruct.fields) {
-        nested[sf.name] = decodeField(sf, data, view, offset + sf.offset, structs, publicKeyToIdentity)
+        nested[sf.name] = decodeField(
+          sf,
+          data,
+          view,
+          offset + sf.offset,
+          structs,
+          publicKeyToIdentity,
+        )
       }
       return nested
     }
@@ -302,7 +340,14 @@ function decodeField(
           if (namedStruct) {
             const nested: DecodedStruct = {}
             for (const sf of namedStruct.fields) {
-              nested[sf.name] = decodeField(sf, data, view, itemOffset + sf.offset, structs, publicKeyToIdentity)
+              nested[sf.name] = decodeField(
+                sf,
+                data,
+                view,
+                itemOffset + sf.offset,
+                structs,
+                publicKeyToIdentity,
+              )
             }
             items.push(nested)
           }

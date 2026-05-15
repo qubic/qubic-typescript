@@ -27,7 +27,7 @@ export function createNodePool(peers: readonly string[], options: NodePoolOption
 
   const maxRetries = options.maxRetries ?? peers.length
   const connections = new Map<string, NodeConnection>()
-  let robin = 0  // always kept in [0, peers.length)
+  let robin = 0 // always kept in [0, peers.length)
 
   async function getConn(hostname: string): Promise<NodeConnection> {
     const cached = connections.get(hostname)

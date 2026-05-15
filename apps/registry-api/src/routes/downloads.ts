@@ -43,6 +43,7 @@ export const downloadRoutes = new Elysia({ prefix: '/download' })
       })
     }
     const bytes = await readFile(path)
+    set.headers['cache-control'] = 'public, max-age=31536000, immutable'
     set.headers['content-type'] = 'application/json'
     set.headers['content-disposition'] = `attachment; filename="${filename}"`
     return bytes
@@ -64,6 +65,7 @@ export const downloadRoutes = new Elysia({ prefix: '/download' })
     }
 
     const zip = zipSync(entries)
+    set.headers['cache-control'] = 'public, max-age=31536000, immutable'
     set.headers['content-type'] = 'application/zip'
     set.headers['content-disposition'] = `attachment; filename="qubic-registry-epoch-${epoch}.zip"`
     return zip
@@ -94,6 +96,7 @@ export const downloadRoutes = new Elysia({ prefix: '/download' })
 
     const zip = zipSync(entries)
     const slug = name.toLowerCase().replace(/[^a-z0-9]/g, '-')
+    set.headers['cache-control'] = 'public, max-age=3600'
     set.headers['content-type'] = 'application/zip'
     set.headers['content-disposition'] =
       `attachment; filename="qubic-registry-contract-${idx}-${slug}-all-epochs.zip"`

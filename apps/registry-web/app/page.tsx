@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { SearchFilter } from '../components/SearchFilter'
+import { SearchFilter } from '../components/search-filter'
 import { api } from '../lib/api'
 
 export default async function Home() {

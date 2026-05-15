@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { AbiView } from '../../../components/AbiView'
+import { AbiView } from '../../../components/abi-view'
 import { Crumbs } from '../../../components/crumbs'
 import { Sigil } from '../../../components/sigil'
 import { api } from '../../../lib/api'

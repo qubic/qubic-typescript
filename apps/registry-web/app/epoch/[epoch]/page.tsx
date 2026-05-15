@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
-import { EpochNav } from '../../../components/EpochNav'
 import { Crumbs } from '../../../components/crumbs'
+import { EpochNav } from '../../../components/epoch-nav'
 import { Sigil } from '../../../components/sigil'
 import { api } from '../../../lib/api'
 

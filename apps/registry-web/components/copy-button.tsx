@@ -6,10 +6,13 @@ export function CopyButton({ value, label = 'copy' }: { value: string; label?: s
 
   function copy(e: React.MouseEvent) {
     e.stopPropagation()
-    navigator.clipboard?.writeText(value).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 1200)
-    })
+    navigator.clipboard
+      ?.writeText(value)
+      .then(() => {
+        setCopied(true)
+        setTimeout(() => setCopied(false), 1200)
+      })
+      .catch(() => {})
   }
 
   return (

@@ -10,21 +10,25 @@ import { Sigil } from './sigil'
 export function CommandPalette() {
   const [open, setOpen] = useState(false)
   const [contracts, setContracts] = useState<ContractSummary[]>([])
-  const [loaded, setLoaded] = useState(false)
+  const [loadState, setLoadState] = useState<'idle' | 'loading' | 'ok' | 'error'>('idle')
   const router = useRouter()
 
   const openPalette = useCallback(() => {
     setOpen(true)
-    if (!loaded) {
+    if (loadState === 'idle') {
+      setLoadState('loading')
       fetch('/api/contracts')
-        .then((r) => r.json())
+        .then((r) => {
+          if (!r.ok) throw new Error(String(r.status))
+          return r.json()
+        })
         .then((data: ContractSummary[]) => {
           setContracts(data)
-          setLoaded(true)
+          setLoadState('ok')
         })
-        .catch(() => setLoaded(true))
+        .catch(() => setLoadState('error'))
     }
-  }, [loaded])
+  }, [loadState])
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -71,7 +75,9 @@ export function CommandPalette() {
           <Command.Input placeholder="Search contracts, navigate…" className="cmd-input" />
         </div>
         <Command.List className="cmd-list">
-          <Command.Empty className="cmd-empty">No results found.</Command.Empty>
+          <Command.Empty className="cmd-empty">
+            {loadState === 'error' ? 'Failed to load contracts.' : 'No results found.'}
+          </Command.Empty>
 
           {contracts.length > 0 && (
             <Command.Group heading="Contracts" className="cmd-group">

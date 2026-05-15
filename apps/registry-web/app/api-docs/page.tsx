@@ -1,6 +1,6 @@
 'use client'
 import { useMemo, useState } from 'react'
-import { TryIt } from '../../components/TryIt'
+import { TryIt } from '../../components/try-it'
 
 interface Endpoint {
   id: string
@@ -185,7 +185,13 @@ export default function ApiDocsPage() {
                   ↓ Download
                 </a>
               ) : (
-                <TryIt path={active.path.replace(/:\w+/g, (m) => `1${m === ':name' ? '' : ''}`)} />
+                <TryIt
+                  path={active.path.replace(/:\w+/g, (m) => {
+                    if (m === ':name' || m === ':contract') return 'System'
+                    if (m === ':epoch') return '212'
+                    return '1'
+                  })}
+                />
               )}
             </div>
           </div>

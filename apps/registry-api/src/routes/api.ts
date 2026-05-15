@@ -110,10 +110,12 @@ export const apiRoutes = new Elysia({ prefix: '/v1' })
     }
   })
 
-  .get('/contracts/:index', ({ params, status }) => {
+  .get('/contracts/:index', ({ params, status, set }) => {
     const idx = Number(params.index)
-    if (Number.isNaN(idx)) return status(400, { error: 'Invalid contract index', status: 400 })
+    if (!Number.isInteger(idx) || idx < 0)
+      return status(400, { error: 'Invalid contract index', status: 400 })
     try {
+      set.headers['cache-control'] = 'public, max-age=3600'
       return getCurrentAbi(registry as Parameters<typeof getCurrentAbi>[0], idx)
     } catch (e) {
       if (e instanceof AbiNotFoundError) return status(404, { error: e.message, status: 404 })
@@ -121,28 +123,33 @@ export const apiRoutes = new Elysia({ prefix: '/v1' })
     }
   })
 
-  .get('/contracts/:index/history', ({ params, status }) => {
+  .get('/contracts/:index/history', ({ params, status, set }) => {
     const idx = Number(params.index)
-    if (Number.isNaN(idx)) return status(400, { error: 'Invalid contract index', status: 400 })
+    if (!Number.isInteger(idx) || idx < 0)
+      return status(400, { error: 'Invalid contract index', status: 400 })
     const history = getAbiHistory(registry as Parameters<typeof getAbiHistory>[0], idx)
     if (history.length === 0)
       return status(404, { error: `No ABI found for contract ${idx}`, status: 404 })
+    set.headers['cache-control'] = 'public, max-age=3600'
     return history
   })
 
-  .get('/contracts/:index/epoch/:epoch', ({ params, status }) => {
+  .get('/contracts/:index/epoch/:epoch', ({ params, status, set }) => {
     const idx = Number(params.index)
     const epoch = Number(params.epoch)
-    if (Number.isNaN(idx) || Number.isNaN(epoch))
+    if (!Number.isInteger(idx) || idx < 0 || !Number.isInteger(epoch) || epoch < 0)
       return status(400, { error: 'Invalid index or epoch', status: 400 })
     const fromDisk = readContractAtEpochFromDisk(idx, epoch)
-    if (fromDisk)
+    if (fromDisk) {
+      set.headers['cache-control'] = 'public, max-age=31536000, immutable'
       return {
         version: fromDisk,
         isCurrent: fromDisk.effectiveToEpoch === null,
         isRegistryPossiblyStale: false,
       }
+    }
     try {
+      set.headers['cache-control'] = 'public, max-age=31536000, immutable'
       return getAbi(registry as Parameters<typeof getAbi>[0], idx, epoch)
     } catch (e) {
       if (e instanceof AbiNotFoundError) return status(404, { error: e.message, status: 404 })
@@ -150,7 +157,8 @@ export const apiRoutes = new Elysia({ prefix: '/v1' })
     }
   })
 
-  .get('/epochs', () => {
+  .get('/epochs', ({ set }) => {
+    set.headers['cache-control'] = 'public, max-age=3600'
     const dirs = epochDirs()
     return dirs.map((epoch) => {
       const dir = `${EPOCHS_DIR}${epoch}/`
@@ -166,12 +174,14 @@ export const apiRoutes = new Elysia({ prefix: '/v1' })
     })
   })
 
-  .get('/epochs/:epoch', ({ params, status }) => {
+  .get('/epochs/:epoch', ({ params, status, set }) => {
     const epoch = Number(params.epoch)
-    if (Number.isNaN(epoch)) return status(400, { error: 'Invalid epoch', status: 400 })
+    if (!Number.isInteger(epoch) || epoch < 0)
+      return status(400, { error: 'Invalid epoch', status: 400 })
     const result = allActiveAtEpoch(epoch)
     if (result.length === 0)
       return status(404, { error: `No contracts found at epoch ${epoch}`, status: 404 })
+    set.headers['cache-control'] = 'public, max-age=31536000, immutable'
     return result
   })
 

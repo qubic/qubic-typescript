@@ -134,6 +134,7 @@ export function SearchFilter({ contracts }: { contracts: ContractSummary[] }) {
                 className="row-stagger clickable"
                 style={{ animationDelay: `${i * 18}ms` }}
                 tabIndex={0}
+                aria-label={`Open ${c.contractName}`}
                 onClick={() => nav(c.contractIndex)}
                 onKeyDown={(e) => e.key === 'Enter' && nav(c.contractIndex)}
               >

@@ -6,8 +6,8 @@ import type {
   NamedStruct,
 } from '@qubic.ts/registry'
 import { useState } from 'react'
-import { CopyButton } from './CopyButton'
-import { FieldTable } from './FieldTable'
+import { CopyButton } from './copy-button'
+import { FieldTable } from './field-table'
 import { TsHighlight } from './ts-highlight'
 
 // ── Snippet generation ────────────────────────────────────
@@ -480,7 +480,7 @@ export function AbiView({
 
 // ── JSON viewer ───────────────────────────────────────────
 
-type Token = { text: string; cls: string | null }
+type Token = { text: string; cls: string | null; pos: number }
 
 function tokenizeJson(raw: string): Token[] {
   const tokens: Token[] = []
@@ -490,22 +490,22 @@ function tokenizeJson(raw: string): Token[] {
   let m: RegExpExecArray | null
   // biome-ignore lint/suspicious/noAssignInExpressions: standard regex exec loop
   while ((m = re.exec(raw)) !== null) {
-    if (m.index > last) tokens.push({ text: raw.slice(last, m.index), cls: null })
+    if (m.index > last) tokens.push({ text: raw.slice(last, m.index), cls: null, pos: last })
     if (m[1] !== undefined) {
-      tokens.push({ text: m[1], cls: m[2] !== undefined ? 'tok-k' : 'tok-s' })
-      if (m[2] !== undefined) tokens.push({ text: m[2], cls: null })
+      tokens.push({ text: m[1], cls: m[2] !== undefined ? 'tok-k' : 'tok-s', pos: m.index })
+      if (m[2] !== undefined) tokens.push({ text: m[2], cls: null, pos: m.index + m[1].length })
     } else if (m[3] !== undefined) {
-      tokens.push({ text: m[3], cls: 'tok-n' })
+      tokens.push({ text: m[3], cls: 'tok-n', pos: m.index })
     } else if (m[4] !== undefined) {
-      tokens.push({ text: m[4], cls: 'tok-b' })
+      tokens.push({ text: m[4], cls: 'tok-b', pos: m.index })
     } else if (m[0] === 'null') {
-      tokens.push({ text: 'null', cls: 'tok-null' })
+      tokens.push({ text: 'null', cls: 'tok-null', pos: m.index })
     } else if (m[5] !== undefined) {
-      tokens.push({ text: m[5], cls: 'tok-p' })
+      tokens.push({ text: m[5], cls: 'tok-p', pos: m.index })
     }
     last = m.index + m[0].length
   }
-  if (last < raw.length) tokens.push({ text: raw.slice(last), cls: null })
+  if (last < raw.length) tokens.push({ text: raw.slice(last), cls: null, pos: last })
   return tokens
 }
 
@@ -525,10 +525,9 @@ function JsonView({ data, label }: { data: unknown; label: string }) {
         <CopyButton value={text} />
       </div>
       <pre style={{ maxHeight: 480, overflow: 'auto' }}>
-        {tokens.map((t, i) =>
+        {tokens.map((t) =>
           t.cls ? (
-            // biome-ignore lint/suspicious/noArrayIndexKey: token order is stable
-            <span key={i} className={t.cls}>
+            <span key={t.pos} className={t.cls}>
               {t.text}
             </span>
           ) : (

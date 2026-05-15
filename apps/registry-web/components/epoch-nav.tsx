@@ -42,13 +42,15 @@ export function EpochNav({
   return (
     <div className="epoch-nav">
       <div className="epoch-pager">
-        <a
-          className={`btn sm${prevEpoch !== null ? '' : ' disabled'}`}
-          href={prevEpoch !== null ? `/epoch/${prevEpoch}` : '#'}
-          onClick={(e) => prevEpoch === null && e.preventDefault()}
-        >
-          ← Prev
-        </a>
+        {prevEpoch !== null ? (
+          <a className="btn sm" href={`/epoch/${prevEpoch}`}>
+            ← Prev
+          </a>
+        ) : (
+          <span className="btn sm disabled" aria-disabled="true">
+            ← Prev
+          </span>
+        )}
         <input
           value={val}
           onChange={(e) => setVal(e.target.value.replace(/[^\d]/g, ''))}
@@ -59,13 +61,15 @@ export function EpochNav({
           onBlur={commit}
           aria-label="jump to epoch"
         />
-        <a
-          className={`btn sm${nextEpoch !== null ? '' : ' disabled'}`}
-          href={nextEpoch !== null ? `/epoch/${nextEpoch}` : '#'}
-          onClick={(e) => nextEpoch === null && e.preventDefault()}
-        >
-          Next →
-        </a>
+        {nextEpoch !== null ? (
+          <a className="btn sm" href={`/epoch/${nextEpoch}`}>
+            Next →
+          </a>
+        ) : (
+          <span className="btn sm disabled" aria-disabled="true">
+            Next →
+          </span>
+        )}
       </div>
       <span className="muted" style={{ fontSize: 12, fontFamily: 'var(--font-mono)' }}>
         Range {min} – {max}

@@ -50,18 +50,21 @@ export function createBobRestClient(options: BobRestClientOptions = {}) {
   })
   const signal = options.signal
 
+  type Opts = { signal?: AbortSignal }
+  const s = (opts?: Opts) => sig(opts?.signal ?? signal)
+
   return {
     /** Returns current node status. */
-    async getStatus(): Promise<Result<BobStatus, BobRpcError>> {
-      return unwrap(client.GET('/status', { ...sig(signal) }), '/status')
+    async getStatus(opts?: Opts): Promise<Result<BobStatus, BobRpcError>> {
+      return unwrap(client.GET('/status', { ...s(opts) }), '/status')
     },
 
     /** Returns balance for an identity. */
-    async getBalance(identity: string): Promise<Result<BobBalance, BobRpcError>> {
+    async getBalance(identity: string, opts?: Opts): Promise<Result<BobBalance, BobRpcError>> {
       return unwrap(
         client.GET('/balance/{identity}', {
           params: { path: { identity } },
-          ...sig(signal),
+          ...s(opts),
         }),
         `/balance/${identity}`,
       )
@@ -73,68 +76,68 @@ export function createBobRestClient(options: BobRestClientOptions = {}) {
       issuer: string,
       assetName: string,
       manageSCIndex: number,
+      opts?: Opts,
     ): Promise<Result<BobAsset, BobRpcError>> {
       return unwrap(
         client.GET('/asset/{identity}/{issuer}/{assetName}/{manageSCIndex}', {
           params: { path: { identity, issuer, assetName, manageSCIndex } },
-          ...sig(signal),
+          ...s(opts),
         }),
         `/asset/${identity}/${issuer}/${assetName}/${manageSCIndex}`,
       )
     },
 
     /** Returns epoch info. */
-    async getEpochInfo(epoch: number): Promise<Result<BobEpochInfo, BobRpcError>> {
+    async getEpochInfo(epoch: number, opts?: Opts): Promise<Result<BobEpochInfo, BobRpcError>> {
       return unwrap(
         client.GET('/epochinfo/{epoch}', {
           params: { path: { epoch } },
-          ...sig(signal),
+          ...s(opts),
         }),
         `/epochinfo/${epoch}`,
       )
     },
 
     /** Returns a transaction by hash. */
-    async getTransaction(txHash: string): Promise<Result<BobTx, BobRpcError>> {
+    async getTransaction(txHash: string, opts?: Opts): Promise<Result<BobTx, BobRpcError>> {
       return unwrap(
         client.GET('/tx/{txHash}', {
           params: { path: { txHash } },
-          ...sig(signal),
+          ...s(opts),
         }),
         `/tx/${txHash}`,
       )
     },
 
     /** Returns tick data. */
-    async getTick(tickNumber: number): Promise<Result<BobTickResponse, BobRpcError>> {
+    async getTick(tickNumber: number, opts?: Opts): Promise<Result<BobTickResponse, BobRpcError>> {
       return unwrap(
         client.GET('/tick/{tickNumber}', {
           params: { path: { tickNumber } },
-          ...sig(signal),
+          ...s(opts),
         }),
         `/tick/${tickNumber}`,
       )
     },
 
     /** Queries smart contract. */
-    async querySmartContract(body: {
-      nonce: number
-      scIndex: number
-      funcNumber: number
-      data: string
-    }): Promise<Result<components['schemas']['QuerySmartContractResponse'], BobRpcError>> {
+    async querySmartContract(
+      body: { nonce: number; scIndex: number; funcNumber: number; data: string },
+      opts?: Opts,
+    ): Promise<Result<components['schemas']['QuerySmartContractResponse'], BobRpcError>> {
       return unwrap(
-        client.POST('/querySmartContract', { body, ...sig(signal) }),
+        client.POST('/querySmartContract', { body, ...s(opts) }),
         '/querySmartContract',
       )
     },
 
     /** Broadcasts a signed transaction. */
-    async broadcastTransaction(body: {
-      data: string
-    }): Promise<Result<components['schemas']['BroadcastResponse'], BobRpcError>> {
+    async broadcastTransaction(
+      body: { data: string },
+      opts?: Opts,
+    ): Promise<Result<components['schemas']['BroadcastResponse'], BobRpcError>> {
       return unwrap(
-        client.POST('/broadcastTransaction', { body, ...sig(signal) }),
+        client.POST('/broadcastTransaction', { body, ...s(opts) }),
         '/broadcastTransaction',
       )
     },

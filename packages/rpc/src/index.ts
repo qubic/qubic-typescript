@@ -1,4 +1,6 @@
 export { QubicRpcError, QubicError } from './errors.js'
+export { createQubicClient, waitForTick, pollUntilConfirmed, estimateTargetTick } from './utils.js'
+export type { QubicClient, QubicClientOptions, PollOptions } from './utils.js'
 export { err, ok } from './result.js'
 export type { Err, Ok, Result } from './result.js'
 export { createLiveClient } from './live-client.js'

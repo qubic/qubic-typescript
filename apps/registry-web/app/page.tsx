@@ -43,16 +43,12 @@ export default async function Home() {
             Live · Epoch {currentEpoch}
           </div>
           <h1>
-            The canonical <span className="accent">ABI registry</span> for every Qubic smart
-            contract — pinned per epoch.
+            Every Qubic contract, <span className="accent">exactly as it shipped</span>.
           </h1>
           <p className="lead">
-            One immutable JSON snapshot per contract per epoch. Stable URLs, content-addressed,
-            edge-cached. Generated directly from{' '}
-            <span className="mono" style={{ color: 'var(--text)' }}>
-              core
-            </span>{' '}
-            headers — never hand-edited, never drifts.
+            Each ABI is captured from the source code when an epoch closes and locked in place. Link
+            to a specific version in your SDK or docs — it'll be there, unchanged, for as long as
+            you need it.
           </p>
           <div className="hero-actions">
             <Link href="/api-docs" className="btn primary">

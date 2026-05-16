@@ -6,6 +6,11 @@ import type { ContractSummary } from '../lib/api'
 import { Sigil } from './sigil'
 
 type SortKey = 'idx' | 'name' | 'procs' | 'funcs' | 'structs'
+type SortDir = 'asc' | 'desc'
+
+function SortArrow({ dir }: { dir: SortDir }) {
+  return <span className="sort-arrow">{dir === 'asc' ? '↑' : '↓'}</span>
+}
 
 function NumBar({
   value,
@@ -26,6 +31,7 @@ function NumBar({
 export function SearchFilter({ contracts }: { contracts: ContractSummary[] }) {
   const [q, setQ] = useState('')
   const [sort, setSort] = useState<SortKey>('idx')
+  const [dir, setDir] = useState<SortDir>('asc')
   const router = useRouter()
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -41,6 +47,15 @@ export function SearchFilter({ contracts }: { contracts: ContractSummary[] }) {
     return () => document.removeEventListener('keydown', onKey)
   }, [])
 
+  function toggleSort(key: SortKey) {
+    if (sort === key) {
+      setDir((d) => (d === 'asc' ? 'desc' : 'asc'))
+    } else {
+      setSort(key)
+      setDir(key === 'name' || key === 'idx' ? 'asc' : 'desc')
+    }
+  }
+
   const filtered = useMemo(() => {
     const s = q.toLowerCase().trim()
     let arr = contracts
@@ -50,13 +65,15 @@ export function SearchFilter({ contracts }: { contracts: ContractSummary[] }) {
       )
     }
     return [...arr].sort((a, b) => {
-      if (sort === 'name') return a.contractName.localeCompare(b.contractName)
-      if (sort === 'procs') return b.procedureCount - a.procedureCount
-      if (sort === 'funcs') return b.functionCount - a.functionCount
-      if (sort === 'structs') return b.structCount - a.structCount
-      return a.contractIndex - b.contractIndex
+      let cmp = 0
+      if (sort === 'name') cmp = a.contractName.localeCompare(b.contractName)
+      else if (sort === 'procs') cmp = a.procedureCount - b.procedureCount
+      else if (sort === 'funcs') cmp = a.functionCount - b.functionCount
+      else if (sort === 'structs') cmp = a.structCount - b.structCount
+      else cmp = a.contractIndex - b.contractIndex
+      return dir === 'desc' ? -cmp : cmp
     })
-  }, [q, sort, contracts])
+  }, [q, sort, dir, contracts])
 
   const maxProc = useMemo(() => Math.max(...contracts.map((c) => c.procedureCount), 1), [contracts])
   const maxFunc = useMemo(() => Math.max(...contracts.map((c) => c.functionCount), 1), [contracts])
@@ -64,6 +81,25 @@ export function SearchFilter({ contracts }: { contracts: ContractSummary[] }) {
 
   function nav(idx: number) {
     router.push(`/contract/${idx}`)
+  }
+
+  function SortTh({
+    col,
+    label,
+    className,
+    style,
+  }: { col: SortKey; label: string; className?: string; style?: React.CSSProperties }) {
+    return (
+      <th
+        className={`sortable${className ? ` ${className}` : ''}${sort === col ? ' sort-active' : ''}`}
+        style={style}
+        onClick={() => toggleSort(col)}
+        onKeyDown={(e) => e.key === 'Enter' && toggleSort(col)}
+      >
+        {label}
+        {sort === col && <SortArrow dir={dir} />}
+      </th>
+    )
   }
 
   return (
@@ -81,27 +117,6 @@ export function SearchFilter({ contracts }: { contracts: ContractSummary[] }) {
             /
           </span>
         </div>
-        <span className="toolbar-lbl">Sort</span>
-        <div className="seg">
-          {(
-            [
-              { k: 'idx', l: 'Index' },
-              { k: 'name', l: 'Name' },
-              { k: 'procs', l: 'Procs' },
-              { k: 'funcs', l: 'Funcs' },
-              { k: 'structs', l: 'Structs' },
-            ] as { k: SortKey; l: string }[]
-          ).map((o) => (
-            <button
-              key={o.k}
-              type="button"
-              className={sort === o.k ? 'on' : ''}
-              onClick={() => setSort(o.k)}
-            >
-              {o.l}
-            </button>
-          ))}
-        </div>
         {q && (
           <span className="toolbar-lbl">
             {filtered.length}/{contracts.length}
@@ -113,18 +128,17 @@ export function SearchFilter({ contracts }: { contracts: ContractSummary[] }) {
         <table className="tbl">
           <thead>
             <tr>
-              <th style={{ width: 44 }}>#</th>
-              <th>Contract</th>
-              <th className="right" style={{ width: 90 }}>
-                Procs
-              </th>
-              <th className="right" style={{ width: 90 }}>
-                Funcs
-              </th>
-              <th className="right" style={{ width: 70 }}>
-                Structs
-              </th>
-              <th className="right" style={{ width: 130 }} />
+              <SortTh col="idx" label="#" className="col-idx" style={{ width: 44 }} />
+              <SortTh col="name" label="Contract" className="col-name" />
+              <SortTh col="procs" label="Procs" className="col-procs right" style={{ width: 90 }} />
+              <SortTh col="funcs" label="Funcs" className="col-funcs right" style={{ width: 90 }} />
+              <SortTh
+                col="structs"
+                label="Structs"
+                className="col-structs right"
+                style={{ width: 70 }}
+              />
+              <th className="col-actions right" style={{ width: 130 }} />
             </tr>
           </thead>
           <tbody>
@@ -138,10 +152,10 @@ export function SearchFilter({ contracts }: { contracts: ContractSummary[] }) {
                 onClick={() => nav(c.contractIndex)}
                 onKeyDown={(e) => e.key === 'Enter' && nav(c.contractIndex)}
               >
-                <td>
+                <td className="col-idx">
                   <span className="idx-col">{String(c.contractIndex).padStart(2, '0')}</span>
                 </td>
-                <td>
+                <td className="col-name">
                   <div className="row-name">
                     <Sigil name={c.contractName} size={28} />
                     <div>
@@ -150,19 +164,22 @@ export function SearchFilter({ contracts }: { contracts: ContractSummary[] }) {
                         since e{c.currentFromEpoch} · {c.versionCount} ABI version
                         {c.versionCount !== 1 ? 's' : ''}
                       </div>
+                      <div className="sub sub-mobile">
+                        {c.procedureCount}P · {c.functionCount}F · {c.structCount}S
+                      </div>
                     </div>
                   </div>
                 </td>
-                <td className="right">
+                <td className="col-procs right">
                   <NumBar value={c.procedureCount} max={maxProc} kind="proc" />
                 </td>
-                <td className="right">
+                <td className="col-funcs right">
                   <NumBar value={c.functionCount} max={maxFunc} kind="func" />
                 </td>
-                <td className="right">
+                <td className="col-structs right">
                   <NumBar value={c.structCount} max={maxStruct} kind="struct" />
                 </td>
-                <td className="right">
+                <td className="col-actions right">
                   <div
                     className="row-actions"
                     onClick={(e) => e.stopPropagation()}

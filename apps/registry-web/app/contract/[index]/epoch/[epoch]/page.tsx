@@ -6,6 +6,23 @@ import { CopyButton } from '../../../../../components/copy-button'
 import { Crumbs } from '../../../../../components/crumbs'
 import { api } from '../../../../../lib/api'
 
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ index: string; epoch: string }>
+}) {
+  const { index, epoch } = await params
+  const contract = await api.contract(Number(index)).catch(() => null)
+  const name = contract?.contractName ?? `Contract #${index}`
+  const title = `${name} @ Epoch #${epoch}`
+  const img = `/api/og?title=${encodeURIComponent(title)}`
+  return {
+    title,
+    openGraph: { title, images: [img] },
+    twitter: { title },
+  }
+}
+
 export default async function AbiSnapshotPage({
   params,
 }: {

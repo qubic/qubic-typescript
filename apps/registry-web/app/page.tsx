@@ -4,6 +4,12 @@ import { api } from '../lib/api'
 
 export const dynamic = 'force-dynamic'
 
+export const metadata = {
+  title: 'qubic / registry — contract ABIs pinned per epoch',
+  openGraph: { title: 'Qubic Registry', images: ['/api/og?title=Qubic+Registry&sub=Contract+ABIs+pinned+per+epoch'] },
+  twitter: { title: 'Qubic Registry' },
+}
+
 export default async function Home() {
   const [contracts, epochs] = await Promise.all([api.contracts(), api.epochs().catch(() => [])])
 

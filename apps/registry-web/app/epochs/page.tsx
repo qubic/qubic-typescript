@@ -3,6 +3,12 @@ import { api } from '../../lib/api'
 
 export const dynamic = 'force-dynamic'
 
+export const metadata = {
+  title: 'Epoch History',
+  openGraph: { title: 'Epoch History', images: ['/api/og?title=Epoch+History&sub=Immutable+ABI+snapshots+per+epoch'] },
+  twitter: { title: 'Epoch History' },
+}
+
 export default async function EpochsPage() {
   const epochs = await api.epochs()
   const sorted = [...epochs].reverse()

@@ -1,11 +1,16 @@
 import { ImageResponse } from 'next/og'
+import type { NextRequest } from 'next/server'
 
 export const runtime = 'edge'
-export const alt = 'Qubic Registry — Contract ABIs pinned per epoch'
-export const size = { width: 1200, height: 630 }
-export const contentType = 'image/png'
 
-export default function Image() {
+const W = 1200
+const H = 630
+
+export function GET(req: NextRequest) {
+  const { searchParams } = req.nextUrl
+  const title = searchParams.get('title') ?? 'qubic / registry'
+  const sub = searchParams.get('sub') ?? null
+
   return new ImageResponse(
     <div
       style={{
@@ -17,37 +22,32 @@ export default function Image() {
         padding: '64px 72px',
       }}
     >
-      {/* Top label */}
+      {/* Branding */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-        <div
-          style={{
-            width: 10,
-            height: 10,
-            borderRadius: '50%',
-            background: '#5eead4',
-          }}
-        />
+        <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#5eead4' }} />
         <span style={{ color: '#5eead4', fontSize: 20, fontFamily: 'monospace' }}>
           qubic / registry
         </span>
       </div>
 
-      {/* Main content */}
-      <div style={{ display: 'flex', flexDirection: 'column', marginTop: 'auto', gap: 20 }}>
+      {/* Title */}
+      <div style={{ display: 'flex', flexDirection: 'column', marginTop: 'auto', gap: 18 }}>
         <div
           style={{
             color: '#e2e8f0',
-            fontSize: 58,
+            fontSize: title.length > 24 ? 56 : 72,
             fontWeight: 700,
-            lineHeight: 1.1,
-            letterSpacing: '-0.02em',
+            lineHeight: 1.05,
+            letterSpacing: '-0.03em',
           }}
         >
-          The canonical ABI registry for every Qubic smart contract.
+          {title}
         </div>
-        <div style={{ color: '#64748b', fontSize: 26 }}>
-          Pinned per epoch · Stable URLs · Edge-cached · Never drifts.
-        </div>
+        {sub && (
+          <div style={{ color: '#64748b', fontSize: 26 }}>
+            {sub}
+          </div>
+        )}
       </div>
 
       {/* Bottom bar */}
@@ -77,6 +77,6 @@ export default function Image() {
         </div>
       </div>
     </div>,
-    { ...size },
+    { width: W, height: H },
   )
 }

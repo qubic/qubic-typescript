@@ -7,6 +7,18 @@ import { Crumbs } from '../../../components/crumbs'
 import { Sigil } from '../../../components/sigil'
 import { api } from '../../../lib/api'
 
+export async function generateMetadata({ params }: { params: Promise<{ index: string }> }) {
+  const { index } = await params
+  const contract = await api.contract(Number(index)).catch(() => null)
+  const title = contract?.contractName ?? `Contract #${index}`
+  const img = `/api/og?title=${encodeURIComponent(title)}&sub=${encodeURIComponent(`Contract #${index}`)}`
+  return {
+    title,
+    openGraph: { title, images: [img] },
+    twitter: { title },
+  }
+}
+
 export default async function ContractPage({ params }: { params: Promise<{ index: string }> }) {
   const { index } = await params
   const idx = Number(index)

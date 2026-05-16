@@ -144,15 +144,14 @@ export function buildApiRoutes(storage: Storage) {
 
     .get('/epochs', async (c) => {
       c.header('cache-control', 'public, max-age=300')
-      const epochs = await storage.listEpochs()
-      const epochRefs = await storage.getEpochRefs()
-      const counts = await Promise.all(
-        epochs.map((e) => storage.getEpochSnapshots(e).then((s) => s?.length ?? 0)),
-      )
+      const [epochs, epochRefs] = await Promise.all([
+        storage.listEpochsWithCounts(),
+        storage.getEpochRefs(),
+      ])
       return c.json(
-        epochs.map((epoch, i) => ({
+        epochs.map(({ epoch, contractCount }) => ({
           epoch,
-          contractCount: counts[i],
+          contractCount,
           gitTag: epochRefs[String(epoch)] ?? null,
         })),
       )

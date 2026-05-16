@@ -27,18 +27,27 @@ export function createR2Storage(bucket: R2Bucket): Storage {
     },
 
     async listEpochs(): Promise<number[]> {
-      const epochs = new Set<number>()
+      return (await this.listEpochsWithCounts()).map((e) => e.epoch)
+    },
+
+    async listEpochsWithCounts(): Promise<{ epoch: number; contractCount: number }[]> {
+      const counts = new Map<number, number>()
       let cursor: string | undefined
       while (true) {
-        const list = await bucket.list({ prefix: 'epochs/', cursor, limit: 1000 })
+        const list = await bucket.list({ prefix: 'epochs/', ...(cursor ? { cursor } : {}), limit: 1000 })
         for (const obj of list.objects) {
           const match = obj.key.match(/^epochs\/(\d+)\//)
-          if (match) epochs.add(Number(match[1]))
+          if (match) {
+            const epoch = Number(match[1])
+            counts.set(epoch, (counts.get(epoch) ?? 0) + 1)
+          }
         }
         if (!list.truncated) break
         cursor = list.cursor
       }
-      return [...epochs].sort((a, b) => a - b)
+      return [...counts.entries()]
+        .sort((a, b) => a[0] - b[0])
+        .map(([epoch, contractCount]) => ({ epoch, contractCount }))
     },
 
     async getEpochRefs(): Promise<Record<string, string>> {

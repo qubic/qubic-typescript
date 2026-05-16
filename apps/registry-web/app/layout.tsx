@@ -21,6 +21,19 @@ export const metadata: Metadata = {
   title: 'qubic / registry — contract ABIs pinned per epoch',
   description:
     'Canonical Qubic smart-contract ABIs, served per epoch. JSON snapshots, stable URLs, edge-cached.',
+  openGraph: {
+    title: 'qubic / registry',
+    description:
+      'Canonical Qubic smart-contract ABIs, served per epoch. JSON snapshots, stable URLs, edge-cached.',
+    siteName: 'Qubic Registry',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'qubic / registry',
+    description:
+      'Canonical Qubic smart-contract ABIs, served per epoch. JSON snapshots, stable URLs, edge-cached.',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

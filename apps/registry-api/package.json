@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "bun --hot src/dev.ts",
     "dev:wrangler": "wrangler dev",
+    "build": "wrangler deploy",
     "deploy": "wrangler deploy",
     "seed:r2": "bun scripts/seed-r2.ts",
     "typecheck": "tsc --noEmit"

@@ -1,5 +1,11 @@
 # @qubic.org/rpc
 
+## 0.2.3
+
+### Patch Changes
+
+- [`d63771b`](https://github.com/alez04/qubic-typescript/commit/d63771be6f60b03c320d5c434ad15ff5223072b2) Thanks [@alez04](https://github.com/alez04)! - Remove `.d.ts` extension from openapi-schema imports in live-client and query-client. The extension caused `Cannot find module` errors when consuming the package in projects using `moduleResolution: "bundler"` (required for Angular 17+ and other modern bundler setups).
+
 ## 0.2.2
 
 ## 0.2.1

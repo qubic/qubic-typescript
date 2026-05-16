@@ -23,8 +23,8 @@
       "name": "registry-api",
       "version": "0.0.1",
       "dependencies": {
-        "@qubic.org/registry": "workspace:^",
-        "@qubic.org/types": "workspace:^",
+        "@qubic.org/registry": "^0.2.7",
+        "@qubic.org/types": "^0.2.7",
         "fflate": "^0.8.2",
         "hono": "^4.7.0",
       },
@@ -38,8 +38,8 @@
       "name": "registry-web",
       "version": "0.0.1",
       "dependencies": {
-        "@qubic.org/crypto": "workspace:^",
-        "@qubic.org/registry": "workspace:^",
+        "@qubic.org/crypto": "^0.2.7",
+        "@qubic.org/registry": "^0.2.7",
         "@radix-ui/react-dialog": "^1.1.15",
         "cmdk": "^1.1.1",
         "lucide-react": "^1.16.0",

@@ -6,14 +6,14 @@
   "scripts": {
     "dev": "bun --hot src/dev.ts",
     "dev:wrangler": "wrangler dev",
-    "build": "bun --cwd $(git rev-parse --show-toplevel) run --filter @qubic.org/types build && bun --cwd $(git rev-parse --show-toplevel) run --filter @qubic.org/registry build && wrangler deploy",
+    "build": "wrangler deploy",
     "deploy": "wrangler deploy",
     "seed:r2": "bun scripts/seed-r2.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@qubic.org/registry": "workspace:^",
-    "@qubic.org/types": "workspace:^",
+    "@qubic.org/registry": "^0.2.7",
+    "@qubic.org/types": "^0.2.7",
     "fflate": "^0.8.2",
     "hono": "^4.7.0"
   },

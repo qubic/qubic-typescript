@@ -11,24 +11,35 @@ const DATA_DIR = join(import.meta.dir, '../../../packages/registry/data')
 
 async function listExistingEpochs(): Promise<Set<number>> {
   const existing = new Set<number>()
-  // Use delimiter to get epoch "directories" only — avoids paginating all files
-  const proc = Bun.spawn(
-    ['bunx', 'wrangler', 'r2', 'object', 'list', BUCKET, '--prefix', 'epochs/', '--delimiter', '/'],
-    { stdout: 'pipe', stderr: 'ignore' },
-  )
-  await proc.exited
-  if (proc.exitCode !== 0) return existing
-  const text = await new Response(proc.stdout).text()
-  try {
-    const parsed = JSON.parse(text)
-    const prefixes: string[] = parsed.delimitedPrefixes ?? []
-    for (const p of prefixes) {
-      const match = p.match(/^epochs\/(\d+)\/$/)
-      if (match) existing.add(Number(match[1]))
+  let cursor: string | undefined
+
+  while (true) {
+    const args = ['bunx', 'wrangler', 'r2', 'object', 'list', BUCKET, '--prefix', 'epochs/']
+    if (cursor) args.push('--cursor', cursor)
+
+    const proc = Bun.spawn(args, { stdout: 'pipe', stderr: 'ignore' })
+    await proc.exited
+    if (proc.exitCode !== 0) break
+
+    const text = (await new Response(proc.stdout).text()).trim()
+    if (!text) break
+
+    try {
+      const parsed = JSON.parse(text)
+      // handle both [{key}] and {objects:[{key}], truncated, cursor} shapes
+      const objects: { key: string }[] = Array.isArray(parsed) ? parsed : (parsed.objects ?? [])
+      for (const obj of objects) {
+        const match = obj.key?.match(/^epochs\/(\d+)\//)
+        if (match) existing.add(Number(match[1]))
+      }
+      if (!parsed.truncated) break
+      cursor = parsed.cursor
+    } catch {
+      console.warn('Could not parse wrangler list output, uploading all epochs\nRaw output:', text.slice(0, 200))
+      break
     }
-  } catch {
-    // parse failed — upload everything
   }
+
   return existing
 }
 

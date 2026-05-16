@@ -1878,18 +1878,22 @@ button:focus-visible {
   border-bottom-color: var(--line);
   transition: background 100ms ease, border-color 120ms ease;
   text-decoration: none;
+  text-align: left;
   color: inherit;
+  cursor: pointer;
+  background: none;
+  width: 100%;
 }
 .api-row:last-child {
   border-bottom-color: transparent;
 }
-.api-list a.api-row:hover {
+.api-list .api-row:hover {
   text-decoration: none;
   color: inherit;
   background: var(--bg-soft);
   border-color: var(--line);
 }
-.api-list a.api-row.active {
+.api-list .api-row.active {
   background: var(--bg-soft);
   border-color: var(--line-strong);
   box-shadow: inset 2px 0 0 var(--accent);
@@ -1906,7 +1910,7 @@ button:focus-visible {
   transition: color 100ms ease;
   letter-spacing: -0.005em;
 }
-.api-list a.api-row.active .path {
+.api-list .api-row.active .path {
   color: var(--accent);
 }
 .api-row .desc {

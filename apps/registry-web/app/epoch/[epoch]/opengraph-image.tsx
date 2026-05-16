@@ -42,8 +42,7 @@ export default async function Image({ params }: { params: Promise<{ epoch: strin
             letterSpacing: '-0.04em',
           }}
         >
-          Epoch{' '}
-          <span style={{ color: '#5eead4' }}>#{epochNum}</span>
+          Epoch <span style={{ color: '#5eead4' }}>#{epochNum}</span>
         </div>
 
         <div style={{ display: 'flex', gap: 16 }}>

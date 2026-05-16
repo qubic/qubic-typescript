@@ -62,10 +62,7 @@ function readState(): Set<number> {
 }
 
 function saveState(seeded: Set<number>) {
-  writeFileSync(
-    STATE_FILE,
-    JSON.stringify({ epochs: [...seeded].sort((a, b) => a - b) }, null, 2),
-  )
+  writeFileSync(STATE_FILE, JSON.stringify({ epochs: [...seeded].sort((a, b) => a - b) }, null, 2))
 }
 
 async function main() {

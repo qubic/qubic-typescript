@@ -19,18 +19,24 @@ if (!TOKEN || !ACCOUNT_ID) {
 
 const BASE = `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/r2/buckets/${BUCKET}/objects`
 
-async function upload(key: string, filePath: string): Promise<void> {
+async function upload(key: string, filePath: string, retries = 5): Promise<void> {
   const body = await Bun.file(filePath).arrayBuffer()
-  const res = await fetch(`${BASE}/${key}`, {
-    method: 'PUT',
-    headers: {
-      Authorization: `Bearer ${TOKEN}`,
-      'content-type': 'application/json',
-    },
-    body,
-  })
-  if (!res.ok) throw new Error(`Failed to upload ${key}: ${res.status} ${await res.text()}`)
-  console.log(`✓ ${key}`)
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    const res = await fetch(`${BASE}/${key}`, {
+      method: 'PUT',
+      headers: { Authorization: `Bearer ${TOKEN}`, 'content-type': 'application/json' },
+      body,
+    })
+    if (res.ok) { console.log(`✓ ${key}`); return }
+    const text = await res.text()
+    if (attempt < retries && (res.status === 503 || res.status === 429)) {
+      const delay = 500 * 2 ** attempt
+      console.warn(`⚠ ${key} → ${res.status}, retrying in ${delay}ms...`)
+      await Bun.sleep(delay)
+      continue
+    }
+    throw new Error(`Failed to upload ${key}: ${res.status} ${text}`)
+  }
 }
 
 async function runConcurrent(tasks: (() => Promise<void>)[]): Promise<void> {

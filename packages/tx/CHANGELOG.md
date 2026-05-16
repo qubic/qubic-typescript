@@ -1,5 +1,11 @@
 # @qubic.org/tx
 
+## 0.2.7
+
+### Patch Changes
+
+- [`0ee4560`](https://github.com/alez04/qubic-typescript/commit/0ee4560fba8353ddf8cb48e3e8c45244ffe2d5fc) Thanks [@alez04](https://github.com/alez04)! - Point the `bun` export condition to `dist/index.js` instead of `src/index.ts` so packages resolve correctly when installed from npm.
+
 ## 0.2.6
 
 ## 0.2.5

@@ -2,7 +2,7 @@
 // Replaces workspace:* / workspace:^ / workspace:~ refs in all packages/*/package.json
 // with the actual version from the referenced package. Run after `changeset version`.
 
-import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 
 const root = join(import.meta.dir, '..')
@@ -52,7 +52,7 @@ for (const entry of readdirSync(packagesDir, { withFileTypes: true })) {
       replaceDeps(pkg.devDependencies) ||
       replaceDeps(pkg.peerDependencies)
     if (changed) {
-      writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n')
+      writeFileSync(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`)
       updated++
     }
   } catch {}

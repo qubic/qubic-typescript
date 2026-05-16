@@ -3,7 +3,7 @@
 // Usage: bun scripts/restore-workspace-refs.ts [--version <ver>]
 // Example: bun scripts/restore-workspace-refs.ts --version 0.2.0
 
-import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 
 const root = join(import.meta.dir, '..')
@@ -58,7 +58,7 @@ for (const entry of readdirSync(packagesDir, { withFileTypes: true })) {
     changed = restoreDeps(pkg.devDependencies) || changed
     changed = restoreDeps(pkg.peerDependencies) || changed
     if (changed) {
-      writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n')
+      writeFileSync(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`)
       updated++
     }
   } catch {}

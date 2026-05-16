@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// Uploads all registry data to R2 via wrangler (sequential).
+// Uploads registry data to R2 via wrangler, skipping epochs already present.
 // Usage: bun run scripts/seed-r2.ts
 // Requires: wrangler login or CLOUDFLARE_API_TOKEN env var
 
@@ -8,6 +8,29 @@ import { join } from 'node:path'
 
 const BUCKET = 'registry-data'
 const DATA_DIR = join(import.meta.dir, '../../../packages/registry/data')
+
+async function listExistingEpochs(): Promise<Set<number>> {
+  const existing = new Set<number>()
+  // Use delimiter to get epoch "directories" only — avoids paginating all files
+  const proc = Bun.spawn(
+    ['bunx', 'wrangler', 'r2', 'object', 'list', BUCKET, '--prefix', 'epochs/', '--delimiter', '/'],
+    { stdout: 'pipe', stderr: 'ignore' },
+  )
+  await proc.exited
+  if (proc.exitCode !== 0) return existing
+  const text = await new Response(proc.stdout).text()
+  try {
+    const parsed = JSON.parse(text)
+    const prefixes: string[] = parsed.delimitedPrefixes ?? []
+    for (const p of prefixes) {
+      const match = p.match(/^epochs\/(\d+)\/$/)
+      if (match) existing.add(Number(match[1]))
+    }
+  } catch {
+    // parse failed — upload everything
+  }
+  return existing
+}
 
 async function upload(key: string, filePath: string): Promise<void> {
   const proc = Bun.spawn(
@@ -43,7 +66,13 @@ async function main() {
     .filter((n) => !Number.isNaN(n))
     .sort((a, b) => a - b)
 
-  for (const epoch of epochs) {
+  const existing = await listExistingEpochs()
+  console.log(`R2 already has ${existing.size} epochs — skipping those`)
+
+  const toUpload = epochs.filter((e) => !existing.has(e))
+  console.log(`Uploading ${toUpload.length} new epochs (${toUpload[0] ?? '—'} – ${toUpload.at(-1) ?? '—'})`)
+
+  for (const epoch of toUpload) {
     const dir = join(epochsDir, String(epoch))
     if (!statSync(dir).isDirectory()) continue
     for (const file of readdirSync(dir).filter((f) => f.endsWith('.json'))) {
@@ -51,7 +80,7 @@ async function main() {
     }
   }
 
-  console.log(`\nDone — seeded ${epochs.length} epochs to bucket "${BUCKET}"`)
+  console.log(`\nDone — seeded ${toUpload.length} new epochs to bucket "${BUCKET}"`)
 }
 
 main().catch((e) => {

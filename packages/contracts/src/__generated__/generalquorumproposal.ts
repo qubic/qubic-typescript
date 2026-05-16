@@ -175,7 +175,7 @@ const STRUCTS: Record<string, NamedStruct> = {
 },
 }
 
-export const GENERAL_QUORUM_PROPOSAL_SET_PROPOSAL_INPUT_TYPE = 3
+export const GENERAL_QUORUM_PROPOSAL_SET_PROPOSAL_INPUT_TYPE = 1
 
 export interface GeneralQuorumProposalSetProposalInput {
   url: Uint8Array
@@ -250,7 +250,7 @@ export function decodeGeneralQuorumProposalSetProposalOutput(
   return decodePayload(data, GENERAL_QUORUM_PROPOSAL_SET_PROPOSAL_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as GeneralQuorumProposalSetProposalOutput
 }
 
-export const GENERAL_QUORUM_PROPOSAL_VOTE_INPUT_TYPE = 6
+export const GENERAL_QUORUM_PROPOSAL_VOTE_INPUT_TYPE = 2
 
 export interface GeneralQuorumProposalVoteInput {
   proposalIndex: number
@@ -311,7 +311,7 @@ export function decodeGeneralQuorumProposalVoteOutput(
   return decodePayload(data, GENERAL_QUORUM_PROPOSAL_VOTE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as GeneralQuorumProposalVoteOutput
 }
 
-export const GENERAL_QUORUM_PROPOSAL_GET_PROPOSAL_INDICES_INPUT_TYPE = 4
+export const GENERAL_QUORUM_PROPOSAL_GET_PROPOSAL_INDICES_INPUT_TYPE = 1
 export const GENERAL_QUORUM_PROPOSAL_GET_PROPOSAL_INDICES_INPUT_SIZE = 5
 
 export interface GeneralQuorumProposalGetProposalIndicesInput {
@@ -387,7 +387,7 @@ export async function generalQuorumProposalGetProposalIndices(
   })
 }
 
-export const GENERAL_QUORUM_PROPOSAL_GET_PROPOSAL_INPUT_TYPE = 5
+export const GENERAL_QUORUM_PROPOSAL_GET_PROPOSAL_INPUT_TYPE = 2
 export const GENERAL_QUORUM_PROPOSAL_GET_PROPOSAL_INPUT_SIZE = 2
 
 export interface GeneralQuorumProposalGetProposalInput {
@@ -492,7 +492,7 @@ export async function generalQuorumProposalGetProposal(
   })
 }
 
-export const GENERAL_QUORUM_PROPOSAL_GET_VOTE_INPUT_TYPE = 7
+export const GENERAL_QUORUM_PROPOSAL_GET_VOTE_INPUT_TYPE = 3
 export const GENERAL_QUORUM_PROPOSAL_GET_VOTE_INPUT_SIZE = 34
 
 export interface GeneralQuorumProposalGetVoteInput {
@@ -567,7 +567,7 @@ export async function generalQuorumProposalGetVote(
   })
 }
 
-export const GENERAL_QUORUM_PROPOSAL_GET_VOTING_RESULTS_INPUT_TYPE = 8
+export const GENERAL_QUORUM_PROPOSAL_GET_VOTING_RESULTS_INPUT_TYPE = 4
 export const GENERAL_QUORUM_PROPOSAL_GET_VOTING_RESULTS_INPUT_SIZE = 2
 
 export interface GeneralQuorumProposalGetVotingResultsInput {
@@ -634,7 +634,7 @@ export async function generalQuorumProposalGetVotingResults(
   })
 }
 
-export const GENERAL_QUORUM_PROPOSAL_GET_REVENUE_DONATION_INPUT_TYPE = 9
+export const GENERAL_QUORUM_PROPOSAL_GET_REVENUE_DONATION_INPUT_TYPE = 5
 export const GENERAL_QUORUM_PROPOSAL_GET_REVENUE_DONATION_INPUT_SIZE = 0
 
 export interface GeneralQuorumProposalGetRevenueDonationOutput {

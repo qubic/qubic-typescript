@@ -3,6 +3,7 @@
   "contractName": "QUtil",
   "contractAddress": "EAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVWRF",
   "epoch": 167,
+  "coreVersion": "v1.248.0",
   "structs": {},
   "procedures": [
     {
@@ -33,6 +34,29 @@
       ],
       "inputSize": 40,
       "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 2,
+      "name": "BurnQubic",
+      "inputFields": [
+        {
+          "name": "amount",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "amount",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 8
     },
     {
       "kind": "procedure",
@@ -74,35 +98,12 @@
       ],
       "inputSize": 16,
       "outputSize": 20
-    },
-    {
-      "kind": "procedure",
-      "inputType": 4,
-      "name": "BurnQubic",
-      "inputFields": [
-        {
-          "name": "amount",
-          "type": "sint64",
-          "offset": 0,
-          "byteLength": 8
-        }
-      ],
-      "outputFields": [
-        {
-          "name": "amount",
-          "type": "sint64",
-          "offset": 0,
-          "byteLength": 8
-        }
-      ],
-      "inputSize": 8,
-      "outputSize": 8
     }
   ],
   "functions": [
     {
       "kind": "function",
-      "inputType": 2,
+      "inputType": 1,
       "name": "GetSendToManyV1Fee",
       "inputFields": [],
       "outputFields": [
@@ -118,7 +119,7 @@
     },
     {
       "kind": "function",
-      "inputType": 5,
+      "inputType": 2,
       "name": "GetTotalNumberOfAssetShares",
       "inputFields": [
         {

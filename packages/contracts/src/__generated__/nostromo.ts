@@ -914,7 +914,7 @@ export function decodeNostromoTransferShareManagementRightsOutput(
   return decodePayload(data, NOSTROMO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as NostromoTransferShareManagementRightsOutput
 }
 
-export const NOSTROMO_GET_STATS_INPUT_TYPE = 10
+export const NOSTROMO_GET_STATS_INPUT_TYPE = 1
 export const NOSTROMO_GET_STATS_INPUT_SIZE = 0
 
 export interface NostromoGetStatsOutput {
@@ -960,7 +960,7 @@ export async function nostromoGetStats(
   })
 }
 
-export const NOSTROMO_GET_TIER_LEVEL_BY_USER_INPUT_TYPE = 11
+export const NOSTROMO_GET_TIER_LEVEL_BY_USER_INPUT_TYPE = 2
 export const NOSTROMO_GET_TIER_LEVEL_BY_USER_INPUT_SIZE = 32
 
 export interface NostromoGetTierLevelByUserInput {
@@ -1020,7 +1020,7 @@ export async function nostromoGetTierLevelByUser(
   })
 }
 
-export const NOSTROMO_GET_USER_VOTE_STATUS_INPUT_TYPE = 12
+export const NOSTROMO_GET_USER_VOTE_STATUS_INPUT_TYPE = 3
 export const NOSTROMO_GET_USER_VOTE_STATUS_INPUT_SIZE = 32
 
 export interface NostromoGetUserVoteStatusInput {
@@ -1090,7 +1090,7 @@ export async function nostromoGetUserVoteStatus(
   })
 }
 
-export const NOSTROMO_CHECK_TOKEN_CREATABILITY_INPUT_TYPE = 13
+export const NOSTROMO_CHECK_TOKEN_CREATABILITY_INPUT_TYPE = 4
 export const NOSTROMO_CHECK_TOKEN_CREATABILITY_INPUT_SIZE = 8
 
 export interface NostromoCheckTokenCreatabilityInput {
@@ -1149,7 +1149,7 @@ export async function nostromoCheckTokenCreatability(
   })
 }
 
-export const NOSTROMO_GET_NUMBER_OF_INVESTED_PROJECTS_INPUT_TYPE = 14
+export const NOSTROMO_GET_NUMBER_OF_INVESTED_PROJECTS_INPUT_TYPE = 5
 export const NOSTROMO_GET_NUMBER_OF_INVESTED_PROJECTS_INPUT_SIZE = 32
 
 export interface NostromoGetNumberOfInvestedProjectsInput {
@@ -1209,7 +1209,7 @@ export async function nostromoGetNumberOfInvestedProjects(
   })
 }
 
-export const NOSTROMO_GET_PROJECT_BY_INDEX_INPUT_TYPE = 15
+export const NOSTROMO_GET_PROJECT_BY_INDEX_INPUT_TYPE = 6
 export const NOSTROMO_GET_PROJECT_BY_INDEX_INPUT_SIZE = 4
 
 export interface NostromoGetProjectByIndexInput {
@@ -1269,7 +1269,7 @@ export async function nostromoGetProjectByIndex(
   })
 }
 
-export const NOSTROMO_GET_FUNDARASING_BY_INDEX_INPUT_TYPE = 16
+export const NOSTROMO_GET_FUNDARASING_BY_INDEX_INPUT_TYPE = 7
 export const NOSTROMO_GET_FUNDARASING_BY_INDEX_INPUT_SIZE = 4
 
 export interface NostromoGetFundarasingByIndexInput {
@@ -1329,7 +1329,7 @@ export async function nostromoGetFundarasingByIndex(
   })
 }
 
-export const NOSTROMO_GET_PROJECT_INDEX_LIST_BY_CREATOR_INPUT_TYPE = 17
+export const NOSTROMO_GET_PROJECT_INDEX_LIST_BY_CREATOR_INPUT_TYPE = 8
 export const NOSTROMO_GET_PROJECT_INDEX_LIST_BY_CREATOR_INPUT_SIZE = 32
 
 export interface NostromoGetProjectIndexListByCreatorInput {
@@ -1392,7 +1392,7 @@ export async function nostromoGetProjectIndexListByCreator(
   })
 }
 
-export const NOSTROMO_GET_INFO_USER_INVESTED_INPUT_TYPE = 18
+export const NOSTROMO_GET_INFO_USER_INVESTED_INPUT_TYPE = 9
 export const NOSTROMO_GET_INFO_USER_INVESTED_INPUT_SIZE = 32
 
 export interface NostromoGetInfoUserInvestedInput {
@@ -1455,7 +1455,7 @@ export async function nostromoGetInfoUserInvested(
   })
 }
 
-export const NOSTROMO_GET_MAX_CLAIM_AMOUNT_INPUT_TYPE = 19
+export const NOSTROMO_GET_MAX_CLAIM_AMOUNT_INPUT_TYPE = 10
 export const NOSTROMO_GET_MAX_CLAIM_AMOUNT_INPUT_SIZE = 36
 
 export interface NostromoGetMaxClaimAmountInput {

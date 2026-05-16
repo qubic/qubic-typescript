@@ -3,6 +3,7 @@
   "contractName": "Random",
   "contractAddress": "DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANMIG",
   "epoch": 154,
+  "coreVersion": "v1.239.1",
   "structs": {},
   "procedures": [
     {

@@ -514,7 +514,7 @@ export function decodeComputorControlledFundSetProposalOutput(
   return decodePayload(data, COMPUTOR_CONTROLLED_FUND_SET_PROPOSAL_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as ComputorControlledFundSetProposalOutput
 }
 
-export const COMPUTOR_CONTROLLED_FUND_VOTE_INPUT_TYPE = 4
+export const COMPUTOR_CONTROLLED_FUND_VOTE_INPUT_TYPE = 2
 
 export interface ComputorControlledFundVoteInput {
   proposalIndex: number
@@ -575,7 +575,7 @@ export function decodeComputorControlledFundVoteOutput(
   return decodePayload(data, COMPUTOR_CONTROLLED_FUND_VOTE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as ComputorControlledFundVoteOutput
 }
 
-export const COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_INDICES_INPUT_TYPE = 2
+export const COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_INDICES_INPUT_TYPE = 1
 export const COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_INDICES_INPUT_SIZE = 5
 
 export interface ComputorControlledFundGetProposalIndicesInput {
@@ -651,7 +651,7 @@ export async function computorControlledFundGetProposalIndices(
   })
 }
 
-export const COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_INPUT_TYPE = 3
+export const COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_INPUT_TYPE = 2
 export const COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_INPUT_SIZE = 34
 
 export interface ComputorControlledFundGetProposalInput {
@@ -784,7 +784,7 @@ export async function computorControlledFundGetProposal(
   })
 }
 
-export const COMPUTOR_CONTROLLED_FUND_GET_VOTE_INPUT_TYPE = 5
+export const COMPUTOR_CONTROLLED_FUND_GET_VOTE_INPUT_TYPE = 3
 export const COMPUTOR_CONTROLLED_FUND_GET_VOTE_INPUT_SIZE = 34
 
 export interface ComputorControlledFundGetVoteInput {
@@ -859,7 +859,7 @@ export async function computorControlledFundGetVote(
   })
 }
 
-export const COMPUTOR_CONTROLLED_FUND_GET_VOTING_RESULTS_INPUT_TYPE = 6
+export const COMPUTOR_CONTROLLED_FUND_GET_VOTING_RESULTS_INPUT_TYPE = 4
 export const COMPUTOR_CONTROLLED_FUND_GET_VOTING_RESULTS_INPUT_SIZE = 2
 
 export interface ComputorControlledFundGetVotingResultsInput {
@@ -926,7 +926,7 @@ export async function computorControlledFundGetVotingResults(
   })
 }
 
-export const COMPUTOR_CONTROLLED_FUND_GET_LATEST_TRANSFERS_INPUT_TYPE = 7
+export const COMPUTOR_CONTROLLED_FUND_GET_LATEST_TRANSFERS_INPUT_TYPE = 5
 export const COMPUTOR_CONTROLLED_FUND_GET_LATEST_TRANSFERS_INPUT_SIZE = 0
 
 export interface ComputorControlledFundGetLatestTransfersOutput {
@@ -968,7 +968,46 @@ export async function computorControlledFundGetLatestTransfers(
   })
 }
 
-export const COMPUTOR_CONTROLLED_FUND_GET_REGULAR_PAYMENTS_INPUT_TYPE = 8
+export const COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_FEE_INPUT_TYPE = 6
+export const COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_FEE_INPUT_SIZE = 0
+
+export interface ComputorControlledFundGetProposalFeeOutput {
+  proposalFee: number
+}
+
+const COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_FEE_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'proposalFee',
+    type: 'uint32',
+    offset: 0,
+    byteLength: 4,
+  },
+]
+
+export function decodeComputorControlledFundGetProposalFeeOutput(
+  data: Uint8Array,
+): ComputorControlledFundGetProposalFeeOutput {
+  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_FEE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as ComputorControlledFundGetProposalFeeOutput
+}
+
+export async function computorControlledFundGetProposalFee(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<ComputorControlledFundGetProposalFeeOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: COMPUTOR_CONTROLLED_FUND_CONTRACT_INDEX,
+    inputType: COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_FEE_INPUT_TYPE,
+    inputSize: COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_FEE_INPUT_SIZE,
+    inputFields: [],
+    outputFields: COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_FEE_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
+}
+
+export const COMPUTOR_CONTROLLED_FUND_GET_REGULAR_PAYMENTS_INPUT_TYPE = 7
 export const COMPUTOR_CONTROLLED_FUND_GET_REGULAR_PAYMENTS_INPUT_SIZE = 0
 
 export interface ComputorControlledFundGetRegularPaymentsOutput {
@@ -1010,45 +1049,6 @@ export async function computorControlledFundGetRegularPayments(
   })
 }
 
-export const COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_FEE_INPUT_TYPE = 9
-export const COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_FEE_INPUT_SIZE = 0
-
-export interface ComputorControlledFundGetProposalFeeOutput {
-  proposalFee: number
-}
-
-const COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_FEE_OUTPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'proposalFee',
-    type: 'uint32',
-    offset: 0,
-    byteLength: 4,
-  },
-]
-
-export function decodeComputorControlledFundGetProposalFeeOutput(
-  data: Uint8Array,
-): ComputorControlledFundGetProposalFeeOutput {
-  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_FEE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as ComputorControlledFundGetProposalFeeOutput
-}
-
-export async function computorControlledFundGetProposalFee(
-  live: SmartContractCaller,
-  options?: ContractCallOptions,
-): Promise<Result<ComputorControlledFundGetProposalFeeOutput, QubicRpcError>> {
-  return callContractFunction({
-    live,
-    contractIndex: COMPUTOR_CONTROLLED_FUND_CONTRACT_INDEX,
-    inputType: COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_FEE_INPUT_TYPE,
-    inputSize: COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_FEE_INPUT_SIZE,
-    inputFields: [],
-    outputFields: COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_FEE_OUTPUT_FIELDS,
-    structs: STRUCTS,
-    input: {},
-    ...options,
-  })
-}
-
 export const computorControlledFund = {
   contractIndex: COMPUTOR_CONTROLLED_FUND_CONTRACT_INDEX,
   GetProposalIndices: computorControlledFundGetProposalIndices,
@@ -1056,8 +1056,8 @@ export const computorControlledFund = {
   GetVote: computorControlledFundGetVote,
   GetVotingResults: computorControlledFundGetVotingResults,
   GetLatestTransfers: computorControlledFundGetLatestTransfers,
-  GetRegularPayments: computorControlledFundGetRegularPayments,
   GetProposalFee: computorControlledFundGetProposalFee,
+  GetRegularPayments: computorControlledFundGetRegularPayments,
   buildSetProposalInput: buildComputorControlledFundSetProposalInput,
   decodeSetProposalOutput: decodeComputorControlledFundSetProposalOutput,
   buildVoteInput: buildComputorControlledFundVoteInput,

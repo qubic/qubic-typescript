@@ -3,6 +3,7 @@
   "contractName": "Qx",
   "contractAddress": "BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARMID",
   "epoch": 207,
+  "coreVersion": "v1.285.1",
   "structs": {
     "Asset": {
       "name": "Asset",
@@ -50,7 +51,7 @@
   "procedures": [
     {
       "kind": "procedure",
-      "inputType": 7,
+      "inputType": 1,
       "name": "IssueAsset",
       "inputFields": [
         {
@@ -91,7 +92,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 8,
+      "inputType": 2,
       "name": "TransferShareOwnershipAndPossession",
       "inputFields": [
         {
@@ -132,7 +133,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 9,
+      "inputType": 5,
       "name": "AddToAskOrder",
       "inputFields": [
         {
@@ -173,7 +174,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 10,
+      "inputType": 6,
       "name": "AddToBidOrder",
       "inputFields": [
         {
@@ -214,7 +215,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 11,
+      "inputType": 7,
       "name": "RemoveFromAskOrder",
       "inputFields": [
         {
@@ -255,7 +256,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 12,
+      "inputType": 8,
       "name": "RemoveFromBidOrder",
       "inputFields": [
         {
@@ -296,7 +297,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 13,
+      "inputType": 9,
       "name": "TransferShareManagementRights",
       "inputFields": [
         {
@@ -334,7 +335,7 @@
   "functions": [
     {
       "kind": "function",
-      "inputType": 2,
+      "inputType": 1,
       "name": "Fees",
       "inputFields": [],
       "outputFields": [
@@ -362,7 +363,7 @@
     },
     {
       "kind": "function",
-      "inputType": 3,
+      "inputType": 2,
       "name": "AssetAskOrders",
       "inputFields": [
         {
@@ -400,7 +401,7 @@
     },
     {
       "kind": "function",
-      "inputType": 4,
+      "inputType": 3,
       "name": "AssetBidOrders",
       "inputFields": [
         {
@@ -438,7 +439,7 @@
     },
     {
       "kind": "function",
-      "inputType": 5,
+      "inputType": 4,
       "name": "EntityAskOrders",
       "inputFields": [
         {
@@ -470,7 +471,7 @@
     },
     {
       "kind": "function",
-      "inputType": 6,
+      "inputType": 5,
       "name": "EntityBidOrders",
       "inputFields": [
         {

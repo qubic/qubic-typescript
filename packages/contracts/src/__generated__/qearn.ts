@@ -9,7 +9,7 @@ export const QEARN_CONTRACT_INDEX = 9
 
 const STRUCTS: Record<string, NamedStruct> = {}
 
-export const QEARN_LOCK_INPUT_TYPE = 6
+export const QEARN_LOCK_INPUT_TYPE = 1
 
 export interface QearnLockOutput {
   returnCode: number
@@ -30,7 +30,7 @@ export function decodeQearnLockOutput(
   return decodePayload(data, QEARN_LOCK_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QearnLockOutput
 }
 
-export const QEARN_UNLOCK_INPUT_TYPE = 7
+export const QEARN_UNLOCK_INPUT_TYPE = 2
 
 export interface QearnUnlockInput {
   amount: bigint
@@ -431,7 +431,7 @@ export async function qearnGetEndedStatus(
   })
 }
 
-export const QEARN_GET_STATS_PER_EPOCH_INPUT_TYPE = 8
+export const QEARN_GET_STATS_PER_EPOCH_INPUT_TYPE = 6
 export const QEARN_GET_STATS_PER_EPOCH_INPUT_SIZE = 4
 
 export interface QearnGetStatsPerEpochInput {
@@ -511,7 +511,7 @@ export async function qearnGetStatsPerEpoch(
   })
 }
 
-export const QEARN_GET_BURNED_AND_BOOSTED_STATS_INPUT_TYPE = 9
+export const QEARN_GET_BURNED_AND_BOOSTED_STATS_INPUT_TYPE = 7
 export const QEARN_GET_BURNED_AND_BOOSTED_STATS_INPUT_SIZE = 0
 
 export interface QearnGetBurnedAndBoostedStatsOutput {
@@ -585,7 +585,7 @@ export async function qearnGetBurnedAndBoostedStats(
   })
 }
 
-export const QEARN_GET_BURNED_AND_BOOSTED_STATS_PER_EPOCH_INPUT_TYPE = 10
+export const QEARN_GET_BURNED_AND_BOOSTED_STATS_PER_EPOCH_INPUT_TYPE = 8
 export const QEARN_GET_BURNED_AND_BOOSTED_STATS_PER_EPOCH_INPUT_SIZE = 4
 
 export interface QearnGetBurnedAndBoostedStatsPerEpochInput {

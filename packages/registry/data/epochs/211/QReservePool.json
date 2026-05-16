@@ -3,6 +3,7 @@
   "contractName": "QReservePool",
   "contractAddress": "VAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAILLJ",
   "epoch": 211,
+  "coreVersion": "v1.289.0",
   "structs": {},
   "procedures": [
     {
@@ -82,7 +83,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 6,
+      "inputType": 4,
       "name": "SendReserve",
       "inputFields": [
         {
@@ -113,7 +114,7 @@
   "functions": [
     {
       "kind": "function",
-      "inputType": 4,
+      "inputType": 1,
       "name": "GetAvailableReserve",
       "inputFields": [],
       "outputFields": [
@@ -129,7 +130,7 @@
     },
     {
       "kind": "function",
-      "inputType": 5,
+      "inputType": 2,
       "name": "GetAllowedSC",
       "inputFields": [],
       "outputFields": [

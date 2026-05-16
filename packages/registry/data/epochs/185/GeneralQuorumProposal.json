@@ -3,6 +3,7 @@
   "contractName": "GeneralQuorumProposal",
   "contractAddress": "GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQGNM",
   "epoch": 185,
+  "coreVersion": "v1.265.3",
   "structs": {
     "ProposalDataT": {
       "name": "ProposalDataT",
@@ -143,7 +144,7 @@
   "procedures": [
     {
       "kind": "procedure",
-      "inputType": 3,
+      "inputType": 1,
       "name": "SetProposal",
       "inputFields": [
         {
@@ -196,7 +197,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 6,
+      "inputType": 2,
       "name": "Vote",
       "inputFields": [
         {
@@ -239,7 +240,7 @@
   "functions": [
     {
       "kind": "function",
-      "inputType": 4,
+      "inputType": 1,
       "name": "GetProposalIndices",
       "inputFields": [
         {
@@ -277,7 +278,7 @@
     },
     {
       "kind": "function",
-      "inputType": 5,
+      "inputType": 2,
       "name": "GetProposal",
       "inputFields": [
         {
@@ -340,7 +341,7 @@
     },
     {
       "kind": "function",
-      "inputType": 7,
+      "inputType": 3,
       "name": "GetVote",
       "inputFields": [
         {
@@ -376,7 +377,7 @@
     },
     {
       "kind": "function",
-      "inputType": 8,
+      "inputType": 4,
       "name": "GetVotingResults",
       "inputFields": [
         {
@@ -406,7 +407,7 @@
     },
     {
       "kind": "function",
-      "inputType": 9,
+      "inputType": 5,
       "name": "GetRevenueDonation",
       "inputFields": [],
       "outputFields": [

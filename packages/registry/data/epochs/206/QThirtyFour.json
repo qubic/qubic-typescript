@@ -3,6 +3,7 @@
   "contractName": "QThirtyFour",
   "contractAddress": "WAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVDQA",
   "epoch": 206,
+  "coreVersion": "v1.284.0",
   "structs": {
     "NextEpochData": {
       "name": "NextEpochData",
@@ -141,12 +142,39 @@
         }
       ],
       "byteLength": 4
+    },
+    "WinnerPlayerData": {
+      "name": "WinnerPlayerData",
+      "fields": [
+        {
+          "name": "player",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "randomValues",
+          "type": "array",
+          "offset": 32,
+          "byteLength": 4,
+          "arrayLength": 4,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        },
+        {
+          "name": "wonAmount",
+          "type": "uint32",
+          "offset": 36,
+          "byteLength": 4
+        }
+      ],
+      "byteLength": 40
     }
   },
   "procedures": [
     {
       "kind": "procedure",
-      "inputType": 6,
+      "inputType": 1,
       "name": "BuyTicket",
       "inputFields": [
         {
@@ -168,6 +196,114 @@
         }
       ],
       "inputSize": 4,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 2,
+      "name": "SetPrice",
+      "inputFields": [
+        {
+          "name": "newPrice",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 3,
+      "name": "SetSchedule",
+      "inputFields": [
+        {
+          "name": "newSchedule",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 1,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 4,
+      "name": "SetTargetJackpot",
+      "inputFields": [
+        {
+          "name": "newTargetJackpot",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 5,
+      "name": "SetDrawHour",
+      "inputFields": [
+        {
+          "name": "newDrawHour",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 1,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 6,
+      "name": "SyncJackpot",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
       "outputSize": 1
     },
     {
@@ -239,120 +375,12 @@
       ],
       "inputSize": 0,
       "outputSize": 5
-    },
-    {
-      "kind": "procedure",
-      "inputType": 9,
-      "name": "SetPrice",
-      "inputFields": [
-        {
-          "name": "newPrice",
-          "type": "uint64",
-          "offset": 0,
-          "byteLength": 8
-        }
-      ],
-      "outputFields": [
-        {
-          "name": "returnCode",
-          "type": "uint8",
-          "offset": 0,
-          "byteLength": 1
-        }
-      ],
-      "inputSize": 8,
-      "outputSize": 1
-    },
-    {
-      "kind": "procedure",
-      "inputType": 10,
-      "name": "SetSchedule",
-      "inputFields": [
-        {
-          "name": "newSchedule",
-          "type": "uint8",
-          "offset": 0,
-          "byteLength": 1
-        }
-      ],
-      "outputFields": [
-        {
-          "name": "returnCode",
-          "type": "uint8",
-          "offset": 0,
-          "byteLength": 1
-        }
-      ],
-      "inputSize": 1,
-      "outputSize": 1
-    },
-    {
-      "kind": "procedure",
-      "inputType": 11,
-      "name": "SetDrawHour",
-      "inputFields": [
-        {
-          "name": "newDrawHour",
-          "type": "uint8",
-          "offset": 0,
-          "byteLength": 1
-        }
-      ],
-      "outputFields": [
-        {
-          "name": "returnCode",
-          "type": "uint8",
-          "offset": 0,
-          "byteLength": 1
-        }
-      ],
-      "inputSize": 1,
-      "outputSize": 1
-    },
-    {
-      "kind": "procedure",
-      "inputType": 12,
-      "name": "SetTargetJackpot",
-      "inputFields": [
-        {
-          "name": "newTargetJackpot",
-          "type": "uint64",
-          "offset": 0,
-          "byteLength": 8
-        }
-      ],
-      "outputFields": [
-        {
-          "name": "returnCode",
-          "type": "uint8",
-          "offset": 0,
-          "byteLength": 1
-        }
-      ],
-      "inputSize": 8,
-      "outputSize": 1
-    },
-    {
-      "kind": "procedure",
-      "inputType": 37,
-      "name": "SyncJackpot",
-      "inputFields": [],
-      "outputFields": [
-        {
-          "name": "returnCode",
-          "type": "uint8",
-          "offset": 0,
-          "byteLength": 1
-        }
-      ],
-      "inputSize": 0,
-      "outputSize": 1
     }
   ],
   "functions": [
     {
       "kind": "function",
-      "inputType": 22,
+      "inputType": 1,
       "name": "GetTicketPrice",
       "inputFields": [],
       "outputFields": [
@@ -368,7 +396,7 @@
     },
     {
       "kind": "function",
-      "inputType": 23,
+      "inputType": 2,
       "name": "GetNextEpochData",
       "inputFields": [],
       "outputFields": [
@@ -385,23 +413,7 @@
     },
     {
       "kind": "function",
-      "inputType": 24,
-      "name": "GetSchedule",
-      "inputFields": [],
-      "outputFields": [
-        {
-          "name": "schedule",
-          "type": "uint8",
-          "offset": 0,
-          "byteLength": 1
-        }
-      ],
-      "inputSize": 0,
-      "outputSize": 1
-    },
-    {
-      "kind": "function",
-      "inputType": 25,
+      "inputType": 3,
       "name": "GetWinnerData",
       "inputFields": [],
       "outputFields": [
@@ -418,7 +430,7 @@
     },
     {
       "kind": "function",
-      "inputType": 26,
+      "inputType": 4,
       "name": "GetPools",
       "inputFields": [],
       "outputFields": [
@@ -435,7 +447,23 @@
     },
     {
       "kind": "function",
-      "inputType": 27,
+      "inputType": 5,
+      "name": "GetSchedule",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "schedule",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 1
+    },
+    {
+      "kind": "function",
+      "inputType": 6,
       "name": "GetDrawHour",
       "inputFields": [],
       "outputFields": [
@@ -451,7 +479,7 @@
     },
     {
       "kind": "function",
-      "inputType": 28,
+      "inputType": 7,
       "name": "GetState",
       "inputFields": [],
       "outputFields": [
@@ -467,7 +495,7 @@
     },
     {
       "kind": "function",
-      "inputType": 31,
+      "inputType": 8,
       "name": "GetFees",
       "inputFields": [],
       "outputFields": [
@@ -507,7 +535,7 @@
     },
     {
       "kind": "function",
-      "inputType": 34,
+      "inputType": 9,
       "name": "EstimatePrizePayouts",
       "inputFields": [
         {
@@ -578,7 +606,7 @@
     },
     {
       "kind": "function",
-      "inputType": 35,
+      "inputType": 10,
       "name": "GetPlayers",
       "inputFields": [],
       "outputFields": [
@@ -603,7 +631,7 @@
     },
     {
       "kind": "function",
-      "inputType": 36,
+      "inputType": 11,
       "name": "GetWinningCombinationsHistory",
       "inputFields": [],
       "outputFields": [

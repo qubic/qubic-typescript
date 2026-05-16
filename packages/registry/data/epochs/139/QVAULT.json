@@ -3,6 +3,7 @@
   "contractName": "QVAULT",
   "contractAddress": "KAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAXIUO",
   "epoch": 139,
+  "coreVersion": "v1.229.0",
   "structs": {},
   "procedures": [
     {
@@ -127,7 +128,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 8,
+      "inputType": 7,
       "name": "submitAdminAddress",
       "inputFields": [
         {
@@ -143,7 +144,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 9,
+      "inputType": 8,
       "name": "changeAdminAddress",
       "inputFields": [
         {
@@ -159,7 +160,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 10,
+      "inputType": 9,
       "name": "submitBannedAddress",
       "inputFields": [
         {
@@ -175,7 +176,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 11,
+      "inputType": 10,
       "name": "saveBannedAddress",
       "inputFields": [
         {
@@ -191,7 +192,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 12,
+      "inputType": 11,
       "name": "submitUnbannedAddress",
       "inputFields": [
         {
@@ -207,7 +208,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 13,
+      "inputType": 12,
       "name": "unblockBannedAddress",
       "inputFields": [
         {
@@ -225,7 +226,7 @@
   "functions": [
     {
       "kind": "function",
-      "inputType": 7,
+      "inputType": 1,
       "name": "getData",
       "inputFields": [],
       "outputFields": [

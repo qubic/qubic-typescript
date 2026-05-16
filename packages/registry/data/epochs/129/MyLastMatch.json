@@ -3,6 +3,7 @@
   "contractName": "MyLastMatch",
   "contractAddress": "FAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYWJB",
   "epoch": 129,
+  "coreVersion": "v1.221.0",
   "structs": {},
   "procedures": [],
   "functions": []

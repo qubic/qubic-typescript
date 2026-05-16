@@ -3,11 +3,12 @@
   "contractName": "Quottery",
   "contractAddress": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACNKL",
   "epoch": 158,
+  "coreVersion": "v1.242.1",
   "structs": {},
   "procedures": [
     {
       "kind": "procedure",
-      "inputType": 3,
+      "inputType": 1,
       "name": "issueBet",
       "inputFields": [
         {
@@ -53,7 +54,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 4,
+      "inputType": 2,
       "name": "joinBet",
       "inputFields": [
         {
@@ -87,7 +88,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 8,
+      "inputType": 3,
       "name": "cancelBet",
       "inputFields": [
         {
@@ -103,7 +104,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 9,
+      "inputType": 4,
       "name": "publishResult",
       "inputFields": [
         {
@@ -304,7 +305,7 @@
     },
     {
       "kind": "function",
-      "inputType": 5,
+      "inputType": 3,
       "name": "getBetOptionDetail",
       "inputFields": [
         {
@@ -336,7 +337,7 @@
     },
     {
       "kind": "function",
-      "inputType": 6,
+      "inputType": 4,
       "name": "getActiveBet",
       "inputFields": [],
       "outputFields": [
@@ -361,7 +362,7 @@
     },
     {
       "kind": "function",
-      "inputType": 7,
+      "inputType": 5,
       "name": "getBetByCreator",
       "inputFields": [
         {

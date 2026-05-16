@@ -635,7 +635,7 @@ const STRUCTS: Record<string, NamedStruct> = {
 },
 }
 
-export const QVAULT_STAKE_INPUT_TYPE = 2
+export const QVAULT_STAKE_INPUT_TYPE = 1
 
 export interface QVAULTStakeInput {
   amount: number
@@ -675,7 +675,7 @@ export function decodeQVAULTStakeOutput(
   return decodePayload(data, QVAULT_STAKE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTStakeOutput
 }
 
-export const QVAULT_UN_STAKE_INPUT_TYPE = 3
+export const QVAULT_UN_STAKE_INPUT_TYPE = 2
 
 export interface QVAULTUnStakeInput {
   amount: number
@@ -715,7 +715,7 @@ export function decodeQVAULTUnStakeOutput(
   return decodePayload(data, QVAULT_UN_STAKE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTUnStakeOutput
 }
 
-export const QVAULT_SUBMIT_GP_INPUT_TYPE = 4
+export const QVAULT_SUBMIT_GP_INPUT_TYPE = 3
 
 export interface QVAULTSubmitGPInput {
   url: number[]
@@ -758,7 +758,7 @@ export function decodeQVAULTSubmitGPOutput(
   return decodePayload(data, QVAULT_SUBMIT_GP_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTSubmitGPOutput
 }
 
-export const QVAULT_SUBMIT_QCP_INPUT_TYPE = 5
+export const QVAULT_SUBMIT_QCP_INPUT_TYPE = 4
 
 export interface QVAULTSubmitQCPInput {
   newQuorumPercent: number
@@ -808,7 +808,7 @@ export function decodeQVAULTSubmitQCPOutput(
   return decodePayload(data, QVAULT_SUBMIT_QCP_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTSubmitQCPOutput
 }
 
-export const QVAULT_SUBMIT_IPOP_INPUT_TYPE = 6
+export const QVAULT_SUBMIT_IPOP_INPUT_TYPE = 5
 
 export interface QVAULTSubmitIPOPInput {
   ipoContractIndex: number
@@ -858,7 +858,7 @@ export function decodeQVAULTSubmitIPOPOutput(
   return decodePayload(data, QVAULT_SUBMIT_IPOP_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTSubmitIPOPOutput
 }
 
-export const QVAULT_SUBMIT_Q_EARN_P_INPUT_TYPE = 7
+export const QVAULT_SUBMIT_Q_EARN_P_INPUT_TYPE = 6
 
 export interface QVAULTSubmitQEarnPInput {
   amountPerEpoch: bigint
@@ -915,7 +915,7 @@ export function decodeQVAULTSubmitQEarnPOutput(
   return decodePayload(data, QVAULT_SUBMIT_Q_EARN_P_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTSubmitQEarnPOutput
 }
 
-export const QVAULT_SUBMIT_FUND_P_INPUT_TYPE = 8
+export const QVAULT_SUBMIT_FUND_P_INPUT_TYPE = 7
 
 export interface QVAULTSubmitFundPInput {
   priceOfOneQcap: bigint
@@ -972,7 +972,7 @@ export function decodeQVAULTSubmitFundPOutput(
   return decodePayload(data, QVAULT_SUBMIT_FUND_P_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTSubmitFundPOutput
 }
 
-export const QVAULT_SUBMIT_MKTP_INPUT_TYPE = 9
+export const QVAULT_SUBMIT_MKTP_INPUT_TYPE = 8
 
 export interface QVAULTSubmitMKTPInput {
   amountOfQubic: bigint
@@ -1050,7 +1050,7 @@ export function decodeQVAULTSubmitMKTPOutput(
   return decodePayload(data, QVAULT_SUBMIT_MKTP_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTSubmitMKTPOutput
 }
 
-export const QVAULT_SUBMIT_ALLO_P_INPUT_TYPE = 10
+export const QVAULT_SUBMIT_ALLO_P_INPUT_TYPE = 9
 
 export interface QVAULTSubmitAlloPInput {
   reinvested: number
@@ -1533,7 +1533,7 @@ export async function qVAULTGetData(
   })
 }
 
-export const QVAULT_GET_STAKED_AMOUNT_AND_VOTING_POWER_INPUT_TYPE = 14
+export const QVAULT_GET_STAKED_AMOUNT_AND_VOTING_POWER_INPUT_TYPE = 2
 export const QVAULT_GET_STAKED_AMOUNT_AND_VOTING_POWER_INPUT_SIZE = 32
 
 export interface QVAULTGetStakedAmountAndVotingPowerInput {
@@ -1607,7 +1607,7 @@ export async function qVAULTGetStakedAmountAndVotingPower(
   })
 }
 
-export const QVAULT_GET_GP_INPUT_TYPE = 15
+export const QVAULT_GET_GP_INPUT_TYPE = 3
 export const QVAULT_GET_GP_INPUT_SIZE = 4
 
 export interface QVAULTGetGPInput {
@@ -1674,7 +1674,7 @@ export async function qVAULTGetGP(
   })
 }
 
-export const QVAULT_GET_QCP_INPUT_TYPE = 16
+export const QVAULT_GET_QCP_INPUT_TYPE = 4
 export const QVAULT_GET_QCP_INPUT_SIZE = 4
 
 export interface QVAULTGetQCPInput {
@@ -1741,7 +1741,7 @@ export async function qVAULTGetQCP(
   })
 }
 
-export const QVAULT_GET_IPOP_INPUT_TYPE = 17
+export const QVAULT_GET_IPOP_INPUT_TYPE = 5
 export const QVAULT_GET_IPOP_INPUT_SIZE = 4
 
 export interface QVAULTGetIPOPInput {
@@ -1808,7 +1808,7 @@ export async function qVAULTGetIPOP(
   })
 }
 
-export const QVAULT_GET_Q_EARN_P_INPUT_TYPE = 18
+export const QVAULT_GET_Q_EARN_P_INPUT_TYPE = 6
 export const QVAULT_GET_Q_EARN_P_INPUT_SIZE = 4
 
 export interface QVAULTGetQEarnPInput {
@@ -1875,7 +1875,7 @@ export async function qVAULTGetQEarnP(
   })
 }
 
-export const QVAULT_GET_FUND_P_INPUT_TYPE = 19
+export const QVAULT_GET_FUND_P_INPUT_TYPE = 7
 export const QVAULT_GET_FUND_P_INPUT_SIZE = 4
 
 export interface QVAULTGetFundPInput {
@@ -1942,7 +1942,7 @@ export async function qVAULTGetFundP(
   })
 }
 
-export const QVAULT_GET_MKTP_INPUT_TYPE = 20
+export const QVAULT_GET_MKTP_INPUT_TYPE = 8
 export const QVAULT_GET_MKTP_INPUT_SIZE = 4
 
 export interface QVAULTGetMKTPInput {
@@ -2009,7 +2009,7 @@ export async function qVAULTGetMKTP(
   })
 }
 
-export const QVAULT_GET_ALLO_P_INPUT_TYPE = 21
+export const QVAULT_GET_ALLO_P_INPUT_TYPE = 9
 export const QVAULT_GET_ALLO_P_INPUT_SIZE = 4
 
 export interface QVAULTGetAlloPInput {
@@ -2076,7 +2076,7 @@ export async function qVAULTGetAlloP(
   })
 }
 
-export const QVAULT_GET_IDENTITIES_HV_VT_PW_INPUT_TYPE = 22
+export const QVAULT_GET_IDENTITIES_HV_VT_PW_INPUT_TYPE = 11
 export const QVAULT_GET_IDENTITIES_HV_VT_PW_INPUT_SIZE = 8
 
 export interface QVAULTGetIdentitiesHvVtPwInput {
@@ -2163,7 +2163,7 @@ export async function qVAULTGetIdentitiesHvVtPw(
   })
 }
 
-export const QVAULT_PP_CREATION_POWER_INPUT_TYPE = 23
+export const QVAULT_PP_CREATION_POWER_INPUT_TYPE = 12
 export const QVAULT_PP_CREATION_POWER_INPUT_SIZE = 32
 
 export interface QVAULTPpCreationPowerInput {
@@ -2230,7 +2230,7 @@ export async function qVAULTPpCreationPower(
   })
 }
 
-export const QVAULT_GET_QCAP_BURNT_AMOUNT_IN_LAST_EPOCHES_INPUT_TYPE = 24
+export const QVAULT_GET_QCAP_BURNT_AMOUNT_IN_LAST_EPOCHES_INPUT_TYPE = 13
 export const QVAULT_GET_QCAP_BURNT_AMOUNT_IN_LAST_EPOCHES_INPUT_SIZE = 4
 
 export interface QVAULTGetQcapBurntAmountInLastEpochesInput {
@@ -2296,7 +2296,7 @@ export async function qVAULTGetQcapBurntAmountInLastEpoches(
   })
 }
 
-export const QVAULT_GET_AMOUNT_TO_BE_SOLD_PER_YEAR_INPUT_TYPE = 25
+export const QVAULT_GET_AMOUNT_TO_BE_SOLD_PER_YEAR_INPUT_TYPE = 14
 export const QVAULT_GET_AMOUNT_TO_BE_SOLD_PER_YEAR_INPUT_SIZE = 4
 
 export interface QVAULTGetAmountToBeSoldPerYearInput {
@@ -2355,7 +2355,7 @@ export async function qVAULTGetAmountToBeSoldPerYear(
   })
 }
 
-export const QVAULT_GET_TOTAL_REVENUE_IN_QCAP_INPUT_TYPE = 26
+export const QVAULT_GET_TOTAL_REVENUE_IN_QCAP_INPUT_TYPE = 15
 export const QVAULT_GET_TOTAL_REVENUE_IN_QCAP_INPUT_SIZE = 0
 
 export interface QVAULTGetTotalRevenueInQcapOutput {
@@ -2394,7 +2394,7 @@ export async function qVAULTGetTotalRevenueInQcap(
   })
 }
 
-export const QVAULT_GET_REVENUE_IN_QCAP_PER_EPOCH_INPUT_TYPE = 27
+export const QVAULT_GET_REVENUE_IN_QCAP_PER_EPOCH_INPUT_TYPE = 16
 export const QVAULT_GET_REVENUE_IN_QCAP_PER_EPOCH_INPUT_SIZE = 4
 
 export interface QVAULTGetRevenueInQcapPerEpochInput {
@@ -2474,7 +2474,7 @@ export async function qVAULTGetRevenueInQcapPerEpoch(
   })
 }
 
-export const QVAULT_GET_REVENUE_PER_SHARE_INPUT_TYPE = 28
+export const QVAULT_GET_REVENUE_PER_SHARE_INPUT_TYPE = 17
 export const QVAULT_GET_REVENUE_PER_SHARE_INPUT_SIZE = 4
 
 export interface QVAULTGetRevenuePerShareInput {
@@ -2533,7 +2533,7 @@ export async function qVAULTGetRevenuePerShare(
   })
 }
 
-export const QVAULT_GET_AMOUNT_OF_SHARE_QVAULT_HOLD_INPUT_TYPE = 29
+export const QVAULT_GET_AMOUNT_OF_SHARE_QVAULT_HOLD_INPUT_TYPE = 18
 export const QVAULT_GET_AMOUNT_OF_SHARE_QVAULT_HOLD_INPUT_SIZE = 40
 
 export interface QVAULTGetAmountOfShareQvaultHoldInput {
@@ -2593,7 +2593,7 @@ export async function qVAULTGetAmountOfShareQvaultHold(
   })
 }
 
-export const QVAULT_GET_NUMBER_OF_HOLDER_AND_AVG_AM_INPUT_TYPE = 30
+export const QVAULT_GET_NUMBER_OF_HOLDER_AND_AVG_AM_INPUT_TYPE = 19
 export const QVAULT_GET_NUMBER_OF_HOLDER_AND_AVG_AM_INPUT_SIZE = 0
 
 export interface QVAULTGetNumberOfHolderAndAvgAmOutput {
@@ -2646,7 +2646,7 @@ export async function qVAULTGetNumberOfHolderAndAvgAm(
   })
 }
 
-export const QVAULT_GET_AMOUNT_FOR_QEARN_IN_UPCOMING_EPOCH_INPUT_TYPE = 31
+export const QVAULT_GET_AMOUNT_FOR_QEARN_IN_UPCOMING_EPOCH_INPUT_TYPE = 20
 export const QVAULT_GET_AMOUNT_FOR_QEARN_IN_UPCOMING_EPOCH_INPUT_SIZE = 4
 
 export interface QVAULTGetAmountForQearnInUpcomingEpochInput {
@@ -2712,7 +2712,7 @@ export async function qVAULTGetAmountForQearnInUpcomingEpoch(
   })
 }
 
-export const QVAULT_GET_VOTE_IN_PROPOSAL_INPUT_TYPE = 32
+export const QVAULT_GET_VOTE_IN_PROPOSAL_INPUT_TYPE = 21
 export const QVAULT_GET_VOTE_IN_PROPOSAL_INPUT_SIZE = 48
 
 export interface QVAULTGetVoteInProposalInput {

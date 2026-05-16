@@ -136,7 +136,7 @@ export function decodeQReservePoolRemoveAllowedSCOutput(
   return decodePayload(data, Q_RESERVE_POOL_REMOVE_ALLOWED_SC_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QReservePoolRemoveAllowedSCOutput
 }
 
-export const Q_RESERVE_POOL_SEND_RESERVE_INPUT_TYPE = 6
+export const Q_RESERVE_POOL_SEND_RESERVE_INPUT_TYPE = 4
 
 export interface QReservePoolSendReserveInput {
   scIndex: bigint
@@ -183,7 +183,7 @@ export function decodeQReservePoolSendReserveOutput(
   return decodePayload(data, Q_RESERVE_POOL_SEND_RESERVE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QReservePoolSendReserveOutput
 }
 
-export const Q_RESERVE_POOL_GET_AVAILABLE_RESERVE_INPUT_TYPE = 4
+export const Q_RESERVE_POOL_GET_AVAILABLE_RESERVE_INPUT_TYPE = 1
 export const Q_RESERVE_POOL_GET_AVAILABLE_RESERVE_INPUT_SIZE = 0
 
 export interface QReservePoolGetAvailableReserveOutput {
@@ -222,7 +222,7 @@ export async function qReservePoolGetAvailableReserve(
   })
 }
 
-export const Q_RESERVE_POOL_GET_ALLOWED_SC_INPUT_TYPE = 5
+export const Q_RESERVE_POOL_GET_ALLOWED_SC_INPUT_TYPE = 2
 export const Q_RESERVE_POOL_GET_ALLOWED_SC_INPUT_SIZE = 0
 
 export interface QReservePoolGetAllowedSCOutput {

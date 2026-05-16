@@ -3,6 +3,7 @@
   "contractName": "Nostromo",
   "contractAddress": "OAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAZTPD",
   "epoch": 182,
+  "coreVersion": "v1.263.0",
   "structs": {
     "Asset": {
       "name": "Asset",
@@ -723,7 +724,7 @@
   "functions": [
     {
       "kind": "function",
-      "inputType": 10,
+      "inputType": 1,
       "name": "getStats",
       "inputFields": [],
       "outputFields": [
@@ -745,7 +746,7 @@
     },
     {
       "kind": "function",
-      "inputType": 11,
+      "inputType": 2,
       "name": "getTierLevelByUser",
       "inputFields": [
         {
@@ -768,7 +769,7 @@
     },
     {
       "kind": "function",
-      "inputType": 12,
+      "inputType": 3,
       "name": "getUserVoteStatus",
       "inputFields": [
         {
@@ -800,7 +801,7 @@
     },
     {
       "kind": "function",
-      "inputType": 13,
+      "inputType": 4,
       "name": "checkTokenCreatability",
       "inputFields": [
         {
@@ -823,7 +824,7 @@
     },
     {
       "kind": "function",
-      "inputType": 14,
+      "inputType": 5,
       "name": "getNumberOfInvestedProjects",
       "inputFields": [
         {
@@ -846,7 +847,7 @@
     },
     {
       "kind": "function",
-      "inputType": 15,
+      "inputType": 6,
       "name": "getProjectByIndex",
       "inputFields": [
         {
@@ -870,7 +871,7 @@
     },
     {
       "kind": "function",
-      "inputType": 16,
+      "inputType": 7,
       "name": "getFundarasingByIndex",
       "inputFields": [
         {
@@ -894,7 +895,7 @@
     },
     {
       "kind": "function",
-      "inputType": 17,
+      "inputType": 8,
       "name": "getProjectIndexListByCreator",
       "inputFields": [
         {
@@ -920,7 +921,7 @@
     },
     {
       "kind": "function",
-      "inputType": 18,
+      "inputType": 9,
       "name": "getInfoUserInvested",
       "inputFields": [
         {
@@ -946,7 +947,7 @@
     },
     {
       "kind": "function",
-      "inputType": 19,
+      "inputType": 10,
       "name": "getMaxClaimAmount",
       "inputFields": [
         {

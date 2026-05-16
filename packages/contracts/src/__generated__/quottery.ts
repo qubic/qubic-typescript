@@ -279,7 +279,29 @@ const STRUCTS: Record<string, NamedStruct> = {
 },
 }
 
-export const QUOTTERY_ADD_TO_ASK_ORDER_INPUT_TYPE = 9
+export const QUOTTERY_CREATE_EVENT_INPUT_TYPE = 1
+
+export interface QuotteryCreateEventInput {
+  qei: QuotteryQtryEventInfoStruct
+}
+
+const QUOTTERY_CREATE_EVENT_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'qei',
+    type: 'struct',
+    offset: 0,
+    byteLength: 280,
+    structRef: 'QtryEventInfo',
+  },
+]
+
+export function buildQuotteryCreateEventInput(
+  input: QuotteryCreateEventInput,
+): ContractCall {
+  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_CREATE_EVENT_INPUT_TYPE, payload: buildPayload(QUOTTERY_CREATE_EVENT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
+}
+
+export const QUOTTERY_ADD_TO_ASK_ORDER_INPUT_TYPE = 2
 
 export interface QuotteryAddToAskOrderInput {
   eventId: bigint
@@ -340,7 +362,7 @@ export function decodeQuotteryAddToAskOrderOutput(
   return decodePayload(data, QUOTTERY_ADD_TO_ASK_ORDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryAddToAskOrderOutput
 }
 
-export const QUOTTERY_REMOVE_ASK_ORDER_INPUT_TYPE = 10
+export const QUOTTERY_REMOVE_ASK_ORDER_INPUT_TYPE = 3
 
 export interface QuotteryRemoveAskOrderInput {
   eventId: bigint
@@ -401,68 +423,7 @@ export function decodeQuotteryRemoveAskOrderOutput(
   return decodePayload(data, QUOTTERY_REMOVE_ASK_ORDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryRemoveAskOrderOutput
 }
 
-export const QUOTTERY_REMOVE_BID_ORDER_INPUT_TYPE = 11
-
-export interface QuotteryRemoveBidOrderInput {
-  eventId: bigint
-  option: bigint
-  amount: bigint
-  price: bigint
-}
-
-const QUOTTERY_REMOVE_BID_ORDER_INPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'eventId',
-    type: 'uint64',
-    offset: 0,
-    byteLength: 8,
-  },
-  {
-    name: 'option',
-    type: 'uint64',
-    offset: 8,
-    byteLength: 8,
-  },
-  {
-    name: 'amount',
-    type: 'uint64',
-    offset: 16,
-    byteLength: 8,
-  },
-  {
-    name: 'price',
-    type: 'sint64',
-    offset: 24,
-    byteLength: 8,
-  },
-]
-
-export function buildQuotteryRemoveBidOrderInput(
-  input: QuotteryRemoveBidOrderInput,
-): ContractCall {
-  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_REMOVE_BID_ORDER_INPUT_TYPE, payload: buildPayload(QUOTTERY_REMOVE_BID_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
-}
-
-export interface QuotteryRemoveBidOrderOutput {
-  status: bigint
-}
-
-const QUOTTERY_REMOVE_BID_ORDER_OUTPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'status',
-    type: 'sint64',
-    offset: 0,
-    byteLength: 8,
-  },
-]
-
-export function decodeQuotteryRemoveBidOrderOutput(
-  data: Uint8Array,
-): QuotteryRemoveBidOrderOutput {
-  return decodePayload(data, QUOTTERY_REMOVE_BID_ORDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryRemoveBidOrderOutput
-}
-
-export const QUOTTERY_ADD_TO_BID_ORDER_INPUT_TYPE = 12
+export const QUOTTERY_ADD_TO_BID_ORDER_INPUT_TYPE = 4
 
 export interface QuotteryAddToBidOrderInput {
   eventId: bigint
@@ -523,7 +484,117 @@ export function decodeQuotteryAddToBidOrderOutput(
   return decodePayload(data, QUOTTERY_ADD_TO_BID_ORDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryAddToBidOrderOutput
 }
 
-export const QUOTTERY_DISPUTE_INPUT_TYPE = 13
+export const QUOTTERY_REMOVE_BID_ORDER_INPUT_TYPE = 5
+
+export interface QuotteryRemoveBidOrderInput {
+  eventId: bigint
+  option: bigint
+  amount: bigint
+  price: bigint
+}
+
+const QUOTTERY_REMOVE_BID_ORDER_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'eventId',
+    type: 'uint64',
+    offset: 0,
+    byteLength: 8,
+  },
+  {
+    name: 'option',
+    type: 'uint64',
+    offset: 8,
+    byteLength: 8,
+  },
+  {
+    name: 'amount',
+    type: 'uint64',
+    offset: 16,
+    byteLength: 8,
+  },
+  {
+    name: 'price',
+    type: 'sint64',
+    offset: 24,
+    byteLength: 8,
+  },
+]
+
+export function buildQuotteryRemoveBidOrderInput(
+  input: QuotteryRemoveBidOrderInput,
+): ContractCall {
+  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_REMOVE_BID_ORDER_INPUT_TYPE, payload: buildPayload(QUOTTERY_REMOVE_BID_ORDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
+}
+
+export interface QuotteryRemoveBidOrderOutput {
+  status: bigint
+}
+
+const QUOTTERY_REMOVE_BID_ORDER_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'status',
+    type: 'sint64',
+    offset: 0,
+    byteLength: 8,
+  },
+]
+
+export function decodeQuotteryRemoveBidOrderOutput(
+  data: Uint8Array,
+): QuotteryRemoveBidOrderOutput {
+  return decodePayload(data, QUOTTERY_REMOVE_BID_ORDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryRemoveBidOrderOutput
+}
+
+export const QUOTTERY_PUBLISH_RESULT_INPUT_TYPE = 6
+
+export interface QuotteryPublishResultInput {
+  eventId: bigint
+  option: bigint
+}
+
+const QUOTTERY_PUBLISH_RESULT_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'eventId',
+    type: 'uint64',
+    offset: 0,
+    byteLength: 8,
+  },
+  {
+    name: 'option',
+    type: 'uint64',
+    offset: 8,
+    byteLength: 8,
+  },
+]
+
+export function buildQuotteryPublishResultInput(
+  input: QuotteryPublishResultInput,
+): ContractCall {
+  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_PUBLISH_RESULT_INPUT_TYPE, payload: buildPayload(QUOTTERY_PUBLISH_RESULT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
+}
+
+export const QUOTTERY_TRY_FINALIZE_EVENT_INPUT_TYPE = 7
+
+export interface QuotteryTryFinalizeEventInput {
+  eventId: bigint
+}
+
+const QUOTTERY_TRY_FINALIZE_EVENT_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'eventId',
+    type: 'uint64',
+    offset: 0,
+    byteLength: 8,
+  },
+]
+
+export function buildQuotteryTryFinalizeEventInput(
+  input: QuotteryTryFinalizeEventInput,
+): ContractCall {
+  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_TRY_FINALIZE_EVENT_INPUT_TYPE, payload: buildPayload(QUOTTERY_TRY_FINALIZE_EVENT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
+}
+
+export const QUOTTERY_DISPUTE_INPUT_TYPE = 8
 
 export interface QuotteryDisputeInput {
   eventId: bigint
@@ -544,7 +615,35 @@ export function buildQuotteryDisputeInput(
   return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_DISPUTE_INPUT_TYPE, payload: buildPayload(QUOTTERY_DISPUTE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
-export const QUOTTERY_USER_CLAIM_REWARD_INPUT_TYPE = 14
+export const QUOTTERY_RESOLVE_DISPUTE_INPUT_TYPE = 9
+
+export interface QuotteryResolveDisputeInput {
+  eventId: bigint
+  vote: bigint
+}
+
+const QUOTTERY_RESOLVE_DISPUTE_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'eventId',
+    type: 'uint64',
+    offset: 0,
+    byteLength: 8,
+  },
+  {
+    name: 'vote',
+    type: 'sint64',
+    offset: 8,
+    byteLength: 8,
+  },
+]
+
+export function buildQuotteryResolveDisputeInput(
+  input: QuotteryResolveDisputeInput,
+): ContractCall {
+  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_RESOLVE_DISPUTE_INPUT_TYPE, payload: buildPayload(QUOTTERY_RESOLVE_DISPUTE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
+}
+
+export const QUOTTERY_USER_CLAIM_REWARD_INPUT_TYPE = 10
 
 export interface QuotteryUserClaimRewardInput {
   eventId: bigint
@@ -565,7 +664,7 @@ export function buildQuotteryUserClaimRewardInput(
   return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_USER_CLAIM_REWARD_INPUT_TYPE, payload: buildPayload(QUOTTERY_USER_CLAIM_REWARD_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
-export const QUOTTERY_GO_FORCE_CLAIM_REWARD_INPUT_TYPE = 15
+export const QUOTTERY_GO_FORCE_CLAIM_REWARD_INPUT_TYPE = 11
 
 export interface QuotteryGOForceClaimRewardInput {
   eventId: bigint
@@ -597,166 +696,7 @@ export function buildQuotteryGOForceClaimRewardInput(
   return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_GO_FORCE_CLAIM_REWARD_INPUT_TYPE, payload: buildPayload(QUOTTERY_GO_FORCE_CLAIM_REWARD_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
-export const QUOTTERY_RESOLVE_DISPUTE_INPUT_TYPE = 17
-
-export interface QuotteryResolveDisputeInput {
-  eventId: bigint
-  vote: bigint
-}
-
-const QUOTTERY_RESOLVE_DISPUTE_INPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'eventId',
-    type: 'uint64',
-    offset: 0,
-    byteLength: 8,
-  },
-  {
-    name: 'vote',
-    type: 'sint64',
-    offset: 8,
-    byteLength: 8,
-  },
-]
-
-export function buildQuotteryResolveDisputeInput(
-  input: QuotteryResolveDisputeInput,
-): ContractCall {
-  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_RESOLVE_DISPUTE_INPUT_TYPE, payload: buildPayload(QUOTTERY_RESOLVE_DISPUTE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
-}
-
-export const QUOTTERY_TRY_FINALIZE_EVENT_INPUT_TYPE = 18
-
-export interface QuotteryTryFinalizeEventInput {
-  eventId: bigint
-}
-
-const QUOTTERY_TRY_FINALIZE_EVENT_INPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'eventId',
-    type: 'uint64',
-    offset: 0,
-    byteLength: 8,
-  },
-]
-
-export function buildQuotteryTryFinalizeEventInput(
-  input: QuotteryTryFinalizeEventInput,
-): ContractCall {
-  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_TRY_FINALIZE_EVENT_INPUT_TYPE, payload: buildPayload(QUOTTERY_TRY_FINALIZE_EVENT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
-}
-
-export const QUOTTERY_CREATE_EVENT_INPUT_TYPE = 21
-
-export interface QuotteryCreateEventInput {
-  qei: QuotteryQtryEventInfoStruct
-}
-
-const QUOTTERY_CREATE_EVENT_INPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'qei',
-    type: 'struct',
-    offset: 0,
-    byteLength: 280,
-    structRef: 'QtryEventInfo',
-  },
-]
-
-export function buildQuotteryCreateEventInput(
-  input: QuotteryCreateEventInput,
-): ContractCall {
-  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_CREATE_EVENT_INPUT_TYPE, payload: buildPayload(QUOTTERY_CREATE_EVENT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
-}
-
-export const QUOTTERY_PUBLISH_RESULT_INPUT_TYPE = 22
-
-export interface QuotteryPublishResultInput {
-  eventId: bigint
-  option: bigint
-}
-
-const QUOTTERY_PUBLISH_RESULT_INPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'eventId',
-    type: 'uint64',
-    offset: 0,
-    byteLength: 8,
-  },
-  {
-    name: 'option',
-    type: 'uint64',
-    offset: 8,
-    byteLength: 8,
-  },
-]
-
-export function buildQuotteryPublishResultInput(
-  input: QuotteryPublishResultInput,
-): ContractCall {
-  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_PUBLISH_RESULT_INPUT_TYPE, payload: buildPayload(QUOTTERY_PUBLISH_RESULT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
-}
-
-export const QUOTTERY_UPDATE_FEE_DISCOUNT_LIST_INPUT_TYPE = 24
-
-export interface QuotteryUpdateFeeDiscountListInput {
-  userId: string
-  newFeeRate: bigint
-  ops: bigint
-}
-
-const QUOTTERY_UPDATE_FEE_DISCOUNT_LIST_INPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'userId',
-    type: 'id',
-    offset: 0,
-    byteLength: 32,
-  },
-  {
-    name: 'newFeeRate',
-    type: 'uint64',
-    offset: 32,
-    byteLength: 8,
-  },
-  {
-    name: 'ops',
-    type: 'uint64',
-    offset: 40,
-    byteLength: 8,
-  },
-]
-
-export function buildQuotteryUpdateFeeDiscountListInput(
-  input: QuotteryUpdateFeeDiscountListInput,
-  identityToPublicKey: (identity: string) => Uint8Array,
-): ContractCall {
-  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_UPDATE_FEE_DISCOUNT_LIST_INPUT_TYPE, payload: buildPayload(QUOTTERY_UPDATE_FEE_DISCOUNT_LIST_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
-}
-
-export const QUOTTERY_CLEAN_MEMORY_INPUT_TYPE = 26
-
-export const QUOTTERY_PROPOSAL_VOTE_INPUT_TYPE = 27
-
-export interface QuotteryProposalVoteInput {
-  proposed: QuotteryQtryGOVStruct
-}
-
-const QUOTTERY_PROPOSAL_VOTE_INPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'proposed',
-    type: 'struct',
-    offset: 0,
-    byteLength: 72,
-    structRef: 'QtryGOV',
-  },
-]
-
-export function buildQuotteryProposalVoteInput(
-  input: QuotteryProposalVoteInput,
-): ContractCall {
-  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_PROPOSAL_VOTE_INPUT_TYPE, payload: buildPayload(QUOTTERY_PROPOSAL_VOTE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
-}
-
-export const QUOTTERY_TRANSFER_QUSD_INPUT_TYPE = 31
+export const QUOTTERY_TRANSFER_QUSD_INPUT_TYPE = 12
 
 export interface QuotteryTransferQUSDInput {
   receiver: string
@@ -804,55 +744,7 @@ export function decodeQuotteryTransferQUSDOutput(
   return decodePayload(data, QUOTTERY_TRANSFER_QUSD_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryTransferQUSDOutput
 }
 
-export const QUOTTERY_TRANSFER_QTRYGOV_INPUT_TYPE = 32
-
-export interface QuotteryTransferQTRYGOVInput {
-  receiver: string
-  amount: bigint
-}
-
-const QUOTTERY_TRANSFER_QTRYGOV_INPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'receiver',
-    type: 'id',
-    offset: 0,
-    byteLength: 32,
-  },
-  {
-    name: 'amount',
-    type: 'sint64',
-    offset: 32,
-    byteLength: 8,
-  },
-]
-
-export function buildQuotteryTransferQTRYGOVInput(
-  input: QuotteryTransferQTRYGOVInput,
-  identityToPublicKey: (identity: string) => Uint8Array,
-): ContractCall {
-  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_TRANSFER_QTRYGOV_INPUT_TYPE, payload: buildPayload(QUOTTERY_TRANSFER_QTRYGOV_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
-}
-
-export interface QuotteryTransferQTRYGOVOutput {
-  amount: bigint
-}
-
-const QUOTTERY_TRANSFER_QTRYGOV_OUTPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'amount',
-    type: 'uint64',
-    offset: 0,
-    byteLength: 8,
-  },
-]
-
-export function decodeQuotteryTransferQTRYGOVOutput(
-  data: Uint8Array,
-): QuotteryTransferQTRYGOVOutput {
-  return decodePayload(data, QUOTTERY_TRANSFER_QTRYGOV_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryTransferQTRYGOVOutput
-}
-
-export const QUOTTERY_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE = 33
+export const QUOTTERY_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE = 13
 
 export interface QuotteryTransferShareManagementRightsInput {
   asset: QuotteryAssetStruct
@@ -905,6 +797,114 @@ export function decodeQuotteryTransferShareManagementRightsOutput(
   data: Uint8Array,
 ): QuotteryTransferShareManagementRightsOutput {
   return decodePayload(data, QUOTTERY_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryTransferShareManagementRightsOutput
+}
+
+export const QUOTTERY_CLEAN_MEMORY_INPUT_TYPE = 14
+
+export const QUOTTERY_TRANSFER_QTRYGOV_INPUT_TYPE = 15
+
+export interface QuotteryTransferQTRYGOVInput {
+  receiver: string
+  amount: bigint
+}
+
+const QUOTTERY_TRANSFER_QTRYGOV_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'receiver',
+    type: 'id',
+    offset: 0,
+    byteLength: 32,
+  },
+  {
+    name: 'amount',
+    type: 'sint64',
+    offset: 32,
+    byteLength: 8,
+  },
+]
+
+export function buildQuotteryTransferQTRYGOVInput(
+  input: QuotteryTransferQTRYGOVInput,
+  identityToPublicKey: (identity: string) => Uint8Array,
+): ContractCall {
+  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_TRANSFER_QTRYGOV_INPUT_TYPE, payload: buildPayload(QUOTTERY_TRANSFER_QTRYGOV_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+}
+
+export interface QuotteryTransferQTRYGOVOutput {
+  amount: bigint
+}
+
+const QUOTTERY_TRANSFER_QTRYGOV_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'amount',
+    type: 'uint64',
+    offset: 0,
+    byteLength: 8,
+  },
+]
+
+export function decodeQuotteryTransferQTRYGOVOutput(
+  data: Uint8Array,
+): QuotteryTransferQTRYGOVOutput {
+  return decodePayload(data, QUOTTERY_TRANSFER_QTRYGOV_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryTransferQTRYGOVOutput
+}
+
+export const QUOTTERY_UPDATE_FEE_DISCOUNT_LIST_INPUT_TYPE = 20
+
+export interface QuotteryUpdateFeeDiscountListInput {
+  userId: string
+  newFeeRate: bigint
+  ops: bigint
+}
+
+const QUOTTERY_UPDATE_FEE_DISCOUNT_LIST_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'userId',
+    type: 'id',
+    offset: 0,
+    byteLength: 32,
+  },
+  {
+    name: 'newFeeRate',
+    type: 'uint64',
+    offset: 32,
+    byteLength: 8,
+  },
+  {
+    name: 'ops',
+    type: 'uint64',
+    offset: 40,
+    byteLength: 8,
+  },
+]
+
+export function buildQuotteryUpdateFeeDiscountListInput(
+  input: QuotteryUpdateFeeDiscountListInput,
+  identityToPublicKey: (identity: string) => Uint8Array,
+): ContractCall {
+  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_UPDATE_FEE_DISCOUNT_LIST_INPUT_TYPE, payload: buildPayload(QUOTTERY_UPDATE_FEE_DISCOUNT_LIST_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+}
+
+export const QUOTTERY_PROPOSAL_VOTE_INPUT_TYPE = 100
+
+export interface QuotteryProposalVoteInput {
+  proposed: QuotteryQtryGOVStruct
+}
+
+const QUOTTERY_PROPOSAL_VOTE_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'proposed',
+    type: 'struct',
+    offset: 0,
+    byteLength: 72,
+    structRef: 'QtryGOV',
+  },
+]
+
+export function buildQuotteryProposalVoteInput(
+  input: QuotteryProposalVoteInput,
+): ContractCall {
+  return { contractIndex: QUOTTERY_CONTRACT_INDEX, inputType: QUOTTERY_PROPOSAL_VOTE_INPUT_TYPE, payload: buildPayload(QUOTTERY_PROPOSAL_VOTE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
 export const QUOTTERY_BASIC_INFO_INPUT_TYPE = 1
@@ -1017,7 +1017,7 @@ export async function quotteryBasicInfo(
   })
 }
 
-export const QUOTTERY_GET_EVENT_INFO_INPUT_TYPE = 7
+export const QUOTTERY_GET_EVENT_INFO_INPUT_TYPE = 2
 export const QUOTTERY_GET_EVENT_INFO_INPUT_SIZE = 8
 
 export interface QuotteryGetEventInfoInput {
@@ -1113,184 +1113,7 @@ export async function quotteryGetEventInfo(
   })
 }
 
-export const QUOTTERY_GET_EVENT_INFO_BATCH_INPUT_TYPE = 8
-export const QUOTTERY_GET_EVENT_INFO_BATCH_INPUT_SIZE = 512
-
-export interface QuotteryGetEventInfoBatchInput {
-  eventIds: bigint[]
-}
-
-const QUOTTERY_GET_EVENT_INFO_BATCH_INPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'eventIds',
-    type: 'array',
-    offset: 0,
-    byteLength: 512,
-    arrayLength: 64,
-    arrayItemType: 'uint64',
-    arrayItemByteLength: 8,
-  },
-]
-
-export function buildQuotteryGetEventInfoBatchInput(
-  input: QuotteryGetEventInfoBatchInput,
-): Uint8Array {
-  return buildPayload(QUOTTERY_GET_EVENT_INFO_BATCH_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
-}
-
-export interface QuotteryGetEventInfoBatchOutput {
-  aqei: number[]
-}
-
-const QUOTTERY_GET_EVENT_INFO_BATCH_OUTPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'aqei',
-    type: 'array',
-    offset: 0,
-    byteLength: 17920,
-    arrayLength: 64,
-    arrayItemByteLength: 280,
-    arrayItemStructRef: 'QtryEventInfo',
-  },
-]
-
-export function decodeQuotteryGetEventInfoBatchOutput(
-  data: Uint8Array,
-): QuotteryGetEventInfoBatchOutput {
-  return decodePayload(data, QUOTTERY_GET_EVENT_INFO_BATCH_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryGetEventInfoBatchOutput
-}
-
-export async function quotteryGetEventInfoBatch(
-  live: SmartContractCaller,
-  input: QuotteryGetEventInfoBatchInput,
-  options?: ContractCallOptions,
-): Promise<Result<QuotteryGetEventInfoBatchOutput, QubicRpcError>> {
-  return callContractFunction({
-    live,
-    contractIndex: QUOTTERY_CONTRACT_INDEX,
-    inputType: QUOTTERY_GET_EVENT_INFO_BATCH_INPUT_TYPE,
-    inputSize: QUOTTERY_GET_EVENT_INFO_BATCH_INPUT_SIZE,
-    inputFields: QUOTTERY_GET_EVENT_INFO_BATCH_INPUT_FIELDS,
-    outputFields: QUOTTERY_GET_EVENT_INFO_BATCH_OUTPUT_FIELDS,
-    structs: STRUCTS,
-    input: (input as unknown as Record<string, unknown>),
-    ...options,
-  })
-}
-
-export const QUOTTERY_GET_ACTIVE_EVENT_INPUT_TYPE = 19
-export const QUOTTERY_GET_ACTIVE_EVENT_INPUT_SIZE = 0
-
-export interface QuotteryGetActiveEventOutput {
-  recentActiveEvent: bigint[]
-}
-
-const QUOTTERY_GET_ACTIVE_EVENT_OUTPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'recentActiveEvent',
-    type: 'array',
-    offset: 0,
-    byteLength: 0,
-    arrayLength: 0,
-    arrayItemType: 'uint64',
-    arrayItemByteLength: 8,
-  },
-]
-
-export function decodeQuotteryGetActiveEventOutput(
-  data: Uint8Array,
-): QuotteryGetActiveEventOutput {
-  return decodePayload(data, QUOTTERY_GET_ACTIVE_EVENT_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryGetActiveEventOutput
-}
-
-export async function quotteryGetActiveEvent(
-  live: SmartContractCaller,
-  options?: ContractCallOptions,
-): Promise<Result<QuotteryGetActiveEventOutput, QubicRpcError>> {
-  return callContractFunction({
-    live,
-    contractIndex: QUOTTERY_CONTRACT_INDEX,
-    inputType: QUOTTERY_GET_ACTIVE_EVENT_INPUT_TYPE,
-    inputSize: QUOTTERY_GET_ACTIVE_EVENT_INPUT_SIZE,
-    inputFields: [],
-    outputFields: QUOTTERY_GET_ACTIVE_EVENT_OUTPUT_FIELDS,
-    structs: STRUCTS,
-    input: {},
-    ...options,
-  })
-}
-
-export const QUOTTERY_GET_USER_POSITION_INPUT_TYPE = 20
-export const QUOTTERY_GET_USER_POSITION_INPUT_SIZE = 32
-
-export interface QuotteryGetUserPositionInput {
-  uid: string
-}
-
-const QUOTTERY_GET_USER_POSITION_INPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'uid',
-    type: 'id',
-    offset: 0,
-    byteLength: 32,
-  },
-]
-
-export function buildQuotteryGetUserPositionInput(
-  input: QuotteryGetUserPositionInput,
-  identityToPublicKey: (identity: string) => Uint8Array,
-): Uint8Array {
-  return buildPayload(QUOTTERY_GET_USER_POSITION_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
-}
-
-export interface QuotteryGetUserPositionOutput {
-  count: bigint
-  p: number[]
-}
-
-const QUOTTERY_GET_USER_POSITION_OUTPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'count',
-    type: 'sint64',
-    offset: 0,
-    byteLength: 8,
-  },
-  {
-    name: 'p',
-    type: 'array',
-    offset: 8,
-    byteLength: 16384,
-    arrayLength: 1024,
-    arrayItemByteLength: 16,
-    arrayItemStructRef: 'PositionInfo',
-  },
-]
-
-export function decodeQuotteryGetUserPositionOutput(
-  data: Uint8Array,
-): QuotteryGetUserPositionOutput {
-  return decodePayload(data, QUOTTERY_GET_USER_POSITION_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryGetUserPositionOutput
-}
-
-export async function quotteryGetUserPosition(
-  live: SmartContractCaller,
-  input: QuotteryGetUserPositionInput,
-  options?: ContractCallOptions,
-): Promise<Result<QuotteryGetUserPositionOutput, QubicRpcError>> {
-  return callContractFunction({
-    live,
-    contractIndex: QUOTTERY_CONTRACT_INDEX,
-    inputType: QUOTTERY_GET_USER_POSITION_INPUT_TYPE,
-    inputSize: QUOTTERY_GET_USER_POSITION_INPUT_SIZE,
-    inputFields: QUOTTERY_GET_USER_POSITION_INPUT_FIELDS,
-    outputFields: QUOTTERY_GET_USER_POSITION_OUTPUT_FIELDS,
-    structs: STRUCTS,
-    input: (input as unknown as Record<string, unknown>),
-    ...options,
-  })
-}
-
-export const QUOTTERY_GET_ORDERS_INPUT_TYPE = 23
+export const QUOTTERY_GET_ORDERS_INPUT_TYPE = 3
 export const QUOTTERY_GET_ORDERS_INPUT_SIZE = 32
 
 export interface QuotteryGetOrdersInput {
@@ -1373,56 +1196,184 @@ export async function quotteryGetOrders(
   })
 }
 
-export const QUOTTERY_GET_TOP_PROPOSALS_INPUT_TYPE = 29
-export const QUOTTERY_GET_TOP_PROPOSALS_INPUT_SIZE = 0
+export const QUOTTERY_GET_ACTIVE_EVENT_INPUT_TYPE = 4
+export const QUOTTERY_GET_ACTIVE_EVENT_INPUT_SIZE = 0
 
-export interface QuotteryGetTopProposalsOutput {
-  top: number[]
-  uniqueCount: number
+export interface QuotteryGetActiveEventOutput {
+  recentActiveEvent: bigint[]
 }
 
-const QUOTTERY_GET_TOP_PROPOSALS_OUTPUT_FIELDS: BinaryField[] = [
+const QUOTTERY_GET_ACTIVE_EVENT_OUTPUT_FIELDS: BinaryField[] = [
   {
-    name: 'top',
+    name: 'recentActiveEvent',
     type: 'array',
     offset: 0,
-    byteLength: 320,
-    arrayLength: 4,
-    arrayItemByteLength: 80,
-    arrayItemStructRef: 'ProposalInfo',
-  },
-  {
-    name: 'uniqueCount',
-    type: 'sint32',
-    offset: 320,
-    byteLength: 4,
+    byteLength: 0,
+    arrayLength: 0,
+    arrayItemType: 'uint64',
+    arrayItemByteLength: 8,
   },
 ]
 
-export function decodeQuotteryGetTopProposalsOutput(
+export function decodeQuotteryGetActiveEventOutput(
   data: Uint8Array,
-): QuotteryGetTopProposalsOutput {
-  return decodePayload(data, QUOTTERY_GET_TOP_PROPOSALS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryGetTopProposalsOutput
+): QuotteryGetActiveEventOutput {
+  return decodePayload(data, QUOTTERY_GET_ACTIVE_EVENT_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryGetActiveEventOutput
 }
 
-export async function quotteryGetTopProposals(
+export async function quotteryGetActiveEvent(
   live: SmartContractCaller,
   options?: ContractCallOptions,
-): Promise<Result<QuotteryGetTopProposalsOutput, QubicRpcError>> {
+): Promise<Result<QuotteryGetActiveEventOutput, QubicRpcError>> {
   return callContractFunction({
     live,
     contractIndex: QUOTTERY_CONTRACT_INDEX,
-    inputType: QUOTTERY_GET_TOP_PROPOSALS_INPUT_TYPE,
-    inputSize: QUOTTERY_GET_TOP_PROPOSALS_INPUT_SIZE,
+    inputType: QUOTTERY_GET_ACTIVE_EVENT_INPUT_TYPE,
+    inputSize: QUOTTERY_GET_ACTIVE_EVENT_INPUT_SIZE,
     inputFields: [],
-    outputFields: QUOTTERY_GET_TOP_PROPOSALS_OUTPUT_FIELDS,
+    outputFields: QUOTTERY_GET_ACTIVE_EVENT_OUTPUT_FIELDS,
     structs: STRUCTS,
     input: {},
     ...options,
   })
 }
 
-export const QUOTTERY_GET_APPROVED_AMOUNT_INPUT_TYPE = 30
+export const QUOTTERY_GET_EVENT_INFO_BATCH_INPUT_TYPE = 5
+export const QUOTTERY_GET_EVENT_INFO_BATCH_INPUT_SIZE = 512
+
+export interface QuotteryGetEventInfoBatchInput {
+  eventIds: bigint[]
+}
+
+const QUOTTERY_GET_EVENT_INFO_BATCH_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'eventIds',
+    type: 'array',
+    offset: 0,
+    byteLength: 512,
+    arrayLength: 64,
+    arrayItemType: 'uint64',
+    arrayItemByteLength: 8,
+  },
+]
+
+export function buildQuotteryGetEventInfoBatchInput(
+  input: QuotteryGetEventInfoBatchInput,
+): Uint8Array {
+  return buildPayload(QUOTTERY_GET_EVENT_INFO_BATCH_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
+}
+
+export interface QuotteryGetEventInfoBatchOutput {
+  aqei: number[]
+}
+
+const QUOTTERY_GET_EVENT_INFO_BATCH_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'aqei',
+    type: 'array',
+    offset: 0,
+    byteLength: 17920,
+    arrayLength: 64,
+    arrayItemByteLength: 280,
+    arrayItemStructRef: 'QtryEventInfo',
+  },
+]
+
+export function decodeQuotteryGetEventInfoBatchOutput(
+  data: Uint8Array,
+): QuotteryGetEventInfoBatchOutput {
+  return decodePayload(data, QUOTTERY_GET_EVENT_INFO_BATCH_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryGetEventInfoBatchOutput
+}
+
+export async function quotteryGetEventInfoBatch(
+  live: SmartContractCaller,
+  input: QuotteryGetEventInfoBatchInput,
+  options?: ContractCallOptions,
+): Promise<Result<QuotteryGetEventInfoBatchOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QUOTTERY_CONTRACT_INDEX,
+    inputType: QUOTTERY_GET_EVENT_INFO_BATCH_INPUT_TYPE,
+    inputSize: QUOTTERY_GET_EVENT_INFO_BATCH_INPUT_SIZE,
+    inputFields: QUOTTERY_GET_EVENT_INFO_BATCH_INPUT_FIELDS,
+    outputFields: QUOTTERY_GET_EVENT_INFO_BATCH_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
+}
+
+export const QUOTTERY_GET_USER_POSITION_INPUT_TYPE = 6
+export const QUOTTERY_GET_USER_POSITION_INPUT_SIZE = 32
+
+export interface QuotteryGetUserPositionInput {
+  uid: string
+}
+
+const QUOTTERY_GET_USER_POSITION_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'uid',
+    type: 'id',
+    offset: 0,
+    byteLength: 32,
+  },
+]
+
+export function buildQuotteryGetUserPositionInput(
+  input: QuotteryGetUserPositionInput,
+  identityToPublicKey: (identity: string) => Uint8Array,
+): Uint8Array {
+  return buildPayload(QUOTTERY_GET_USER_POSITION_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+}
+
+export interface QuotteryGetUserPositionOutput {
+  count: bigint
+  p: number[]
+}
+
+const QUOTTERY_GET_USER_POSITION_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'count',
+    type: 'sint64',
+    offset: 0,
+    byteLength: 8,
+  },
+  {
+    name: 'p',
+    type: 'array',
+    offset: 8,
+    byteLength: 16384,
+    arrayLength: 1024,
+    arrayItemByteLength: 16,
+    arrayItemStructRef: 'PositionInfo',
+  },
+]
+
+export function decodeQuotteryGetUserPositionOutput(
+  data: Uint8Array,
+): QuotteryGetUserPositionOutput {
+  return decodePayload(data, QUOTTERY_GET_USER_POSITION_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryGetUserPositionOutput
+}
+
+export async function quotteryGetUserPosition(
+  live: SmartContractCaller,
+  input: QuotteryGetUserPositionInput,
+  options?: ContractCallOptions,
+): Promise<Result<QuotteryGetUserPositionOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QUOTTERY_CONTRACT_INDEX,
+    inputType: QUOTTERY_GET_USER_POSITION_INPUT_TYPE,
+    inputSize: QUOTTERY_GET_USER_POSITION_INPUT_SIZE,
+    inputFields: QUOTTERY_GET_USER_POSITION_INPUT_FIELDS,
+    outputFields: QUOTTERY_GET_USER_POSITION_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
+}
+
+export const QUOTTERY_GET_APPROVED_AMOUNT_INPUT_TYPE = 7
 export const QUOTTERY_GET_APPROVED_AMOUNT_INPUT_SIZE = 32
 
 export interface QuotteryGetApprovedAmountInput {
@@ -1482,38 +1433,87 @@ export async function quotteryGetApprovedAmount(
   })
 }
 
+export const QUOTTERY_GET_TOP_PROPOSALS_INPUT_TYPE = 8
+export const QUOTTERY_GET_TOP_PROPOSALS_INPUT_SIZE = 0
+
+export interface QuotteryGetTopProposalsOutput {
+  top: number[]
+  uniqueCount: number
+}
+
+const QUOTTERY_GET_TOP_PROPOSALS_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'top',
+    type: 'array',
+    offset: 0,
+    byteLength: 320,
+    arrayLength: 4,
+    arrayItemByteLength: 80,
+    arrayItemStructRef: 'ProposalInfo',
+  },
+  {
+    name: 'uniqueCount',
+    type: 'sint32',
+    offset: 320,
+    byteLength: 4,
+  },
+]
+
+export function decodeQuotteryGetTopProposalsOutput(
+  data: Uint8Array,
+): QuotteryGetTopProposalsOutput {
+  return decodePayload(data, QUOTTERY_GET_TOP_PROPOSALS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryGetTopProposalsOutput
+}
+
+export async function quotteryGetTopProposals(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<QuotteryGetTopProposalsOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QUOTTERY_CONTRACT_INDEX,
+    inputType: QUOTTERY_GET_TOP_PROPOSALS_INPUT_TYPE,
+    inputSize: QUOTTERY_GET_TOP_PROPOSALS_INPUT_SIZE,
+    inputFields: [],
+    outputFields: QUOTTERY_GET_TOP_PROPOSALS_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
+}
+
 export const quottery = {
   contractIndex: QUOTTERY_CONTRACT_INDEX,
   BasicInfo: quotteryBasicInfo,
   GetEventInfo: quotteryGetEventInfo,
-  GetEventInfoBatch: quotteryGetEventInfoBatch,
-  GetActiveEvent: quotteryGetActiveEvent,
-  GetUserPosition: quotteryGetUserPosition,
   GetOrders: quotteryGetOrders,
-  GetTopProposals: quotteryGetTopProposals,
+  GetActiveEvent: quotteryGetActiveEvent,
+  GetEventInfoBatch: quotteryGetEventInfoBatch,
+  GetUserPosition: quotteryGetUserPosition,
   GetApprovedAmount: quotteryGetApprovedAmount,
+  GetTopProposals: quotteryGetTopProposals,
+  buildCreateEventInput: buildQuotteryCreateEventInput,
   buildAddToAskOrderInput: buildQuotteryAddToAskOrderInput,
   decodeAddToAskOrderOutput: decodeQuotteryAddToAskOrderOutput,
   buildRemoveAskOrderInput: buildQuotteryRemoveAskOrderInput,
   decodeRemoveAskOrderOutput: decodeQuotteryRemoveAskOrderOutput,
-  buildRemoveBidOrderInput: buildQuotteryRemoveBidOrderInput,
-  decodeRemoveBidOrderOutput: decodeQuotteryRemoveBidOrderOutput,
   buildAddToBidOrderInput: buildQuotteryAddToBidOrderInput,
   decodeAddToBidOrderOutput: decodeQuotteryAddToBidOrderOutput,
+  buildRemoveBidOrderInput: buildQuotteryRemoveBidOrderInput,
+  decodeRemoveBidOrderOutput: decodeQuotteryRemoveBidOrderOutput,
+  buildPublishResultInput: buildQuotteryPublishResultInput,
+  buildTryFinalizeEventInput: buildQuotteryTryFinalizeEventInput,
   buildDisputeInput: buildQuotteryDisputeInput,
+  buildResolveDisputeInput: buildQuotteryResolveDisputeInput,
   buildUserClaimRewardInput: buildQuotteryUserClaimRewardInput,
   buildGOForceClaimRewardInput: buildQuotteryGOForceClaimRewardInput,
-  buildResolveDisputeInput: buildQuotteryResolveDisputeInput,
-  buildTryFinalizeEventInput: buildQuotteryTryFinalizeEventInput,
-  buildCreateEventInput: buildQuotteryCreateEventInput,
-  buildPublishResultInput: buildQuotteryPublishResultInput,
-  buildUpdateFeeDiscountListInput: buildQuotteryUpdateFeeDiscountListInput,
-  buildProposalVoteInput: buildQuotteryProposalVoteInput,
   buildTransferQUSDInput: buildQuotteryTransferQUSDInput,
   decodeTransferQUSDOutput: decodeQuotteryTransferQUSDOutput,
-  buildTransferQTRYGOVInput: buildQuotteryTransferQTRYGOVInput,
-  decodeTransferQTRYGOVOutput: decodeQuotteryTransferQTRYGOVOutput,
   buildTransferShareManagementRightsInput: buildQuotteryTransferShareManagementRightsInput,
   decodeTransferShareManagementRightsOutput: decodeQuotteryTransferShareManagementRightsOutput,
+  buildTransferQTRYGOVInput: buildQuotteryTransferQTRYGOVInput,
+  decodeTransferQTRYGOVOutput: decodeQuotteryTransferQTRYGOVOutput,
+  buildUpdateFeeDiscountListInput: buildQuotteryUpdateFeeDiscountListInput,
+  buildProposalVoteInput: buildQuotteryProposalVoteInput,
 }
 

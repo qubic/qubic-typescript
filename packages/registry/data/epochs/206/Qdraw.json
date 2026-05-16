@@ -3,6 +3,7 @@
   "contractName": "Qdraw",
   "contractAddress": "PAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYVRC",
   "epoch": 206,
+  "coreVersion": "v1.284.0",
   "structs": {},
   "procedures": [
     {

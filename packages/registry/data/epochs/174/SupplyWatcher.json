@@ -3,6 +3,7 @@
   "contractName": "SupplyWatcher",
   "contractAddress": "HAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHYCM",
   "epoch": 174,
+  "coreVersion": "v1.255.0",
   "structs": {},
   "procedures": [],
   "functions": []

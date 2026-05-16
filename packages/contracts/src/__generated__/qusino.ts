@@ -275,108 +275,7 @@ export function decodeQusinoVoteInGameProposalOutput(
   return decodePayload(data, QUSINO_VOTE_IN_GAME_PROPOSAL_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QusinoVoteInGameProposalOutput
 }
 
-export const QUSINO_DEPOSIT_BONUS_INPUT_TYPE = 5
-
-export interface QusinoDepositBonusInput {
-  amount: bigint
-}
-
-const QUSINO_DEPOSIT_BONUS_INPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'amount',
-    type: 'uint64',
-    offset: 0,
-    byteLength: 8,
-  },
-]
-
-export function buildQusinoDepositBonusInput(
-  input: QusinoDepositBonusInput,
-): ContractCall {
-  return { contractIndex: QUSINO_CONTRACT_INDEX, inputType: QUSINO_DEPOSIT_BONUS_INPUT_TYPE, payload: buildPayload(QUSINO_DEPOSIT_BONUS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
-}
-
-export interface QusinoDepositBonusOutput {
-  returnCode: number
-}
-
-const QUSINO_DEPOSIT_BONUS_OUTPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'returnCode',
-    type: 'sint32',
-    offset: 0,
-    byteLength: 4,
-  },
-]
-
-export function decodeQusinoDepositBonusOutput(
-  data: Uint8Array,
-): QusinoDepositBonusOutput {
-  return decodePayload(data, QUSINO_DEPOSIT_BONUS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QusinoDepositBonusOutput
-}
-
-export const QUSINO_DAILY_CLAIM_BONUS_INPUT_TYPE = 6
-
-export interface QusinoDailyClaimBonusOutput {
-  returnCode: number
-}
-
-const QUSINO_DAILY_CLAIM_BONUS_OUTPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'returnCode',
-    type: 'sint32',
-    offset: 0,
-    byteLength: 4,
-  },
-]
-
-export function decodeQusinoDailyClaimBonusOutput(
-  data: Uint8Array,
-): QusinoDailyClaimBonusOutput {
-  return decodePayload(data, QUSINO_DAILY_CLAIM_BONUS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QusinoDailyClaimBonusOutput
-}
-
-export const QUSINO_REDEMPTION_QSC_TO_QUBIC_INPUT_TYPE = 7
-
-export interface QusinoRedemptionQSCToQubicInput {
-  amount: bigint
-}
-
-const QUSINO_REDEMPTION_QSC_TO_QUBIC_INPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'amount',
-    type: 'uint64',
-    offset: 0,
-    byteLength: 8,
-  },
-]
-
-export function buildQusinoRedemptionQSCToQubicInput(
-  input: QusinoRedemptionQSCToQubicInput,
-): ContractCall {
-  return { contractIndex: QUSINO_CONTRACT_INDEX, inputType: QUSINO_REDEMPTION_QSC_TO_QUBIC_INPUT_TYPE, payload: buildPayload(QUSINO_REDEMPTION_QSC_TO_QUBIC_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
-}
-
-export interface QusinoRedemptionQSCToQubicOutput {
-  returnCode: number
-}
-
-const QUSINO_REDEMPTION_QSC_TO_QUBIC_OUTPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'returnCode',
-    type: 'sint32',
-    offset: 0,
-    byteLength: 4,
-  },
-]
-
-export function decodeQusinoRedemptionQSCToQubicOutput(
-  data: Uint8Array,
-): QusinoRedemptionQSCToQubicOutput {
-  return decodePayload(data, QUSINO_REDEMPTION_QSC_TO_QUBIC_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QusinoRedemptionQSCToQubicOutput
-}
-
-export const QUSINO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE = 12
+export const QUSINO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE = 5
 
 export interface QusinoTransferShareManagementRightsInput {
   asset: QusinoAssetStruct
@@ -431,7 +330,108 @@ export function decodeQusinoTransferShareManagementRightsOutput(
   return decodePayload(data, QUSINO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QusinoTransferShareManagementRightsOutput
 }
 
-export const QUSINO_GET_USER_ASSET_VOLUME_INPUT_TYPE = 8
+export const QUSINO_DEPOSIT_BONUS_INPUT_TYPE = 6
+
+export interface QusinoDepositBonusInput {
+  amount: bigint
+}
+
+const QUSINO_DEPOSIT_BONUS_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'amount',
+    type: 'uint64',
+    offset: 0,
+    byteLength: 8,
+  },
+]
+
+export function buildQusinoDepositBonusInput(
+  input: QusinoDepositBonusInput,
+): ContractCall {
+  return { contractIndex: QUSINO_CONTRACT_INDEX, inputType: QUSINO_DEPOSIT_BONUS_INPUT_TYPE, payload: buildPayload(QUSINO_DEPOSIT_BONUS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
+}
+
+export interface QusinoDepositBonusOutput {
+  returnCode: number
+}
+
+const QUSINO_DEPOSIT_BONUS_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'returnCode',
+    type: 'sint32',
+    offset: 0,
+    byteLength: 4,
+  },
+]
+
+export function decodeQusinoDepositBonusOutput(
+  data: Uint8Array,
+): QusinoDepositBonusOutput {
+  return decodePayload(data, QUSINO_DEPOSIT_BONUS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QusinoDepositBonusOutput
+}
+
+export const QUSINO_DAILY_CLAIM_BONUS_INPUT_TYPE = 7
+
+export interface QusinoDailyClaimBonusOutput {
+  returnCode: number
+}
+
+const QUSINO_DAILY_CLAIM_BONUS_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'returnCode',
+    type: 'sint32',
+    offset: 0,
+    byteLength: 4,
+  },
+]
+
+export function decodeQusinoDailyClaimBonusOutput(
+  data: Uint8Array,
+): QusinoDailyClaimBonusOutput {
+  return decodePayload(data, QUSINO_DAILY_CLAIM_BONUS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QusinoDailyClaimBonusOutput
+}
+
+export const QUSINO_REDEMPTION_QSC_TO_QUBIC_INPUT_TYPE = 8
+
+export interface QusinoRedemptionQSCToQubicInput {
+  amount: bigint
+}
+
+const QUSINO_REDEMPTION_QSC_TO_QUBIC_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'amount',
+    type: 'uint64',
+    offset: 0,
+    byteLength: 8,
+  },
+]
+
+export function buildQusinoRedemptionQSCToQubicInput(
+  input: QusinoRedemptionQSCToQubicInput,
+): ContractCall {
+  return { contractIndex: QUSINO_CONTRACT_INDEX, inputType: QUSINO_REDEMPTION_QSC_TO_QUBIC_INPUT_TYPE, payload: buildPayload(QUSINO_REDEMPTION_QSC_TO_QUBIC_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
+}
+
+export interface QusinoRedemptionQSCToQubicOutput {
+  returnCode: number
+}
+
+const QUSINO_REDEMPTION_QSC_TO_QUBIC_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'returnCode',
+    type: 'sint32',
+    offset: 0,
+    byteLength: 4,
+  },
+]
+
+export function decodeQusinoRedemptionQSCToQubicOutput(
+  data: Uint8Array,
+): QusinoRedemptionQSCToQubicOutput {
+  return decodePayload(data, QUSINO_REDEMPTION_QSC_TO_QUBIC_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QusinoRedemptionQSCToQubicOutput
+}
+
+export const QUSINO_GET_USER_ASSET_VOLUME_INPUT_TYPE = 1
 export const QUSINO_GET_USER_ASSET_VOLUME_INPUT_SIZE = 32
 
 export interface QusinoGetUserAssetVolumeInput {
@@ -498,7 +498,7 @@ export async function qusinoGetUserAssetVolume(
   })
 }
 
-export const QUSINO_GET_FAILED_GAME_LIST_INPUT_TYPE = 9
+export const QUSINO_GET_FAILED_GAME_LIST_INPUT_TYPE = 2
 export const QUSINO_GET_FAILED_GAME_LIST_INPUT_SIZE = 4
 
 export interface QusinoGetFailedGameListInput {
@@ -560,7 +560,7 @@ export async function qusinoGetFailedGameList(
   })
 }
 
-export const QUSINO_GET_SC_INFO_INPUT_TYPE = 10
+export const QUSINO_GET_SC_INFO_INPUT_TYPE = 3
 export const QUSINO_GET_SC_INFO_INPUT_SIZE = 0
 
 export interface QusinoGetSCInfoOutput {
@@ -634,7 +634,7 @@ export async function qusinoGetSCInfo(
   })
 }
 
-export const QUSINO_GET_ACTIVE_GAME_LIST_INPUT_TYPE = 11
+export const QUSINO_GET_ACTIVE_GAME_LIST_INPUT_TYPE = 4
 export const QUSINO_GET_ACTIVE_GAME_LIST_INPUT_SIZE = 4
 
 export interface QusinoGetActiveGameListInput {
@@ -706,7 +706,7 @@ export async function qusinoGetActiveGameList(
   })
 }
 
-export const QUSINO_GET_PROPOSER_EARNED_QSC_INFO_INPUT_TYPE = 13
+export const QUSINO_GET_PROPOSER_EARNED_QSC_INFO_INPUT_TYPE = 5
 export const QUSINO_GET_PROPOSER_EARNED_QSC_INFO_INPUT_SIZE = 36
 
 export interface QusinoGetProposerEarnedQSCInfoInput {
@@ -788,12 +788,12 @@ export const qusino = {
   decodeSubmitGameOutput: decodeQusinoSubmitGameOutput,
   buildVoteInGameProposalInput: buildQusinoVoteInGameProposalInput,
   decodeVoteInGameProposalOutput: decodeQusinoVoteInGameProposalOutput,
+  buildTransferShareManagementRightsInput: buildQusinoTransferShareManagementRightsInput,
+  decodeTransferShareManagementRightsOutput: decodeQusinoTransferShareManagementRightsOutput,
   buildDepositBonusInput: buildQusinoDepositBonusInput,
   decodeDepositBonusOutput: decodeQusinoDepositBonusOutput,
   decodeDailyClaimBonusOutput: decodeQusinoDailyClaimBonusOutput,
   buildRedemptionQSCToQubicInput: buildQusinoRedemptionQSCToQubicInput,
   decodeRedemptionQSCToQubicOutput: decodeQusinoRedemptionQSCToQubicOutput,
-  buildTransferShareManagementRightsInput: buildQusinoTransferShareManagementRightsInput,
-  decodeTransferShareManagementRightsOutput: decodeQusinoTransferShareManagementRightsOutput,
 }
 

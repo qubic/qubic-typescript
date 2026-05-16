@@ -246,7 +246,7 @@ export function decodeQIPTransferShareManagementRightsOutput(
   return decodePayload(data, QIP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QIPTransferShareManagementRightsOutput
 }
 
-export const QIP_GET_ICO_INFO_INPUT_TYPE = 4
+export const QIP_GET_ICO_INFO_INPUT_TYPE = 1
 export const QIP_GET_ICO_INFO_INPUT_SIZE = 4
 
 export interface QIPGetICOInfoInput {

@@ -148,7 +148,7 @@ const STRUCTS: Record<string, NamedStruct> = {
 },
 }
 
-export const Q_UTIL_SEND_TO_MANY_V1_INPUT_TYPE = 5
+export const Q_UTIL_SEND_TO_MANY_V1_INPUT_TYPE = 1
 
 export interface QUtilSendToManyV1Input {
   dst0: string
@@ -196,124 +196,47 @@ export function decodeQUtilSendToManyV1Output(
   return decodePayload(data, Q_UTIL_SEND_TO_MANY_V1_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilSendToManyV1Output
 }
 
-export const Q_UTIL_TRANSFER_SHARES_TO_MANY_V1_INPUT_TYPE = 7
+export const Q_UTIL_BURN_QUBIC_INPUT_TYPE = 2
 
-export interface QUtilTransferSharesToManyV1Input {
-  issuer: string
-  assetName: bigint
-  dst0: string
-  amt0: bigint
+export interface QUtilBurnQubicInput {
+  amount: bigint
 }
 
-const Q_UTIL_TRANSFER_SHARES_TO_MANY_V1_INPUT_FIELDS: BinaryField[] = [
+const Q_UTIL_BURN_QUBIC_INPUT_FIELDS: BinaryField[] = [
   {
-    name: 'issuer',
-    type: 'id',
-    offset: 0,
-    byteLength: 32,
-  },
-  {
-    name: 'assetName',
-    type: 'uint64',
-    offset: 32,
-    byteLength: 8,
-  },
-  {
-    name: 'dst0',
-    type: 'id',
-    offset: 40,
-    byteLength: 32,
-  },
-  {
-    name: 'amt0',
+    name: 'amount',
     type: 'sint64',
-    offset: 72,
+    offset: 0,
     byteLength: 8,
   },
 ]
 
-export function buildQUtilTransferSharesToManyV1Input(
-  input: QUtilTransferSharesToManyV1Input,
-  identityToPublicKey: (identity: string) => Uint8Array,
+export function buildQUtilBurnQubicInput(
+  input: QUtilBurnQubicInput,
 ): ContractCall {
-  return { contractIndex: Q_UTIL_CONTRACT_INDEX, inputType: Q_UTIL_TRANSFER_SHARES_TO_MANY_V1_INPUT_TYPE, payload: buildPayload(Q_UTIL_TRANSFER_SHARES_TO_MANY_V1_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+  return { contractIndex: Q_UTIL_CONTRACT_INDEX, inputType: Q_UTIL_BURN_QUBIC_INPUT_TYPE, payload: buildPayload(Q_UTIL_BURN_QUBIC_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
-export interface QUtilTransferSharesToManyV1Output {
-  returnCode: number
+export interface QUtilBurnQubicOutput {
+  amount: bigint
 }
 
-const Q_UTIL_TRANSFER_SHARES_TO_MANY_V1_OUTPUT_FIELDS: BinaryField[] = [
+const Q_UTIL_BURN_QUBIC_OUTPUT_FIELDS: BinaryField[] = [
   {
-    name: 'returnCode',
-    type: 'sint32',
-    offset: 0,
-    byteLength: 4,
-  },
-]
-
-export function decodeQUtilTransferSharesToManyV1Output(
-  data: Uint8Array,
-): QUtilTransferSharesToManyV1Output {
-  return decodePayload(data, Q_UTIL_TRANSFER_SHARES_TO_MANY_V1_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilTransferSharesToManyV1Output
-}
-
-export const Q_UTIL_TRANSFER_SHARES_MANAGEMENT_RIGHTS_INPUT_TYPE = 8
-
-export interface QUtilTransferSharesManagementRightsInput {
-  asset: QUtilAssetStruct
-  numberOfShares: bigint
-  newManagingContractIndex: number
-}
-
-const Q_UTIL_TRANSFER_SHARES_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'asset',
-    type: 'struct',
-    offset: 0,
-    byteLength: 40,
-    structRef: 'Asset',
-  },
-  {
-    name: 'numberOfShares',
-    type: 'sint64',
-    offset: 40,
-    byteLength: 8,
-  },
-  {
-    name: 'newManagingContractIndex',
-    type: 'uint32',
-    offset: 48,
-    byteLength: 4,
-  },
-]
-
-export function buildQUtilTransferSharesManagementRightsInput(
-  input: QUtilTransferSharesManagementRightsInput,
-): ContractCall {
-  return { contractIndex: Q_UTIL_CONTRACT_INDEX, inputType: Q_UTIL_TRANSFER_SHARES_MANAGEMENT_RIGHTS_INPUT_TYPE, payload: buildPayload(Q_UTIL_TRANSFER_SHARES_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
-}
-
-export interface QUtilTransferSharesManagementRightsOutput {
-  transferredNumberOfShares: bigint
-}
-
-const Q_UTIL_TRANSFER_SHARES_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'transferredNumberOfShares',
+    name: 'amount',
     type: 'sint64',
     offset: 0,
     byteLength: 8,
   },
 ]
 
-export function decodeQUtilTransferSharesManagementRightsOutput(
+export function decodeQUtilBurnQubicOutput(
   data: Uint8Array,
-): QUtilTransferSharesManagementRightsOutput {
-  return decodePayload(data, Q_UTIL_TRANSFER_SHARES_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilTransferSharesManagementRightsOutput
+): QUtilBurnQubicOutput {
+  return decodePayload(data, Q_UTIL_BURN_QUBIC_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilBurnQubicOutput
 }
 
-export const Q_UTIL_SEND_TO_MANY_BENCHMARK_INPUT_TYPE = 9
+export const Q_UTIL_SEND_TO_MANY_BENCHMARK_INPUT_TYPE = 3
 
 export interface QUtilSendToManyBenchmarkInput {
   dstCount: bigint
@@ -374,87 +297,7 @@ export function decodeQUtilSendToManyBenchmarkOutput(
   return decodePayload(data, Q_UTIL_SEND_TO_MANY_BENCHMARK_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilSendToManyBenchmarkOutput
 }
 
-export const Q_UTIL_BURN_QUBIC_INPUT_TYPE = 10
-
-export interface QUtilBurnQubicInput {
-  amount: bigint
-}
-
-const Q_UTIL_BURN_QUBIC_INPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'amount',
-    type: 'sint64',
-    offset: 0,
-    byteLength: 8,
-  },
-]
-
-export function buildQUtilBurnQubicInput(
-  input: QUtilBurnQubicInput,
-): ContractCall {
-  return { contractIndex: Q_UTIL_CONTRACT_INDEX, inputType: Q_UTIL_BURN_QUBIC_INPUT_TYPE, payload: buildPayload(Q_UTIL_BURN_QUBIC_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
-}
-
-export interface QUtilBurnQubicOutput {
-  amount: bigint
-}
-
-const Q_UTIL_BURN_QUBIC_OUTPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'amount',
-    type: 'sint64',
-    offset: 0,
-    byteLength: 8,
-  },
-]
-
-export function decodeQUtilBurnQubicOutput(
-  data: Uint8Array,
-): QUtilBurnQubicOutput {
-  return decodePayload(data, Q_UTIL_BURN_QUBIC_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilBurnQubicOutput
-}
-
-export const Q_UTIL_BURN_QUBIC_FOR_CONTRACT_INPUT_TYPE = 11
-
-export interface QUtilBurnQubicForContractInput {
-  contractIndexBurnedFor: number
-}
-
-const Q_UTIL_BURN_QUBIC_FOR_CONTRACT_INPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'contractIndexBurnedFor',
-    type: 'uint32',
-    offset: 0,
-    byteLength: 4,
-  },
-]
-
-export function buildQUtilBurnQubicForContractInput(
-  input: QUtilBurnQubicForContractInput,
-): ContractCall {
-  return { contractIndex: Q_UTIL_CONTRACT_INDEX, inputType: Q_UTIL_BURN_QUBIC_FOR_CONTRACT_INPUT_TYPE, payload: buildPayload(Q_UTIL_BURN_QUBIC_FOR_CONTRACT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
-}
-
-export interface QUtilBurnQubicForContractOutput {
-  amount: bigint
-}
-
-const Q_UTIL_BURN_QUBIC_FOR_CONTRACT_OUTPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'amount',
-    type: 'sint64',
-    offset: 0,
-    byteLength: 8,
-  },
-]
-
-export function decodeQUtilBurnQubicForContractOutput(
-  data: Uint8Array,
-): QUtilBurnQubicForContractOutput {
-  return decodePayload(data, Q_UTIL_BURN_QUBIC_FOR_CONTRACT_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilBurnQubicForContractOutput
-}
-
-export const Q_UTIL_CREATE_POLL_INPUT_TYPE = 14
+export const Q_UTIL_CREATE_POLL_INPUT_TYPE = 4
 
 export interface QUtilCreatePollInput {
   poll_name: string
@@ -536,7 +379,7 @@ export function decodeQUtilCreatePollOutput(
   return decodePayload(data, Q_UTIL_CREATE_POLL_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilCreatePollOutput
 }
 
-export const Q_UTIL_VOTE_INPUT_TYPE = 15
+export const Q_UTIL_VOTE_INPUT_TYPE = 5
 
 export interface QUtilVoteInput {
   poll_id: bigint
@@ -598,7 +441,7 @@ export function decodeQUtilVoteOutput(
   return decodePayload(data, Q_UTIL_VOTE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilVoteOutput
 }
 
-export const Q_UTIL_CANCEL_POLL_INPUT_TYPE = 16
+export const Q_UTIL_CANCEL_POLL_INPUT_TYPE = 6
 
 export interface QUtilCancelPollInput {
   poll_id: bigint
@@ -638,7 +481,7 @@ export function decodeQUtilCancelPollOutput(
   return decodePayload(data, Q_UTIL_CANCEL_POLL_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilCancelPollOutput
 }
 
-export const Q_UTIL_DISTRIBUTE_QU_TO_SHAREHOLDERS_INPUT_TYPE = 22
+export const Q_UTIL_DISTRIBUTE_QU_TO_SHAREHOLDERS_INPUT_TYPE = 7
 
 export interface QUtilDistributeQuToShareholdersInput {
   asset: QUtilAssetStruct
@@ -700,7 +543,164 @@ export function decodeQUtilDistributeQuToShareholdersOutput(
   return decodePayload(data, Q_UTIL_DISTRIBUTE_QU_TO_SHAREHOLDERS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilDistributeQuToShareholdersOutput
 }
 
-export const Q_UTIL_QUERY_PRICE_ORACLE_INPUT_TYPE = 23
+export const Q_UTIL_BURN_QUBIC_FOR_CONTRACT_INPUT_TYPE = 8
+
+export interface QUtilBurnQubicForContractInput {
+  contractIndexBurnedFor: number
+}
+
+const Q_UTIL_BURN_QUBIC_FOR_CONTRACT_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'contractIndexBurnedFor',
+    type: 'uint32',
+    offset: 0,
+    byteLength: 4,
+  },
+]
+
+export function buildQUtilBurnQubicForContractInput(
+  input: QUtilBurnQubicForContractInput,
+): ContractCall {
+  return { contractIndex: Q_UTIL_CONTRACT_INDEX, inputType: Q_UTIL_BURN_QUBIC_FOR_CONTRACT_INPUT_TYPE, payload: buildPayload(Q_UTIL_BURN_QUBIC_FOR_CONTRACT_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
+}
+
+export interface QUtilBurnQubicForContractOutput {
+  amount: bigint
+}
+
+const Q_UTIL_BURN_QUBIC_FOR_CONTRACT_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'amount',
+    type: 'sint64',
+    offset: 0,
+    byteLength: 8,
+  },
+]
+
+export function decodeQUtilBurnQubicForContractOutput(
+  data: Uint8Array,
+): QUtilBurnQubicForContractOutput {
+  return decodePayload(data, Q_UTIL_BURN_QUBIC_FOR_CONTRACT_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilBurnQubicForContractOutput
+}
+
+export const Q_UTIL_TRANSFER_SHARES_TO_MANY_V1_INPUT_TYPE = 9
+
+export interface QUtilTransferSharesToManyV1Input {
+  issuer: string
+  assetName: bigint
+  dst0: string
+  amt0: bigint
+}
+
+const Q_UTIL_TRANSFER_SHARES_TO_MANY_V1_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'issuer',
+    type: 'id',
+    offset: 0,
+    byteLength: 32,
+  },
+  {
+    name: 'assetName',
+    type: 'uint64',
+    offset: 32,
+    byteLength: 8,
+  },
+  {
+    name: 'dst0',
+    type: 'id',
+    offset: 40,
+    byteLength: 32,
+  },
+  {
+    name: 'amt0',
+    type: 'sint64',
+    offset: 72,
+    byteLength: 8,
+  },
+]
+
+export function buildQUtilTransferSharesToManyV1Input(
+  input: QUtilTransferSharesToManyV1Input,
+  identityToPublicKey: (identity: string) => Uint8Array,
+): ContractCall {
+  return { contractIndex: Q_UTIL_CONTRACT_INDEX, inputType: Q_UTIL_TRANSFER_SHARES_TO_MANY_V1_INPUT_TYPE, payload: buildPayload(Q_UTIL_TRANSFER_SHARES_TO_MANY_V1_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+}
+
+export interface QUtilTransferSharesToManyV1Output {
+  returnCode: number
+}
+
+const Q_UTIL_TRANSFER_SHARES_TO_MANY_V1_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'returnCode',
+    type: 'sint32',
+    offset: 0,
+    byteLength: 4,
+  },
+]
+
+export function decodeQUtilTransferSharesToManyV1Output(
+  data: Uint8Array,
+): QUtilTransferSharesToManyV1Output {
+  return decodePayload(data, Q_UTIL_TRANSFER_SHARES_TO_MANY_V1_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilTransferSharesToManyV1Output
+}
+
+export const Q_UTIL_TRANSFER_SHARES_MANAGEMENT_RIGHTS_INPUT_TYPE = 10
+
+export interface QUtilTransferSharesManagementRightsInput {
+  asset: QUtilAssetStruct
+  numberOfShares: bigint
+  newManagingContractIndex: number
+}
+
+const Q_UTIL_TRANSFER_SHARES_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'asset',
+    type: 'struct',
+    offset: 0,
+    byteLength: 40,
+    structRef: 'Asset',
+  },
+  {
+    name: 'numberOfShares',
+    type: 'sint64',
+    offset: 40,
+    byteLength: 8,
+  },
+  {
+    name: 'newManagingContractIndex',
+    type: 'uint32',
+    offset: 48,
+    byteLength: 4,
+  },
+]
+
+export function buildQUtilTransferSharesManagementRightsInput(
+  input: QUtilTransferSharesManagementRightsInput,
+): ContractCall {
+  return { contractIndex: Q_UTIL_CONTRACT_INDEX, inputType: Q_UTIL_TRANSFER_SHARES_MANAGEMENT_RIGHTS_INPUT_TYPE, payload: buildPayload(Q_UTIL_TRANSFER_SHARES_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
+}
+
+export interface QUtilTransferSharesManagementRightsOutput {
+  transferredNumberOfShares: bigint
+}
+
+const Q_UTIL_TRANSFER_SHARES_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'transferredNumberOfShares',
+    type: 'sint64',
+    offset: 0,
+    byteLength: 8,
+  },
+]
+
+export function decodeQUtilTransferSharesManagementRightsOutput(
+  data: Uint8Array,
+): QUtilTransferSharesManagementRightsOutput {
+  return decodePayload(data, Q_UTIL_TRANSFER_SHARES_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilTransferSharesManagementRightsOutput
+}
+
+export const Q_UTIL_QUERY_PRICE_ORACLE_INPUT_TYPE = 100
 
 export interface QUtilQueryPriceOracleInput {
   priceOracleQuery: QUtilOIPriceOracleQueryStruct
@@ -748,7 +748,7 @@ export function decodeQUtilQueryPriceOracleOutput(
   return decodePayload(data, Q_UTIL_QUERY_PRICE_ORACLE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilQueryPriceOracleOutput
 }
 
-export const Q_UTIL_SUBSCRIBE_PRICE_ORACLE_INPUT_TYPE = 24
+export const Q_UTIL_SUBSCRIBE_PRICE_ORACLE_INPUT_TYPE = 101
 
 export interface QUtilSubscribePriceOracleInput {
   priceOracleQuery: QUtilOIPriceOracleQueryStruct
@@ -803,7 +803,7 @@ export function decodeQUtilSubscribePriceOracleOutput(
   return decodePayload(data, Q_UTIL_SUBSCRIBE_PRICE_ORACLE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilSubscribePriceOracleOutput
 }
 
-export const Q_UTIL_UNSUBSCRIBE_ORACLE_INPUT_TYPE = 25
+export const Q_UTIL_UNSUBSCRIBE_ORACLE_INPUT_TYPE = 102
 
 export interface QUtilUnsubscribeOracleInput {
   subscriptionId: number
@@ -843,7 +843,7 @@ export function decodeQUtilUnsubscribeOracleOutput(
   return decodePayload(data, Q_UTIL_UNSUBSCRIBE_ORACLE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilUnsubscribeOracleOutput
 }
 
-export const Q_UTIL_GET_SEND_TO_MANY_V1FEE_INPUT_TYPE = 6
+export const Q_UTIL_GET_SEND_TO_MANY_V1FEE_INPUT_TYPE = 1
 export const Q_UTIL_GET_SEND_TO_MANY_V1FEE_INPUT_SIZE = 0
 
 export interface QUtilGetSendToManyV1FeeOutput {
@@ -882,66 +882,7 @@ export async function qUtilGetSendToManyV1Fee(
   })
 }
 
-export const Q_UTIL_QUERY_FEE_RESERVE_INPUT_TYPE = 12
-export const Q_UTIL_QUERY_FEE_RESERVE_INPUT_SIZE = 4
-
-export interface QUtilQueryFeeReserveInput {
-  contractIndex: number
-}
-
-const Q_UTIL_QUERY_FEE_RESERVE_INPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'contractIndex',
-    type: 'uint32',
-    offset: 0,
-    byteLength: 4,
-  },
-]
-
-export function buildQUtilQueryFeeReserveInput(
-  input: QUtilQueryFeeReserveInput,
-): Uint8Array {
-  return buildPayload(Q_UTIL_QUERY_FEE_RESERVE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
-}
-
-export interface QUtilQueryFeeReserveOutput {
-  reserveAmount: bigint
-}
-
-const Q_UTIL_QUERY_FEE_RESERVE_OUTPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'reserveAmount',
-    type: 'sint64',
-    offset: 0,
-    byteLength: 8,
-  },
-]
-
-export function decodeQUtilQueryFeeReserveOutput(
-  data: Uint8Array,
-): QUtilQueryFeeReserveOutput {
-  return decodePayload(data, Q_UTIL_QUERY_FEE_RESERVE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilQueryFeeReserveOutput
-}
-
-export async function qUtilQueryFeeReserve(
-  live: SmartContractCaller,
-  input: QUtilQueryFeeReserveInput,
-  options?: ContractCallOptions,
-): Promise<Result<QUtilQueryFeeReserveOutput, QubicRpcError>> {
-  return callContractFunction({
-    live,
-    contractIndex: Q_UTIL_CONTRACT_INDEX,
-    inputType: Q_UTIL_QUERY_FEE_RESERVE_INPUT_TYPE,
-    inputSize: Q_UTIL_QUERY_FEE_RESERVE_INPUT_SIZE,
-    inputFields: Q_UTIL_QUERY_FEE_RESERVE_INPUT_FIELDS,
-    outputFields: Q_UTIL_QUERY_FEE_RESERVE_OUTPUT_FIELDS,
-    structs: STRUCTS,
-    input: (input as unknown as Record<string, unknown>),
-    ...options,
-  })
-}
-
-export const Q_UTIL_GET_TOTAL_NUMBER_OF_ASSET_SHARES_INPUT_TYPE = 13
+export const Q_UTIL_GET_TOTAL_NUMBER_OF_ASSET_SHARES_INPUT_TYPE = 2
 export const Q_UTIL_GET_TOTAL_NUMBER_OF_ASSET_SHARES_INPUT_SIZE = 40
 
 export interface QUtilGetTotalNumberOfAssetSharesInput {
@@ -1008,7 +949,7 @@ export async function qUtilGetTotalNumberOfAssetShares(
   })
 }
 
-export const Q_UTIL_GET_CURRENT_RESULT_INPUT_TYPE = 17
+export const Q_UTIL_GET_CURRENT_RESULT_INPUT_TYPE = 3
 export const Q_UTIL_GET_CURRENT_RESULT_INPUT_SIZE = 8
 
 export interface QUtilGetCurrentResultInput {
@@ -1087,7 +1028,7 @@ export async function qUtilGetCurrentResult(
   })
 }
 
-export const Q_UTIL_GET_POLLS_BY_CREATOR_INPUT_TYPE = 18
+export const Q_UTIL_GET_POLLS_BY_CREATOR_INPUT_TYPE = 4
 export const Q_UTIL_GET_POLLS_BY_CREATOR_INPUT_SIZE = 32
 
 export interface QUtilGetPollsByCreatorInput {
@@ -1157,7 +1098,7 @@ export async function qUtilGetPollsByCreator(
   })
 }
 
-export const Q_UTIL_GET_CURRENT_POLL_ID_INPUT_TYPE = 19
+export const Q_UTIL_GET_CURRENT_POLL_ID_INPUT_TYPE = 5
 export const Q_UTIL_GET_CURRENT_POLL_ID_INPUT_SIZE = 0
 
 export interface QUtilGetCurrentPollIdOutput {
@@ -1213,7 +1154,7 @@ export async function qUtilGetCurrentPollId(
   })
 }
 
-export const Q_UTIL_GET_POLL_INFO_INPUT_TYPE = 20
+export const Q_UTIL_GET_POLL_INFO_INPUT_TYPE = 6
 export const Q_UTIL_GET_POLL_INFO_INPUT_SIZE = 8
 
 export interface QUtilGetPollInfoInput {
@@ -1290,7 +1231,7 @@ export async function qUtilGetPollInfo(
   })
 }
 
-export const Q_UTIL_GET_FEES_INPUT_TYPE = 21
+export const Q_UTIL_GET_FEES_INPUT_TYPE = 7
 export const Q_UTIL_GET_FEES_INPUT_SIZE = 0
 
 export interface QUtilGetFeesOutput {
@@ -1399,7 +1340,66 @@ export async function qUtilGetFees(
   })
 }
 
-export const Q_UTIL_GET_BALANCES16_INPUT_TYPE = 27
+export const Q_UTIL_QUERY_FEE_RESERVE_INPUT_TYPE = 8
+export const Q_UTIL_QUERY_FEE_RESERVE_INPUT_SIZE = 4
+
+export interface QUtilQueryFeeReserveInput {
+  contractIndex: number
+}
+
+const Q_UTIL_QUERY_FEE_RESERVE_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'contractIndex',
+    type: 'uint32',
+    offset: 0,
+    byteLength: 4,
+  },
+]
+
+export function buildQUtilQueryFeeReserveInput(
+  input: QUtilQueryFeeReserveInput,
+): Uint8Array {
+  return buildPayload(Q_UTIL_QUERY_FEE_RESERVE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
+}
+
+export interface QUtilQueryFeeReserveOutput {
+  reserveAmount: bigint
+}
+
+const Q_UTIL_QUERY_FEE_RESERVE_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'reserveAmount',
+    type: 'sint64',
+    offset: 0,
+    byteLength: 8,
+  },
+]
+
+export function decodeQUtilQueryFeeReserveOutput(
+  data: Uint8Array,
+): QUtilQueryFeeReserveOutput {
+  return decodePayload(data, Q_UTIL_QUERY_FEE_RESERVE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilQueryFeeReserveOutput
+}
+
+export async function qUtilQueryFeeReserve(
+  live: SmartContractCaller,
+  input: QUtilQueryFeeReserveInput,
+  options?: ContractCallOptions,
+): Promise<Result<QUtilQueryFeeReserveOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: Q_UTIL_CONTRACT_INDEX,
+    inputType: Q_UTIL_QUERY_FEE_RESERVE_INPUT_TYPE,
+    inputSize: Q_UTIL_QUERY_FEE_RESERVE_INPUT_SIZE,
+    inputFields: Q_UTIL_QUERY_FEE_RESERVE_INPUT_FIELDS,
+    outputFields: Q_UTIL_QUERY_FEE_RESERVE_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
+}
+
+export const Q_UTIL_GET_BALANCES16_INPUT_TYPE = 9
 export const Q_UTIL_GET_BALANCES16_INPUT_SIZE = 512
 
 export interface QUtilGetBalances16Input {
@@ -1468,26 +1468,20 @@ export async function qUtilGetBalances16(
 export const qUtil = {
   contractIndex: Q_UTIL_CONTRACT_INDEX,
   GetSendToManyV1Fee: qUtilGetSendToManyV1Fee,
-  QueryFeeReserve: qUtilQueryFeeReserve,
   GetTotalNumberOfAssetShares: qUtilGetTotalNumberOfAssetShares,
   GetCurrentResult: qUtilGetCurrentResult,
   GetPollsByCreator: qUtilGetPollsByCreator,
   GetCurrentPollId: qUtilGetCurrentPollId,
   GetPollInfo: qUtilGetPollInfo,
   GetFees: qUtilGetFees,
+  QueryFeeReserve: qUtilQueryFeeReserve,
   GetBalances16: qUtilGetBalances16,
   buildSendToManyV1Input: buildQUtilSendToManyV1Input,
   decodeSendToManyV1Output: decodeQUtilSendToManyV1Output,
-  buildTransferSharesToManyV1Input: buildQUtilTransferSharesToManyV1Input,
-  decodeTransferSharesToManyV1Output: decodeQUtilTransferSharesToManyV1Output,
-  buildTransferSharesManagementRightsInput: buildQUtilTransferSharesManagementRightsInput,
-  decodeTransferSharesManagementRightsOutput: decodeQUtilTransferSharesManagementRightsOutput,
-  buildSendToManyBenchmarkInput: buildQUtilSendToManyBenchmarkInput,
-  decodeSendToManyBenchmarkOutput: decodeQUtilSendToManyBenchmarkOutput,
   buildBurnQubicInput: buildQUtilBurnQubicInput,
   decodeBurnQubicOutput: decodeQUtilBurnQubicOutput,
-  buildBurnQubicForContractInput: buildQUtilBurnQubicForContractInput,
-  decodeBurnQubicForContractOutput: decodeQUtilBurnQubicForContractOutput,
+  buildSendToManyBenchmarkInput: buildQUtilSendToManyBenchmarkInput,
+  decodeSendToManyBenchmarkOutput: decodeQUtilSendToManyBenchmarkOutput,
   buildCreatePollInput: buildQUtilCreatePollInput,
   decodeCreatePollOutput: decodeQUtilCreatePollOutput,
   buildVoteInput: buildQUtilVoteInput,
@@ -1496,6 +1490,12 @@ export const qUtil = {
   decodeCancelPollOutput: decodeQUtilCancelPollOutput,
   buildDistributeQuToShareholdersInput: buildQUtilDistributeQuToShareholdersInput,
   decodeDistributeQuToShareholdersOutput: decodeQUtilDistributeQuToShareholdersOutput,
+  buildBurnQubicForContractInput: buildQUtilBurnQubicForContractInput,
+  decodeBurnQubicForContractOutput: decodeQUtilBurnQubicForContractOutput,
+  buildTransferSharesToManyV1Input: buildQUtilTransferSharesToManyV1Input,
+  decodeTransferSharesToManyV1Output: decodeQUtilTransferSharesToManyV1Output,
+  buildTransferSharesManagementRightsInput: buildQUtilTransferSharesManagementRightsInput,
+  decodeTransferSharesManagementRightsOutput: decodeQUtilTransferSharesManagementRightsOutput,
   buildQueryPriceOracleInput: buildQUtilQueryPriceOracleInput,
   decodeQueryPriceOracleOutput: decodeQUtilQueryPriceOracleOutput,
   buildSubscribePriceOracleInput: buildQUtilSubscribePriceOracleInput,

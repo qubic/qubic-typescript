@@ -3,6 +3,7 @@
   "contractName": "QDuel",
   "contractAddress": "XAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAXNMD",
   "epoch": 201,
+  "coreVersion": "v1.279.0",
   "structs": {
     "RoomInfo": {
       "name": "RoomInfo",
@@ -46,12 +47,24 @@
         }
       ],
       "byteLength": 120
+    },
+    "DateAndTime": {
+      "name": "DateAndTime",
+      "byteLength": 8,
+      "fields": [
+        {
+          "name": "value",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ]
     }
   },
   "procedures": [
     {
       "kind": "procedure",
-      "inputType": 2,
+      "inputType": 1,
       "name": "CreateRoom",
       "inputFields": [
         {
@@ -92,7 +105,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 9,
+      "inputType": 2,
       "name": "ConnectToRoom",
       "inputFields": [
         {
@@ -121,23 +134,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 10,
-      "name": "CloseRoom",
-      "inputFields": [],
-      "outputFields": [
-        {
-          "name": "returnCode",
-          "type": "uint8",
-          "offset": 0,
-          "byteLength": 1
-        }
-      ],
-      "inputSize": 0,
-      "outputSize": 1
-    },
-    {
-      "kind": "procedure",
-      "inputType": 12,
+      "inputType": 3,
       "name": "SetPercentFees",
       "inputFields": [
         {
@@ -178,7 +175,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 14,
+      "inputType": 4,
       "name": "SetTTLHours",
       "inputFields": [
         {
@@ -201,7 +198,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 17,
+      "inputType": 5,
       "name": "Deposit",
       "inputFields": [],
       "outputFields": [
@@ -217,7 +214,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 18,
+      "inputType": 6,
       "name": "Withdraw",
       "inputFields": [
         {
@@ -237,53 +234,28 @@
       ],
       "inputSize": 8,
       "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 7,
+      "name": "CloseRoom",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 1
     }
   ],
   "functions": [
     {
       "kind": "function",
-      "inputType": 6,
-      "name": "CalculateRevenue",
-      "inputFields": [
-        {
-          "name": "amount",
-          "type": "uint64",
-          "offset": 0,
-          "byteLength": 8
-        }
-      ],
-      "outputFields": [
-        {
-          "name": "devFee",
-          "type": "uint64",
-          "offset": 0,
-          "byteLength": 8
-        },
-        {
-          "name": "burnFee",
-          "type": "uint64",
-          "offset": 8,
-          "byteLength": 8
-        },
-        {
-          "name": "shareholdersFee",
-          "type": "uint64",
-          "offset": 16,
-          "byteLength": 8
-        },
-        {
-          "name": "winner",
-          "type": "uint64",
-          "offset": 24,
-          "byteLength": 8
-        }
-      ],
-      "inputSize": 8,
-      "outputSize": 32
-    },
-    {
-      "kind": "function",
-      "inputType": 11,
+      "inputType": 1,
       "name": "GetPercentFees",
       "inputFields": [],
       "outputFields": [
@@ -323,7 +295,7 @@
     },
     {
       "kind": "function",
-      "inputType": 13,
+      "inputType": 2,
       "name": "GetRooms",
       "inputFields": [],
       "outputFields": [
@@ -348,7 +320,7 @@
     },
     {
       "kind": "function",
-      "inputType": 15,
+      "inputType": 3,
       "name": "GetTTLHours",
       "inputFields": [],
       "outputFields": [
@@ -370,7 +342,7 @@
     },
     {
       "kind": "function",
-      "inputType": 16,
+      "inputType": 4,
       "name": "GetUserProfile",
       "inputFields": [
         {
@@ -426,6 +398,47 @@
       ],
       "inputSize": 32,
       "outputSize": 73
+    },
+    {
+      "kind": "function",
+      "inputType": 5,
+      "name": "CalculateRevenue",
+      "inputFields": [
+        {
+          "name": "amount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "devFee",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "burnFee",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "shareholdersFee",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "winner",
+          "type": "uint64",
+          "offset": 24,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 32
     }
   ]
 }

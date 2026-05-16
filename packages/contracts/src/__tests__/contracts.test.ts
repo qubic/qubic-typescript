@@ -19,9 +19,9 @@ describe('generated constants', () => {
     expect(QEARN_CONTRACT_INDEX).toBe(9)
   })
 
-  test('QEARN_UNLOCK_INPUT_TYPE is 7', () => {
-    // lock_input is ordinal 6, unlock_input is ordinal 7 in the header declaration order
-    expect(QEARN_UNLOCK_INPUT_TYPE).toBe(7)
+  test('QEARN_UNLOCK_INPUT_TYPE is 2', () => {
+    // REGISTER_USER_PROCEDURE(unlock, 2) in Qearn.h
+    expect(QEARN_UNLOCK_INPUT_TYPE).toBe(2)
   })
 
   test('QEARN_GET_STATE_OF_ROUND_INPUT_TYPE is 3', () => {

@@ -329,7 +329,7 @@ export function decodeEscrowTransferShareManagementRightsOutput(
   return decodePayload(data, ESCROW_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as EscrowTransferShareManagementRightsOutput
 }
 
-export const ESCROW_GET_DEALS_INPUT_TYPE = 6
+export const ESCROW_GET_DEALS_INPUT_TYPE = 1
 export const ESCROW_GET_DEALS_INPUT_SIZE = 48
 
 export interface EscrowGetDealsInput {
@@ -447,7 +447,7 @@ export async function escrowGetDeals(
   })
 }
 
-export const ESCROW_GET_FREE_ASSET_AMOUNT_INPUT_TYPE = 7
+export const ESCROW_GET_FREE_ASSET_AMOUNT_INPUT_TYPE = 2
 export const ESCROW_GET_FREE_ASSET_AMOUNT_INPUT_SIZE = 72
 
 export interface EscrowGetFreeAssetAmountInput {

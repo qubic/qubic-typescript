@@ -3,6 +3,7 @@
   "contractName": "QDuel",
   "contractAddress": "XAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAXNMD",
   "epoch": 212,
+  "coreVersion": "v1.290.0",
   "structs": {
     "RoomInfo": {
       "name": "RoomInfo",
@@ -93,7 +94,7 @@
   "procedures": [
     {
       "kind": "procedure",
-      "inputType": 3,
+      "inputType": 1,
       "name": "CreateRoom",
       "inputFields": [
         {
@@ -134,7 +135,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 10,
+      "inputType": 2,
       "name": "ConnectToRoom",
       "inputFields": [
         {
@@ -163,23 +164,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 11,
-      "name": "CloseRoom",
-      "inputFields": [],
-      "outputFields": [
-        {
-          "name": "returnCode",
-          "type": "uint8",
-          "offset": 0,
-          "byteLength": 1
-        }
-      ],
-      "inputSize": 0,
-      "outputSize": 1
-    },
-    {
-      "kind": "procedure",
-      "inputType": 13,
+      "inputType": 3,
       "name": "SetPercentFees",
       "inputFields": [
         {
@@ -220,7 +205,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 15,
+      "inputType": 4,
       "name": "SetTTLHours",
       "inputFields": [
         {
@@ -243,7 +228,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 18,
+      "inputType": 5,
       "name": "Deposit",
       "inputFields": [],
       "outputFields": [
@@ -259,7 +244,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 19,
+      "inputType": 6,
       "name": "Withdraw",
       "inputFields": [
         {
@@ -279,53 +264,28 @@
       ],
       "inputSize": 8,
       "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 7,
+      "name": "CloseRoom",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 1
     }
   ],
   "functions": [
     {
       "kind": "function",
-      "inputType": 7,
-      "name": "CalculateRevenue",
-      "inputFields": [
-        {
-          "name": "amount",
-          "type": "uint64",
-          "offset": 0,
-          "byteLength": 8
-        }
-      ],
-      "outputFields": [
-        {
-          "name": "devFee",
-          "type": "uint64",
-          "offset": 0,
-          "byteLength": 8
-        },
-        {
-          "name": "burnFee",
-          "type": "uint64",
-          "offset": 8,
-          "byteLength": 8
-        },
-        {
-          "name": "shareholdersFee",
-          "type": "uint64",
-          "offset": 16,
-          "byteLength": 8
-        },
-        {
-          "name": "winner",
-          "type": "uint64",
-          "offset": 24,
-          "byteLength": 8
-        }
-      ],
-      "inputSize": 8,
-      "outputSize": 32
-    },
-    {
-      "kind": "function",
-      "inputType": 12,
+      "inputType": 1,
       "name": "GetPercentFees",
       "inputFields": [],
       "outputFields": [
@@ -365,7 +325,7 @@
     },
     {
       "kind": "function",
-      "inputType": 14,
+      "inputType": 2,
       "name": "GetRooms",
       "inputFields": [],
       "outputFields": [
@@ -390,7 +350,7 @@
     },
     {
       "kind": "function",
-      "inputType": 16,
+      "inputType": 3,
       "name": "GetTTLHours",
       "inputFields": [],
       "outputFields": [
@@ -412,7 +372,7 @@
     },
     {
       "kind": "function",
-      "inputType": 17,
+      "inputType": 4,
       "name": "GetUserProfile",
       "inputFields": [
         {
@@ -471,7 +431,48 @@
     },
     {
       "kind": "function",
-      "inputType": 20,
+      "inputType": 5,
+      "name": "CalculateRevenue",
+      "inputFields": [
+        {
+          "name": "amount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "devFee",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "burnFee",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "shareholdersFee",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "winner",
+          "type": "uint64",
+          "offset": 24,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 32
+    },
+    {
+      "kind": "function",
+      "inputType": 6,
       "name": "GetLastWinners",
       "inputFields": [],
       "outputFields": [

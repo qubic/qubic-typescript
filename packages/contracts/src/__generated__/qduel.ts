@@ -115,7 +115,7 @@ const STRUCTS: Record<string, NamedStruct> = {
 },
 }
 
-export const Q_DUEL_CREATE_ROOM_INPUT_TYPE = 3
+export const Q_DUEL_CREATE_ROOM_INPUT_TYPE = 1
 
 export interface QDuelCreateRoomInput {
   allowedPlayer: string
@@ -177,7 +177,7 @@ export function decodeQDuelCreateRoomOutput(
   return decodePayload(data, Q_DUEL_CREATE_ROOM_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QDuelCreateRoomOutput
 }
 
-export const Q_DUEL_CONNECT_TO_ROOM_INPUT_TYPE = 10
+export const Q_DUEL_CONNECT_TO_ROOM_INPUT_TYPE = 2
 
 export interface QDuelConnectToRoomInput {
   roomId: string
@@ -226,28 +226,7 @@ export function decodeQDuelConnectToRoomOutput(
   return decodePayload(data, Q_DUEL_CONNECT_TO_ROOM_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QDuelConnectToRoomOutput
 }
 
-export const Q_DUEL_CLOSE_ROOM_INPUT_TYPE = 11
-
-export interface QDuelCloseRoomOutput {
-  returnCode: number
-}
-
-const Q_DUEL_CLOSE_ROOM_OUTPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'returnCode',
-    type: 'uint8',
-    offset: 0,
-    byteLength: 1,
-  },
-]
-
-export function decodeQDuelCloseRoomOutput(
-  data: Uint8Array,
-): QDuelCloseRoomOutput {
-  return decodePayload(data, Q_DUEL_CLOSE_ROOM_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QDuelCloseRoomOutput
-}
-
-export const Q_DUEL_SET_PERCENT_FEES_INPUT_TYPE = 13
+export const Q_DUEL_SET_PERCENT_FEES_INPUT_TYPE = 3
 
 export interface QDuelSetPercentFeesInput {
   devFeePercentBps: number
@@ -308,7 +287,7 @@ export function decodeQDuelSetPercentFeesOutput(
   return decodePayload(data, Q_DUEL_SET_PERCENT_FEES_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QDuelSetPercentFeesOutput
 }
 
-export const Q_DUEL_SET_TTL_HOURS_INPUT_TYPE = 15
+export const Q_DUEL_SET_TTL_HOURS_INPUT_TYPE = 4
 
 export interface QDuelSetTTLHoursInput {
   ttlHours: number
@@ -348,7 +327,7 @@ export function decodeQDuelSetTTLHoursOutput(
   return decodePayload(data, Q_DUEL_SET_TTL_HOURS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QDuelSetTTLHoursOutput
 }
 
-export const Q_DUEL_DEPOSIT_INPUT_TYPE = 18
+export const Q_DUEL_DEPOSIT_INPUT_TYPE = 5
 
 export interface QDuelDepositOutput {
   returnCode: number
@@ -369,7 +348,7 @@ export function decodeQDuelDepositOutput(
   return decodePayload(data, Q_DUEL_DEPOSIT_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QDuelDepositOutput
 }
 
-export const Q_DUEL_WITHDRAW_INPUT_TYPE = 19
+export const Q_DUEL_WITHDRAW_INPUT_TYPE = 6
 
 export interface QDuelWithdrawInput {
   amount: bigint
@@ -409,87 +388,28 @@ export function decodeQDuelWithdrawOutput(
   return decodePayload(data, Q_DUEL_WITHDRAW_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QDuelWithdrawOutput
 }
 
-export const Q_DUEL_CALCULATE_REVENUE_INPUT_TYPE = 7
-export const Q_DUEL_CALCULATE_REVENUE_INPUT_SIZE = 8
+export const Q_DUEL_CLOSE_ROOM_INPUT_TYPE = 7
 
-export interface QDuelCalculateRevenueInput {
-  amount: bigint
+export interface QDuelCloseRoomOutput {
+  returnCode: number
 }
 
-const Q_DUEL_CALCULATE_REVENUE_INPUT_FIELDS: BinaryField[] = [
+const Q_DUEL_CLOSE_ROOM_OUTPUT_FIELDS: BinaryField[] = [
   {
-    name: 'amount',
-    type: 'uint64',
+    name: 'returnCode',
+    type: 'uint8',
     offset: 0,
-    byteLength: 8,
+    byteLength: 1,
   },
 ]
 
-export function buildQDuelCalculateRevenueInput(
-  input: QDuelCalculateRevenueInput,
-): Uint8Array {
-  return buildPayload(Q_DUEL_CALCULATE_REVENUE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
-}
-
-export interface QDuelCalculateRevenueOutput {
-  devFee: bigint
-  burnFee: bigint
-  shareholdersFee: bigint
-  winner: bigint
-}
-
-const Q_DUEL_CALCULATE_REVENUE_OUTPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'devFee',
-    type: 'uint64',
-    offset: 0,
-    byteLength: 8,
-  },
-  {
-    name: 'burnFee',
-    type: 'uint64',
-    offset: 8,
-    byteLength: 8,
-  },
-  {
-    name: 'shareholdersFee',
-    type: 'uint64',
-    offset: 16,
-    byteLength: 8,
-  },
-  {
-    name: 'winner',
-    type: 'uint64',
-    offset: 24,
-    byteLength: 8,
-  },
-]
-
-export function decodeQDuelCalculateRevenueOutput(
+export function decodeQDuelCloseRoomOutput(
   data: Uint8Array,
-): QDuelCalculateRevenueOutput {
-  return decodePayload(data, Q_DUEL_CALCULATE_REVENUE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QDuelCalculateRevenueOutput
+): QDuelCloseRoomOutput {
+  return decodePayload(data, Q_DUEL_CLOSE_ROOM_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QDuelCloseRoomOutput
 }
 
-export async function qDuelCalculateRevenue(
-  live: SmartContractCaller,
-  input: QDuelCalculateRevenueInput,
-  options?: ContractCallOptions,
-): Promise<Result<QDuelCalculateRevenueOutput, QubicRpcError>> {
-  return callContractFunction({
-    live,
-    contractIndex: Q_DUEL_CONTRACT_INDEX,
-    inputType: Q_DUEL_CALCULATE_REVENUE_INPUT_TYPE,
-    inputSize: Q_DUEL_CALCULATE_REVENUE_INPUT_SIZE,
-    inputFields: Q_DUEL_CALCULATE_REVENUE_INPUT_FIELDS,
-    outputFields: Q_DUEL_CALCULATE_REVENUE_OUTPUT_FIELDS,
-    structs: STRUCTS,
-    input: (input as unknown as Record<string, unknown>),
-    ...options,
-  })
-}
-
-export const Q_DUEL_GET_PERCENT_FEES_INPUT_TYPE = 12
+export const Q_DUEL_GET_PERCENT_FEES_INPUT_TYPE = 1
 export const Q_DUEL_GET_PERCENT_FEES_INPUT_SIZE = 0
 
 export interface QDuelGetPercentFeesOutput {
@@ -556,7 +476,7 @@ export async function qDuelGetPercentFees(
   })
 }
 
-export const Q_DUEL_GET_ROOMS_INPUT_TYPE = 14
+export const Q_DUEL_GET_ROOMS_INPUT_TYPE = 2
 export const Q_DUEL_GET_ROOMS_INPUT_SIZE = 0
 
 export interface QDuelGetRoomsOutput {
@@ -605,7 +525,7 @@ export async function qDuelGetRooms(
   })
 }
 
-export const Q_DUEL_GET_TTL_HOURS_INPUT_TYPE = 16
+export const Q_DUEL_GET_TTL_HOURS_INPUT_TYPE = 3
 export const Q_DUEL_GET_TTL_HOURS_INPUT_SIZE = 0
 
 export interface QDuelGetTTLHoursOutput {
@@ -651,7 +571,7 @@ export async function qDuelGetTTLHours(
   })
 }
 
-export const Q_DUEL_GET_USER_PROFILE_INPUT_TYPE = 17
+export const Q_DUEL_GET_USER_PROFILE_INPUT_TYPE = 4
 export const Q_DUEL_GET_USER_PROFILE_INPUT_SIZE = 32
 
 export interface QDuelGetUserProfileInput {
@@ -754,7 +674,87 @@ export async function qDuelGetUserProfile(
   })
 }
 
-export const Q_DUEL_GET_LAST_WINNERS_INPUT_TYPE = 20
+export const Q_DUEL_CALCULATE_REVENUE_INPUT_TYPE = 5
+export const Q_DUEL_CALCULATE_REVENUE_INPUT_SIZE = 8
+
+export interface QDuelCalculateRevenueInput {
+  amount: bigint
+}
+
+const Q_DUEL_CALCULATE_REVENUE_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'amount',
+    type: 'uint64',
+    offset: 0,
+    byteLength: 8,
+  },
+]
+
+export function buildQDuelCalculateRevenueInput(
+  input: QDuelCalculateRevenueInput,
+): Uint8Array {
+  return buildPayload(Q_DUEL_CALCULATE_REVENUE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
+}
+
+export interface QDuelCalculateRevenueOutput {
+  devFee: bigint
+  burnFee: bigint
+  shareholdersFee: bigint
+  winner: bigint
+}
+
+const Q_DUEL_CALCULATE_REVENUE_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'devFee',
+    type: 'uint64',
+    offset: 0,
+    byteLength: 8,
+  },
+  {
+    name: 'burnFee',
+    type: 'uint64',
+    offset: 8,
+    byteLength: 8,
+  },
+  {
+    name: 'shareholdersFee',
+    type: 'uint64',
+    offset: 16,
+    byteLength: 8,
+  },
+  {
+    name: 'winner',
+    type: 'uint64',
+    offset: 24,
+    byteLength: 8,
+  },
+]
+
+export function decodeQDuelCalculateRevenueOutput(
+  data: Uint8Array,
+): QDuelCalculateRevenueOutput {
+  return decodePayload(data, Q_DUEL_CALCULATE_REVENUE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QDuelCalculateRevenueOutput
+}
+
+export async function qDuelCalculateRevenue(
+  live: SmartContractCaller,
+  input: QDuelCalculateRevenueInput,
+  options?: ContractCallOptions,
+): Promise<Result<QDuelCalculateRevenueOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: Q_DUEL_CONTRACT_INDEX,
+    inputType: Q_DUEL_CALCULATE_REVENUE_INPUT_TYPE,
+    inputSize: Q_DUEL_CALCULATE_REVENUE_INPUT_SIZE,
+    inputFields: Q_DUEL_CALCULATE_REVENUE_INPUT_FIELDS,
+    outputFields: Q_DUEL_CALCULATE_REVENUE_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
+}
+
+export const Q_DUEL_GET_LAST_WINNERS_INPUT_TYPE = 6
 export const Q_DUEL_GET_LAST_WINNERS_INPUT_SIZE = 0
 
 export interface QDuelGetLastWinnersOutput {
@@ -805,17 +805,16 @@ export async function qDuelGetLastWinners(
 
 export const qDuel = {
   contractIndex: Q_DUEL_CONTRACT_INDEX,
-  CalculateRevenue: qDuelCalculateRevenue,
   GetPercentFees: qDuelGetPercentFees,
   GetRooms: qDuelGetRooms,
   GetTTLHours: qDuelGetTTLHours,
   GetUserProfile: qDuelGetUserProfile,
+  CalculateRevenue: qDuelCalculateRevenue,
   GetLastWinners: qDuelGetLastWinners,
   buildCreateRoomInput: buildQDuelCreateRoomInput,
   decodeCreateRoomOutput: decodeQDuelCreateRoomOutput,
   buildConnectToRoomInput: buildQDuelConnectToRoomInput,
   decodeConnectToRoomOutput: decodeQDuelConnectToRoomOutput,
-  decodeCloseRoomOutput: decodeQDuelCloseRoomOutput,
   buildSetPercentFeesInput: buildQDuelSetPercentFeesInput,
   decodeSetPercentFeesOutput: decodeQDuelSetPercentFeesOutput,
   buildSetTTLHoursInput: buildQDuelSetTTLHoursInput,
@@ -823,5 +822,6 @@ export const qDuel = {
   decodeDepositOutput: decodeQDuelDepositOutput,
   buildWithdrawInput: buildQDuelWithdrawInput,
   decodeWithdrawOutput: decodeQDuelWithdrawOutput,
+  decodeCloseRoomOutput: decodeQDuelCloseRoomOutput,
 }
 

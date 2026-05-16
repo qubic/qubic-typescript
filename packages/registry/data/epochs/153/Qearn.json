@@ -3,11 +3,12 @@
   "contractName": "Qearn",
   "contractAddress": "JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVKHO",
   "epoch": 153,
+  "coreVersion": "v1.238.0",
   "structs": {},
   "procedures": [
     {
       "kind": "procedure",
-      "inputType": 6,
+      "inputType": 1,
       "name": "lock",
       "inputFields": [],
       "outputFields": [
@@ -23,7 +24,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 7,
+      "inputType": 2,
       "name": "unlock",
       "inputFields": [
         {
@@ -217,7 +218,7 @@
     },
     {
       "kind": "function",
-      "inputType": 8,
+      "inputType": 6,
       "name": "getStatsPerEpoch",
       "inputFields": [
         {
@@ -258,7 +259,7 @@
     },
     {
       "kind": "function",
-      "inputType": 9,
+      "inputType": 7,
       "name": "getBurnedAndBoostedStats",
       "inputFields": [],
       "outputFields": [
@@ -304,7 +305,7 @@
     },
     {
       "kind": "function",
-      "inputType": 10,
+      "inputType": 8,
       "name": "getBurnedAndBoostedStatsPerEpoch",
       "inputFields": [
         {

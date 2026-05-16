@@ -948,7 +948,7 @@ export function decodeQbayChangeStatusOfMarketPlaceOutput(
   return decodePayload(data, QBAY_CHANGE_STATUS_OF_MARKET_PLACE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QbayChangeStatusOfMarketPlaceOutput
 }
 
-export const QBAY_GET_NUMBER_OF_NFT_FOR_USER_INPUT_TYPE = 18
+export const QBAY_GET_NUMBER_OF_NFT_FOR_USER_INPUT_TYPE = 1
 export const QBAY_GET_NUMBER_OF_NFT_FOR_USER_INPUT_SIZE = 32
 
 export interface QbayGetNumberOfNFTForUserInput {
@@ -1008,7 +1008,7 @@ export async function qbayGetNumberOfNFTForUser(
   })
 }
 
-export const QBAY_GET_INFO_OF_NFT_USER_POSSESSED_INPUT_TYPE = 19
+export const QBAY_GET_INFO_OF_NFT_USER_POSSESSED_INPUT_TYPE = 2
 export const QBAY_GET_INFO_OF_NFT_USER_POSSESSED_INPUT_SIZE = 36
 
 export interface QbayGetInfoOfNFTUserPossessedInput {
@@ -1268,7 +1268,7 @@ export async function qbayGetInfoOfNFTUserPossessed(
   })
 }
 
-export const QBAY_GET_INFO_OF_MARKETPLACE_INPUT_TYPE = 20
+export const QBAY_GET_INFO_OF_MARKETPLACE_INPUT_TYPE = 3
 export const QBAY_GET_INFO_OF_MARKETPLACE_INPUT_SIZE = 0
 
 export interface QbayGetInfoOfMarketplaceOutput {
@@ -1356,7 +1356,7 @@ export async function qbayGetInfoOfMarketplace(
   })
 }
 
-export const QBAY_GET_INFO_OF_COLLECTION_BY_CREATOR_INPUT_TYPE = 21
+export const QBAY_GET_INFO_OF_COLLECTION_BY_CREATOR_INPUT_TYPE = 4
 export const QBAY_GET_INFO_OF_COLLECTION_BY_CREATOR_INPUT_SIZE = 36
 
 export interface QbayGetInfoOfCollectionByCreatorInput {
@@ -1468,7 +1468,7 @@ export async function qbayGetInfoOfCollectionByCreator(
   })
 }
 
-export const QBAY_GET_INFO_OF_COLLECTION_BY_ID_INPUT_TYPE = 22
+export const QBAY_GET_INFO_OF_COLLECTION_BY_ID_INPUT_TYPE = 5
 export const QBAY_GET_INFO_OF_COLLECTION_BY_ID_INPUT_SIZE = 4
 
 export interface QbayGetInfoOfCollectionByIdInput {
@@ -1573,7 +1573,7 @@ export async function qbayGetInfoOfCollectionById(
   })
 }
 
-export const QBAY_GET_INCOMING_AUCTIONS_INPUT_TYPE = 23
+export const QBAY_GET_INCOMING_AUCTIONS_INPUT_TYPE = 6
 export const QBAY_GET_INCOMING_AUCTIONS_INPUT_SIZE = 8
 
 export interface QbayGetIncomingAuctionsInput {
@@ -1642,7 +1642,7 @@ export async function qbayGetIncomingAuctions(
   })
 }
 
-export const QBAY_GET_INFO_OF_NFT_BY_ID_INPUT_TYPE = 24
+export const QBAY_GET_INFO_OF_NFT_BY_ID_INPUT_TYPE = 7
 export const QBAY_GET_INFO_OF_NFT_BY_ID_INPUT_SIZE = 4
 
 export interface QbayGetInfoOfNFTByIdInput {
@@ -1894,7 +1894,7 @@ export async function qbayGetInfoOfNFTById(
   })
 }
 
-export const QBAY_GET_USER_CREATED_COLLECTION_INPUT_TYPE = 25
+export const QBAY_GET_USER_CREATED_COLLECTION_INPUT_TYPE = 8
 export const QBAY_GET_USER_CREATED_COLLECTION_INPUT_SIZE = 40
 
 export interface QbayGetUserCreatedCollectionInput {
@@ -1971,7 +1971,7 @@ export async function qbayGetUserCreatedCollection(
   })
 }
 
-export const QBAY_GET_USER_CREATED_NFT_INPUT_TYPE = 26
+export const QBAY_GET_USER_CREATED_NFT_INPUT_TYPE = 9
 export const QBAY_GET_USER_CREATED_NFT_INPUT_SIZE = 40
 
 export interface QbayGetUserCreatedNFTInput {

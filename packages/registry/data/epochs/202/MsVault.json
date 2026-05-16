@@ -3,6 +3,7 @@
   "contractName": "MsVault",
   "contractAddress": "LAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKPTJ",
   "epoch": 202,
+  "coreVersion": "v1.280.0",
   "structs": {
     "Asset": {
       "name": "Asset",
@@ -87,7 +88,7 @@
   "procedures": [
     {
       "kind": "procedure",
-      "inputType": 7,
+      "inputType": 1,
       "name": "registerVault",
       "inputFields": [
         {
@@ -125,7 +126,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 8,
+      "inputType": 2,
       "name": "deposit",
       "inputFields": [
         {
@@ -148,7 +149,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 9,
+      "inputType": 3,
       "name": "releaseTo",
       "inputFields": [
         {
@@ -183,7 +184,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 10,
+      "inputType": 4,
       "name": "resetRelease",
       "inputFields": [
         {
@@ -206,7 +207,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 11,
+      "inputType": 13,
       "name": "voteFeeChange",
       "inputFields": [
         {
@@ -259,7 +260,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 24,
+      "inputType": 19,
       "name": "depositAsset",
       "inputFields": [
         {
@@ -295,43 +296,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 25,
-      "name": "revokeAssetManagementRights",
-      "inputFields": [
-        {
-          "name": "asset",
-          "type": "struct",
-          "offset": 0,
-          "byteLength": 40,
-          "structRef": "Asset"
-        },
-        {
-          "name": "numberOfShares",
-          "type": "sint64",
-          "offset": 40,
-          "byteLength": 8
-        }
-      ],
-      "outputFields": [
-        {
-          "name": "transferredNumberOfShares",
-          "type": "sint64",
-          "offset": 0,
-          "byteLength": 8
-        },
-        {
-          "name": "status",
-          "type": "uint64",
-          "offset": 8,
-          "byteLength": 8
-        }
-      ],
-      "inputSize": 48,
-      "outputSize": 16
-    },
-    {
-      "kind": "procedure",
-      "inputType": 26,
+      "inputType": 20,
       "name": "releaseAssetTo",
       "inputFields": [
         {
@@ -373,7 +338,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 27,
+      "inputType": 21,
       "name": "resetAssetRelease",
       "inputFields": [
         {
@@ -393,36 +358,11 @@
       ],
       "inputSize": 8,
       "outputSize": 8
-    }
-  ],
-  "functions": [
-    {
-      "kind": "function",
-      "inputType": 5,
-      "name": "isShareHolder",
-      "inputFields": [
-        {
-          "name": "candidate",
-          "type": "id",
-          "offset": 0,
-          "byteLength": 32
-        }
-      ],
-      "outputFields": [
-        {
-          "name": "result",
-          "type": "uint64",
-          "offset": 0,
-          "byteLength": 8
-        }
-      ],
-      "inputSize": 32,
-      "outputSize": 8
     },
     {
-      "kind": "function",
-      "inputType": 6,
-      "name": "getManagedAssetBalance",
+      "kind": "procedure",
+      "inputType": 25,
+      "name": "revokeAssetManagementRights",
       "inputFields": [
         {
           "name": "asset",
@@ -432,26 +372,34 @@
           "structRef": "Asset"
         },
         {
-          "name": "owner",
-          "type": "id",
+          "name": "numberOfShares",
+          "type": "sint64",
           "offset": 40,
-          "byteLength": 32
+          "byteLength": 8
         }
       ],
       "outputFields": [
         {
-          "name": "balance",
+          "name": "transferredNumberOfShares",
           "type": "sint64",
           "offset": 0,
           "byteLength": 8
+        },
+        {
+          "name": "status",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
         }
       ],
-      "inputSize": 72,
-      "outputSize": 8
-    },
+      "inputSize": 48,
+      "outputSize": 16
+    }
+  ],
+  "functions": [
     {
       "kind": "function",
-      "inputType": 12,
+      "inputType": 5,
       "name": "getVaults",
       "inputFields": [
         {
@@ -492,7 +440,7 @@
     },
     {
       "kind": "function",
-      "inputType": 13,
+      "inputType": 6,
       "name": "getReleaseStatus",
       "inputFields": [
         {
@@ -533,7 +481,7 @@
     },
     {
       "kind": "function",
-      "inputType": 14,
+      "inputType": 7,
       "name": "getBalanceOf",
       "inputFields": [
         {
@@ -562,7 +510,7 @@
     },
     {
       "kind": "function",
-      "inputType": 15,
+      "inputType": 8,
       "name": "getVaultName",
       "inputFields": [
         {
@@ -591,7 +539,7 @@
     },
     {
       "kind": "function",
-      "inputType": 16,
+      "inputType": 9,
       "name": "getRevenueInfo",
       "inputFields": [],
       "outputFields": [
@@ -625,7 +573,7 @@
     },
     {
       "kind": "function",
-      "inputType": 17,
+      "inputType": 10,
       "name": "getFees",
       "inputFields": [],
       "outputFields": [
@@ -671,7 +619,7 @@
     },
     {
       "kind": "function",
-      "inputType": 18,
+      "inputType": 11,
       "name": "getVaultOwners",
       "inputFields": [
         {
@@ -715,7 +663,30 @@
     },
     {
       "kind": "function",
-      "inputType": 19,
+      "inputType": 12,
+      "name": "isShareHolder",
+      "inputFields": [
+        {
+          "name": "candidate",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "result",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 32,
+      "outputSize": 8
+    },
+    {
+      "kind": "function",
+      "inputType": 14,
       "name": "getFeeVotes",
       "inputFields": [],
       "outputFields": [
@@ -746,7 +717,7 @@
     },
     {
       "kind": "function",
-      "inputType": 20,
+      "inputType": 15,
       "name": "getFeeVotesOwner",
       "inputFields": [],
       "outputFields": [
@@ -777,7 +748,7 @@
     },
     {
       "kind": "function",
-      "inputType": 21,
+      "inputType": 16,
       "name": "getFeeVotesScore",
       "inputFields": [],
       "outputFields": [
@@ -808,7 +779,7 @@
     },
     {
       "kind": "function",
-      "inputType": 22,
+      "inputType": 17,
       "name": "getUniqueFeeVotes",
       "inputFields": [],
       "outputFields": [
@@ -839,7 +810,7 @@
     },
     {
       "kind": "function",
-      "inputType": 23,
+      "inputType": 18,
       "name": "getUniqueFeeVotesRanking",
       "inputFields": [],
       "outputFields": [
@@ -870,7 +841,45 @@
     },
     {
       "kind": "function",
-      "inputType": 28,
+      "inputType": 22,
+      "name": "getVaultAssetBalances",
+      "inputFields": [
+        {
+          "name": "vaultId",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "status",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "numberOfAssetTypes",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "assetBalances",
+          "type": "array",
+          "offset": 16,
+          "byteLength": 384,
+          "arrayLength": 8,
+          "arrayItemStructRef": "AssetBalance",
+          "arrayItemByteLength": 48
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 400
+    },
+    {
+      "kind": "function",
+      "inputType": 23,
       "name": "getAssetReleaseStatus",
       "inputFields": [
         {
@@ -920,41 +929,33 @@
     },
     {
       "kind": "function",
-      "inputType": 29,
-      "name": "getVaultAssetBalances",
+      "inputType": 24,
+      "name": "getManagedAssetBalance",
       "inputFields": [
         {
-          "name": "vaultId",
-          "type": "uint64",
+          "name": "asset",
+          "type": "struct",
           "offset": 0,
-          "byteLength": 8
+          "byteLength": 40,
+          "structRef": "Asset"
+        },
+        {
+          "name": "owner",
+          "type": "id",
+          "offset": 40,
+          "byteLength": 32
         }
       ],
       "outputFields": [
         {
-          "name": "status",
-          "type": "uint64",
+          "name": "balance",
+          "type": "sint64",
           "offset": 0,
           "byteLength": 8
-        },
-        {
-          "name": "numberOfAssetTypes",
-          "type": "uint64",
-          "offset": 8,
-          "byteLength": 8
-        },
-        {
-          "name": "assetBalances",
-          "type": "array",
-          "offset": 16,
-          "byteLength": 384,
-          "arrayLength": 8,
-          "arrayItemStructRef": "AssetBalance",
-          "arrayItemByteLength": 48
         }
       ],
-      "inputSize": 8,
-      "outputSize": 400
+      "inputSize": 72,
+      "outputSize": 8
     }
   ]
 }

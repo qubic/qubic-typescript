@@ -3,13 +3,21 @@
   "contractName": "QRaffle",
   "contractAddress": "TAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAXRFC",
   "epoch": 208,
+  "coreVersion": "v1.286.1",
   "structs": {},
   "procedures": [
     {
       "kind": "procedure",
       "inputType": 1,
       "name": "registerInSystem",
-      "inputFields": [],
+      "inputFields": [
+        {
+          "name": "useQXMR",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
       "outputFields": [
         {
           "name": "returnCode",
@@ -18,7 +26,7 @@
           "byteLength": 4
         }
       ],
-      "inputSize": 0,
+      "inputSize": 1,
       "outputSize": 4
     },
     {
@@ -105,6 +113,12 @@
           "type": "uint32",
           "offset": 0,
           "byteLength": 4
+        },
+        {
+          "name": "yes",
+          "type": "uint8",
+          "offset": 4,
+          "byteLength": 1
         }
       ],
       "outputFields": [
@@ -115,7 +129,7 @@
           "byteLength": 4
         }
       ],
-      "inputSize": 4,
+      "inputSize": 5,
       "outputSize": 4
     },
     {
@@ -202,7 +216,7 @@
   "functions": [
     {
       "kind": "function",
-      "inputType": 9,
+      "inputType": 1,
       "name": "getRegisters",
       "inputFields": [
         {
@@ -237,7 +251,7 @@
     },
     {
       "kind": "function",
-      "inputType": 10,
+      "inputType": 2,
       "name": "getAnalytics",
       "inputFields": [],
       "outputFields": [
@@ -337,7 +351,7 @@
     },
     {
       "kind": "function",
-      "inputType": 11,
+      "inputType": 3,
       "name": "getActiveProposal",
       "inputFields": [
         {
@@ -396,7 +410,7 @@
     },
     {
       "kind": "function",
-      "inputType": 12,
+      "inputType": 4,
       "name": "getEndedTokenRaffle",
       "inputFields": [
         {
@@ -461,42 +475,7 @@
     },
     {
       "kind": "function",
-      "inputType": 13,
-      "name": "getEpochRaffleIndexes",
-      "inputFields": [
-        {
-          "name": "epoch",
-          "type": "uint32",
-          "offset": 0,
-          "byteLength": 4
-        }
-      ],
-      "outputFields": [
-        {
-          "name": "StartIndex",
-          "type": "uint32",
-          "offset": 0,
-          "byteLength": 4
-        },
-        {
-          "name": "EndIndex",
-          "type": "uint32",
-          "offset": 4,
-          "byteLength": 4
-        },
-        {
-          "name": "returnCode",
-          "type": "sint32",
-          "offset": 8,
-          "byteLength": 4
-        }
-      ],
-      "inputSize": 4,
-      "outputSize": 12
-    },
-    {
-      "kind": "function",
-      "inputType": 14,
+      "inputType": 5,
       "name": "getEndedQuRaffle",
       "inputFields": [
         {
@@ -555,7 +534,7 @@
     },
     {
       "kind": "function",
-      "inputType": 15,
+      "inputType": 6,
       "name": "getActiveTokenRaffle",
       "inputFields": [
         {
@@ -602,7 +581,42 @@
     },
     {
       "kind": "function",
-      "inputType": 16,
+      "inputType": 7,
+      "name": "getEpochRaffleIndexes",
+      "inputFields": [
+        {
+          "name": "epoch",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "StartIndex",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "EndIndex",
+          "type": "uint32",
+          "offset": 4,
+          "byteLength": 4
+        },
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 8,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 12
+    },
+    {
+      "kind": "function",
+      "inputType": 8,
       "name": "getQuRaffleEntryAmountPerUser",
       "inputFields": [
         {
@@ -631,7 +645,7 @@
     },
     {
       "kind": "function",
-      "inputType": 17,
+      "inputType": 9,
       "name": "getQuRaffleEntryAverageAmount",
       "inputFields": [],
       "outputFields": [

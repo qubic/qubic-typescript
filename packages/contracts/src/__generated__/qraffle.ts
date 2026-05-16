@@ -335,7 +335,7 @@ export function decodeQRaffleTransferShareManagementRightsOutput(
   return decodePayload(data, Q_RAFFLE_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRaffleTransferShareManagementRightsOutput
 }
 
-export const Q_RAFFLE_GET_REGISTERS_INPUT_TYPE = 9
+export const Q_RAFFLE_GET_REGISTERS_INPUT_TYPE = 1
 export const Q_RAFFLE_GET_REGISTERS_INPUT_SIZE = 8
 
 export interface QRaffleGetRegistersInput {
@@ -409,7 +409,7 @@ export async function qRaffleGetRegisters(
   })
 }
 
-export const Q_RAFFLE_GET_ANALYTICS_INPUT_TYPE = 10
+export const Q_RAFFLE_GET_ANALYTICS_INPUT_TYPE = 2
 export const Q_RAFFLE_GET_ANALYTICS_INPUT_SIZE = 0
 
 export interface QRaffleGetAnalyticsOutput {
@@ -546,7 +546,7 @@ export async function qRaffleGetAnalytics(
   })
 }
 
-export const Q_RAFFLE_GET_ACTIVE_PROPOSAL_INPUT_TYPE = 11
+export const Q_RAFFLE_GET_ACTIVE_PROPOSAL_INPUT_TYPE = 3
 export const Q_RAFFLE_GET_ACTIVE_PROPOSAL_INPUT_SIZE = 4
 
 export interface QRaffleGetActiveProposalInput {
@@ -648,7 +648,7 @@ export async function qRaffleGetActiveProposal(
   })
 }
 
-export const Q_RAFFLE_GET_ENDED_TOKEN_RAFFLE_INPUT_TYPE = 12
+export const Q_RAFFLE_GET_ENDED_TOKEN_RAFFLE_INPUT_TYPE = 4
 export const Q_RAFFLE_GET_ENDED_TOKEN_RAFFLE_INPUT_SIZE = 4
 
 export interface QRaffleGetEndedTokenRaffleInput {
@@ -757,80 +757,7 @@ export async function qRaffleGetEndedTokenRaffle(
   })
 }
 
-export const Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_INPUT_TYPE = 13
-export const Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_INPUT_SIZE = 4
-
-export interface QRaffleGetEpochRaffleIndexesInput {
-  epoch: number
-}
-
-const Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_INPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'epoch',
-    type: 'uint32',
-    offset: 0,
-    byteLength: 4,
-  },
-]
-
-export function buildQRaffleGetEpochRaffleIndexesInput(
-  input: QRaffleGetEpochRaffleIndexesInput,
-): Uint8Array {
-  return buildPayload(Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
-}
-
-export interface QRaffleGetEpochRaffleIndexesOutput {
-  StartIndex: number
-  EndIndex: number
-  returnCode: number
-}
-
-const Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_OUTPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'StartIndex',
-    type: 'uint32',
-    offset: 0,
-    byteLength: 4,
-  },
-  {
-    name: 'EndIndex',
-    type: 'uint32',
-    offset: 4,
-    byteLength: 4,
-  },
-  {
-    name: 'returnCode',
-    type: 'sint32',
-    offset: 8,
-    byteLength: 4,
-  },
-]
-
-export function decodeQRaffleGetEpochRaffleIndexesOutput(
-  data: Uint8Array,
-): QRaffleGetEpochRaffleIndexesOutput {
-  return decodePayload(data, Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRaffleGetEpochRaffleIndexesOutput
-}
-
-export async function qRaffleGetEpochRaffleIndexes(
-  live: SmartContractCaller,
-  input: QRaffleGetEpochRaffleIndexesInput,
-  options?: ContractCallOptions,
-): Promise<Result<QRaffleGetEpochRaffleIndexesOutput, QubicRpcError>> {
-  return callContractFunction({
-    live,
-    contractIndex: Q_RAFFLE_CONTRACT_INDEX,
-    inputType: Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_INPUT_TYPE,
-    inputSize: Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_INPUT_SIZE,
-    inputFields: Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_INPUT_FIELDS,
-    outputFields: Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_OUTPUT_FIELDS,
-    structs: STRUCTS,
-    input: (input as unknown as Record<string, unknown>),
-    ...options,
-  })
-}
-
-export const Q_RAFFLE_GET_ENDED_QU_RAFFLE_INPUT_TYPE = 14
+export const Q_RAFFLE_GET_ENDED_QU_RAFFLE_INPUT_TYPE = 5
 export const Q_RAFFLE_GET_ENDED_QU_RAFFLE_INPUT_SIZE = 4
 
 export interface QRaffleGetEndedQuRaffleInput {
@@ -932,7 +859,7 @@ export async function qRaffleGetEndedQuRaffle(
   })
 }
 
-export const Q_RAFFLE_GET_ACTIVE_TOKEN_RAFFLE_INPUT_TYPE = 15
+export const Q_RAFFLE_GET_ACTIVE_TOKEN_RAFFLE_INPUT_TYPE = 6
 export const Q_RAFFLE_GET_ACTIVE_TOKEN_RAFFLE_INPUT_SIZE = 4
 
 export interface QRaffleGetActiveTokenRaffleInput {
@@ -1020,7 +947,80 @@ export async function qRaffleGetActiveTokenRaffle(
   })
 }
 
-export const Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AMOUNT_PER_USER_INPUT_TYPE = 16
+export const Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_INPUT_TYPE = 7
+export const Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_INPUT_SIZE = 4
+
+export interface QRaffleGetEpochRaffleIndexesInput {
+  epoch: number
+}
+
+const Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'epoch',
+    type: 'uint32',
+    offset: 0,
+    byteLength: 4,
+  },
+]
+
+export function buildQRaffleGetEpochRaffleIndexesInput(
+  input: QRaffleGetEpochRaffleIndexesInput,
+): Uint8Array {
+  return buildPayload(Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
+}
+
+export interface QRaffleGetEpochRaffleIndexesOutput {
+  StartIndex: number
+  EndIndex: number
+  returnCode: number
+}
+
+const Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'StartIndex',
+    type: 'uint32',
+    offset: 0,
+    byteLength: 4,
+  },
+  {
+    name: 'EndIndex',
+    type: 'uint32',
+    offset: 4,
+    byteLength: 4,
+  },
+  {
+    name: 'returnCode',
+    type: 'sint32',
+    offset: 8,
+    byteLength: 4,
+  },
+]
+
+export function decodeQRaffleGetEpochRaffleIndexesOutput(
+  data: Uint8Array,
+): QRaffleGetEpochRaffleIndexesOutput {
+  return decodePayload(data, Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRaffleGetEpochRaffleIndexesOutput
+}
+
+export async function qRaffleGetEpochRaffleIndexes(
+  live: SmartContractCaller,
+  input: QRaffleGetEpochRaffleIndexesInput,
+  options?: ContractCallOptions,
+): Promise<Result<QRaffleGetEpochRaffleIndexesOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: Q_RAFFLE_CONTRACT_INDEX,
+    inputType: Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_INPUT_TYPE,
+    inputSize: Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_INPUT_SIZE,
+    inputFields: Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_INPUT_FIELDS,
+    outputFields: Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
+}
+
+export const Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AMOUNT_PER_USER_INPUT_TYPE = 8
 export const Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AMOUNT_PER_USER_INPUT_SIZE = 32
 
 export interface QRaffleGetQuRaffleEntryAmountPerUserInput {
@@ -1087,7 +1087,7 @@ export async function qRaffleGetQuRaffleEntryAmountPerUser(
   })
 }
 
-export const Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AVERAGE_AMOUNT_INPUT_TYPE = 17
+export const Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AVERAGE_AMOUNT_INPUT_TYPE = 9
 export const Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AVERAGE_AMOUNT_INPUT_SIZE = 0
 
 export interface QRaffleGetQuRaffleEntryAverageAmountOutput {
@@ -1139,9 +1139,9 @@ export const qRaffle = {
   getAnalytics: qRaffleGetAnalytics,
   getActiveProposal: qRaffleGetActiveProposal,
   getEndedTokenRaffle: qRaffleGetEndedTokenRaffle,
-  getEpochRaffleIndexes: qRaffleGetEpochRaffleIndexes,
   getEndedQuRaffle: qRaffleGetEndedQuRaffle,
   getActiveTokenRaffle: qRaffleGetActiveTokenRaffle,
+  getEpochRaffleIndexes: qRaffleGetEpochRaffleIndexes,
   getQuRaffleEntryAmountPerUser: qRaffleGetQuRaffleEntryAmountPerUser,
   getQuRaffleEntryAverageAmount: qRaffleGetQuRaffleEntryAverageAmount,
   buildRegisterInSystemInput: buildQRaffleRegisterInSystemInput,

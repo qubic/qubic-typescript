@@ -3,6 +3,7 @@
   "contractName": "Qusino",
   "contractAddress": "ABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYYHH",
   "epoch": 213,
+  "coreVersion": "v1.291.0",
   "structs": {
     "Asset": {
       "name": "Asset",
@@ -188,68 +189,6 @@
     {
       "kind": "procedure",
       "inputType": 5,
-      "name": "depositBonus",
-      "inputFields": [
-        {
-          "name": "amount",
-          "type": "uint64",
-          "offset": 0,
-          "byteLength": 8
-        }
-      ],
-      "outputFields": [
-        {
-          "name": "returnCode",
-          "type": "sint32",
-          "offset": 0,
-          "byteLength": 4
-        }
-      ],
-      "inputSize": 8,
-      "outputSize": 4
-    },
-    {
-      "kind": "procedure",
-      "inputType": 6,
-      "name": "dailyClaimBonus",
-      "inputFields": [],
-      "outputFields": [
-        {
-          "name": "returnCode",
-          "type": "sint32",
-          "offset": 0,
-          "byteLength": 4
-        }
-      ],
-      "inputSize": 0,
-      "outputSize": 4
-    },
-    {
-      "kind": "procedure",
-      "inputType": 7,
-      "name": "redemptionQSCToQubic",
-      "inputFields": [
-        {
-          "name": "amount",
-          "type": "uint64",
-          "offset": 0,
-          "byteLength": 8
-        }
-      ],
-      "outputFields": [
-        {
-          "name": "returnCode",
-          "type": "sint32",
-          "offset": 0,
-          "byteLength": 4
-        }
-      ],
-      "inputSize": 8,
-      "outputSize": 4
-    },
-    {
-      "kind": "procedure",
-      "inputType": 12,
       "name": "TransferShareManagementRights",
       "inputFields": [
         {
@@ -282,12 +221,74 @@
       ],
       "inputSize": 52,
       "outputSize": 8
+    },
+    {
+      "kind": "procedure",
+      "inputType": 6,
+      "name": "depositBonus",
+      "inputFields": [
+        {
+          "name": "amount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 7,
+      "name": "dailyClaimBonus",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 8,
+      "name": "redemptionQSCToQubic",
+      "inputFields": [
+        {
+          "name": "amount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 4
     }
   ],
   "functions": [
     {
       "kind": "function",
-      "inputType": 8,
+      "inputType": 1,
       "name": "getUserAssetVolume",
       "inputFields": [
         {
@@ -316,7 +317,7 @@
     },
     {
       "kind": "function",
-      "inputType": 9,
+      "inputType": 2,
       "name": "getFailedGameList",
       "inputFields": [
         {
@@ -342,7 +343,7 @@
     },
     {
       "kind": "function",
-      "inputType": 10,
+      "inputType": 3,
       "name": "getSCInfo",
       "inputFields": [],
       "outputFields": [
@@ -388,7 +389,7 @@
     },
     {
       "kind": "function",
-      "inputType": 11,
+      "inputType": 4,
       "name": "getActiveGameList",
       "inputFields": [
         {
@@ -423,7 +424,7 @@
     },
     {
       "kind": "function",
-      "inputType": 13,
+      "inputType": 5,
       "name": "getProposerEarnedQSCInfo",
       "inputFields": [
         {

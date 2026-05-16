@@ -107,7 +107,7 @@ const STRUCTS: Record<string, NamedStruct> = {
 },
 }
 
-export const Q_BOND_STAKE_INPUT_TYPE = 2
+export const Q_BOND_STAKE_INPUT_TYPE = 1
 
 export interface QBondStakeInput {
   quMillions: bigint
@@ -128,7 +128,7 @@ export function buildQBondStakeInput(
   return { contractIndex: Q_BOND_CONTRACT_INDEX, inputType: Q_BOND_STAKE_INPUT_TYPE, payload: buildPayload(Q_BOND_STAKE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
-export const Q_BOND_TRANSFER_M_BOND_OWNERSHIP_AND_POSSESSION_INPUT_TYPE = 3
+export const Q_BOND_TRANSFER_M_BOND_OWNERSHIP_AND_POSSESSION_INPUT_TYPE = 2
 
 export interface QBondTransferMBondOwnershipAndPossessionInput {
   newOwnerAndPossessor: string
@@ -183,7 +183,7 @@ export function decodeQBondTransferMBondOwnershipAndPossessionOutput(
   return decodePayload(data, Q_BOND_TRANSFER_M_BOND_OWNERSHIP_AND_POSSESSION_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QBondTransferMBondOwnershipAndPossessionOutput
 }
 
-export const Q_BOND_ADD_ASK_ORDER_INPUT_TYPE = 4
+export const Q_BOND_ADD_ASK_ORDER_INPUT_TYPE = 3
 
 export interface QBondAddAskOrderInput {
   epoch: bigint
@@ -237,7 +237,7 @@ export function decodeQBondAddAskOrderOutput(
   return decodePayload(data, Q_BOND_ADD_ASK_ORDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QBondAddAskOrderOutput
 }
 
-export const Q_BOND_REMOVE_ASK_ORDER_INPUT_TYPE = 5
+export const Q_BOND_REMOVE_ASK_ORDER_INPUT_TYPE = 4
 
 export interface QBondRemoveAskOrderInput {
   epoch: bigint
@@ -291,7 +291,7 @@ export function decodeQBondRemoveAskOrderOutput(
   return decodePayload(data, Q_BOND_REMOVE_ASK_ORDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QBondRemoveAskOrderOutput
 }
 
-export const Q_BOND_ADD_BID_ORDER_INPUT_TYPE = 6
+export const Q_BOND_ADD_BID_ORDER_INPUT_TYPE = 5
 
 export interface QBondAddBidOrderInput {
   epoch: bigint
@@ -345,7 +345,7 @@ export function decodeQBondAddBidOrderOutput(
   return decodePayload(data, Q_BOND_ADD_BID_ORDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QBondAddBidOrderOutput
 }
 
-export const Q_BOND_REMOVE_BID_ORDER_INPUT_TYPE = 7
+export const Q_BOND_REMOVE_BID_ORDER_INPUT_TYPE = 6
 
 export interface QBondRemoveBidOrderInput {
   epoch: bigint
@@ -399,7 +399,7 @@ export function decodeQBondRemoveBidOrderOutput(
   return decodePayload(data, Q_BOND_REMOVE_BID_ORDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QBondRemoveBidOrderOutput
 }
 
-export const Q_BOND_BURN_QU_INPUT_TYPE = 8
+export const Q_BOND_BURN_QU_INPUT_TYPE = 7
 
 export interface QBondBurnQUInput {
   amount: bigint
@@ -439,7 +439,7 @@ export function decodeQBondBurnQUOutput(
   return decodePayload(data, Q_BOND_BURN_QU_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QBondBurnQUOutput
 }
 
-export const Q_BOND_UPDATE_CFA_INPUT_TYPE = 9
+export const Q_BOND_UPDATE_CFA_INPUT_TYPE = 8
 
 export interface QBondUpdateCFAInput {
   user: string
@@ -487,7 +487,7 @@ export function decodeQBondUpdateCFAOutput(
   return decodePayload(data, Q_BOND_UPDATE_CFA_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QBondUpdateCFAOutput
 }
 
-export const Q_BOND_GET_FEES_INPUT_TYPE = 10
+export const Q_BOND_GET_FEES_INPUT_TYPE = 1
 export const Q_BOND_GET_FEES_INPUT_SIZE = 0
 
 export interface QBondGetFeesOutput {
@@ -540,7 +540,7 @@ export async function qBondGetFees(
   })
 }
 
-export const Q_BOND_GET_EARNED_FEES_INPUT_TYPE = 11
+export const Q_BOND_GET_EARNED_FEES_INPUT_TYPE = 2
 export const Q_BOND_GET_EARNED_FEES_INPUT_SIZE = 0
 
 export interface QBondGetEarnedFeesOutput {
@@ -586,7 +586,7 @@ export async function qBondGetEarnedFees(
   })
 }
 
-export const Q_BOND_GET_INFO_PER_EPOCH_INPUT_TYPE = 12
+export const Q_BOND_GET_INFO_PER_EPOCH_INPUT_TYPE = 3
 export const Q_BOND_GET_INFO_PER_EPOCH_INPUT_SIZE = 8
 
 export interface QBondGetInfoPerEpochInput {
@@ -659,7 +659,7 @@ export async function qBondGetInfoPerEpoch(
   })
 }
 
-export const Q_BOND_GET_ORDERS_INPUT_TYPE = 13
+export const Q_BOND_GET_ORDERS_INPUT_TYPE = 4
 export const Q_BOND_GET_ORDERS_INPUT_SIZE = 24
 
 export interface QBondGetOrdersInput {
@@ -745,7 +745,7 @@ export async function qBondGetOrders(
   })
 }
 
-export const Q_BOND_GET_USER_ORDERS_INPUT_TYPE = 14
+export const Q_BOND_GET_USER_ORDERS_INPUT_TYPE = 5
 export const Q_BOND_GET_USER_ORDERS_INPUT_SIZE = 48
 
 export interface QBondGetUserOrdersInput {
@@ -832,7 +832,7 @@ export async function qBondGetUserOrders(
   })
 }
 
-export const Q_BOND_GET_M_BONDS_TABLE_INPUT_TYPE = 15
+export const Q_BOND_GET_M_BONDS_TABLE_INPUT_TYPE = 6
 export const Q_BOND_GET_M_BONDS_TABLE_INPUT_SIZE = 0
 
 export interface QBondGetMBondsTableOutput {
@@ -874,7 +874,7 @@ export async function qBondGetMBondsTable(
   })
 }
 
-export const Q_BOND_GET_USER_M_BONDS_INPUT_TYPE = 16
+export const Q_BOND_GET_USER_M_BONDS_INPUT_TYPE = 7
 export const Q_BOND_GET_USER_M_BONDS_INPUT_SIZE = 32
 
 export interface QBondGetUserMBondsInput {
@@ -944,7 +944,7 @@ export async function qBondGetUserMBonds(
   })
 }
 
-export const Q_BOND_GET_CFA_INPUT_TYPE = 17
+export const Q_BOND_GET_CFA_INPUT_TYPE = 8
 export const Q_BOND_GET_CFA_INPUT_SIZE = 0
 
 export interface QBondGetCFAOutput {

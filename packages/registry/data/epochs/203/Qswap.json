@@ -3,6 +3,7 @@
   "contractName": "Qswap",
   "contractAddress": "NAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAML",
   "epoch": 203,
+  "coreVersion": "v1.281.0",
   "structs": {
     "Asset": {
       "name": "Asset",
@@ -26,30 +27,7 @@
   "procedures": [
     {
       "kind": "procedure",
-      "inputType": 3,
-      "name": "SetInvestRewardsInfo",
-      "inputFields": [
-        {
-          "name": "newInvestRewardsId",
-          "type": "id",
-          "offset": 0,
-          "byteLength": 32
-        }
-      ],
-      "outputFields": [
-        {
-          "name": "success",
-          "type": "uint8",
-          "offset": 0,
-          "byteLength": 1
-        }
-      ],
-      "inputSize": 32,
-      "outputSize": 1
-    },
-    {
-      "kind": "procedure",
-      "inputType": 10,
+      "inputType": 1,
       "name": "IssueAsset",
       "inputFields": [
         {
@@ -90,30 +68,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 11,
-      "name": "CreatePool",
-      "inputFields": [
-        {
-          "name": "assetName",
-          "type": "uint64",
-          "offset": 0,
-          "byteLength": 8
-        }
-      ],
-      "outputFields": [
-        {
-          "name": "success",
-          "type": "uint8",
-          "offset": 0,
-          "byteLength": 1
-        }
-      ],
-      "inputSize": 8,
-      "outputSize": 1
-    },
-    {
-      "kind": "procedure",
-      "inputType": 12,
+      "inputType": 2,
       "name": "TransferShareOwnershipAndPossession",
       "inputFields": [
         {
@@ -154,7 +109,30 @@
     },
     {
       "kind": "procedure",
-      "inputType": 13,
+      "inputType": 3,
+      "name": "CreatePool",
+      "inputFields": [
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "success",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 4,
       "name": "AddLiquidity",
       "inputFields": [
         {
@@ -213,7 +191,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 14,
+      "inputType": 5,
       "name": "RemoveLiquidity",
       "inputFields": [
         {
@@ -266,7 +244,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 15,
+      "inputType": 6,
       "name": "SwapExactQuForAsset",
       "inputFields": [
         {
@@ -301,7 +279,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 16,
+      "inputType": 7,
       "name": "SwapQuForExactAsset",
       "inputFields": [
         {
@@ -336,7 +314,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 17,
+      "inputType": 8,
       "name": "SwapExactAssetForQu",
       "inputFields": [
         {
@@ -377,7 +355,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 18,
+      "inputType": 9,
       "name": "SwapAssetForExactQu",
       "inputFields": [
         {
@@ -418,7 +396,30 @@
     },
     {
       "kind": "procedure",
-      "inputType": 19,
+      "inputType": 10,
+      "name": "SetInvestRewardsInfo",
+      "inputFields": [
+        {
+          "name": "newInvestRewardsId",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "success",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 32,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 11,
       "name": "TransferShareManagementRights",
       "inputFields": [
         {
@@ -515,28 +516,6 @@
     {
       "kind": "function",
       "inputType": 2,
-      "name": "InvestRewardsInfo",
-      "inputFields": [],
-      "outputFields": [
-        {
-          "name": "investRewardsFee",
-          "type": "uint32",
-          "offset": 0,
-          "byteLength": 4
-        },
-        {
-          "name": "investRewardsId",
-          "type": "id",
-          "offset": 4,
-          "byteLength": 32
-        }
-      ],
-      "inputSize": 0,
-      "outputSize": 36
-    },
-    {
-      "kind": "function",
-      "inputType": 4,
       "name": "GetPoolBasicState",
       "inputFields": [
         {
@@ -583,7 +562,7 @@
     },
     {
       "kind": "function",
-      "inputType": 5,
+      "inputType": 3,
       "name": "GetLiquidityOf",
       "inputFields": [
         {
@@ -618,7 +597,7 @@
     },
     {
       "kind": "function",
-      "inputType": 6,
+      "inputType": 4,
       "name": "QuoteExactQuInput",
       "inputFields": [
         {
@@ -653,7 +632,7 @@
     },
     {
       "kind": "function",
-      "inputType": 7,
+      "inputType": 5,
       "name": "QuoteExactQuOutput",
       "inputFields": [
         {
@@ -688,7 +667,7 @@
     },
     {
       "kind": "function",
-      "inputType": 8,
+      "inputType": 6,
       "name": "QuoteExactAssetInput",
       "inputFields": [
         {
@@ -723,7 +702,7 @@
     },
     {
       "kind": "function",
-      "inputType": 9,
+      "inputType": 7,
       "name": "QuoteExactAssetOutput",
       "inputFields": [
         {
@@ -755,6 +734,28 @@
       ],
       "inputSize": 48,
       "outputSize": 8
+    },
+    {
+      "kind": "function",
+      "inputType": 8,
+      "name": "InvestRewardsInfo",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "investRewardsFee",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "investRewardsId",
+          "type": "id",
+          "offset": 4,
+          "byteLength": 32
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 36
     }
   ]
 }

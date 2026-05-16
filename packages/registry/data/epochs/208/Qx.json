@@ -3,11 +3,55 @@
   "contractName": "Qx",
   "contractAddress": "BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARMID",
   "epoch": 208,
-  "structs": {},
+  "coreVersion": "v1.286.1",
+  "structs": {
+    "Asset": {
+      "name": "Asset",
+      "byteLength": 40,
+      "fields": [
+        {
+          "name": "issuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        }
+      ]
+    },
+    "Order": {
+      "name": "Order",
+      "fields": [
+        {
+          "name": "entity",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "price",
+          "type": "sint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "numberOfShares",
+          "type": "sint64",
+          "offset": 40,
+          "byteLength": 8
+        }
+      ],
+      "byteLength": 48
+    }
+  },
   "procedures": [
     {
       "kind": "procedure",
-      "inputType": 7,
+      "inputType": 1,
       "name": "IssueAsset",
       "inputFields": [
         {
@@ -48,7 +92,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 8,
+      "inputType": 2,
       "name": "TransferShareOwnershipAndPossession",
       "inputFields": [
         {
@@ -89,7 +133,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 9,
+      "inputType": 5,
       "name": "AddToAskOrder",
       "inputFields": [
         {
@@ -130,7 +174,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 10,
+      "inputType": 6,
       "name": "AddToBidOrder",
       "inputFields": [
         {
@@ -171,7 +215,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 11,
+      "inputType": 7,
       "name": "RemoveFromAskOrder",
       "inputFields": [
         {
@@ -212,7 +256,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 12,
+      "inputType": 8,
       "name": "RemoveFromBidOrder",
       "inputFields": [
         {
@@ -253,19 +297,26 @@
     },
     {
       "kind": "procedure",
-      "inputType": 13,
+      "inputType": 9,
       "name": "TransferShareManagementRights",
       "inputFields": [
         {
+          "name": "asset",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 40,
+          "structRef": "Asset"
+        },
+        {
           "name": "numberOfShares",
           "type": "sint64",
-          "offset": 0,
+          "offset": 40,
           "byteLength": 8
         },
         {
           "name": "newManagingContractIndex",
           "type": "uint32",
-          "offset": 8,
+          "offset": 48,
           "byteLength": 4
         }
       ],
@@ -277,14 +328,14 @@
           "byteLength": 8
         }
       ],
-      "inputSize": 12,
+      "inputSize": 52,
       "outputSize": 8
     }
   ],
   "functions": [
     {
       "kind": "function",
-      "inputType": 2,
+      "inputType": 1,
       "name": "Fees",
       "inputFields": [],
       "outputFields": [
@@ -312,7 +363,7 @@
     },
     {
       "kind": "function",
-      "inputType": 3,
+      "inputType": 2,
       "name": "AssetAskOrders",
       "inputFields": [
         {
@@ -334,13 +385,23 @@
           "byteLength": 8
         }
       ],
-      "outputFields": [],
+      "outputFields": [
+        {
+          "name": "orders",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 12288,
+          "arrayLength": 256,
+          "arrayItemStructRef": "Order",
+          "arrayItemByteLength": 48
+        }
+      ],
       "inputSize": 48,
-      "outputSize": 0
+      "outputSize": 12288
     },
     {
       "kind": "function",
-      "inputType": 4,
+      "inputType": 3,
       "name": "AssetBidOrders",
       "inputFields": [
         {
@@ -362,13 +423,23 @@
           "byteLength": 8
         }
       ],
-      "outputFields": [],
+      "outputFields": [
+        {
+          "name": "orders",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 12288,
+          "arrayLength": 256,
+          "arrayItemStructRef": "Order",
+          "arrayItemByteLength": 48
+        }
+      ],
       "inputSize": 48,
-      "outputSize": 0
+      "outputSize": 12288
     },
     {
       "kind": "function",
-      "inputType": 5,
+      "inputType": 4,
       "name": "EntityAskOrders",
       "inputFields": [
         {
@@ -384,13 +455,23 @@
           "byteLength": 8
         }
       ],
-      "outputFields": [],
+      "outputFields": [
+        {
+          "name": "orders",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 12288,
+          "arrayLength": 256,
+          "arrayItemStructRef": "Order",
+          "arrayItemByteLength": 48
+        }
+      ],
       "inputSize": 40,
-      "outputSize": 0
+      "outputSize": 12288
     },
     {
       "kind": "function",
-      "inputType": 6,
+      "inputType": 5,
       "name": "EntityBidOrders",
       "inputFields": [
         {
@@ -406,9 +487,19 @@
           "byteLength": 8
         }
       ],
-      "outputFields": [],
+      "outputFields": [
+        {
+          "name": "orders",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 12288,
+          "arrayLength": 256,
+          "arrayItemStructRef": "Order",
+          "arrayItemByteLength": 48
+        }
+      ],
       "inputSize": 40,
-      "outputSize": 0
+      "outputSize": 12288
     }
   ]
 }

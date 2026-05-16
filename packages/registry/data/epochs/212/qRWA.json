@@ -3,6 +3,7 @@
   "contractName": "qRWA",
   "contractAddress": "UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHQEE",
   "epoch": 212,
+  "coreVersion": "v1.290.0",
   "structs": {
     "QRWAGovParams": {
       "name": "QRWAGovParams",
@@ -165,7 +166,7 @@
   "procedures": [
     {
       "kind": "procedure",
-      "inputType": 1,
+      "inputType": 3,
       "name": "DonateToTreasury",
       "inputFields": [
         {
@@ -188,7 +189,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 2,
+      "inputType": 4,
       "name": "VoteGovParams",
       "inputFields": [
         {
@@ -212,7 +213,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 3,
+      "inputType": 7,
       "name": "DepositGeneralAsset",
       "inputFields": [
         {
@@ -242,7 +243,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 4,
+      "inputType": 8,
       "name": "RevokeAssetManagementRights",
       "inputFields": [
         {
@@ -278,7 +279,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 5,
+      "inputType": 9,
       "name": "SetPoolARevenueAddress",
       "inputFields": [
         {
@@ -301,7 +302,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 6,
+      "inputType": 10,
       "name": "SetPoolDRevenueAddress",
       "inputFields": [
         {
@@ -326,7 +327,7 @@
   "functions": [
     {
       "kind": "function",
-      "inputType": 7,
+      "inputType": 1,
       "name": "GetGovParams",
       "inputFields": [],
       "outputFields": [
@@ -343,7 +344,7 @@
     },
     {
       "kind": "function",
-      "inputType": 8,
+      "inputType": 2,
       "name": "GetGovPoll",
       "inputFields": [
         {
@@ -373,7 +374,7 @@
     },
     {
       "kind": "function",
-      "inputType": 9,
+      "inputType": 4,
       "name": "GetTreasuryBalance",
       "inputFields": [],
       "outputFields": [
@@ -389,7 +390,7 @@
     },
     {
       "kind": "function",
-      "inputType": 10,
+      "inputType": 5,
       "name": "GetDividendBalances",
       "inputFields": [],
       "outputFields": [
@@ -471,7 +472,7 @@
     },
     {
       "kind": "function",
-      "inputType": 11,
+      "inputType": 6,
       "name": "GetTotalDistributed",
       "inputFields": [],
       "outputFields": [
@@ -511,47 +512,7 @@
     },
     {
       "kind": "function",
-      "inputType": 12,
-      "name": "GetContractAddresses",
-      "inputFields": [],
-      "outputFields": [
-        {
-          "name": "dedicatedRevenueAddress",
-          "type": "id",
-          "offset": 0,
-          "byteLength": 32
-        },
-        {
-          "name": "poolARevenueAddress",
-          "type": "id",
-          "offset": 32,
-          "byteLength": 32
-        },
-        {
-          "name": "poolDRevenueAddress",
-          "type": "id",
-          "offset": 64,
-          "byteLength": 32
-        },
-        {
-          "name": "fundraisingAddress",
-          "type": "id",
-          "offset": 96,
-          "byteLength": 32
-        },
-        {
-          "name": "exchangeAddress",
-          "type": "id",
-          "offset": 128,
-          "byteLength": 32
-        }
-      ],
-      "inputSize": 0,
-      "outputSize": 160
-    },
-    {
-      "kind": "function",
-      "inputType": 13,
+      "inputType": 8,
       "name": "GetActiveGovPollIds",
       "inputFields": [],
       "outputFields": [
@@ -576,7 +537,7 @@
     },
     {
       "kind": "function",
-      "inputType": 14,
+      "inputType": 9,
       "name": "GetGeneralAssetBalance",
       "inputFields": [
         {
@@ -606,7 +567,7 @@
     },
     {
       "kind": "function",
-      "inputType": 15,
+      "inputType": 10,
       "name": "GetGeneralAssets",
       "inputFields": [],
       "outputFields": [
@@ -640,41 +601,7 @@
     },
     {
       "kind": "function",
-      "inputType": 16,
-      "name": "GetScDividendTracking",
-      "inputFields": [],
-      "outputFields": [
-        {
-          "name": "count",
-          "type": "uint64",
-          "offset": 0,
-          "byteLength": 8
-        },
-        {
-          "name": "scContractIds",
-          "type": "array",
-          "offset": 8,
-          "byteLength": 32768,
-          "arrayLength": 1024,
-          "arrayItemType": "id",
-          "arrayItemByteLength": 32
-        },
-        {
-          "name": "cumulativeDividends",
-          "type": "array",
-          "offset": 32776,
-          "byteLength": 8192,
-          "arrayLength": 1024,
-          "arrayItemType": "uint64",
-          "arrayItemByteLength": 8
-        }
-      ],
-      "inputSize": 0,
-      "outputSize": 40968
-    },
-    {
-      "kind": "function",
-      "inputType": 17,
+      "inputType": 11,
       "name": "GetPayoutsQmine",
       "inputFields": [
         {
@@ -724,7 +651,47 @@
     },
     {
       "kind": "function",
-      "inputType": 18,
+      "inputType": 12,
+      "name": "GetContractAddresses",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "dedicatedRevenueAddress",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "poolARevenueAddress",
+          "type": "id",
+          "offset": 32,
+          "byteLength": 32
+        },
+        {
+          "name": "poolDRevenueAddress",
+          "type": "id",
+          "offset": 64,
+          "byteLength": 32
+        },
+        {
+          "name": "fundraisingAddress",
+          "type": "id",
+          "offset": 96,
+          "byteLength": 32
+        },
+        {
+          "name": "exchangeAddress",
+          "type": "id",
+          "offset": 128,
+          "byteLength": 32
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 160
+    },
+    {
+      "kind": "function",
+      "inputType": 13,
       "name": "GetPayoutsQrwa",
       "inputFields": [
         {
@@ -774,7 +741,7 @@
     },
     {
       "kind": "function",
-      "inputType": 19,
+      "inputType": 14,
       "name": "GetPayoutsDedicated",
       "inputFields": [
         {
@@ -824,7 +791,41 @@
     },
     {
       "kind": "function",
-      "inputType": 20,
+      "inputType": 15,
+      "name": "GetScDividendTracking",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "count",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "scContractIds",
+          "type": "array",
+          "offset": 8,
+          "byteLength": 32768,
+          "arrayLength": 1024,
+          "arrayItemType": "id",
+          "arrayItemByteLength": 32
+        },
+        {
+          "name": "cumulativeDividends",
+          "type": "array",
+          "offset": 32776,
+          "byteLength": 8192,
+          "arrayLength": 1024,
+          "arrayItemType": "uint64",
+          "arrayItemByteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 40968
+    },
+    {
+      "kind": "function",
+      "inputType": 16,
       "name": "GetPayoutsPoolD",
       "inputFields": [
         {

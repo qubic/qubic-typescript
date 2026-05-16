@@ -3,11 +3,12 @@
   "contractName": "Qearn",
   "contractAddress": "JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVKHO",
   "epoch": 139,
+  "coreVersion": "v1.229.0",
   "structs": {},
   "procedures": [
     {
       "kind": "procedure",
-      "inputType": 6,
+      "inputType": 1,
       "name": "lock",
       "inputFields": [],
       "outputFields": [
@@ -23,7 +24,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 7,
+      "inputType": 2,
       "name": "unlock",
       "inputFields": [
         {

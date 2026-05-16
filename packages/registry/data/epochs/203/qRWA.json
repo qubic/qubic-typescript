@@ -3,6 +3,7 @@
   "contractName": "qRWA",
   "contractAddress": "UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHQEE",
   "epoch": 203,
+  "coreVersion": "v1.281.0",
   "structs": {
     "QRWAGovParams": {
       "name": "QRWAGovParams",
@@ -166,7 +167,7 @@
   "procedures": [
     {
       "kind": "procedure",
-      "inputType": 1,
+      "inputType": 3,
       "name": "DonateToTreasury",
       "inputFields": [
         {
@@ -189,7 +190,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 2,
+      "inputType": 4,
       "name": "VoteGovParams",
       "inputFields": [
         {
@@ -213,7 +214,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 3,
+      "inputType": 5,
       "name": "CreateAssetReleasePoll",
       "inputFields": [
         {
@@ -261,7 +262,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 4,
+      "inputType": 6,
       "name": "VoteAssetRelease",
       "inputFields": [
         {
@@ -290,7 +291,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 5,
+      "inputType": 7,
       "name": "DepositGeneralAsset",
       "inputFields": [
         {
@@ -320,7 +321,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 6,
+      "inputType": 8,
       "name": "RevokeAssetManagementRights",
       "inputFields": [
         {
@@ -358,7 +359,7 @@
   "functions": [
     {
       "kind": "function",
-      "inputType": 7,
+      "inputType": 1,
       "name": "GetGovParams",
       "inputFields": [],
       "outputFields": [
@@ -375,7 +376,7 @@
     },
     {
       "kind": "function",
-      "inputType": 8,
+      "inputType": 2,
       "name": "GetGovPoll",
       "inputFields": [
         {
@@ -405,7 +406,7 @@
     },
     {
       "kind": "function",
-      "inputType": 9,
+      "inputType": 3,
       "name": "GetAssetReleasePoll",
       "inputFields": [
         {
@@ -435,7 +436,7 @@
     },
     {
       "kind": "function",
-      "inputType": 10,
+      "inputType": 4,
       "name": "GetTreasuryBalance",
       "inputFields": [],
       "outputFields": [
@@ -451,7 +452,7 @@
     },
     {
       "kind": "function",
-      "inputType": 11,
+      "inputType": 5,
       "name": "GetDividendBalances",
       "inputFields": [],
       "outputFields": [
@@ -485,7 +486,7 @@
     },
     {
       "kind": "function",
-      "inputType": 12,
+      "inputType": 6,
       "name": "GetTotalDistributed",
       "inputFields": [],
       "outputFields": [
@@ -507,7 +508,7 @@
     },
     {
       "kind": "function",
-      "inputType": 13,
+      "inputType": 7,
       "name": "GetActiveAssetReleasePollIds",
       "inputFields": [],
       "outputFields": [
@@ -532,7 +533,7 @@
     },
     {
       "kind": "function",
-      "inputType": 14,
+      "inputType": 8,
       "name": "GetActiveGovPollIds",
       "inputFields": [],
       "outputFields": [
@@ -557,7 +558,7 @@
     },
     {
       "kind": "function",
-      "inputType": 15,
+      "inputType": 9,
       "name": "GetGeneralAssetBalance",
       "inputFields": [
         {
@@ -587,7 +588,7 @@
     },
     {
       "kind": "function",
-      "inputType": 16,
+      "inputType": 10,
       "name": "GetGeneralAssets",
       "inputFields": [],
       "outputFields": [

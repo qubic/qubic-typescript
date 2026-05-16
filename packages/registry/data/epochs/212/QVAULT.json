@@ -3,6 +3,7 @@
   "contractName": "QVAULT",
   "contractAddress": "KAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAXIUO",
   "epoch": 212,
+  "coreVersion": "v1.290.0",
   "structs": {
     "Asset": {
       "name": "Asset",
@@ -533,7 +534,7 @@
   "procedures": [
     {
       "kind": "procedure",
-      "inputType": 2,
+      "inputType": 1,
       "name": "stake",
       "inputFields": [
         {
@@ -556,7 +557,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 3,
+      "inputType": 2,
       "name": "unStake",
       "inputFields": [
         {
@@ -579,7 +580,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 4,
+      "inputType": 3,
       "name": "submitGP",
       "inputFields": [
         {
@@ -605,7 +606,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 5,
+      "inputType": 4,
       "name": "submitQCP",
       "inputFields": [
         {
@@ -637,7 +638,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 6,
+      "inputType": 5,
       "name": "submitIPOP",
       "inputFields": [
         {
@@ -669,7 +670,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 7,
+      "inputType": 6,
       "name": "submitQEarnP",
       "inputFields": [
         {
@@ -707,7 +708,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 8,
+      "inputType": 7,
       "name": "submitFundP",
       "inputFields": [
         {
@@ -745,7 +746,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 9,
+      "inputType": 8,
       "name": "submitMKTP",
       "inputFields": [
         {
@@ -801,7 +802,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 10,
+      "inputType": 9,
       "name": "submitAlloP",
       "inputFields": [
         {
@@ -1155,7 +1156,7 @@
     },
     {
       "kind": "function",
-      "inputType": 14,
+      "inputType": 2,
       "name": "getStakedAmountAndVotingPower",
       "inputFields": [
         {
@@ -1190,7 +1191,7 @@
     },
     {
       "kind": "function",
-      "inputType": 15,
+      "inputType": 3,
       "name": "getGP",
       "inputFields": [
         {
@@ -1220,7 +1221,7 @@
     },
     {
       "kind": "function",
-      "inputType": 16,
+      "inputType": 4,
       "name": "getQCP",
       "inputFields": [
         {
@@ -1250,7 +1251,7 @@
     },
     {
       "kind": "function",
-      "inputType": 17,
+      "inputType": 5,
       "name": "getIPOP",
       "inputFields": [
         {
@@ -1280,7 +1281,7 @@
     },
     {
       "kind": "function",
-      "inputType": 18,
+      "inputType": 6,
       "name": "getQEarnP",
       "inputFields": [
         {
@@ -1310,7 +1311,7 @@
     },
     {
       "kind": "function",
-      "inputType": 19,
+      "inputType": 7,
       "name": "getFundP",
       "inputFields": [
         {
@@ -1340,7 +1341,7 @@
     },
     {
       "kind": "function",
-      "inputType": 20,
+      "inputType": 8,
       "name": "getMKTP",
       "inputFields": [
         {
@@ -1370,7 +1371,7 @@
     },
     {
       "kind": "function",
-      "inputType": 21,
+      "inputType": 9,
       "name": "getAlloP",
       "inputFields": [
         {
@@ -1400,7 +1401,7 @@
     },
     {
       "kind": "function",
-      "inputType": 22,
+      "inputType": 11,
       "name": "getIdentitiesHvVtPw",
       "inputFields": [
         {
@@ -1447,7 +1448,7 @@
     },
     {
       "kind": "function",
-      "inputType": 23,
+      "inputType": 12,
       "name": "ppCreationPower",
       "inputFields": [
         {
@@ -1476,7 +1477,7 @@
     },
     {
       "kind": "function",
-      "inputType": 24,
+      "inputType": 13,
       "name": "getQcapBurntAmountInLastEpoches",
       "inputFields": [
         {
@@ -1505,7 +1506,7 @@
     },
     {
       "kind": "function",
-      "inputType": 25,
+      "inputType": 14,
       "name": "getAmountToBeSoldPerYear",
       "inputFields": [
         {
@@ -1528,7 +1529,7 @@
     },
     {
       "kind": "function",
-      "inputType": 26,
+      "inputType": 15,
       "name": "getTotalRevenueInQcap",
       "inputFields": [],
       "outputFields": [
@@ -1544,7 +1545,7 @@
     },
     {
       "kind": "function",
-      "inputType": 27,
+      "inputType": 16,
       "name": "getRevenueInQcapPerEpoch",
       "inputFields": [
         {
@@ -1585,7 +1586,7 @@
     },
     {
       "kind": "function",
-      "inputType": 28,
+      "inputType": 17,
       "name": "getRevenuePerShare",
       "inputFields": [
         {
@@ -1608,7 +1609,7 @@
     },
     {
       "kind": "function",
-      "inputType": 29,
+      "inputType": 18,
       "name": "getAmountOfShareQvaultHold",
       "inputFields": [
         {
@@ -1632,7 +1633,7 @@
     },
     {
       "kind": "function",
-      "inputType": 30,
+      "inputType": 19,
       "name": "getNumberOfHolderAndAvgAm",
       "inputFields": [],
       "outputFields": [
@@ -1660,7 +1661,7 @@
     },
     {
       "kind": "function",
-      "inputType": 31,
+      "inputType": 20,
       "name": "getAmountForQearnInUpcomingEpoch",
       "inputFields": [
         {
@@ -1689,7 +1690,7 @@
     },
     {
       "kind": "function",
-      "inputType": 32,
+      "inputType": 21,
       "name": "getVoteInProposal",
       "inputFields": [
         {

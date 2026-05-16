@@ -98,7 +98,7 @@ export function decodeRandomLotteryBuyTicketOutput(
   return decodePayload(data, RANDOM_LOTTERY_BUY_TICKET_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as RandomLotteryBuyTicketOutput
 }
 
-export const RANDOM_LOTTERY_SET_PRICE_INPUT_TYPE = 11
+export const RANDOM_LOTTERY_SET_PRICE_INPUT_TYPE = 2
 
 export interface RandomLotterySetPriceInput {
   newPrice: bigint
@@ -138,7 +138,7 @@ export function decodeRandomLotterySetPriceOutput(
   return decodePayload(data, RANDOM_LOTTERY_SET_PRICE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as RandomLotterySetPriceOutput
 }
 
-export const RANDOM_LOTTERY_SET_SCHEDULE_INPUT_TYPE = 12
+export const RANDOM_LOTTERY_SET_SCHEDULE_INPUT_TYPE = 3
 
 export interface RandomLotterySetScheduleInput {
   newSchedule: number
@@ -178,7 +178,7 @@ export function decodeRandomLotterySetScheduleOutput(
   return decodePayload(data, RANDOM_LOTTERY_SET_SCHEDULE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as RandomLotterySetScheduleOutput
 }
 
-export const RANDOM_LOTTERY_GET_FEES_INPUT_TYPE = 2
+export const RANDOM_LOTTERY_GET_FEES_INPUT_TYPE = 1
 export const RANDOM_LOTTERY_GET_FEES_INPUT_SIZE = 0
 
 export interface RandomLotteryGetFeesOutput {
@@ -245,7 +245,7 @@ export async function randomLotteryGetFees(
   })
 }
 
-export const RANDOM_LOTTERY_GET_PLAYERS_INPUT_TYPE = 3
+export const RANDOM_LOTTERY_GET_PLAYERS_INPUT_TYPE = 2
 export const RANDOM_LOTTERY_GET_PLAYERS_INPUT_SIZE = 0
 
 export interface RandomLotteryGetPlayersOutput {
@@ -302,7 +302,7 @@ export async function randomLotteryGetPlayers(
   })
 }
 
-export const RANDOM_LOTTERY_GET_WINNERS_INPUT_TYPE = 5
+export const RANDOM_LOTTERY_GET_WINNERS_INPUT_TYPE = 3
 export const RANDOM_LOTTERY_GET_WINNERS_INPUT_SIZE = 0
 
 export interface RandomLotteryGetWinnersOutput {
@@ -358,7 +358,7 @@ export async function randomLotteryGetWinners(
   })
 }
 
-export const RANDOM_LOTTERY_GET_TICKET_PRICE_INPUT_TYPE = 6
+export const RANDOM_LOTTERY_GET_TICKET_PRICE_INPUT_TYPE = 4
 export const RANDOM_LOTTERY_GET_TICKET_PRICE_INPUT_SIZE = 0
 
 export interface RandomLotteryGetTicketPriceOutput {
@@ -397,7 +397,7 @@ export async function randomLotteryGetTicketPrice(
   })
 }
 
-export const RANDOM_LOTTERY_GET_MAX_NUMBER_OF_PLAYERS_INPUT_TYPE = 7
+export const RANDOM_LOTTERY_GET_MAX_NUMBER_OF_PLAYERS_INPUT_TYPE = 5
 export const RANDOM_LOTTERY_GET_MAX_NUMBER_OF_PLAYERS_INPUT_SIZE = 0
 
 export interface RandomLotteryGetMaxNumberOfPlayersOutput {
@@ -436,7 +436,7 @@ export async function randomLotteryGetMaxNumberOfPlayers(
   })
 }
 
-export const RANDOM_LOTTERY_GET_STATE_INPUT_TYPE = 8
+export const RANDOM_LOTTERY_GET_STATE_INPUT_TYPE = 6
 export const RANDOM_LOTTERY_GET_STATE_INPUT_SIZE = 0
 
 export interface RandomLotteryGetStateOutput {
@@ -475,7 +475,7 @@ export async function randomLotteryGetState(
   })
 }
 
-export const RANDOM_LOTTERY_GET_BALANCE_INPUT_TYPE = 9
+export const RANDOM_LOTTERY_GET_BALANCE_INPUT_TYPE = 7
 export const RANDOM_LOTTERY_GET_BALANCE_INPUT_SIZE = 0
 
 export interface RandomLotteryGetBalanceOutput {
@@ -514,7 +514,7 @@ export async function randomLotteryGetBalance(
   })
 }
 
-export const RANDOM_LOTTERY_GET_NEXT_EPOCH_DATA_INPUT_TYPE = 13
+export const RANDOM_LOTTERY_GET_NEXT_EPOCH_DATA_INPUT_TYPE = 8
 export const RANDOM_LOTTERY_GET_NEXT_EPOCH_DATA_INPUT_SIZE = 0
 
 export interface RandomLotteryGetNextEpochDataOutput {
@@ -554,7 +554,7 @@ export async function randomLotteryGetNextEpochData(
   })
 }
 
-export const RANDOM_LOTTERY_GET_DRAW_HOUR_INPUT_TYPE = 14
+export const RANDOM_LOTTERY_GET_DRAW_HOUR_INPUT_TYPE = 9
 export const RANDOM_LOTTERY_GET_DRAW_HOUR_INPUT_SIZE = 0
 
 export interface RandomLotteryGetDrawHourOutput {
@@ -593,7 +593,7 @@ export async function randomLotteryGetDrawHour(
   })
 }
 
-export const RANDOM_LOTTERY_GET_SCHEDULE_INPUT_TYPE = 15
+export const RANDOM_LOTTERY_GET_SCHEDULE_INPUT_TYPE = 10
 export const RANDOM_LOTTERY_GET_SCHEDULE_INPUT_SIZE = 0
 
 export interface RandomLotteryGetScheduleOutput {

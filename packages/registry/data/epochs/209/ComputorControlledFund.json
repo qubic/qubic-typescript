@@ -3,6 +3,7 @@
   "contractName": "ComputorControlledFund",
   "contractAddress": "IAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABXSH",
   "epoch": 209,
+  "coreVersion": "v1.287.1",
   "structs": {
     "ProposalDataT": {
       "name": "ProposalDataT",
@@ -422,7 +423,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 4,
+      "inputType": 2,
       "name": "Vote",
       "inputFields": [
         {
@@ -465,7 +466,7 @@
   "functions": [
     {
       "kind": "function",
-      "inputType": 2,
+      "inputType": 1,
       "name": "GetProposalIndices",
       "inputFields": [
         {
@@ -503,7 +504,7 @@
     },
     {
       "kind": "function",
-      "inputType": 3,
+      "inputType": 2,
       "name": "GetProposal",
       "inputFields": [
         {
@@ -589,7 +590,7 @@
     },
     {
       "kind": "function",
-      "inputType": 5,
+      "inputType": 3,
       "name": "GetVote",
       "inputFields": [
         {
@@ -625,7 +626,7 @@
     },
     {
       "kind": "function",
-      "inputType": 6,
+      "inputType": 4,
       "name": "GetVotingResults",
       "inputFields": [
         {
@@ -655,7 +656,7 @@
     },
     {
       "kind": "function",
-      "inputType": 7,
+      "inputType": 5,
       "name": "GetLatestTransfers",
       "inputFields": [],
       "outputFields": [
@@ -674,7 +675,23 @@
     },
     {
       "kind": "function",
-      "inputType": 8,
+      "inputType": 6,
+      "name": "GetProposalFee",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "proposalFee",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 4
+    },
+    {
+      "kind": "function",
+      "inputType": 7,
       "name": "GetRegularPayments",
       "inputFields": [],
       "outputFields": [
@@ -690,22 +707,6 @@
       ],
       "inputSize": 0,
       "outputSize": 39424
-    },
-    {
-      "kind": "function",
-      "inputType": 9,
-      "name": "GetProposalFee",
-      "inputFields": [],
-      "outputFields": [
-        {
-          "name": "proposalFee",
-          "type": "uint32",
-          "offset": 0,
-          "byteLength": 4
-        }
-      ],
-      "inputSize": 0,
-      "outputSize": 4
     }
   ]
 }

@@ -3,6 +3,7 @@
   "contractName": "Qbay",
   "contractAddress": "MAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWLWD",
   "epoch": 194,
+  "coreVersion": "v1.272.2",
   "structs": {
     "Asset": {
       "name": "Asset",
@@ -621,7 +622,7 @@
   "functions": [
     {
       "kind": "function",
-      "inputType": 18,
+      "inputType": 1,
       "name": "getNumberOfNFTForUser",
       "inputFields": [
         {
@@ -644,7 +645,7 @@
     },
     {
       "kind": "function",
-      "inputType": 19,
+      "inputType": 2,
       "name": "getInfoOfNFTUserPossessed",
       "inputFields": [
         {
@@ -838,7 +839,7 @@
     },
     {
       "kind": "function",
-      "inputType": 20,
+      "inputType": 3,
       "name": "getInfoOfMarketplace",
       "inputFields": [],
       "outputFields": [
@@ -896,7 +897,7 @@
     },
     {
       "kind": "function",
-      "inputType": 21,
+      "inputType": 4,
       "name": "getInfoOfCollectionByCreator",
       "inputFields": [
         {
@@ -964,7 +965,7 @@
     },
     {
       "kind": "function",
-      "inputType": 22,
+      "inputType": 5,
       "name": "getInfoOfCollectionById",
       "inputFields": [
         {
@@ -1026,7 +1027,7 @@
     },
     {
       "kind": "function",
-      "inputType": 23,
+      "inputType": 6,
       "name": "getIncomingAuctions",
       "inputFields": [
         {
@@ -1058,7 +1059,7 @@
     },
     {
       "kind": "function",
-      "inputType": 24,
+      "inputType": 7,
       "name": "getInfoOfNFTById",
       "inputFields": [
         {
@@ -1246,7 +1247,7 @@
     },
     {
       "kind": "function",
-      "inputType": 25,
+      "inputType": 8,
       "name": "getUserCreatedCollection",
       "inputFields": [
         {
@@ -1284,7 +1285,7 @@
     },
     {
       "kind": "function",
-      "inputType": 26,
+      "inputType": 9,
       "name": "getUserCreatedNFT",
       "inputFields": [
         {

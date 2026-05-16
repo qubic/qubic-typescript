@@ -3,6 +3,7 @@
   "contractName": "QBond",
   "contractAddress": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
   "epoch": 197,
+  "coreVersion": "v1.275.0",
   "structs": {
     "Order": {
       "name": "Order",
@@ -337,7 +338,7 @@
   "functions": [
     {
       "kind": "function",
-      "inputType": 9,
+      "inputType": 1,
       "name": "GetFees",
       "inputFields": [],
       "outputFields": [
@@ -365,7 +366,7 @@
     },
     {
       "kind": "function",
-      "inputType": 10,
+      "inputType": 2,
       "name": "GetEarnedFees",
       "inputFields": [],
       "outputFields": [
@@ -387,7 +388,7 @@
     },
     {
       "kind": "function",
-      "inputType": 11,
+      "inputType": 3,
       "name": "GetInfoPerEpoch",
       "inputFields": [
         {
@@ -422,7 +423,7 @@
     },
     {
       "kind": "function",
-      "inputType": 12,
+      "inputType": 4,
       "name": "GetOrders",
       "inputFields": [
         {
@@ -469,7 +470,7 @@
     },
     {
       "kind": "function",
-      "inputType": 13,
+      "inputType": 5,
       "name": "GetUserOrders",
       "inputFields": [
         {
@@ -516,7 +517,7 @@
     },
     {
       "kind": "function",
-      "inputType": 14,
+      "inputType": 6,
       "name": "GetMBondsTable",
       "inputFields": [],
       "outputFields": [
@@ -535,7 +536,7 @@
     },
     {
       "kind": "function",
-      "inputType": 15,
+      "inputType": 7,
       "name": "GetUserMBonds",
       "inputFields": [
         {
@@ -567,7 +568,7 @@
     },
     {
       "kind": "function",
-      "inputType": 16,
+      "inputType": 8,
       "name": "GetCFA",
       "inputFields": [],
       "outputFields": [

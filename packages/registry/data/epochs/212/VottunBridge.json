@@ -3,6 +3,7 @@
   "contractName": "VottunBridge",
   "contractAddress": "ZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAZUQI",
   "epoch": 212,
+  "coreVersion": "v1.290.0",
   "structs": {
     "OrderResponse": {
       "name": "OrderResponse",
@@ -250,7 +251,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 3,
+      "inputType": 2,
       "name": "completeOrder",
       "inputFields": [
         {
@@ -273,7 +274,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 4,
+      "inputType": 3,
       "name": "refundOrder",
       "inputFields": [
         {
@@ -296,7 +297,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 5,
+      "inputType": 4,
       "name": "transferToContract",
       "inputFields": [
         {
@@ -325,7 +326,35 @@
     },
     {
       "kind": "procedure",
-      "inputType": 12,
+      "inputType": 5,
+      "name": "addLiquidity",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "status",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        },
+        {
+          "name": "addedAmount",
+          "type": "uint64",
+          "offset": 1,
+          "byteLength": 8
+        },
+        {
+          "name": "totalLocked",
+          "type": "uint64",
+          "offset": 9,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 17
+    },
+    {
+      "kind": "procedure",
+      "inputType": 6,
       "name": "createProposal",
       "inputFields": [
         {
@@ -372,7 +401,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 13,
+      "inputType": 7,
       "name": "approveProposal",
       "inputFields": [
         {
@@ -401,7 +430,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 15,
+      "inputType": 8,
       "name": "cancelProposal",
       "inputFields": [
         {
@@ -421,84 +450,12 @@
       ],
       "inputSize": 8,
       "outputSize": 1
-    },
-    {
-      "kind": "procedure",
-      "inputType": 17,
-      "name": "addLiquidity",
-      "inputFields": [],
-      "outputFields": [
-        {
-          "name": "status",
-          "type": "uint8",
-          "offset": 0,
-          "byteLength": 1
-        },
-        {
-          "name": "addedAmount",
-          "type": "uint64",
-          "offset": 1,
-          "byteLength": 8
-        },
-        {
-          "name": "totalLocked",
-          "type": "uint64",
-          "offset": 9,
-          "byteLength": 8
-        }
-      ],
-      "inputSize": 0,
-      "outputSize": 17
     }
   ],
   "functions": [
     {
       "kind": "function",
-      "inputType": 2,
-      "name": "getTotalReceivedTokens",
-      "inputFields": [],
-      "outputFields": [
-        {
-          "name": "totalTokens",
-          "type": "uint64",
-          "offset": 0,
-          "byteLength": 8
-        }
-      ],
-      "inputSize": 0,
-      "outputSize": 8
-    },
-    {
-      "kind": "function",
-      "inputType": 6,
-      "name": "getAvailableFees",
-      "inputFields": [],
-      "outputFields": [
-        {
-          "name": "availableFees",
-          "type": "uint64",
-          "offset": 0,
-          "byteLength": 8
-        },
-        {
-          "name": "totalEarnedFees",
-          "type": "uint64",
-          "offset": 8,
-          "byteLength": 8
-        },
-        {
-          "name": "totalDistributedFees",
-          "type": "uint64",
-          "offset": 16,
-          "byteLength": 8
-        }
-      ],
-      "inputSize": 0,
-      "outputSize": 24
-    },
-    {
-      "kind": "function",
-      "inputType": 7,
+      "inputType": 1,
       "name": "getOrder",
       "inputFields": [
         {
@@ -537,7 +494,89 @@
     },
     {
       "kind": "function",
-      "inputType": 8,
+      "inputType": 3,
+      "name": "getTotalReceivedTokens",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "totalTokens",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 8
+    },
+    {
+      "kind": "function",
+      "inputType": 4,
+      "name": "getTotalLockedTokens",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "totalLockedTokens",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 8
+    },
+    {
+      "kind": "function",
+      "inputType": 5,
+      "name": "getOrderByDetails",
+      "inputFields": [
+        {
+          "name": "ethAddress",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 64,
+          "arrayLength": 64,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        },
+        {
+          "name": "amount",
+          "type": "uint64",
+          "offset": 64,
+          "byteLength": 8
+        },
+        {
+          "name": "status",
+          "type": "uint8",
+          "offset": 72,
+          "byteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "status",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        },
+        {
+          "name": "orderId",
+          "type": "uint64",
+          "offset": 1,
+          "byteLength": 8
+        },
+        {
+          "name": "qubicDestination",
+          "type": "id",
+          "offset": 9,
+          "byteLength": 32
+        }
+      ],
+      "inputSize": 73,
+      "outputSize": 41
+    },
+    {
+      "kind": "function",
+      "inputType": 6,
       "name": "getContractInfo",
       "inputFields": [],
       "outputFields": [
@@ -640,23 +679,35 @@
     },
     {
       "kind": "function",
-      "inputType": 9,
-      "name": "getTotalLockedTokens",
+      "inputType": 7,
+      "name": "getAvailableFees",
       "inputFields": [],
       "outputFields": [
         {
-          "name": "totalLockedTokens",
+          "name": "availableFees",
           "type": "uint64",
           "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "totalEarnedFees",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "totalDistributedFees",
+          "type": "uint64",
+          "offset": 16,
           "byteLength": 8
         }
       ],
       "inputSize": 0,
-      "outputSize": 8
+      "outputSize": 24
     },
     {
       "kind": "function",
-      "inputType": 14,
+      "inputType": 8,
       "name": "getProposal",
       "inputFields": [
         {
@@ -683,56 +734,6 @@
       ],
       "inputSize": 8,
       "outputSize": 597
-    },
-    {
-      "kind": "function",
-      "inputType": 16,
-      "name": "getOrderByDetails",
-      "inputFields": [
-        {
-          "name": "ethAddress",
-          "type": "array",
-          "offset": 0,
-          "byteLength": 64,
-          "arrayLength": 64,
-          "arrayItemType": "uint8",
-          "arrayItemByteLength": 1
-        },
-        {
-          "name": "amount",
-          "type": "uint64",
-          "offset": 64,
-          "byteLength": 8
-        },
-        {
-          "name": "status",
-          "type": "uint8",
-          "offset": 72,
-          "byteLength": 1
-        }
-      ],
-      "outputFields": [
-        {
-          "name": "status",
-          "type": "uint8",
-          "offset": 0,
-          "byteLength": 1
-        },
-        {
-          "name": "orderId",
-          "type": "uint64",
-          "offset": 1,
-          "byteLength": 8
-        },
-        {
-          "name": "qubicDestination",
-          "type": "id",
-          "offset": 9,
-          "byteLength": 32
-        }
-      ],
-      "inputSize": 73,
-      "outputSize": 41
     }
   ]
 }

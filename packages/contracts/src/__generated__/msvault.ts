@@ -108,7 +108,7 @@ const STRUCTS: Record<string, NamedStruct> = {
 },
 }
 
-export const MS_VAULT_REGISTER_VAULT_INPUT_TYPE = 7
+export const MS_VAULT_REGISTER_VAULT_INPUT_TYPE = 1
 
 export interface MsVaultRegisterVaultInput {
   vaultName: string
@@ -166,7 +166,7 @@ export function decodeMsVaultRegisterVaultOutput(
   return decodePayload(data, MS_VAULT_REGISTER_VAULT_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as MsVaultRegisterVaultOutput
 }
 
-export const MS_VAULT_DEPOSIT_INPUT_TYPE = 8
+export const MS_VAULT_DEPOSIT_INPUT_TYPE = 2
 
 export interface MsVaultDepositInput {
   vaultId: bigint
@@ -206,7 +206,7 @@ export function decodeMsVaultDepositOutput(
   return decodePayload(data, MS_VAULT_DEPOSIT_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as MsVaultDepositOutput
 }
 
-export const MS_VAULT_RELEASE_TO_INPUT_TYPE = 9
+export const MS_VAULT_RELEASE_TO_INPUT_TYPE = 3
 
 export interface MsVaultReleaseToInput {
   vaultId: bigint
@@ -261,7 +261,7 @@ export function decodeMsVaultReleaseToOutput(
   return decodePayload(data, MS_VAULT_RELEASE_TO_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as MsVaultReleaseToOutput
 }
 
-export const MS_VAULT_RESET_RELEASE_INPUT_TYPE = 10
+export const MS_VAULT_RESET_RELEASE_INPUT_TYPE = 4
 
 export interface MsVaultResetReleaseInput {
   vaultId: bigint
@@ -301,7 +301,7 @@ export function decodeMsVaultResetReleaseOutput(
   return decodePayload(data, MS_VAULT_RESET_RELEASE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as MsVaultResetReleaseOutput
 }
 
-export const MS_VAULT_VOTE_FEE_CHANGE_INPUT_TYPE = 11
+export const MS_VAULT_VOTE_FEE_CHANGE_INPUT_TYPE = 13
 
 export interface MsVaultVoteFeeChangeInput {
   newRegisteringFee: bigint
@@ -376,7 +376,7 @@ export function decodeMsVaultVoteFeeChangeOutput(
   return decodePayload(data, MS_VAULT_VOTE_FEE_CHANGE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as MsVaultVoteFeeChangeOutput
 }
 
-export const MS_VAULT_DEPOSIT_ASSET_INPUT_TYPE = 24
+export const MS_VAULT_DEPOSIT_ASSET_INPUT_TYPE = 19
 
 export interface MsVaultDepositAssetInput {
   vaultId: bigint
@@ -431,62 +431,7 @@ export function decodeMsVaultDepositAssetOutput(
   return decodePayload(data, MS_VAULT_DEPOSIT_ASSET_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as MsVaultDepositAssetOutput
 }
 
-export const MS_VAULT_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_TYPE = 25
-
-export interface MsVaultRevokeAssetManagementRightsInput {
-  asset: MsVaultAssetStruct
-  numberOfShares: bigint
-}
-
-const MS_VAULT_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'asset',
-    type: 'struct',
-    offset: 0,
-    byteLength: 40,
-    structRef: 'Asset',
-  },
-  {
-    name: 'numberOfShares',
-    type: 'sint64',
-    offset: 40,
-    byteLength: 8,
-  },
-]
-
-export function buildMsVaultRevokeAssetManagementRightsInput(
-  input: MsVaultRevokeAssetManagementRightsInput,
-): ContractCall {
-  return { contractIndex: MS_VAULT_CONTRACT_INDEX, inputType: MS_VAULT_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_TYPE, payload: buildPayload(MS_VAULT_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
-}
-
-export interface MsVaultRevokeAssetManagementRightsOutput {
-  transferredNumberOfShares: bigint
-  status: bigint
-}
-
-const MS_VAULT_REVOKE_ASSET_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'transferredNumberOfShares',
-    type: 'sint64',
-    offset: 0,
-    byteLength: 8,
-  },
-  {
-    name: 'status',
-    type: 'uint64',
-    offset: 8,
-    byteLength: 8,
-  },
-]
-
-export function decodeMsVaultRevokeAssetManagementRightsOutput(
-  data: Uint8Array,
-): MsVaultRevokeAssetManagementRightsOutput {
-  return decodePayload(data, MS_VAULT_REVOKE_ASSET_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as MsVaultRevokeAssetManagementRightsOutput
-}
-
-export const MS_VAULT_RELEASE_ASSET_TO_INPUT_TYPE = 26
+export const MS_VAULT_RELEASE_ASSET_TO_INPUT_TYPE = 20
 
 export interface MsVaultReleaseAssetToInput {
   vaultId: bigint
@@ -549,7 +494,7 @@ export function decodeMsVaultReleaseAssetToOutput(
   return decodePayload(data, MS_VAULT_RELEASE_ASSET_TO_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as MsVaultReleaseAssetToOutput
 }
 
-export const MS_VAULT_RESET_ASSET_RELEASE_INPUT_TYPE = 27
+export const MS_VAULT_RESET_ASSET_RELEASE_INPUT_TYPE = 21
 
 export interface MsVaultResetAssetReleaseInput {
   vaultId: bigint
@@ -589,75 +534,14 @@ export function decodeMsVaultResetAssetReleaseOutput(
   return decodePayload(data, MS_VAULT_RESET_ASSET_RELEASE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as MsVaultResetAssetReleaseOutput
 }
 
-export const MS_VAULT_IS_SHARE_HOLDER_INPUT_TYPE = 5
-export const MS_VAULT_IS_SHARE_HOLDER_INPUT_SIZE = 32
+export const MS_VAULT_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_TYPE = 25
 
-export interface MsVaultIsShareHolderInput {
-  candidate: string
-}
-
-const MS_VAULT_IS_SHARE_HOLDER_INPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'candidate',
-    type: 'id',
-    offset: 0,
-    byteLength: 32,
-  },
-]
-
-export function buildMsVaultIsShareHolderInput(
-  input: MsVaultIsShareHolderInput,
-  identityToPublicKey: (identity: string) => Uint8Array,
-): Uint8Array {
-  return buildPayload(MS_VAULT_IS_SHARE_HOLDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
-}
-
-export interface MsVaultIsShareHolderOutput {
-  result: bigint
-}
-
-const MS_VAULT_IS_SHARE_HOLDER_OUTPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'result',
-    type: 'uint64',
-    offset: 0,
-    byteLength: 8,
-  },
-]
-
-export function decodeMsVaultIsShareHolderOutput(
-  data: Uint8Array,
-): MsVaultIsShareHolderOutput {
-  return decodePayload(data, MS_VAULT_IS_SHARE_HOLDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as MsVaultIsShareHolderOutput
-}
-
-export async function msVaultIsShareHolder(
-  live: SmartContractCaller,
-  input: MsVaultIsShareHolderInput,
-  options?: ContractCallOptions,
-): Promise<Result<MsVaultIsShareHolderOutput, QubicRpcError>> {
-  return callContractFunction({
-    live,
-    contractIndex: MS_VAULT_CONTRACT_INDEX,
-    inputType: MS_VAULT_IS_SHARE_HOLDER_INPUT_TYPE,
-    inputSize: MS_VAULT_IS_SHARE_HOLDER_INPUT_SIZE,
-    inputFields: MS_VAULT_IS_SHARE_HOLDER_INPUT_FIELDS,
-    outputFields: MS_VAULT_IS_SHARE_HOLDER_OUTPUT_FIELDS,
-    structs: STRUCTS,
-    input: (input as unknown as Record<string, unknown>),
-    ...options,
-  })
-}
-
-export const MS_VAULT_GET_MANAGED_ASSET_BALANCE_INPUT_TYPE = 6
-export const MS_VAULT_GET_MANAGED_ASSET_BALANCE_INPUT_SIZE = 72
-
-export interface MsVaultGetManagedAssetBalanceInput {
+export interface MsVaultRevokeAssetManagementRightsInput {
   asset: MsVaultAssetStruct
-  owner: string
+  numberOfShares: bigint
 }
 
-const MS_VAULT_GET_MANAGED_ASSET_BALANCE_INPUT_FIELDS: BinaryField[] = [
+const MS_VAULT_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
   {
     name: 'asset',
     type: 'struct',
@@ -666,58 +550,46 @@ const MS_VAULT_GET_MANAGED_ASSET_BALANCE_INPUT_FIELDS: BinaryField[] = [
     structRef: 'Asset',
   },
   {
-    name: 'owner',
-    type: 'id',
-    offset: 40,
-    byteLength: 32,
-  },
-]
-
-export function buildMsVaultGetManagedAssetBalanceInput(
-  input: MsVaultGetManagedAssetBalanceInput,
-  identityToPublicKey: (identity: string) => Uint8Array,
-): Uint8Array {
-  return buildPayload(MS_VAULT_GET_MANAGED_ASSET_BALANCE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
-}
-
-export interface MsVaultGetManagedAssetBalanceOutput {
-  balance: bigint
-}
-
-const MS_VAULT_GET_MANAGED_ASSET_BALANCE_OUTPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'balance',
+    name: 'numberOfShares',
     type: 'sint64',
-    offset: 0,
+    offset: 40,
     byteLength: 8,
   },
 ]
 
-export function decodeMsVaultGetManagedAssetBalanceOutput(
+export function buildMsVaultRevokeAssetManagementRightsInput(
+  input: MsVaultRevokeAssetManagementRightsInput,
+): ContractCall {
+  return { contractIndex: MS_VAULT_CONTRACT_INDEX, inputType: MS_VAULT_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_TYPE, payload: buildPayload(MS_VAULT_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
+}
+
+export interface MsVaultRevokeAssetManagementRightsOutput {
+  transferredNumberOfShares: bigint
+  status: bigint
+}
+
+const MS_VAULT_REVOKE_ASSET_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'transferredNumberOfShares',
+    type: 'sint64',
+    offset: 0,
+    byteLength: 8,
+  },
+  {
+    name: 'status',
+    type: 'uint64',
+    offset: 8,
+    byteLength: 8,
+  },
+]
+
+export function decodeMsVaultRevokeAssetManagementRightsOutput(
   data: Uint8Array,
-): MsVaultGetManagedAssetBalanceOutput {
-  return decodePayload(data, MS_VAULT_GET_MANAGED_ASSET_BALANCE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as MsVaultGetManagedAssetBalanceOutput
+): MsVaultRevokeAssetManagementRightsOutput {
+  return decodePayload(data, MS_VAULT_REVOKE_ASSET_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as MsVaultRevokeAssetManagementRightsOutput
 }
 
-export async function msVaultGetManagedAssetBalance(
-  live: SmartContractCaller,
-  input: MsVaultGetManagedAssetBalanceInput,
-  options?: ContractCallOptions,
-): Promise<Result<MsVaultGetManagedAssetBalanceOutput, QubicRpcError>> {
-  return callContractFunction({
-    live,
-    contractIndex: MS_VAULT_CONTRACT_INDEX,
-    inputType: MS_VAULT_GET_MANAGED_ASSET_BALANCE_INPUT_TYPE,
-    inputSize: MS_VAULT_GET_MANAGED_ASSET_BALANCE_INPUT_SIZE,
-    inputFields: MS_VAULT_GET_MANAGED_ASSET_BALANCE_INPUT_FIELDS,
-    outputFields: MS_VAULT_GET_MANAGED_ASSET_BALANCE_OUTPUT_FIELDS,
-    structs: STRUCTS,
-    input: (input as unknown as Record<string, unknown>),
-    ...options,
-  })
-}
-
-export const MS_VAULT_GET_VAULTS_INPUT_TYPE = 12
+export const MS_VAULT_GET_VAULTS_INPUT_TYPE = 5
 export const MS_VAULT_GET_VAULTS_INPUT_SIZE = 32
 
 export interface MsVaultGetVaultsInput {
@@ -798,7 +670,7 @@ export async function msVaultGetVaults(
   })
 }
 
-export const MS_VAULT_GET_RELEASE_STATUS_INPUT_TYPE = 13
+export const MS_VAULT_GET_RELEASE_STATUS_INPUT_TYPE = 6
 export const MS_VAULT_GET_RELEASE_STATUS_INPUT_SIZE = 8
 
 export interface MsVaultGetReleaseStatusInput {
@@ -878,7 +750,7 @@ export async function msVaultGetReleaseStatus(
   })
 }
 
-export const MS_VAULT_GET_BALANCE_OF_INPUT_TYPE = 14
+export const MS_VAULT_GET_BALANCE_OF_INPUT_TYPE = 7
 export const MS_VAULT_GET_BALANCE_OF_INPUT_SIZE = 8
 
 export interface MsVaultGetBalanceOfInput {
@@ -944,7 +816,7 @@ export async function msVaultGetBalanceOf(
   })
 }
 
-export const MS_VAULT_GET_VAULT_NAME_INPUT_TYPE = 15
+export const MS_VAULT_GET_VAULT_NAME_INPUT_TYPE = 8
 export const MS_VAULT_GET_VAULT_NAME_INPUT_SIZE = 8
 
 export interface MsVaultGetVaultNameInput {
@@ -1011,7 +883,7 @@ export async function msVaultGetVaultName(
   })
 }
 
-export const MS_VAULT_GET_REVENUE_INFO_INPUT_TYPE = 16
+export const MS_VAULT_GET_REVENUE_INFO_INPUT_TYPE = 9
 export const MS_VAULT_GET_REVENUE_INFO_INPUT_SIZE = 0
 
 export interface MsVaultGetRevenueInfoOutput {
@@ -1071,7 +943,7 @@ export async function msVaultGetRevenueInfo(
   })
 }
 
-export const MS_VAULT_GET_FEES_INPUT_TYPE = 17
+export const MS_VAULT_GET_FEES_INPUT_TYPE = 10
 export const MS_VAULT_GET_FEES_INPUT_SIZE = 0
 
 export interface MsVaultGetFeesOutput {
@@ -1145,7 +1017,7 @@ export async function msVaultGetFees(
   })
 }
 
-export const MS_VAULT_GET_VAULT_OWNERS_INPUT_TYPE = 18
+export const MS_VAULT_GET_VAULT_OWNERS_INPUT_TYPE = 11
 export const MS_VAULT_GET_VAULT_OWNERS_INPUT_SIZE = 8
 
 export interface MsVaultGetVaultOwnersInput {
@@ -1229,7 +1101,67 @@ export async function msVaultGetVaultOwners(
   })
 }
 
-export const MS_VAULT_GET_FEE_VOTES_INPUT_TYPE = 19
+export const MS_VAULT_IS_SHARE_HOLDER_INPUT_TYPE = 12
+export const MS_VAULT_IS_SHARE_HOLDER_INPUT_SIZE = 32
+
+export interface MsVaultIsShareHolderInput {
+  candidate: string
+}
+
+const MS_VAULT_IS_SHARE_HOLDER_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'candidate',
+    type: 'id',
+    offset: 0,
+    byteLength: 32,
+  },
+]
+
+export function buildMsVaultIsShareHolderInput(
+  input: MsVaultIsShareHolderInput,
+  identityToPublicKey: (identity: string) => Uint8Array,
+): Uint8Array {
+  return buildPayload(MS_VAULT_IS_SHARE_HOLDER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+}
+
+export interface MsVaultIsShareHolderOutput {
+  result: bigint
+}
+
+const MS_VAULT_IS_SHARE_HOLDER_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'result',
+    type: 'uint64',
+    offset: 0,
+    byteLength: 8,
+  },
+]
+
+export function decodeMsVaultIsShareHolderOutput(
+  data: Uint8Array,
+): MsVaultIsShareHolderOutput {
+  return decodePayload(data, MS_VAULT_IS_SHARE_HOLDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as MsVaultIsShareHolderOutput
+}
+
+export async function msVaultIsShareHolder(
+  live: SmartContractCaller,
+  input: MsVaultIsShareHolderInput,
+  options?: ContractCallOptions,
+): Promise<Result<MsVaultIsShareHolderOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: MS_VAULT_CONTRACT_INDEX,
+    inputType: MS_VAULT_IS_SHARE_HOLDER_INPUT_TYPE,
+    inputSize: MS_VAULT_IS_SHARE_HOLDER_INPUT_SIZE,
+    inputFields: MS_VAULT_IS_SHARE_HOLDER_INPUT_FIELDS,
+    outputFields: MS_VAULT_IS_SHARE_HOLDER_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
+}
+
+export const MS_VAULT_GET_FEE_VOTES_INPUT_TYPE = 14
 export const MS_VAULT_GET_FEE_VOTES_INPUT_SIZE = 0
 
 export interface MsVaultGetFeeVotesOutput {
@@ -1285,7 +1217,7 @@ export async function msVaultGetFeeVotes(
   })
 }
 
-export const MS_VAULT_GET_FEE_VOTES_OWNER_INPUT_TYPE = 20
+export const MS_VAULT_GET_FEE_VOTES_OWNER_INPUT_TYPE = 15
 export const MS_VAULT_GET_FEE_VOTES_OWNER_INPUT_SIZE = 0
 
 export interface MsVaultGetFeeVotesOwnerOutput {
@@ -1342,7 +1274,7 @@ export async function msVaultGetFeeVotesOwner(
   })
 }
 
-export const MS_VAULT_GET_FEE_VOTES_SCORE_INPUT_TYPE = 21
+export const MS_VAULT_GET_FEE_VOTES_SCORE_INPUT_TYPE = 16
 export const MS_VAULT_GET_FEE_VOTES_SCORE_INPUT_SIZE = 0
 
 export interface MsVaultGetFeeVotesScoreOutput {
@@ -1398,7 +1330,7 @@ export async function msVaultGetFeeVotesScore(
   })
 }
 
-export const MS_VAULT_GET_UNIQUE_FEE_VOTES_INPUT_TYPE = 22
+export const MS_VAULT_GET_UNIQUE_FEE_VOTES_INPUT_TYPE = 17
 export const MS_VAULT_GET_UNIQUE_FEE_VOTES_INPUT_SIZE = 0
 
 export interface MsVaultGetUniqueFeeVotesOutput {
@@ -1454,7 +1386,7 @@ export async function msVaultGetUniqueFeeVotes(
   })
 }
 
-export const MS_VAULT_GET_UNIQUE_FEE_VOTES_RANKING_INPUT_TYPE = 23
+export const MS_VAULT_GET_UNIQUE_FEE_VOTES_RANKING_INPUT_TYPE = 18
 export const MS_VAULT_GET_UNIQUE_FEE_VOTES_RANKING_INPUT_SIZE = 0
 
 export interface MsVaultGetUniqueFeeVotesRankingOutput {
@@ -1510,7 +1442,83 @@ export async function msVaultGetUniqueFeeVotesRanking(
   })
 }
 
-export const MS_VAULT_GET_ASSET_RELEASE_STATUS_INPUT_TYPE = 28
+export const MS_VAULT_GET_VAULT_ASSET_BALANCES_INPUT_TYPE = 22
+export const MS_VAULT_GET_VAULT_ASSET_BALANCES_INPUT_SIZE = 8
+
+export interface MsVaultGetVaultAssetBalancesInput {
+  vaultId: bigint
+}
+
+const MS_VAULT_GET_VAULT_ASSET_BALANCES_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'vaultId',
+    type: 'uint64',
+    offset: 0,
+    byteLength: 8,
+  },
+]
+
+export function buildMsVaultGetVaultAssetBalancesInput(
+  input: MsVaultGetVaultAssetBalancesInput,
+): Uint8Array {
+  return buildPayload(MS_VAULT_GET_VAULT_ASSET_BALANCES_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
+}
+
+export interface MsVaultGetVaultAssetBalancesOutput {
+  status: bigint
+  numberOfAssetTypes: bigint
+  assetBalances: number[]
+}
+
+const MS_VAULT_GET_VAULT_ASSET_BALANCES_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'status',
+    type: 'uint64',
+    offset: 0,
+    byteLength: 8,
+  },
+  {
+    name: 'numberOfAssetTypes',
+    type: 'uint64',
+    offset: 8,
+    byteLength: 8,
+  },
+  {
+    name: 'assetBalances',
+    type: 'array',
+    offset: 16,
+    byteLength: 384,
+    arrayLength: 8,
+    arrayItemByteLength: 48,
+    arrayItemStructRef: 'AssetBalance',
+  },
+]
+
+export function decodeMsVaultGetVaultAssetBalancesOutput(
+  data: Uint8Array,
+): MsVaultGetVaultAssetBalancesOutput {
+  return decodePayload(data, MS_VAULT_GET_VAULT_ASSET_BALANCES_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as MsVaultGetVaultAssetBalancesOutput
+}
+
+export async function msVaultGetVaultAssetBalances(
+  live: SmartContractCaller,
+  input: MsVaultGetVaultAssetBalancesInput,
+  options?: ContractCallOptions,
+): Promise<Result<MsVaultGetVaultAssetBalancesOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: MS_VAULT_CONTRACT_INDEX,
+    inputType: MS_VAULT_GET_VAULT_ASSET_BALANCES_INPUT_TYPE,
+    inputSize: MS_VAULT_GET_VAULT_ASSET_BALANCES_INPUT_SIZE,
+    inputFields: MS_VAULT_GET_VAULT_ASSET_BALANCES_INPUT_FIELDS,
+    outputFields: MS_VAULT_GET_VAULT_ASSET_BALANCES_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
+}
+
+export const MS_VAULT_GET_ASSET_RELEASE_STATUS_INPUT_TYPE = 23
 export const MS_VAULT_GET_ASSET_RELEASE_STATUS_INPUT_SIZE = 8
 
 export interface MsVaultGetAssetReleaseStatusInput {
@@ -1600,76 +1608,68 @@ export async function msVaultGetAssetReleaseStatus(
   })
 }
 
-export const MS_VAULT_GET_VAULT_ASSET_BALANCES_INPUT_TYPE = 29
-export const MS_VAULT_GET_VAULT_ASSET_BALANCES_INPUT_SIZE = 8
+export const MS_VAULT_GET_MANAGED_ASSET_BALANCE_INPUT_TYPE = 24
+export const MS_VAULT_GET_MANAGED_ASSET_BALANCE_INPUT_SIZE = 72
 
-export interface MsVaultGetVaultAssetBalancesInput {
-  vaultId: bigint
+export interface MsVaultGetManagedAssetBalanceInput {
+  asset: MsVaultAssetStruct
+  owner: string
 }
 
-const MS_VAULT_GET_VAULT_ASSET_BALANCES_INPUT_FIELDS: BinaryField[] = [
+const MS_VAULT_GET_MANAGED_ASSET_BALANCE_INPUT_FIELDS: BinaryField[] = [
   {
-    name: 'vaultId',
-    type: 'uint64',
+    name: 'asset',
+    type: 'struct',
     offset: 0,
-    byteLength: 8,
+    byteLength: 40,
+    structRef: 'Asset',
+  },
+  {
+    name: 'owner',
+    type: 'id',
+    offset: 40,
+    byteLength: 32,
   },
 ]
 
-export function buildMsVaultGetVaultAssetBalancesInput(
-  input: MsVaultGetVaultAssetBalancesInput,
+export function buildMsVaultGetManagedAssetBalanceInput(
+  input: MsVaultGetManagedAssetBalanceInput,
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): Uint8Array {
-  return buildPayload(MS_VAULT_GET_VAULT_ASSET_BALANCES_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
+  return buildPayload(MS_VAULT_GET_MANAGED_ASSET_BALANCE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
 
-export interface MsVaultGetVaultAssetBalancesOutput {
-  status: bigint
-  numberOfAssetTypes: bigint
-  assetBalances: number[]
+export interface MsVaultGetManagedAssetBalanceOutput {
+  balance: bigint
 }
 
-const MS_VAULT_GET_VAULT_ASSET_BALANCES_OUTPUT_FIELDS: BinaryField[] = [
+const MS_VAULT_GET_MANAGED_ASSET_BALANCE_OUTPUT_FIELDS: BinaryField[] = [
   {
-    name: 'status',
-    type: 'uint64',
+    name: 'balance',
+    type: 'sint64',
     offset: 0,
     byteLength: 8,
   },
-  {
-    name: 'numberOfAssetTypes',
-    type: 'uint64',
-    offset: 8,
-    byteLength: 8,
-  },
-  {
-    name: 'assetBalances',
-    type: 'array',
-    offset: 16,
-    byteLength: 384,
-    arrayLength: 8,
-    arrayItemByteLength: 48,
-    arrayItemStructRef: 'AssetBalance',
-  },
 ]
 
-export function decodeMsVaultGetVaultAssetBalancesOutput(
+export function decodeMsVaultGetManagedAssetBalanceOutput(
   data: Uint8Array,
-): MsVaultGetVaultAssetBalancesOutput {
-  return decodePayload(data, MS_VAULT_GET_VAULT_ASSET_BALANCES_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as MsVaultGetVaultAssetBalancesOutput
+): MsVaultGetManagedAssetBalanceOutput {
+  return decodePayload(data, MS_VAULT_GET_MANAGED_ASSET_BALANCE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as MsVaultGetManagedAssetBalanceOutput
 }
 
-export async function msVaultGetVaultAssetBalances(
+export async function msVaultGetManagedAssetBalance(
   live: SmartContractCaller,
-  input: MsVaultGetVaultAssetBalancesInput,
+  input: MsVaultGetManagedAssetBalanceInput,
   options?: ContractCallOptions,
-): Promise<Result<MsVaultGetVaultAssetBalancesOutput, QubicRpcError>> {
+): Promise<Result<MsVaultGetManagedAssetBalanceOutput, QubicRpcError>> {
   return callContractFunction({
     live,
     contractIndex: MS_VAULT_CONTRACT_INDEX,
-    inputType: MS_VAULT_GET_VAULT_ASSET_BALANCES_INPUT_TYPE,
-    inputSize: MS_VAULT_GET_VAULT_ASSET_BALANCES_INPUT_SIZE,
-    inputFields: MS_VAULT_GET_VAULT_ASSET_BALANCES_INPUT_FIELDS,
-    outputFields: MS_VAULT_GET_VAULT_ASSET_BALANCES_OUTPUT_FIELDS,
+    inputType: MS_VAULT_GET_MANAGED_ASSET_BALANCE_INPUT_TYPE,
+    inputSize: MS_VAULT_GET_MANAGED_ASSET_BALANCE_INPUT_SIZE,
+    inputFields: MS_VAULT_GET_MANAGED_ASSET_BALANCE_INPUT_FIELDS,
+    outputFields: MS_VAULT_GET_MANAGED_ASSET_BALANCE_OUTPUT_FIELDS,
     structs: STRUCTS,
     input: (input as unknown as Record<string, unknown>),
     ...options,
@@ -1678,8 +1678,6 @@ export async function msVaultGetVaultAssetBalances(
 
 export const msVault = {
   contractIndex: MS_VAULT_CONTRACT_INDEX,
-  isShareHolder: msVaultIsShareHolder,
-  getManagedAssetBalance: msVaultGetManagedAssetBalance,
   getVaults: msVaultGetVaults,
   getReleaseStatus: msVaultGetReleaseStatus,
   getBalanceOf: msVaultGetBalanceOf,
@@ -1687,13 +1685,15 @@ export const msVault = {
   getRevenueInfo: msVaultGetRevenueInfo,
   getFees: msVaultGetFees,
   getVaultOwners: msVaultGetVaultOwners,
+  isShareHolder: msVaultIsShareHolder,
   getFeeVotes: msVaultGetFeeVotes,
   getFeeVotesOwner: msVaultGetFeeVotesOwner,
   getFeeVotesScore: msVaultGetFeeVotesScore,
   getUniqueFeeVotes: msVaultGetUniqueFeeVotes,
   getUniqueFeeVotesRanking: msVaultGetUniqueFeeVotesRanking,
-  getAssetReleaseStatus: msVaultGetAssetReleaseStatus,
   getVaultAssetBalances: msVaultGetVaultAssetBalances,
+  getAssetReleaseStatus: msVaultGetAssetReleaseStatus,
+  getManagedAssetBalance: msVaultGetManagedAssetBalance,
   buildRegisterVaultInput: buildMsVaultRegisterVaultInput,
   decodeRegisterVaultOutput: decodeMsVaultRegisterVaultOutput,
   buildDepositInput: buildMsVaultDepositInput,
@@ -1706,11 +1706,11 @@ export const msVault = {
   decodeVoteFeeChangeOutput: decodeMsVaultVoteFeeChangeOutput,
   buildDepositAssetInput: buildMsVaultDepositAssetInput,
   decodeDepositAssetOutput: decodeMsVaultDepositAssetOutput,
-  buildRevokeAssetManagementRightsInput: buildMsVaultRevokeAssetManagementRightsInput,
-  decodeRevokeAssetManagementRightsOutput: decodeMsVaultRevokeAssetManagementRightsOutput,
   buildReleaseAssetToInput: buildMsVaultReleaseAssetToInput,
   decodeReleaseAssetToOutput: decodeMsVaultReleaseAssetToOutput,
   buildResetAssetReleaseInput: buildMsVaultResetAssetReleaseInput,
   decodeResetAssetReleaseOutput: decodeMsVaultResetAssetReleaseOutput,
+  buildRevokeAssetManagementRightsInput: buildMsVaultRevokeAssetManagementRightsInput,
+  decodeRevokeAssetManagementRightsOutput: decodeMsVaultRevokeAssetManagementRightsOutput,
 }
 

@@ -3,6 +3,7 @@
   "contractName": "QIP",
   "contractAddress": "SAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI",
   "epoch": 210,
+  "coreVersion": "v1.288.0",
   "structs": {
     "Asset": {
       "name": "Asset",
@@ -176,7 +177,7 @@
   "functions": [
     {
       "kind": "function",
-      "inputType": 4,
+      "inputType": 1,
       "name": "getICOInfo",
       "inputFields": [
         {

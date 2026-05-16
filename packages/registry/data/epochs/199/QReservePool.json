@@ -3,6 +3,7 @@
   "contractName": "QReservePool",
   "contractAddress": "VAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAILLJ",
   "epoch": 199,
+  "coreVersion": "v1.277.0",
   "structs": {},
   "procedures": [
     {
@@ -84,7 +85,7 @@
   "functions": [
     {
       "kind": "function",
-      "inputType": 4,
+      "inputType": 1,
       "name": "GetAvailableReserve",
       "inputFields": [],
       "outputFields": [
@@ -100,7 +101,7 @@
     },
     {
       "kind": "function",
-      "inputType": 5,
+      "inputType": 2,
       "name": "GetAllowedSC",
       "inputFields": [],
       "outputFields": [

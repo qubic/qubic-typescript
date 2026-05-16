@@ -3,34 +3,12 @@
   "contractName": "Qswap",
   "contractAddress": "NAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAML",
   "epoch": 175,
+  "coreVersion": "v1.256.0",
   "structs": {},
   "procedures": [
     {
       "kind": "procedure",
-      "inputType": 3,
-      "name": "SetTeamInfo",
-      "inputFields": [
-        {
-          "name": "newTeamId",
-          "type": "id",
-          "offset": 0,
-          "byteLength": 32
-        }
-      ],
-      "outputFields": [
-        {
-          "name": "success",
-          "type": "uint8",
-          "offset": 0,
-          "byteLength": 1
-        }
-      ],
-      "inputSize": 32,
-      "outputSize": 1
-    },
-    {
-      "kind": "procedure",
-      "inputType": 10,
+      "inputType": 1,
       "name": "IssueAsset",
       "inputFields": [
         {
@@ -71,36 +49,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 11,
-      "name": "CreatePool",
-      "inputFields": [
-        {
-          "name": "assetIssuer",
-          "type": "id",
-          "offset": 0,
-          "byteLength": 32
-        },
-        {
-          "name": "assetName",
-          "type": "uint64",
-          "offset": 32,
-          "byteLength": 8
-        }
-      ],
-      "outputFields": [
-        {
-          "name": "success",
-          "type": "uint8",
-          "offset": 0,
-          "byteLength": 1
-        }
-      ],
-      "inputSize": 40,
-      "outputSize": 1
-    },
-    {
-      "kind": "procedure",
-      "inputType": 12,
+      "inputType": 2,
       "name": "TransferShareOwnershipAndPossession",
       "inputFields": [
         {
@@ -141,7 +90,36 @@
     },
     {
       "kind": "procedure",
-      "inputType": 13,
+      "inputType": 3,
+      "name": "CreatePool",
+      "inputFields": [
+        {
+          "name": "assetIssuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "success",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 40,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 4,
       "name": "AddLiquidity",
       "inputFields": [
         {
@@ -200,7 +178,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 14,
+      "inputType": 5,
       "name": "RemoveLiquidity",
       "inputFields": [
         {
@@ -253,7 +231,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 15,
+      "inputType": 6,
       "name": "SwapExactQuForAsset",
       "inputFields": [
         {
@@ -288,7 +266,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 16,
+      "inputType": 7,
       "name": "SwapQuForExactAsset",
       "inputFields": [
         {
@@ -323,7 +301,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 17,
+      "inputType": 8,
       "name": "SwapExactAssetForQu",
       "inputFields": [
         {
@@ -364,7 +342,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 18,
+      "inputType": 9,
       "name": "SwapAssetForExactQu",
       "inputFields": [
         {
@@ -402,6 +380,29 @@
       ],
       "inputSize": 56,
       "outputSize": 8
+    },
+    {
+      "kind": "procedure",
+      "inputType": 10,
+      "name": "SetTeamInfo",
+      "inputFields": [
+        {
+          "name": "newTeamId",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "success",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 32,
+      "outputSize": 1
     }
   ],
   "functions": [
@@ -454,28 +455,6 @@
     {
       "kind": "function",
       "inputType": 2,
-      "name": "TeamInfo",
-      "inputFields": [],
-      "outputFields": [
-        {
-          "name": "teamFee",
-          "type": "uint32",
-          "offset": 0,
-          "byteLength": 4
-        },
-        {
-          "name": "teamId",
-          "type": "id",
-          "offset": 4,
-          "byteLength": 32
-        }
-      ],
-      "inputSize": 0,
-      "outputSize": 36
-    },
-    {
-      "kind": "function",
-      "inputType": 4,
       "name": "GetPoolBasicState",
       "inputFields": [
         {
@@ -522,7 +501,7 @@
     },
     {
       "kind": "function",
-      "inputType": 5,
+      "inputType": 3,
       "name": "GetLiquidityOf",
       "inputFields": [
         {
@@ -557,7 +536,7 @@
     },
     {
       "kind": "function",
-      "inputType": 6,
+      "inputType": 4,
       "name": "QuoteExactQuInput",
       "inputFields": [
         {
@@ -592,7 +571,7 @@
     },
     {
       "kind": "function",
-      "inputType": 7,
+      "inputType": 5,
       "name": "QuoteExactQuOutput",
       "inputFields": [
         {
@@ -627,7 +606,7 @@
     },
     {
       "kind": "function",
-      "inputType": 8,
+      "inputType": 6,
       "name": "QuoteExactAssetInput",
       "inputFields": [
         {
@@ -662,7 +641,7 @@
     },
     {
       "kind": "function",
-      "inputType": 9,
+      "inputType": 7,
       "name": "QuoteExactAssetOutput",
       "inputFields": [
         {
@@ -694,6 +673,28 @@
       ],
       "inputSize": 48,
       "outputSize": 8
+    },
+    {
+      "kind": "function",
+      "inputType": 8,
+      "name": "TeamInfo",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "teamFee",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "teamId",
+          "type": "id",
+          "offset": 4,
+          "byteLength": 32
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 36
     }
   ]
 }

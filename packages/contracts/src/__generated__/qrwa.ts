@@ -201,7 +201,7 @@ const STRUCTS: Record<string, NamedStruct> = {
 },
 }
 
-export const Q_RWA_DONATE_TO_TREASURY_INPUT_TYPE = 1
+export const Q_RWA_DONATE_TO_TREASURY_INPUT_TYPE = 3
 
 export interface QRWADonateToTreasuryInput {
   amount: bigint
@@ -241,7 +241,7 @@ export function decodeQRWADonateToTreasuryOutput(
   return decodePayload(data, Q_RWA_DONATE_TO_TREASURY_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWADonateToTreasuryOutput
 }
 
-export const Q_RWA_VOTE_GOV_PARAMS_INPUT_TYPE = 2
+export const Q_RWA_VOTE_GOV_PARAMS_INPUT_TYPE = 4
 
 export interface QRWAVoteGovParamsInput {
   proposal: QRWAQRWAGovParamsStruct
@@ -282,7 +282,7 @@ export function decodeQRWAVoteGovParamsOutput(
   return decodePayload(data, Q_RWA_VOTE_GOV_PARAMS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWAVoteGovParamsOutput
 }
 
-export const Q_RWA_DEPOSIT_GENERAL_ASSET_INPUT_TYPE = 3
+export const Q_RWA_DEPOSIT_GENERAL_ASSET_INPUT_TYPE = 7
 
 export interface QRWADepositGeneralAssetInput {
   asset: QRWAAssetStruct
@@ -330,7 +330,7 @@ export function decodeQRWADepositGeneralAssetOutput(
   return decodePayload(data, Q_RWA_DEPOSIT_GENERAL_ASSET_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWADepositGeneralAssetOutput
 }
 
-export const Q_RWA_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_TYPE = 4
+export const Q_RWA_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_TYPE = 8
 
 export interface QRWARevokeAssetManagementRightsInput {
   asset: QRWAAssetStruct
@@ -385,7 +385,7 @@ export function decodeQRWARevokeAssetManagementRightsOutput(
   return decodePayload(data, Q_RWA_REVOKE_ASSET_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWARevokeAssetManagementRightsOutput
 }
 
-export const Q_RWA_SET_POOL_A_REVENUE_ADDRESS_INPUT_TYPE = 5
+export const Q_RWA_SET_POOL_A_REVENUE_ADDRESS_INPUT_TYPE = 9
 
 export interface QRWASetPoolARevenueAddressInput {
   newAddress: string
@@ -426,7 +426,7 @@ export function decodeQRWASetPoolARevenueAddressOutput(
   return decodePayload(data, Q_RWA_SET_POOL_A_REVENUE_ADDRESS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWASetPoolARevenueAddressOutput
 }
 
-export const Q_RWA_SET_POOL_D_REVENUE_ADDRESS_INPUT_TYPE = 6
+export const Q_RWA_SET_POOL_D_REVENUE_ADDRESS_INPUT_TYPE = 10
 
 export interface QRWASetPoolDRevenueAddressInput {
   newAddress: string
@@ -467,7 +467,7 @@ export function decodeQRWASetPoolDRevenueAddressOutput(
   return decodePayload(data, Q_RWA_SET_POOL_D_REVENUE_ADDRESS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWASetPoolDRevenueAddressOutput
 }
 
-export const Q_RWA_GET_GOV_PARAMS_INPUT_TYPE = 7
+export const Q_RWA_GET_GOV_PARAMS_INPUT_TYPE = 1
 export const Q_RWA_GET_GOV_PARAMS_INPUT_SIZE = 0
 
 export interface QRWAGetGovParamsOutput {
@@ -507,7 +507,7 @@ export async function qRWAGetGovParams(
   })
 }
 
-export const Q_RWA_GET_GOV_POLL_INPUT_TYPE = 8
+export const Q_RWA_GET_GOV_POLL_INPUT_TYPE = 2
 export const Q_RWA_GET_GOV_POLL_INPUT_SIZE = 8
 
 export interface QRWAGetGovPollInput {
@@ -574,7 +574,7 @@ export async function qRWAGetGovPoll(
   })
 }
 
-export const Q_RWA_GET_TREASURY_BALANCE_INPUT_TYPE = 9
+export const Q_RWA_GET_TREASURY_BALANCE_INPUT_TYPE = 4
 export const Q_RWA_GET_TREASURY_BALANCE_INPUT_SIZE = 0
 
 export interface QRWAGetTreasuryBalanceOutput {
@@ -613,7 +613,7 @@ export async function qRWAGetTreasuryBalance(
   })
 }
 
-export const Q_RWA_GET_DIVIDEND_BALANCES_INPUT_TYPE = 10
+export const Q_RWA_GET_DIVIDEND_BALANCES_INPUT_TYPE = 5
 export const Q_RWA_GET_DIVIDEND_BALANCES_INPUT_SIZE = 0
 
 export interface QRWAGetDividendBalancesOutput {
@@ -729,7 +729,7 @@ export async function qRWAGetDividendBalances(
   })
 }
 
-export const Q_RWA_GET_TOTAL_DISTRIBUTED_INPUT_TYPE = 11
+export const Q_RWA_GET_TOTAL_DISTRIBUTED_INPUT_TYPE = 6
 export const Q_RWA_GET_TOTAL_DISTRIBUTED_INPUT_SIZE = 0
 
 export interface QRWAGetTotalDistributedOutput {
@@ -796,75 +796,7 @@ export async function qRWAGetTotalDistributed(
   })
 }
 
-export const Q_RWA_GET_CONTRACT_ADDRESSES_INPUT_TYPE = 12
-export const Q_RWA_GET_CONTRACT_ADDRESSES_INPUT_SIZE = 0
-
-export interface QRWAGetContractAddressesOutput {
-  dedicatedRevenueAddress: string
-  poolARevenueAddress: string
-  poolDRevenueAddress: string
-  fundraisingAddress: string
-  exchangeAddress: string
-}
-
-const Q_RWA_GET_CONTRACT_ADDRESSES_OUTPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'dedicatedRevenueAddress',
-    type: 'id',
-    offset: 0,
-    byteLength: 32,
-  },
-  {
-    name: 'poolARevenueAddress',
-    type: 'id',
-    offset: 32,
-    byteLength: 32,
-  },
-  {
-    name: 'poolDRevenueAddress',
-    type: 'id',
-    offset: 64,
-    byteLength: 32,
-  },
-  {
-    name: 'fundraisingAddress',
-    type: 'id',
-    offset: 96,
-    byteLength: 32,
-  },
-  {
-    name: 'exchangeAddress',
-    type: 'id',
-    offset: 128,
-    byteLength: 32,
-  },
-]
-
-export function decodeQRWAGetContractAddressesOutput(
-  data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string,
-): QRWAGetContractAddressesOutput {
-  return decodePayload(data, Q_RWA_GET_CONTRACT_ADDRESSES_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRWAGetContractAddressesOutput
-}
-
-export async function qRWAGetContractAddresses(
-  live: SmartContractCaller,
-  options?: ContractCallOptions,
-): Promise<Result<QRWAGetContractAddressesOutput, QubicRpcError>> {
-  return callContractFunction({
-    live,
-    contractIndex: Q_RWA_CONTRACT_INDEX,
-    inputType: Q_RWA_GET_CONTRACT_ADDRESSES_INPUT_TYPE,
-    inputSize: Q_RWA_GET_CONTRACT_ADDRESSES_INPUT_SIZE,
-    inputFields: [],
-    outputFields: Q_RWA_GET_CONTRACT_ADDRESSES_OUTPUT_FIELDS,
-    structs: STRUCTS,
-    input: {},
-    ...options,
-  })
-}
-
-export const Q_RWA_GET_ACTIVE_GOV_POLL_IDS_INPUT_TYPE = 13
+export const Q_RWA_GET_ACTIVE_GOV_POLL_IDS_INPUT_TYPE = 8
 export const Q_RWA_GET_ACTIVE_GOV_POLL_IDS_INPUT_SIZE = 0
 
 export interface QRWAGetActiveGovPollIdsOutput {
@@ -913,7 +845,7 @@ export async function qRWAGetActiveGovPollIds(
   })
 }
 
-export const Q_RWA_GET_GENERAL_ASSET_BALANCE_INPUT_TYPE = 14
+export const Q_RWA_GET_GENERAL_ASSET_BALANCE_INPUT_TYPE = 9
 export const Q_RWA_GET_GENERAL_ASSET_BALANCE_INPUT_SIZE = 40
 
 export interface QRWAGetGeneralAssetBalanceInput {
@@ -980,7 +912,7 @@ export async function qRWAGetGeneralAssetBalance(
   })
 }
 
-export const Q_RWA_GET_GENERAL_ASSETS_INPUT_TYPE = 15
+export const Q_RWA_GET_GENERAL_ASSETS_INPUT_TYPE = 10
 export const Q_RWA_GET_GENERAL_ASSETS_INPUT_SIZE = 0
 
 export interface QRWAGetGeneralAssetsOutput {
@@ -1039,67 +971,7 @@ export async function qRWAGetGeneralAssets(
   })
 }
 
-export const Q_RWA_GET_SC_DIVIDEND_TRACKING_INPUT_TYPE = 16
-export const Q_RWA_GET_SC_DIVIDEND_TRACKING_INPUT_SIZE = 0
-
-export interface QRWAGetScDividendTrackingOutput {
-  count: bigint
-  scContractIds: string[]
-  cumulativeDividends: bigint[]
-}
-
-const Q_RWA_GET_SC_DIVIDEND_TRACKING_OUTPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'count',
-    type: 'uint64',
-    offset: 0,
-    byteLength: 8,
-  },
-  {
-    name: 'scContractIds',
-    type: 'array',
-    offset: 8,
-    byteLength: 32768,
-    arrayLength: 1024,
-    arrayItemType: 'id',
-    arrayItemByteLength: 32,
-  },
-  {
-    name: 'cumulativeDividends',
-    type: 'array',
-    offset: 32776,
-    byteLength: 8192,
-    arrayLength: 1024,
-    arrayItemType: 'uint64',
-    arrayItemByteLength: 8,
-  },
-]
-
-export function decodeQRWAGetScDividendTrackingOutput(
-  data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string,
-): QRWAGetScDividendTrackingOutput {
-  return decodePayload(data, Q_RWA_GET_SC_DIVIDEND_TRACKING_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRWAGetScDividendTrackingOutput
-}
-
-export async function qRWAGetScDividendTracking(
-  live: SmartContractCaller,
-  options?: ContractCallOptions,
-): Promise<Result<QRWAGetScDividendTrackingOutput, QubicRpcError>> {
-  return callContractFunction({
-    live,
-    contractIndex: Q_RWA_CONTRACT_INDEX,
-    inputType: Q_RWA_GET_SC_DIVIDEND_TRACKING_INPUT_TYPE,
-    inputSize: Q_RWA_GET_SC_DIVIDEND_TRACKING_INPUT_SIZE,
-    inputFields: [],
-    outputFields: Q_RWA_GET_SC_DIVIDEND_TRACKING_OUTPUT_FIELDS,
-    structs: STRUCTS,
-    input: {},
-    ...options,
-  })
-}
-
-export const Q_RWA_GET_PAYOUTS_QMINE_INPUT_TYPE = 17
+export const Q_RWA_GET_PAYOUTS_QMINE_INPUT_TYPE = 11
 export const Q_RWA_GET_PAYOUTS_QMINE_INPUT_SIZE = 2
 
 export interface QRWAGetPayoutsQmineInput {
@@ -1189,7 +1061,75 @@ export async function qRWAGetPayoutsQmine(
   })
 }
 
-export const Q_RWA_GET_PAYOUTS_QRWA_INPUT_TYPE = 18
+export const Q_RWA_GET_CONTRACT_ADDRESSES_INPUT_TYPE = 12
+export const Q_RWA_GET_CONTRACT_ADDRESSES_INPUT_SIZE = 0
+
+export interface QRWAGetContractAddressesOutput {
+  dedicatedRevenueAddress: string
+  poolARevenueAddress: string
+  poolDRevenueAddress: string
+  fundraisingAddress: string
+  exchangeAddress: string
+}
+
+const Q_RWA_GET_CONTRACT_ADDRESSES_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'dedicatedRevenueAddress',
+    type: 'id',
+    offset: 0,
+    byteLength: 32,
+  },
+  {
+    name: 'poolARevenueAddress',
+    type: 'id',
+    offset: 32,
+    byteLength: 32,
+  },
+  {
+    name: 'poolDRevenueAddress',
+    type: 'id',
+    offset: 64,
+    byteLength: 32,
+  },
+  {
+    name: 'fundraisingAddress',
+    type: 'id',
+    offset: 96,
+    byteLength: 32,
+  },
+  {
+    name: 'exchangeAddress',
+    type: 'id',
+    offset: 128,
+    byteLength: 32,
+  },
+]
+
+export function decodeQRWAGetContractAddressesOutput(
+  data: Uint8Array,
+  publicKeyToIdentity: (pk: Uint8Array) => string,
+): QRWAGetContractAddressesOutput {
+  return decodePayload(data, Q_RWA_GET_CONTRACT_ADDRESSES_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRWAGetContractAddressesOutput
+}
+
+export async function qRWAGetContractAddresses(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<QRWAGetContractAddressesOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: Q_RWA_CONTRACT_INDEX,
+    inputType: Q_RWA_GET_CONTRACT_ADDRESSES_INPUT_TYPE,
+    inputSize: Q_RWA_GET_CONTRACT_ADDRESSES_INPUT_SIZE,
+    inputFields: [],
+    outputFields: Q_RWA_GET_CONTRACT_ADDRESSES_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
+}
+
+export const Q_RWA_GET_PAYOUTS_QRWA_INPUT_TYPE = 13
 export const Q_RWA_GET_PAYOUTS_QRWA_INPUT_SIZE = 2
 
 export interface QRWAGetPayoutsQrwaInput {
@@ -1279,7 +1219,7 @@ export async function qRWAGetPayoutsQrwa(
   })
 }
 
-export const Q_RWA_GET_PAYOUTS_DEDICATED_INPUT_TYPE = 19
+export const Q_RWA_GET_PAYOUTS_DEDICATED_INPUT_TYPE = 14
 export const Q_RWA_GET_PAYOUTS_DEDICATED_INPUT_SIZE = 2
 
 export interface QRWAGetPayoutsDedicatedInput {
@@ -1369,7 +1309,67 @@ export async function qRWAGetPayoutsDedicated(
   })
 }
 
-export const Q_RWA_GET_PAYOUTS_POOL_D_INPUT_TYPE = 20
+export const Q_RWA_GET_SC_DIVIDEND_TRACKING_INPUT_TYPE = 15
+export const Q_RWA_GET_SC_DIVIDEND_TRACKING_INPUT_SIZE = 0
+
+export interface QRWAGetScDividendTrackingOutput {
+  count: bigint
+  scContractIds: string[]
+  cumulativeDividends: bigint[]
+}
+
+const Q_RWA_GET_SC_DIVIDEND_TRACKING_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'count',
+    type: 'uint64',
+    offset: 0,
+    byteLength: 8,
+  },
+  {
+    name: 'scContractIds',
+    type: 'array',
+    offset: 8,
+    byteLength: 32768,
+    arrayLength: 1024,
+    arrayItemType: 'id',
+    arrayItemByteLength: 32,
+  },
+  {
+    name: 'cumulativeDividends',
+    type: 'array',
+    offset: 32776,
+    byteLength: 8192,
+    arrayLength: 1024,
+    arrayItemType: 'uint64',
+    arrayItemByteLength: 8,
+  },
+]
+
+export function decodeQRWAGetScDividendTrackingOutput(
+  data: Uint8Array,
+  publicKeyToIdentity: (pk: Uint8Array) => string,
+): QRWAGetScDividendTrackingOutput {
+  return decodePayload(data, Q_RWA_GET_SC_DIVIDEND_TRACKING_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRWAGetScDividendTrackingOutput
+}
+
+export async function qRWAGetScDividendTracking(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<QRWAGetScDividendTrackingOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: Q_RWA_CONTRACT_INDEX,
+    inputType: Q_RWA_GET_SC_DIVIDEND_TRACKING_INPUT_TYPE,
+    inputSize: Q_RWA_GET_SC_DIVIDEND_TRACKING_INPUT_SIZE,
+    inputFields: [],
+    outputFields: Q_RWA_GET_SC_DIVIDEND_TRACKING_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
+}
+
+export const Q_RWA_GET_PAYOUTS_POOL_D_INPUT_TYPE = 16
 export const Q_RWA_GET_PAYOUTS_POOL_D_INPUT_SIZE = 2
 
 export interface QRWAGetPayoutsPoolDInput {
@@ -1466,14 +1466,14 @@ export const qRWA = {
   GetTreasuryBalance: qRWAGetTreasuryBalance,
   GetDividendBalances: qRWAGetDividendBalances,
   GetTotalDistributed: qRWAGetTotalDistributed,
-  GetContractAddresses: qRWAGetContractAddresses,
   GetActiveGovPollIds: qRWAGetActiveGovPollIds,
   GetGeneralAssetBalance: qRWAGetGeneralAssetBalance,
   GetGeneralAssets: qRWAGetGeneralAssets,
-  GetScDividendTracking: qRWAGetScDividendTracking,
   GetPayoutsQmine: qRWAGetPayoutsQmine,
+  GetContractAddresses: qRWAGetContractAddresses,
   GetPayoutsQrwa: qRWAGetPayoutsQrwa,
   GetPayoutsDedicated: qRWAGetPayoutsDedicated,
+  GetScDividendTracking: qRWAGetScDividendTracking,
   GetPayoutsPoolD: qRWAGetPayoutsPoolD,
   buildDonateToTreasuryInput: buildQRWADonateToTreasuryInput,
   decodeDonateToTreasuryOutput: decodeQRWADonateToTreasuryOutput,

@@ -3,6 +3,7 @@
   "contractName": "Qx",
   "contractAddress": "BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARMID",
   "epoch": 145,
+  "coreVersion": "v1.232.1",
   "structs": {
     "Order": {
       "name": "Order",
@@ -32,7 +33,7 @@
   "procedures": [
     {
       "kind": "procedure",
-      "inputType": 6,
+      "inputType": 1,
       "name": "IssueAsset",
       "inputFields": [
         {
@@ -73,7 +74,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 7,
+      "inputType": 2,
       "name": "TransferShareOwnershipAndPossession",
       "inputFields": [
         {
@@ -114,7 +115,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 8,
+      "inputType": 5,
       "name": "AddToAskOrder",
       "inputFields": [
         {
@@ -155,7 +156,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 9,
+      "inputType": 6,
       "name": "AddToBidOrder",
       "inputFields": [
         {
@@ -196,7 +197,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 10,
+      "inputType": 7,
       "name": "RemoveFromAskOrder",
       "inputFields": [
         {
@@ -237,7 +238,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 11,
+      "inputType": 8,
       "name": "RemoveFromBidOrder",
       "inputFields": [
         {

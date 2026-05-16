@@ -3,6 +3,7 @@
   "contractName": "Pulse",
   "contractAddress": "YAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMSME",
   "epoch": 208,
+  "coreVersion": "v1.286.1",
   "structs": {
     "Ticket": {
       "name": "Ticket",
@@ -77,7 +78,7 @@
   "procedures": [
     {
       "kind": "procedure",
-      "inputType": 2,
+      "inputType": 1,
       "name": "BuyTicket",
       "inputFields": [
         {
@@ -103,174 +104,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 7,
-      "name": "BuyRandomTickets",
-      "inputFields": [
-        {
-          "name": "count",
-          "type": "uint16",
-          "offset": 0,
-          "byteLength": 2
-        }
-      ],
-      "outputFields": [
-        {
-          "name": "returnCode",
-          "type": "uint8",
-          "offset": 0,
-          "byteLength": 1
-        }
-      ],
-      "inputSize": 2,
-      "outputSize": 1
-    },
-    {
-      "kind": "procedure",
-      "inputType": 11,
-      "name": "DepositAutoParticipation",
-      "inputFields": [
-        {
-          "name": "amount",
-          "type": "sint64",
-          "offset": 0,
-          "byteLength": 8
-        },
-        {
-          "name": "desiredTickets",
-          "type": "sint16",
-          "offset": 8,
-          "byteLength": 2
-        }
-      ],
-      "outputFields": [
-        {
-          "name": "returnCode",
-          "type": "uint8",
-          "offset": 0,
-          "byteLength": 1
-        }
-      ],
-      "inputSize": 10,
-      "outputSize": 1
-    },
-    {
-      "kind": "procedure",
-      "inputType": 12,
-      "name": "WithdrawAutoParticipation",
-      "inputFields": [
-        {
-          "name": "amount",
-          "type": "sint64",
-          "offset": 0,
-          "byteLength": 8
-        }
-      ],
-      "outputFields": [
-        {
-          "name": "returnCode",
-          "type": "uint8",
-          "offset": 0,
-          "byteLength": 1
-        }
-      ],
-      "inputSize": 8,
-      "outputSize": 1
-    },
-    {
-      "kind": "procedure",
-      "inputType": 13,
-      "name": "SetAutoConfig",
-      "inputFields": [
-        {
-          "name": "desiredTickets",
-          "type": "sint16",
-          "offset": 0,
-          "byteLength": 2
-        }
-      ],
-      "outputFields": [
-        {
-          "name": "returnCode",
-          "type": "uint8",
-          "offset": 0,
-          "byteLength": 1
-        }
-      ],
-      "inputSize": 2,
-      "outputSize": 1
-    },
-    {
-      "kind": "procedure",
-      "inputType": 14,
-      "name": "SetAutoLimits",
-      "inputFields": [
-        {
-          "name": "maxTicketsPerUser",
-          "type": "uint16",
-          "offset": 0,
-          "byteLength": 2
-        }
-      ],
-      "outputFields": [
-        {
-          "name": "returnCode",
-          "type": "uint8",
-          "offset": 0,
-          "byteLength": 1
-        }
-      ],
-      "inputSize": 2,
-      "outputSize": 1
-    },
-    {
-      "kind": "procedure",
-      "inputType": 15,
-      "name": "DepositManagedQHeart",
-      "inputFields": [
-        {
-          "name": "amount",
-          "type": "sint64",
-          "offset": 0,
-          "byteLength": 8
-        }
-      ],
-      "outputFields": [
-        {
-          "name": "returnCode",
-          "type": "uint8",
-          "offset": 0,
-          "byteLength": 1
-        }
-      ],
-      "inputSize": 8,
-      "outputSize": 1
-    },
-    {
-      "kind": "procedure",
-      "inputType": 16,
-      "name": "TransferTokenToQx",
-      "inputFields": [
-        {
-          "name": "numberOfShares",
-          "type": "sint64",
-          "offset": 0,
-          "byteLength": 8
-        }
-      ],
-      "outputFields": [
-        {
-          "name": "returnCode",
-          "type": "uint8",
-          "offset": 0,
-          "byteLength": 1
-        }
-      ],
-      "inputSize": 8,
-      "outputSize": 1
-    },
-    {
-      "kind": "procedure",
-      "inputType": 29,
+      "inputType": 2,
       "name": "SetPrice",
       "inputFields": [
         {
@@ -293,7 +127,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 30,
+      "inputType": 3,
       "name": "SetSchedule",
       "inputFields": [
         {
@@ -316,7 +150,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 31,
+      "inputType": 4,
       "name": "SetDrawHour",
       "inputFields": [
         {
@@ -339,7 +173,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 32,
+      "inputType": 5,
       "name": "SetFees",
       "inputFields": [
         {
@@ -380,12 +214,185 @@
     },
     {
       "kind": "procedure",
-      "inputType": 33,
+      "inputType": 6,
       "name": "SetQHeartHoldLimit",
       "inputFields": [
         {
           "name": "newQHeartHoldLimit",
           "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 7,
+      "name": "BuyRandomTickets",
+      "inputFields": [
+        {
+          "name": "count",
+          "type": "uint16",
+          "offset": 0,
+          "byteLength": 2
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 2,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 8,
+      "name": "DepositAutoParticipation",
+      "inputFields": [
+        {
+          "name": "amount",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "desiredTickets",
+          "type": "sint16",
+          "offset": 8,
+          "byteLength": 2
+        },
+        {
+          "name": "buyNow",
+          "type": "uint8",
+          "offset": 10,
+          "byteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 11,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 9,
+      "name": "WithdrawAutoParticipation",
+      "inputFields": [
+        {
+          "name": "amount",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 10,
+      "name": "SetAutoConfig",
+      "inputFields": [
+        {
+          "name": "desiredTickets",
+          "type": "sint16",
+          "offset": 0,
+          "byteLength": 2
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 2,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 11,
+      "name": "SetAutoLimits",
+      "inputFields": [
+        {
+          "name": "maxTicketsPerUser",
+          "type": "uint16",
+          "offset": 0,
+          "byteLength": 2
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 2,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 12,
+      "name": "TransferTokenToQx",
+      "inputFields": [
+        {
+          "name": "numberOfShares",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 1
+    },
+    {
+      "kind": "procedure",
+      "inputType": 13,
+      "name": "DepositManagedQHeart",
+      "inputFields": [
+        {
+          "name": "amount",
+          "type": "sint64",
           "offset": 0,
           "byteLength": 8
         }
@@ -406,103 +413,6 @@
     {
       "kind": "function",
       "inputType": 1,
-      "name": "ValidateDigits",
-      "inputFields": [
-        {
-          "name": "digits",
-          "type": "array",
-          "offset": 0,
-          "byteLength": 0,
-          "arrayLength": 0,
-          "arrayItemType": "uint8",
-          "arrayItemByteLength": 1
-        }
-      ],
-      "outputFields": [],
-      "inputSize": 0,
-      "outputSize": 0
-    },
-    {
-      "kind": "function",
-      "inputType": 9,
-      "name": "GetAutoParticipation",
-      "inputFields": [
-        {
-          "name": "player",
-          "type": "id",
-          "offset": 0,
-          "byteLength": 32
-        }
-      ],
-      "outputFields": [
-        {
-          "name": "deposit",
-          "type": "uint64",
-          "offset": 0,
-          "byteLength": 8
-        },
-        {
-          "name": "desiredTickets",
-          "type": "uint16",
-          "offset": 8,
-          "byteLength": 2
-        },
-        {
-          "name": "returnCode",
-          "type": "uint8",
-          "offset": 10,
-          "byteLength": 1
-        }
-      ],
-      "inputSize": 32,
-      "outputSize": 11
-    },
-    {
-      "kind": "function",
-      "inputType": 10,
-      "name": "GetAutoStats",
-      "inputFields": [],
-      "outputFields": [
-        {
-          "name": "participants",
-          "type": "array",
-          "offset": 0,
-          "byteLength": 0,
-          "arrayLength": 0,
-          "arrayItemStructRef": "AutoParticipant",
-          "arrayItemByteLength": 42
-        },
-        {
-          "name": "maxAutoParticipants",
-          "type": "uint16",
-          "offset": 0,
-          "byteLength": 2
-        },
-        {
-          "name": "maxAutoTicketsPerUser",
-          "type": "uint16",
-          "offset": 2,
-          "byteLength": 2
-        },
-        {
-          "name": "roundSlotsLeft",
-          "type": "uint16",
-          "offset": 4,
-          "byteLength": 2
-        },
-        {
-          "name": "returnCode",
-          "type": "uint8",
-          "offset": 6,
-          "byteLength": 1
-        }
-      ],
-      "inputSize": 0,
-      "outputSize": 7
-    },
-    {
-      "kind": "function",
-      "inputType": 17,
       "name": "GetTicketPrice",
       "inputFields": [],
       "outputFields": [
@@ -518,7 +428,7 @@
     },
     {
       "kind": "function",
-      "inputType": 18,
+      "inputType": 2,
       "name": "GetPlayerBalance",
       "inputFields": [
         {
@@ -547,179 +457,7 @@
     },
     {
       "kind": "function",
-      "inputType": 19,
-      "name": "GetFees",
-      "inputFields": [],
-      "outputFields": [
-        {
-          "name": "devPercent",
-          "type": "uint8",
-          "offset": 0,
-          "byteLength": 1
-        },
-        {
-          "name": "burnPercent",
-          "type": "uint8",
-          "offset": 1,
-          "byteLength": 1
-        },
-        {
-          "name": "shareholdersPercent",
-          "type": "uint8",
-          "offset": 2,
-          "byteLength": 1
-        },
-        {
-          "name": "rlShareholdersPercent",
-          "type": "uint8",
-          "offset": 3,
-          "byteLength": 1
-        },
-        {
-          "name": "returnCode",
-          "type": "uint8",
-          "offset": 4,
-          "byteLength": 1
-        }
-      ],
-      "inputSize": 0,
-      "outputSize": 5
-    },
-    {
-      "kind": "function",
-      "inputType": 20,
-      "name": "GetQHeartHoldLimit",
-      "inputFields": [],
-      "outputFields": [
-        {
-          "name": "qheartHoldLimit",
-          "type": "uint64",
-          "offset": 0,
-          "byteLength": 8
-        }
-      ],
-      "inputSize": 0,
-      "outputSize": 8
-    },
-    {
-      "kind": "function",
-      "inputType": 21,
-      "name": "GetQHeartWallet",
-      "inputFields": [],
-      "outputFields": [
-        {
-          "name": "wallet",
-          "type": "id",
-          "offset": 0,
-          "byteLength": 32
-        }
-      ],
-      "inputSize": 0,
-      "outputSize": 32
-    },
-    {
-      "kind": "function",
-      "inputType": 22,
-      "name": "GetWinningDigits",
-      "inputFields": [],
-      "outputFields": [
-        {
-          "name": "digits",
-          "type": "array",
-          "offset": 0,
-          "byteLength": 0,
-          "arrayLength": 0,
-          "arrayItemType": "uint8",
-          "arrayItemByteLength": 1
-        }
-      ],
-      "inputSize": 0,
-      "outputSize": 0
-    },
-    {
-      "kind": "function",
-      "inputType": 23,
-      "name": "GetBalance",
-      "inputFields": [],
-      "outputFields": [
-        {
-          "name": "balance",
-          "type": "uint64",
-          "offset": 0,
-          "byteLength": 8
-        }
-      ],
-      "inputSize": 0,
-      "outputSize": 8
-    },
-    {
-      "kind": "function",
-      "inputType": 24,
-      "name": "GetPlayers",
-      "inputFields": [],
-      "outputFields": [
-        {
-          "name": "players",
-          "type": "array",
-          "offset": 0,
-          "byteLength": 32768,
-          "arrayLength": 1024,
-          "arrayItemStructRef": "Ticket",
-          "arrayItemByteLength": 32
-        },
-        {
-          "name": "returnCode",
-          "type": "uint8",
-          "offset": 32768,
-          "byteLength": 1
-        }
-      ],
-      "inputSize": 0,
-      "outputSize": 32769
-    },
-    {
-      "kind": "function",
-      "inputType": 25,
-      "name": "GetPrizeTable",
-      "inputFields": [],
-      "outputFields": [
-        {
-          "name": "leftAlignedRewards",
-          "type": "array",
-          "offset": 0,
-          "byteLength": 0,
-          "arrayLength": 0,
-          "arrayItemType": "uint64",
-          "arrayItemByteLength": 8
-        },
-        {
-          "name": "anyPositionRewards",
-          "type": "array",
-          "offset": 0,
-          "byteLength": 0,
-          "arrayLength": 0,
-          "arrayItemType": "uint64",
-          "arrayItemByteLength": 8
-        },
-        {
-          "name": "ticketPrice",
-          "type": "uint64",
-          "offset": 0,
-          "byteLength": 8
-        },
-        {
-          "name": "returnCode",
-          "type": "uint8",
-          "offset": 8,
-          "byteLength": 1
-        }
-      ],
-      "inputSize": 0,
-      "outputSize": 9
-    },
-    {
-      "kind": "function",
-      "inputType": 26,
+      "inputType": 3,
       "name": "GetRoundState",
       "inputFields": [],
       "outputFields": [
@@ -772,18 +510,131 @@
           "byteLength": 1
         },
         {
-          "name": "returnCode",
+          "name": "sellingOpen",
           "type": "uint8",
           "offset": 17,
+          "byteLength": 1
+        },
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 18,
           "byteLength": 1
         }
       ],
       "inputSize": 0,
-      "outputSize": 18
+      "outputSize": 19
     },
     {
       "kind": "function",
-      "inputType": 28,
+      "inputType": 4,
+      "name": "GetFees",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "devPercent",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        },
+        {
+          "name": "burnPercent",
+          "type": "uint8",
+          "offset": 1,
+          "byteLength": 1
+        },
+        {
+          "name": "shareholdersPercent",
+          "type": "uint8",
+          "offset": 2,
+          "byteLength": 1
+        },
+        {
+          "name": "rlShareholdersPercent",
+          "type": "uint8",
+          "offset": 3,
+          "byteLength": 1
+        },
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 4,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 5
+    },
+    {
+      "kind": "function",
+      "inputType": 5,
+      "name": "GetQHeartHoldLimit",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "qheartHoldLimit",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 8
+    },
+    {
+      "kind": "function",
+      "inputType": 6,
+      "name": "GetQHeartWallet",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "wallet",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 32
+    },
+    {
+      "kind": "function",
+      "inputType": 7,
+      "name": "GetWinningDigits",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "digits",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 0,
+          "arrayLength": 0,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 0
+    },
+    {
+      "kind": "function",
+      "inputType": 8,
+      "name": "GetBalance",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "balance",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 8
+    },
+    {
+      "kind": "function",
+      "inputType": 9,
       "name": "GetWinners",
       "inputFields": [],
       "outputFields": [
@@ -811,6 +662,175 @@
       ],
       "inputSize": 0,
       "outputSize": 43017
+    },
+    {
+      "kind": "function",
+      "inputType": 10,
+      "name": "GetAutoParticipation",
+      "inputFields": [
+        {
+          "name": "player",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "deposit",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "desiredTickets",
+          "type": "uint16",
+          "offset": 8,
+          "byteLength": 2
+        },
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 10,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 32,
+      "outputSize": 11
+    },
+    {
+      "kind": "function",
+      "inputType": 11,
+      "name": "GetAutoStats",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "participants",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 0,
+          "arrayLength": 0,
+          "arrayItemStructRef": "AutoParticipant",
+          "arrayItemByteLength": 42
+        },
+        {
+          "name": "maxAutoParticipants",
+          "type": "uint16",
+          "offset": 0,
+          "byteLength": 2
+        },
+        {
+          "name": "maxAutoTicketsPerUser",
+          "type": "uint16",
+          "offset": 2,
+          "byteLength": 2
+        },
+        {
+          "name": "roundSlotsLeft",
+          "type": "uint16",
+          "offset": 4,
+          "byteLength": 2
+        },
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 6,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 7
+    },
+    {
+      "kind": "function",
+      "inputType": 12,
+      "name": "ValidateDigits",
+      "inputFields": [
+        {
+          "name": "digits",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 0,
+          "arrayLength": 0,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "isValid",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 1
+    },
+    {
+      "kind": "function",
+      "inputType": 13,
+      "name": "GetPlayers",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "players",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 32768,
+          "arrayLength": 1024,
+          "arrayItemStructRef": "Ticket",
+          "arrayItemByteLength": 32
+        },
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 32768,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 32769
+    },
+    {
+      "kind": "function",
+      "inputType": 14,
+      "name": "GetPrizeTable",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "leftAlignedRewards",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 0,
+          "arrayLength": 0,
+          "arrayItemType": "uint64",
+          "arrayItemByteLength": 8
+        },
+        {
+          "name": "anyPositionRewards",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 0,
+          "arrayLength": 0,
+          "arrayItemType": "uint64",
+          "arrayItemByteLength": 8
+        },
+        {
+          "name": "ticketPrice",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "returnCode",
+          "type": "uint8",
+          "offset": 8,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 9
     }
   ]
 }

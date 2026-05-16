@@ -63,7 +63,7 @@ const STRUCTS: Record<string, NamedStruct> = {
 },
 }
 
-export const QX_ISSUE_ASSET_INPUT_TYPE = 7
+export const QX_ISSUE_ASSET_INPUT_TYPE = 1
 
 export interface QxIssueAssetInput {
   assetName: bigint
@@ -124,7 +124,7 @@ export function decodeQxIssueAssetOutput(
   return decodePayload(data, QX_ISSUE_ASSET_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QxIssueAssetOutput
 }
 
-export const QX_TRANSFER_SHARE_OWNERSHIP_AND_POSSESSION_INPUT_TYPE = 8
+export const QX_TRANSFER_SHARE_OWNERSHIP_AND_POSSESSION_INPUT_TYPE = 2
 
 export interface QxTransferShareOwnershipAndPossessionInput {
   issuer: string
@@ -186,7 +186,7 @@ export function decodeQxTransferShareOwnershipAndPossessionOutput(
   return decodePayload(data, QX_TRANSFER_SHARE_OWNERSHIP_AND_POSSESSION_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QxTransferShareOwnershipAndPossessionOutput
 }
 
-export const QX_ADD_TO_ASK_ORDER_INPUT_TYPE = 9
+export const QX_ADD_TO_ASK_ORDER_INPUT_TYPE = 5
 
 export interface QxAddToAskOrderInput {
   issuer: string
@@ -248,7 +248,7 @@ export function decodeQxAddToAskOrderOutput(
   return decodePayload(data, QX_ADD_TO_ASK_ORDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QxAddToAskOrderOutput
 }
 
-export const QX_ADD_TO_BID_ORDER_INPUT_TYPE = 10
+export const QX_ADD_TO_BID_ORDER_INPUT_TYPE = 6
 
 export interface QxAddToBidOrderInput {
   issuer: string
@@ -310,7 +310,7 @@ export function decodeQxAddToBidOrderOutput(
   return decodePayload(data, QX_ADD_TO_BID_ORDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QxAddToBidOrderOutput
 }
 
-export const QX_REMOVE_FROM_ASK_ORDER_INPUT_TYPE = 11
+export const QX_REMOVE_FROM_ASK_ORDER_INPUT_TYPE = 7
 
 export interface QxRemoveFromAskOrderInput {
   issuer: string
@@ -372,7 +372,7 @@ export function decodeQxRemoveFromAskOrderOutput(
   return decodePayload(data, QX_REMOVE_FROM_ASK_ORDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QxRemoveFromAskOrderOutput
 }
 
-export const QX_REMOVE_FROM_BID_ORDER_INPUT_TYPE = 12
+export const QX_REMOVE_FROM_BID_ORDER_INPUT_TYPE = 8
 
 export interface QxRemoveFromBidOrderInput {
   issuer: string
@@ -434,7 +434,7 @@ export function decodeQxRemoveFromBidOrderOutput(
   return decodePayload(data, QX_REMOVE_FROM_BID_ORDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QxRemoveFromBidOrderOutput
 }
 
-export const QX_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE = 13
+export const QX_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE = 9
 
 export interface QxTransferShareManagementRightsInput {
   asset: QxAssetStruct
@@ -489,7 +489,7 @@ export function decodeQxTransferShareManagementRightsOutput(
   return decodePayload(data, QX_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QxTransferShareManagementRightsOutput
 }
 
-export const QX_FEES_INPUT_TYPE = 2
+export const QX_FEES_INPUT_TYPE = 1
 export const QX_FEES_INPUT_SIZE = 0
 
 export interface QxFeesOutput {
@@ -542,7 +542,7 @@ export async function qxFees(
   })
 }
 
-export const QX_ASSET_ASK_ORDERS_INPUT_TYPE = 3
+export const QX_ASSET_ASK_ORDERS_INPUT_TYPE = 2
 export const QX_ASSET_ASK_ORDERS_INPUT_SIZE = 48
 
 export interface QxAssetAskOrdersInput {
@@ -619,7 +619,7 @@ export async function qxAssetAskOrders(
   })
 }
 
-export const QX_ASSET_BID_ORDERS_INPUT_TYPE = 4
+export const QX_ASSET_BID_ORDERS_INPUT_TYPE = 3
 export const QX_ASSET_BID_ORDERS_INPUT_SIZE = 48
 
 export interface QxAssetBidOrdersInput {
@@ -696,7 +696,7 @@ export async function qxAssetBidOrders(
   })
 }
 
-export const QX_ENTITY_ASK_ORDERS_INPUT_TYPE = 5
+export const QX_ENTITY_ASK_ORDERS_INPUT_TYPE = 4
 export const QX_ENTITY_ASK_ORDERS_INPUT_SIZE = 40
 
 export interface QxEntityAskOrdersInput {
@@ -766,7 +766,7 @@ export async function qxEntityAskOrders(
   })
 }
 
-export const QX_ENTITY_BID_ORDERS_INPUT_TYPE = 6
+export const QX_ENTITY_BID_ORDERS_INPUT_TYPE = 5
 export const QX_ENTITY_BID_ORDERS_INPUT_SIZE = 40
 
 export interface QxEntityBidOrdersInput {

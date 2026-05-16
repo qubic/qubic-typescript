@@ -3,6 +3,7 @@
   "contractName": "RandomLottery",
   "contractAddress": "QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPIYE",
   "epoch": 185,
+  "coreVersion": "v1.265.3",
   "structs": {
     "WinnerInfo": {
       "name": "WinnerInfo",
@@ -56,7 +57,7 @@
   "functions": [
     {
       "kind": "function",
-      "inputType": 2,
+      "inputType": 1,
       "name": "GetFees",
       "inputFields": [],
       "outputFields": [
@@ -96,7 +97,7 @@
     },
     {
       "kind": "function",
-      "inputType": 3,
+      "inputType": 2,
       "name": "GetPlayers",
       "inputFields": [],
       "outputFields": [
@@ -127,7 +128,7 @@
     },
     {
       "kind": "function",
-      "inputType": 6,
+      "inputType": 3,
       "name": "GetWinners",
       "inputFields": [],
       "outputFields": [

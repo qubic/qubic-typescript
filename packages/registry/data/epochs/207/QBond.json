@@ -3,6 +3,7 @@
   "contractName": "QBond",
   "contractAddress": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
   "epoch": 207,
+  "coreVersion": "v1.285.1",
   "structs": {
     "Order": {
       "name": "Order",
@@ -27,12 +28,66 @@
         }
       ],
       "byteLength": 48
+    },
+    "TableEntry": {
+      "name": "TableEntry",
+      "fields": [
+        {
+          "name": "epoch",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "totalStakedQBond",
+          "type": "sint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "totalStakedQEarn",
+          "type": "sint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "apy",
+          "type": "uint64",
+          "offset": 24,
+          "byteLength": 8
+        }
+      ],
+      "byteLength": 32
+    },
+    "MBondEntity": {
+      "name": "MBondEntity",
+      "fields": [
+        {
+          "name": "epoch",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "amount",
+          "type": "sint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "apy",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        }
+      ],
+      "byteLength": 24
     }
   },
   "procedures": [
     {
       "kind": "procedure",
-      "inputType": 2,
+      "inputType": 1,
       "name": "Stake",
       "inputFields": [
         {
@@ -48,7 +103,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 3,
+      "inputType": 2,
       "name": "TransferMBondOwnershipAndPossession",
       "inputFields": [
         {
@@ -83,7 +138,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 4,
+      "inputType": 3,
       "name": "AddAskOrder",
       "inputFields": [
         {
@@ -118,7 +173,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 5,
+      "inputType": 4,
       "name": "RemoveAskOrder",
       "inputFields": [
         {
@@ -153,7 +208,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 6,
+      "inputType": 5,
       "name": "AddBidOrder",
       "inputFields": [
         {
@@ -188,7 +243,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 7,
+      "inputType": 6,
       "name": "RemoveBidOrder",
       "inputFields": [
         {
@@ -223,7 +278,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 8,
+      "inputType": 7,
       "name": "BurnQU",
       "inputFields": [
         {
@@ -246,7 +301,7 @@
     },
     {
       "kind": "procedure",
-      "inputType": 9,
+      "inputType": 8,
       "name": "UpdateCFA",
       "inputFields": [
         {
@@ -254,17 +309,30 @@
           "type": "id",
           "offset": 0,
           "byteLength": 32
+        },
+        {
+          "name": "operation",
+          "type": "uint8",
+          "offset": 32,
+          "byteLength": 1
         }
       ],
-      "outputFields": [],
-      "inputSize": 32,
-      "outputSize": 0
+      "outputFields": [
+        {
+          "name": "result",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 33,
+      "outputSize": 1
     }
   ],
   "functions": [
     {
       "kind": "function",
-      "inputType": 10,
+      "inputType": 1,
       "name": "GetFees",
       "inputFields": [],
       "outputFields": [
@@ -292,7 +360,7 @@
     },
     {
       "kind": "function",
-      "inputType": 11,
+      "inputType": 2,
       "name": "GetEarnedFees",
       "inputFields": [],
       "outputFields": [
@@ -314,7 +382,7 @@
     },
     {
       "kind": "function",
-      "inputType": 12,
+      "inputType": 3,
       "name": "GetInfoPerEpoch",
       "inputFields": [
         {
@@ -349,7 +417,7 @@
     },
     {
       "kind": "function",
-      "inputType": 13,
+      "inputType": 4,
       "name": "GetOrders",
       "inputFields": [
         {
@@ -396,7 +464,7 @@
     },
     {
       "kind": "function",
-      "inputType": 14,
+      "inputType": 5,
       "name": "GetUserOrders",
       "inputFields": [
         {
@@ -443,16 +511,26 @@
     },
     {
       "kind": "function",
-      "inputType": 15,
+      "inputType": 6,
       "name": "GetMBondsTable",
       "inputFields": [],
-      "outputFields": [],
+      "outputFields": [
+        {
+          "name": "info",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 16384,
+          "arrayLength": 512,
+          "arrayItemStructRef": "TableEntry",
+          "arrayItemByteLength": 32
+        }
+      ],
       "inputSize": 0,
-      "outputSize": 0
+      "outputSize": 16384
     },
     {
       "kind": "function",
-      "inputType": 16,
+      "inputType": 7,
       "name": "GetUserMBonds",
       "inputFields": [
         {
@@ -468,14 +546,23 @@
           "type": "sint64",
           "offset": 0,
           "byteLength": 8
+        },
+        {
+          "name": "mbonds",
+          "type": "array",
+          "offset": 8,
+          "byteLength": 6144,
+          "arrayLength": 256,
+          "arrayItemStructRef": "MBondEntity",
+          "arrayItemByteLength": 24
         }
       ],
       "inputSize": 32,
-      "outputSize": 8
+      "outputSize": 6152
     },
     {
       "kind": "function",
-      "inputType": 17,
+      "inputType": 8,
       "name": "GetCFA",
       "inputFields": [],
       "outputFields": [

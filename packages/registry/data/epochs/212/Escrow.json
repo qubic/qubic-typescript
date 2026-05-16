@@ -3,6 +3,7 @@
   "contractName": "Escrow",
   "contractAddress": "BBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAXPZM",
   "epoch": 212,
+  "coreVersion": "v1.290.0",
   "structs": {
     "AssetWithAmount": {
       "name": "AssetWithAmount",
@@ -260,7 +261,7 @@
   "functions": [
     {
       "kind": "function",
-      "inputType": 6,
+      "inputType": 1,
       "name": "GetDeals",
       "inputFields": [
         {
@@ -334,7 +335,7 @@
     },
     {
       "kind": "function",
-      "inputType": 7,
+      "inputType": 2,
       "name": "GetFreeAssetAmount",
       "inputFields": [
         {

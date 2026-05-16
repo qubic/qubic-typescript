@@ -602,16 +602,17 @@ export function parseContractHeader(options: ParseHeaderOptions): ContractAbiVer
   // Resolve typedef aliases (fixpoint — handles chained, Array<X,N>, and primitive typedefs).
   resolveTypedefs(headerSource, namedStructs, resolveSize)
 
-  // Assign ordinals: all _input declarations in source order (both struct and typedef forms).
+  // Read inputType values directly from REGISTER_USER_FUNCTION / REGISTER_USER_PROCEDURE macros.
+  // These macros are the authoritative source — the second argument is the exact inputType
+  // used in the protocol. Scanning _input struct declaration order was wrong because
+  // internal/state structs shift the ordinals.
   const inputOrdinals = new Map<string, number>()
-  let ordinal = 1
-  for (const m of contractBody.text.matchAll(
-    /\bstruct\s+(\w+_input)\s*(?:\{|;)|\btypedef\s+\S+(?:\s*<[^>]*>)?\s+(\w+_input)\s*;/g,
+  for (const m of headerSource.matchAll(
+    /\bREGISTER_USER_(?:FUNCTION|PROCEDURE)\s*\(\s*(\w+)\s*,\s*(\d+)\s*\)/g,
   )) {
-    const inputName = m[1] ?? m[2]
-    if (!inputName) continue
-    const procName = inputName.slice(0, -'_input'.length)
-    if (!inputOrdinals.has(procName)) inputOrdinals.set(procName, ordinal++)
+    const name = m[1]
+    const num = Number(m[2])
+    if (name && !inputOrdinals.has(name)) inputOrdinals.set(name, num)
   }
 
   // Detect public procedures and functions via regex (macros expand to function defs)

@@ -2,8 +2,8 @@ import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { buildApiRoutes } from './routes/api'
 import { buildDownloadRoutes } from './routes/downloads'
-import { createR2Storage } from './storage/r2'
 import type { Storage } from './storage'
+import { createR2Storage } from './storage/r2'
 
 export type Env = {
   REGISTRY_BUCKET: R2Bucket

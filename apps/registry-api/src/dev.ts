@@ -12,6 +12,7 @@ const app = new Hono()
   .route('/v1', buildApiRoutes(storage))
   .route('/download', buildDownloadRoutes(storage))
 
+// biome-ignore lint/complexity/useLiteralKeys: noPropertyAccessFromIndexSignature requires bracket notation
 const port = process.env['PORT'] ? Number(process.env['PORT']) : 3001
 Bun.serve({ fetch: app.fetch, port })
 console.warn(`registry-api (dev) running at http://localhost:${port}`)

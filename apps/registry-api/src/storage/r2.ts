@@ -18,7 +18,10 @@ export function createR2Storage(bucket: R2Bucket): Storage {
       return result.sort((a, b) => a.contractIndex - b.contractIndex)
     },
 
-    async getContractSnapshot(contractIndex: number, epoch: number): Promise<ContractSnapshot | null> {
+    async getContractSnapshot(
+      contractIndex: number,
+      epoch: number,
+    ): Promise<ContractSnapshot | null> {
       const snapshots = await this.getEpochSnapshots(epoch)
       return snapshots?.find((c) => c.contractIndex === contractIndex) ?? null
     },

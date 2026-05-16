@@ -57,10 +57,7 @@ function snapshotToVersion(snap: ContractSnapshot, epoch: number): ContractAbiVe
   }
 }
 
-async function allActiveAtEpoch(
-  storage: Storage,
-  epoch: number,
-): Promise<ContractAbiVersion[]> {
+async function allActiveAtEpoch(storage: Storage, epoch: number): Promise<ContractAbiVersion[]> {
   const fromStorage = await storage.getEpochSnapshots(epoch)
   if (fromStorage) return fromStorage.map((snap) => snapshotToVersion(snap, epoch))
   const indices = [...new Set(registry.versions.map((v) => v.contractIndex))]
@@ -85,9 +82,12 @@ export function buildApiRoutes(storage: Storage) {
       const match = registry.versions.find(
         (v) => v.contractName.toLowerCase() === name && v.effectiveToEpoch === null,
       )
-      if (!match) return c.json({ error: `Contract '${c.req.param('name')}' not found`, status: 404 }, 404)
+      if (!match)
+        return c.json({ error: `Contract '${c.req.param('name')}' not found`, status: 404 }, 404)
       try {
-        return c.json(getCurrentAbi(registry as Parameters<typeof getCurrentAbi>[0], match.contractIndex))
+        return c.json(
+          getCurrentAbi(registry as Parameters<typeof getCurrentAbi>[0], match.contractIndex),
+        )
       } catch (e) {
         if (e instanceof AbiNotFoundError) return c.json({ error: e.message, status: 404 }, 404)
         throw e
@@ -127,7 +127,11 @@ export function buildApiRoutes(storage: Storage) {
       if (fromStorage) {
         c.header('cache-control', 'public, max-age=31536000, immutable')
         const version = snapshotToVersion(fromStorage, epoch)
-        return c.json({ version, isCurrent: version.effectiveToEpoch === null, isRegistryPossiblyStale: false })
+        return c.json({
+          version,
+          isCurrent: version.effectiveToEpoch === null,
+          isRegistryPossiblyStale: false,
+        })
       }
       try {
         c.header('cache-control', 'public, max-age=31536000, immutable')
@@ -145,11 +149,13 @@ export function buildApiRoutes(storage: Storage) {
       const counts = await Promise.all(
         epochs.map((e) => storage.getEpochSnapshots(e).then((s) => s?.length ?? 0)),
       )
-      return c.json(epochs.map((epoch, i) => ({
-        epoch,
-        contractCount: counts[i],
-        gitTag: epochRefs[String(epoch)] ?? null,
-      })))
+      return c.json(
+        epochs.map((epoch, i) => ({
+          epoch,
+          contractCount: counts[i],
+          gitTag: epochRefs[String(epoch)] ?? null,
+        })),
+      )
     })
 
     .get('/epochs/:epoch', async (c) => {

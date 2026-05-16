@@ -1,7 +1,7 @@
 import { findContractByIndex } from '@qubic.org/registry'
 import registry from '@qubic.org/registry/registry.json'
-import { Hono } from 'hono'
 import { zipSync } from 'fflate'
+import { Hono } from 'hono'
 import type { Storage } from '../storage'
 
 function binary(body: Uint8Array, headers: Record<string, string>): Response {
@@ -29,7 +29,10 @@ export function buildDownloadRoutes(storage: Storage): Hono {
       const filename = `${contract}.json`
       const bytes = await storage.readFile(`epochs/${epoch}/${filename}`)
       if (!bytes)
-        return c.json({ error: `No snapshot found for ${contract} at epoch ${epoch}`, status: 404 }, 404)
+        return c.json(
+          { error: `No snapshot found for ${contract} at epoch ${epoch}`, status: 404 },
+          404,
+        )
       return binary(bytes, {
         'cache-control': 'public, max-age=31536000, immutable',
         'content-type': 'application/json',

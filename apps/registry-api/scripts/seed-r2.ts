@@ -11,8 +11,18 @@ const DATA_DIR = join(import.meta.dir, '../../../packages/registry/data')
 
 async function upload(key: string, filePath: string): Promise<void> {
   const proc = Bun.spawn(
-    ['bunx', 'wrangler', 'r2', 'object', 'put', `${BUCKET}/${key}`,
-     '--file', filePath, '--content-type', 'application/json'],
+    [
+      'bunx',
+      'wrangler',
+      'r2',
+      'object',
+      'put',
+      `${BUCKET}/${key}`,
+      '--file',
+      filePath,
+      '--content-type',
+      'application/json',
+    ],
     { stdout: 'ignore', stderr: 'pipe' },
   )
   await proc.exited
@@ -44,4 +54,7 @@ async function main() {
   console.log(`\nDone — seeded ${epochs.length} epochs to bucket "${BUCKET}"`)
 }
 
-main().catch((e) => { console.error(e); process.exit(1) })
+main().catch((e) => {
+  console.error(e)
+  process.exit(1)
+})

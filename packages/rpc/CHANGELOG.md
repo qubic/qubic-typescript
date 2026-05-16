@@ -1,5 +1,11 @@
 # @qubic.org/rpc
 
+## 0.2.4
+
+### Patch Changes
+
+- [`bd0335d`](https://github.com/alez04/qubic-typescript/commit/bd0335de3e34d339102298cb0f40f68618d73df8) Thanks [@alez04](https://github.com/alez04)! - Add `main` and `types` fields to all packages. This allows tools using `moduleResolution: "node"` (e.g. Angular 16) to resolve the packages without requiring `paths` overrides in tsconfig.
+
 ## 0.2.3
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @qubic.org/react
 
+## 0.2.6
+
+### Patch Changes
+
+- [`4803765`](https://github.com/alez04/qubic-typescript/commit/480376598d2ed140351fb418689d5b6e57a567d6) Thanks [@alez04](https://github.com/alez04)! - Fix TypeScript build errors in `useSendContractCall`, `useSendTransfer`, and `MetaMaskSnapConnector`. Guard against `tick` being `undefined` (`exactOptionalPropertyTypes`), and type the `broadcast` callback return as `BroadcastTransactionResponse` instead of `unknown`.
+
 ## 0.2.5
 
 ## 0.2.4

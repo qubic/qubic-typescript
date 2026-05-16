@@ -31,19 +31,14 @@ jobs:
       - name: Sync changed registry data to R2
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           git diff --name-only HEAD~1 HEAD -- packages/registry/data/ \
             | grep '\.json$' \
             | while read file; do
                 key="${file#packages/registry/data/}"
                 echo "Uploading $key"
-                curl -sf -X PUT \
-                  "https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/r2/buckets/registry-data/objects/${key}" \
-                  -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
-                  -H "content-type: application/json" \
-                  --data-binary "@${file}" > /dev/null
-                echo "✓ $key"
+                bunx wrangler r2 object put "registry-data/${key}" \
+                  --file "$file" --content-type application/json
               done
 
       - name: Deploy worker

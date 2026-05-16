@@ -1,5 +1,11 @@
 # @qubic.org/registry
 
+## 0.2.2
+
+### Patch Changes
+
+- [`e3913f0`](https://github.com/alez04/qubic-typescript/commit/e3913f0abfce826fb6270793beabc36c9af596bc) Thanks [@alez04](https://github.com/alez04)! - Fix inputType values for all contract procedures and functions. The ABI parser was deriving inputType by counting `_input` struct declarations in source order, which produced wrong values (e.g. `GetFees` was 31 instead of 8) because internal and state structs shifted the ordinals. The parser now reads the registered number directly from `REGISTER_USER_FUNCTION` / `REGISTER_USER_PROCEDURE` macros, which are the authoritative source in the contract headers.
+
 ## 0.2.1
 
 ### Patch Changes

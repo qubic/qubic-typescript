@@ -1,5 +1,11 @@
 # @qubic.org/rpc
 
+## 0.2.5
+
+### Patch Changes
+
+- [`7d5cc04`](https://github.com/alez04/qubic-typescript/commit/7d5cc0418acf31de48cd939cca39931707a430c3) Thanks [@alez04](https://github.com/alez04)! - Copy `live-schema.d.ts` and `query-schema.d.ts` to `dist/` during build. These openapi-generated type files were missing from the published package, causing `Cannot find module './live-schema'` errors in consumers using `moduleResolution: "node"`.
+
 ## 0.2.4
 
 ### Patch Changes

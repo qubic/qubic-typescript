@@ -1,8 +1,6 @@
 name = "registry-api"
 main = "src/server.ts"
 
-[build]
-command = "bun --cwd ../.. run --filter @qubic.org/types build && bun --cwd ../.. run --filter @qubic.org/registry build"
 
 compatibility_date = "2025-05-15"
 compatibility_flags = ["nodejs_compat"]

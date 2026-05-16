@@ -1,4 +1,3 @@
 {
-  "installCommand": "bun install --frozen-lockfile --ignore-scripts",
-  "buildCommand": "REPO=$(git rev-parse --show-toplevel) && bun --cwd $REPO run --filter @qubic.org/types build && bun --cwd $REPO run --filter @qubic.org/registry build && bun --cwd $REPO run --filter @qubic.org/crypto build && bun --cwd $REPO/apps/registry-web run build"
+  "installCommand": "bun install --ignore-scripts"
 }

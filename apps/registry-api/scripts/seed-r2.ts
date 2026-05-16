@@ -1,46 +1,34 @@
 #!/usr/bin/env bun
-// Uploads registry data to R2 via wrangler, skipping epochs already present.
-// Usage: bun run scripts/seed-r2.ts
+// Uploads registry data to R2 via wrangler, skipping already-seeded epochs.
+// State is tracked in .seed-state.json next to this script.
+//
+// Usage:
+//   bun run scripts/seed-r2.ts            # uploads missing epochs
+//   bun run scripts/seed-r2.ts --from 200 # upload epochs >= 200 (ignores state file)
+//
 // Requires: wrangler login or CLOUDFLARE_API_TOKEN env var
 
-import { readdirSync, statSync } from 'node:fs'
+import { readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 
 const BUCKET = 'registry-data'
 const DATA_DIR = join(import.meta.dir, '../../../packages/registry/data')
+const STATE_FILE = join(import.meta.dir, '.seed-state.json')
 
-async function listExistingEpochs(): Promise<Set<number>> {
-  const existing = new Set<number>()
-  let cursor: string | undefined
-
-  while (true) {
-    const args = ['bunx', 'wrangler', 'r2', 'object', 'list', BUCKET, '--prefix', 'epochs/']
-    if (cursor) args.push('--cursor', cursor)
-
-    const proc = Bun.spawn(args, { stdout: 'pipe', stderr: 'ignore' })
-    await proc.exited
-    if (proc.exitCode !== 0) break
-
-    const text = (await new Response(proc.stdout).text()).trim()
-    if (!text) break
-
-    try {
-      const parsed = JSON.parse(text)
-      // handle both [{key}] and {objects:[{key}], truncated, cursor} shapes
-      const objects: { key: string }[] = Array.isArray(parsed) ? parsed : (parsed.objects ?? [])
-      for (const obj of objects) {
-        const match = obj.key?.match(/^epochs\/(\d+)\//)
-        if (match) existing.add(Number(match[1]))
-      }
-      if (!parsed.truncated) break
-      cursor = parsed.cursor
-    } catch {
-      console.warn('Could not parse wrangler list output, uploading all epochs\nRaw output:', text.slice(0, 200))
-      break
-    }
+function readState(): Set<number> {
+  try {
+    const { epochs } = JSON.parse(readFileSync(STATE_FILE, 'utf8'))
+    return new Set<number>(epochs)
+  } catch {
+    return new Set()
   }
+}
 
-  return existing
+function saveState(seeded: Set<number>) {
+  writeFileSync(
+    STATE_FILE,
+    JSON.stringify({ epochs: [...seeded].sort((a, b) => a - b) }, null, 2),
+  )
 }
 
 async function upload(key: string, filePath: string): Promise<void> {
@@ -68,20 +56,34 @@ async function upload(key: string, filePath: string): Promise<void> {
 }
 
 async function main() {
+  const fromArg = process.argv.indexOf('--from')
+  const fromEpoch = fromArg !== -1 ? Number(process.argv[fromArg + 1]) : undefined
+
   await upload('registry.json', join(DATA_DIR, 'registry.json'))
   await upload('epoch-refs.json', join(DATA_DIR, 'epoch-refs.json'))
 
   const epochsDir = join(DATA_DIR, 'epochs')
-  const epochs = readdirSync(epochsDir)
+  const allEpochs = readdirSync(epochsDir)
     .map(Number)
     .filter((n) => !Number.isNaN(n))
     .sort((a, b) => a - b)
 
-  const existing = await listExistingEpochs()
-  console.log(`R2 already has ${existing.size} epochs — skipping those`)
+  const seeded = readState()
 
-  const toUpload = epochs.filter((e) => !existing.has(e))
-  console.log(`Uploading ${toUpload.length} new epochs (${toUpload[0] ?? '—'} – ${toUpload.at(-1) ?? '—'})`)
+  const toUpload =
+    fromEpoch !== undefined
+      ? allEpochs.filter((e) => e >= fromEpoch)
+      : allEpochs.filter((e) => !seeded.has(e))
+
+  if (toUpload.length === 0) {
+    console.log('Nothing to upload — all epochs already seeded.')
+    return
+  }
+
+  console.log(
+    `Uploading ${toUpload.length} epochs (${toUpload[0]} – ${toUpload.at(-1)})` +
+      (fromEpoch !== undefined ? ` [--from ${fromEpoch}]` : ` [${seeded.size} already seeded]`),
+  )
 
   for (const epoch of toUpload) {
     const dir = join(epochsDir, String(epoch))
@@ -89,9 +91,11 @@ async function main() {
     for (const file of readdirSync(dir).filter((f) => f.endsWith('.json'))) {
       await upload(`epochs/${epoch}/${file}`, join(dir, file))
     }
+    seeded.add(epoch)
+    saveState(seeded)
   }
 
-  console.log(`\nDone — seeded ${toUpload.length} new epochs to bucket "${BUCKET}"`)
+  console.log(`\nDone — seeded ${toUpload.length} epochs to bucket "${BUCKET}"`)
 }
 
 main().catch((e) => {

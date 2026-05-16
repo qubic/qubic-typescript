@@ -1,3 +1,4 @@
+import type { BroadcastTransactionResponse } from '@qubic.org/rpc'
 import type {
   ConnectOptions,
   SendTransactionResult,
@@ -32,7 +33,7 @@ export interface MetaMaskSnapConnectorOptions {
    *   return { networkTxId: result.value.transactionId, broadcast: result.value }
    * }
    */
-  broadcast?: (signedBase64: string) => Promise<{ networkTxId: string; broadcast: unknown }>
+  broadcast?: (signedBase64: string) => Promise<{ networkTxId: string; broadcast: BroadcastTransactionResponse }>
   /**
    * Snap method name for retrieving the identity.
    * Default: 'getIdentity'. Override if the snap version you use differs.

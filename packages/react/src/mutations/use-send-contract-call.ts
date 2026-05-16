@@ -68,6 +68,7 @@ export function useSendContractCall(): UseMutationResult<
       const tickR = await liveClient.getTickInfo()
       if (!tickR.ok) throw tickR.error
       const { tick } = tickR.value
+      if (tick === undefined) throw new Error('getTickInfo returned no tick')
       const { encoded } = await wallet.buildScTransaction({
         destination,
         amount,

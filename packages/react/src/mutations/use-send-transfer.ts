@@ -50,6 +50,7 @@ export function useSendTransfer(): UseMutationResult<
       const tickR = await liveClient.getTickInfo()
       if (!tickR.ok) throw tickR.error
       const { tick } = tickR.value
+      if (tick === undefined) throw new Error('getTickInfo returned no tick')
       const { encoded } = await wallet.buildTransfer({
         destination,
         amount,

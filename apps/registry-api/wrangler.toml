@@ -3,6 +3,10 @@ main = "src/server.ts"
 compatibility_date = "2025-05-15"
 compatibility_flags = ["nodejs_compat"]
 
-[routes]
+[[routes]]
 pattern = "registry.qubickit.dev/*"
 zone_name = "qubickit.dev"
+
+[[r2_buckets]]
+binding = "REGISTRY_BUCKET"
+bucket_name = "registry-data"

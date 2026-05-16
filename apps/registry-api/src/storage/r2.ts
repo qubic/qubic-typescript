@@ -27,11 +27,18 @@ export function createR2Storage(bucket: R2Bucket): Storage {
     },
 
     async listEpochs(): Promise<number[]> {
-      const list = await bucket.list({ prefix: 'epochs/', delimiter: '/' })
-      return (list.delimitedPrefixes ?? [])
-        .map((p) => Number(p.replace('epochs/', '').replace('/', '')))
-        .filter((n) => !Number.isNaN(n))
-        .sort((a, b) => a - b)
+      const epochs = new Set<number>()
+      let cursor: string | undefined
+      while (true) {
+        const list = await bucket.list({ prefix: 'epochs/', cursor, limit: 1000 })
+        for (const obj of list.objects) {
+          const match = obj.key.match(/^epochs\/(\d+)\//)
+          if (match) epochs.add(Number(match[1]))
+        }
+        if (!list.truncated) break
+        cursor = list.cursor
+      }
+      return [...epochs].sort((a, b) => a - b)
     },
 
     async getEpochRefs(): Promise<Record<string, string>> {

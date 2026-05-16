@@ -1,7 +1,7 @@
 import createClient from 'openapi-fetch'
 import { sig, unwrap } from './_utils.js'
 import type { QubicRpcError } from './errors.js'
-import type { components, paths } from './live-schema.d.ts'
+import type { components, paths } from './live-schema'
 import { ok } from './result.js'
 import type { Result } from './result.js'
 

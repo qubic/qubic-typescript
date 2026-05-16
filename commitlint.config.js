@@ -16,6 +16,7 @@ export default {
         'tcp',
         'registry',
         'registry-web',
+        'registry-api',
         'react',
         'ci',
         'deps',

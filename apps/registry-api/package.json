@@ -4,18 +4,19 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "bun --hot src/server.ts",
-    "start": "bun src/server.ts",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@elysiajs/cors": "^1.4.2",
     "@qubic.org/registry": "workspace:^",
     "@qubic.org/types": "workspace:^",
-    "elysia": "^1.4.28",
-    "fflate": "^0.8.2"
+    "fflate": "^0.8.2",
+    "hono": "^4.7.0"
   },
   "devDependencies": {
-    "typescript": "*"
+    "@cloudflare/workers-types": "^4.20250515.0",
+    "typescript": "*",
+    "wrangler": "^4.0.0"
   }
 }

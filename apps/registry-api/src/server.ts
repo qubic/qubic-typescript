@@ -1,14 +1,12 @@
-import { cors } from '@elysiajs/cors'
-import { Elysia } from 'elysia'
+import { Hono } from 'hono'
+import { cors } from 'hono/cors'
 import { apiRoutes } from './routes/api'
 import { downloadRoutes } from './routes/downloads'
 
-const app = new Elysia()
+const app = new Hono()
   .use(cors())
-  .use(apiRoutes)
-  .use(downloadRoutes)
-  .get('/health', () => ({ ok: true }))
-  // biome-ignore lint/complexity/useLiteralKeys: noPropertyAccessFromIndexSignature requires bracket notation
-  .listen(process.env['PORT'] ? Number(process.env['PORT']) : 3001)
+  .get('/health', (c) => c.json({ ok: true }))
+  .route('/v1', apiRoutes)
+  .route('/download', downloadRoutes)
 
-console.warn(`registry-api running at http://localhost:${app.server?.port}`)
+export default app

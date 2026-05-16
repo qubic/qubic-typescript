@@ -1,0 +1,8 @@
+name = "registry-api"
+main = "src/server.ts"
+compatibility_date = "2025-05-15"
+compatibility_flags = ["nodejs_compat"]
+
+[routes]
+pattern = "registry.qubickit.dev/*"
+zone_name = "qubickit.dev"

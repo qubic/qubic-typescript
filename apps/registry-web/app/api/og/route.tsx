@@ -43,11 +43,7 @@ export function GET(req: NextRequest) {
         >
           {title}
         </div>
-        {sub && (
-          <div style={{ color: '#64748b', fontSize: 26 }}>
-            {sub}
-          </div>
-        )}
+        {sub && <div style={{ color: '#64748b', fontSize: 26 }}>{sub}</div>}
       </div>
 
       {/* Bottom bar */}

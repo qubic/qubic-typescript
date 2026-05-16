@@ -47,7 +47,7 @@ async function upload(accountId: string, key: string, content: Uint8Array): Prom
 async function withConcurrency(tasks: (() => Promise<void>)[]): Promise<void> {
   const queue = [...tasks]
   const workers = Array.from({ length: Math.min(CONCURRENCY, tasks.length) }, async () => {
-    while (queue.length > 0) await queue.shift()!()
+    while (queue.length > 0) await queue.shift()?.()
   })
   await Promise.all(workers)
 }
@@ -95,8 +95,7 @@ async function main() {
   }
 
   console.log(
-    `Uploading ${toUpload.length} epochs (${toUpload[0]} – ${toUpload.at(-1)})` +
-      (fromEpoch !== undefined ? ` [--from ${fromEpoch}]` : ` [${seeded.size} already seeded]`),
+    `Uploading ${toUpload.length} epochs (${toUpload[0]} – ${toUpload.at(-1)})${fromEpoch !== undefined ? ` [--from ${fromEpoch}]` : ` [${seeded.size} already seeded]`}`,
   )
 
   // Build all upload tasks across all epochs

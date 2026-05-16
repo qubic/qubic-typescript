@@ -34,7 +34,11 @@ export function createR2Storage(bucket: R2Bucket): Storage {
       const counts = new Map<number, number>()
       let cursor: string | undefined
       while (true) {
-        const list = await bucket.list({ prefix: 'epochs/', ...(cursor ? { cursor } : {}), limit: 1000 })
+        const list = await bucket.list({
+          prefix: 'epochs/',
+          ...(cursor ? { cursor } : {}),
+          limit: 1000,
+        })
         for (const obj of list.objects) {
           const match = obj.key.match(/^epochs\/(\d+)\//)
           if (match) {

@@ -5,7 +5,10 @@ export const dynamic = 'force-dynamic'
 
 export const metadata = {
   title: 'Epoch History',
-  openGraph: { title: 'Epoch History', images: ['/api/og?title=Epoch+History&sub=Immutable+ABI+snapshots+per+epoch'] },
+  openGraph: {
+    title: 'Epoch History',
+    images: ['/api/og?title=Epoch+History&sub=Immutable+ABI+snapshots+per+epoch'],
+  },
   twitter: { title: 'Epoch History' },
 }
 

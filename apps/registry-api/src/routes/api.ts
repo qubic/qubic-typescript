@@ -143,7 +143,7 @@ export function buildApiRoutes(storage: Storage) {
     })
 
     .get('/epochs', async (c) => {
-      c.header('cache-control', 'public, max-age=3600')
+      c.header('cache-control', 'public, max-age=300')
       const epochs = await storage.listEpochs()
       const epochRefs = await storage.getEpochRefs()
       const counts = await Promise.all(

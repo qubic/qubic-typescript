@@ -10,12 +10,7 @@ export default async function Home() {
   const totalProcs = contracts.reduce((s, c) => s + c.procedureCount, 0)
   const totalFuncs = contracts.reduce((s, c) => s + c.functionCount, 0)
   const totalStructs = contracts.reduce((s, c) => s + c.structCount, 0)
-  const currentEpoch =
-    epochs.length > 0
-      ? Math.max(...epochs.map((e) => e.epoch))
-      : contracts.length > 0
-        ? Math.max(...contracts.map((c) => c.currentFromEpoch))
-        : '—'
+  const currentEpoch = epochs.length > 0 ? Math.max(...epochs.map((e) => e.epoch)) : '—'
 
   const stats = [
     { lbl: 'Contracts', num: contracts.length },

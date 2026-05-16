@@ -39,7 +39,7 @@ export function createBunStorage(): Storage {
     },
 
     async readFile(path: string): Promise<Uint8Array | null> {
-      const f = Bun.file(path)
+      const f = Bun.file(`${DATA_DIR}${path}`)
       if (!(await f.exists())) return null
       return new Uint8Array(await f.arrayBuffer())
     },

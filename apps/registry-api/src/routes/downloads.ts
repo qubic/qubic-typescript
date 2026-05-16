@@ -1,111 +1,89 @@
-import { existsSync, readdirSync } from 'node:fs'
 import { findContractByIndex } from '@qubic.org/registry'
 import registry from '@qubic.org/registry/registry.json'
-import { Elysia } from 'elysia'
 import { Hono } from 'hono'
 import { zipSync } from 'fflate'
 import type { Storage } from '../storage'
 
-// TODO(batch-3): rewrite to Hono + Storage
-export function buildDownloadRoutes(_storage: Storage): Hono {
+function binary(body: Uint8Array, headers: Record<string, string>): Response {
+  return new Response(body, { headers })
+}
+
+export function buildDownloadRoutes(storage: Storage): Hono {
   return new Hono()
-}
-
-const REGISTRY_SRC = Bun.resolveSync('@qubic.org/registry', import.meta.dir)
-const DATA_DIR = REGISTRY_SRC.replace(/\/src\/index\.ts$/, '/data/')
-const EPOCHS_DIR = `${DATA_DIR}epochs/`
-
-async function readFile(path: string): Promise<Uint8Array> {
-  return new Uint8Array(await Bun.file(path).arrayBuffer())
-}
-
-function epochDirs(): number[] {
-  return readdirSync(EPOCHS_DIR)
-    .map(Number)
-    .filter((n) => !Number.isNaN(n))
-    .sort((a, b) => a - b)
-}
-
-export const downloadRoutes = new Elysia({ prefix: '/download' })
-  .get('/registry.json', async ({ set }) => {
-    const bytes = await readFile(`${DATA_DIR}registry.json`)
-    set.headers['content-type'] = 'application/json'
-    set.headers['content-disposition'] = 'attachment; filename="registry.json"'
-    return bytes
-  })
-
-  .get('/epoch/:epoch/:contract', async ({ params, status, set }) => {
-    const epoch = Number(params.epoch)
-    if (!Number.isInteger(epoch) || epoch < 0)
-      return status(400, { error: 'Invalid epoch', status: 400 })
-    const contract = params.contract.replace(/\.json$/, '')
-    if (!/^[a-zA-Z0-9_-]+$/.test(contract))
-      return status(400, { error: 'Invalid contract name', status: 400 })
-    const filename = `${contract}.json`
-    const path = `${EPOCHS_DIR}${epoch}/${filename}`
-    if (!existsSync(path)) {
-      return status(404, {
-        error: `No snapshot found for ${contract} at epoch ${epoch}`,
-        status: 404,
+    .get('/registry.json', async (c) => {
+      const bytes = await storage.readFile('registry.json')
+      if (!bytes) return c.json({ error: 'registry.json not found', status: 404 }, 404)
+      return binary(bytes, {
+        'content-type': 'application/json',
+        'content-disposition': 'attachment; filename="registry.json"',
       })
-    }
-    const bytes = await readFile(path)
-    set.headers['cache-control'] = 'public, max-age=31536000, immutable'
-    set.headers['content-type'] = 'application/json'
-    set.headers['content-disposition'] = `attachment; filename="${filename}"`
-    return bytes
-  })
+    })
 
-  .get('/epoch/:epoch/all.zip', async ({ params, status, set }) => {
-    const epoch = Number(params.epoch)
-    if (Number.isNaN(epoch)) return status(400, { error: 'Invalid epoch', status: 400 })
-    const dir = `${EPOCHS_DIR}${epoch}/`
-    if (!existsSync(dir)) return status(404, { error: `No data for epoch ${epoch}`, status: 404 })
+    .get('/epoch/:epoch/:contract', async (c) => {
+      const epoch = Number(c.req.param('epoch'))
+      if (!Number.isInteger(epoch) || epoch < 0)
+        return c.json({ error: 'Invalid epoch', status: 400 }, 400)
+      const contract = c.req.param('contract').replace(/\.json$/, '')
+      if (!/^[a-zA-Z0-9_-]+$/.test(contract))
+        return c.json({ error: 'Invalid contract name', status: 400 }, 400)
+      const filename = `${contract}.json`
+      const bytes = await storage.readFile(`epochs/${epoch}/${filename}`)
+      if (!bytes)
+        return c.json({ error: `No snapshot found for ${contract} at epoch ${epoch}`, status: 404 }, 404)
+      return binary(bytes, {
+        'cache-control': 'public, max-age=31536000, immutable',
+        'content-type': 'application/json',
+        'content-disposition': `attachment; filename="${filename}"`,
+      })
+    })
 
-    const files = readdirSync(dir).filter((f) => f.endsWith('.json'))
-    if (files.length === 0)
-      return status(404, { error: `No contracts at epoch ${epoch}`, status: 404 })
+    .get('/epoch/:epoch/all.zip', async (c) => {
+      const epoch = Number(c.req.param('epoch'))
+      if (!Number.isInteger(epoch) || epoch < 0)
+        return c.json({ error: 'Invalid epoch', status: 400 }, 400)
+      const snapshots = await storage.getEpochSnapshots(epoch)
+      if (!snapshots || snapshots.length === 0)
+        return c.json({ error: `No contracts at epoch ${epoch}`, status: 404 }, 404)
+      const entries: Record<string, Uint8Array> = {}
+      await Promise.all(
+        snapshots.map(async (snap) => {
+          const name = snap.contractName ?? String(snap.contractIndex)
+          const bytes = await storage.readFile(`epochs/${epoch}/${name}.json`)
+          if (bytes) entries[`${name}.json`] = bytes
+        }),
+      )
+      return binary(zipSync(entries), {
+        'cache-control': 'public, max-age=31536000, immutable',
+        'content-type': 'application/zip',
+        'content-disposition': `attachment; filename="qubic-registry-epoch-${epoch}.zip"`,
+      })
+    })
 
-    const entries: Record<string, Uint8Array> = {}
-    for (const f of files) {
-      entries[f] = await readFile(`${EPOCHS_DIR}${epoch}/${f}`)
-    }
-
-    const zip = zipSync(entries)
-    set.headers['cache-control'] = 'public, max-age=31536000, immutable'
-    set.headers['content-type'] = 'application/zip'
-    set.headers['content-disposition'] = `attachment; filename="qubic-registry-epoch-${epoch}.zip"`
-    return zip
-  })
-
-  .get('/contract/:index/all.zip', async ({ params, status, set }) => {
-    const idx = Number(params.index)
-    if (Number.isNaN(idx)) return status(400, { error: 'Invalid contract index', status: 400 })
-
-    let name: string
-    try {
-      name = findContractByIndex(registry as Parameters<typeof findContractByIndex>[0], idx)
-    } catch {
-      return status(404, { error: `Contract ${idx} not found`, status: 404 })
-    }
-
-    const entries: Record<string, Uint8Array> = {}
-    for (const epoch of epochDirs()) {
-      const path = `${EPOCHS_DIR}${epoch}/${name}.json`
-      if (existsSync(path)) {
-        entries[`${epoch}/${name}.json`] = await readFile(path)
+    .get('/contract/:index/all.zip', async (c) => {
+      const idx = Number(c.req.param('index'))
+      if (!Number.isInteger(idx) || idx < 0)
+        return c.json({ error: 'Invalid contract index', status: 400 }, 400)
+      let name: string
+      try {
+        name = findContractByIndex(registry as Parameters<typeof findContractByIndex>[0], idx)
+      } catch {
+        return c.json({ error: `Contract ${idx} not found`, status: 404 }, 404)
       }
-    }
-
-    if (Object.keys(entries).length === 0) {
-      return status(404, { error: `No epoch snapshots found for contract ${idx}`, status: 404 })
-    }
-
-    const zip = zipSync(entries)
-    const slug = name.toLowerCase().replace(/[^a-z0-9]/g, '-')
-    set.headers['cache-control'] = 'public, max-age=3600'
-    set.headers['content-type'] = 'application/zip'
-    set.headers['content-disposition'] =
-      `attachment; filename="qubic-registry-contract-${idx}-${slug}-all-epochs.zip"`
-    return zip
-  })
+      const epochs = await storage.listEpochs()
+      const entries: Record<string, Uint8Array> = {}
+      await Promise.all(
+        epochs.map(async (epoch) => {
+          const bytes = await storage.readFile(`epochs/${epoch}/${name}.json`)
+          if (bytes) entries[`${epoch}/${name}.json`] = bytes
+        }),
+      )
+      if (Object.keys(entries).length === 0)
+        return c.json({ error: `No epoch snapshots found for contract ${idx}`, status: 404 }, 404)
+      const slug = name.toLowerCase().replace(/[^a-z0-9]/g, '-')
+      return binary(zipSync(entries), {
+        'cache-control': 'public, max-age=3600',
+        'content-type': 'application/zip',
+        'content-disposition': `attachment; filename="qubic-registry-contract-${idx}-${slug}-all-epochs.zip"`,
+      })
+    })
+}

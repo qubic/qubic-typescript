@@ -89,15 +89,18 @@ export function SearchFilter({ contracts }: { contracts: ContractSummary[] }) {
     className,
     style,
   }: { col: SortKey; label: string; className?: string; style?: React.CSSProperties }) {
+    const active = sort === col
     return (
       <th
-        className={`sortable${className ? ` ${className}` : ''}${sort === col ? ' sort-active' : ''}`}
+        scope="col"
+        aria-sort={active ? (dir === 'asc' ? 'ascending' : 'descending') : 'none'}
+        className={`sortable${className ? ` ${className}` : ''}${active ? ' sort-active' : ''}`}
         style={style}
-        onClick={() => toggleSort(col)}
-        onKeyDown={(e) => e.key === 'Enter' && toggleSort(col)}
       >
-        {label}
-        {sort === col && <SortArrow dir={dir} />}
+        <button type="button" onClick={() => toggleSort(col)}>
+          {label}
+          {active && <SortArrow dir={dir} />}
+        </button>
       </th>
     )
   }
@@ -125,7 +128,7 @@ export function SearchFilter({ contracts }: { contracts: ContractSummary[] }) {
       </div>
 
       <div className="tbl-wrap">
-        <table className="tbl">
+        <table className="tbl" aria-label="Smart contracts">
           <thead>
             <tr>
               <SortTh col="idx" label="#" className="col-idx" style={{ width: 44 }} />
@@ -138,7 +141,7 @@ export function SearchFilter({ contracts }: { contracts: ContractSummary[] }) {
                 className="col-structs right"
                 style={{ width: 70 }}
               />
-              <th className="col-actions right" style={{ width: 130 }} />
+              <th scope="col" className="col-actions right" style={{ width: 130 }} />
             </tr>
           </thead>
           <tbody>

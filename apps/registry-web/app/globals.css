@@ -106,6 +106,7 @@ body {
   padding: 0;
 }
 html {
+  scroll-behavior: smooth;
   background: var(--bg);
   background-image: radial-gradient(
       1200px 600px at 50% -10%,
@@ -121,7 +122,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  min-height: 100vh;
+  min-height: 100dvh;
 }
 a {
   color: var(--accent);
@@ -195,7 +196,7 @@ button:focus-visible {
 
 /* ── Layout ───────────────────────────────────────────── */
 .shell {
-  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
 }
@@ -484,7 +485,7 @@ button:focus-visible {
 }
 .btn:active {
   background: var(--bg-inset);
-  transform: translateY(0.5px);
+  transform: scale(0.97);
 }
 .btn.primary {
   background: linear-gradient(180deg, #6df0d7 0%, #2dd4bf 100%);
@@ -1119,7 +1120,8 @@ button:focus-visible {
 .tbl-wrap {
   border: 1px solid var(--line);
   border-radius: var(--r-3);
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
   background: var(--bg-elev);
   box-shadow: var(--shadow-sm);
 }
@@ -2029,11 +2031,38 @@ button:focus-visible {
   box-shadow: 0 0 6px rgba(126, 231, 135, 0.4);
 }
 
+/* ── Anchor scroll offset (compensate for sticky nav) ── */
+#contracts,
+#epochs,
+.page-head {
+  scroll-margin-top: 72px;
+}
+
+/* ── Touch devices: always show row actions ─────────── */
+@media (hover: none) {
+  .tbl tbody tr .row-actions {
+    opacity: 1;
+  }
+}
+
 /* ── Sortable column headers ─────────────────────────── */
 .tbl thead th.sortable {
+  padding: 0;
+  transition: color 100ms ease, background 100ms ease;
+}
+.tbl thead th.sortable button {
+  width: 100%;
+  padding: 9px var(--row-px);
+  text-align: inherit;
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
   cursor: pointer;
   user-select: none;
-  transition: color 100ms ease, background 100ms ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 .tbl thead th.sortable:hover {
   color: var(--text-muted);
@@ -2043,7 +2072,6 @@ button:focus-visible {
   color: var(--accent);
 }
 .sort-arrow {
-  margin-left: 5px;
   font-size: 9px;
   opacity: 0.8;
 }
@@ -2133,6 +2161,14 @@ button:focus-visible {
     grid-template-columns: repeat(3, 1fr);
   }
 
+  /* Toolbar: let search take full width then stats count on second line */
+  .toolbar {
+    flex-wrap: wrap;
+  }
+  .toolbar .search {
+    flex: 1 1 100%;
+  }
+
   /* Table: hide numeric columns, show compact sub-stats */
   .tbl .col-idx,
   .tbl .col-procs,
@@ -2187,17 +2223,18 @@ button:focus-visible {
   .hero-spotlight {
     display: none;
   }
+  /* 2-column stats: odd = left (no border), even = right (border) */
   .statstrip {
     grid-template-columns: repeat(2, 1fr);
     row-gap: var(--s-4);
   }
-  .statstrip .stat:nth-child(3) {
-    border-left: 1px solid var(--line);
-    padding-left: var(--s-4);
-  }
-  .statstrip .stat:nth-child(4) {
+  .statstrip .stat:nth-child(odd) {
     border-left: 0;
     padding-left: 0;
+  }
+  .statstrip .stat:nth-child(even) {
+    border-left: 1px solid var(--line);
+    padding-left: var(--s-4);
   }
   .nav-sep {
     margin: 0 8px;

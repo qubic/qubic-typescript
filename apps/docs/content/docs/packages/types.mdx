@@ -1,0 +1,251 @@
+---
+title: "@qubic.org/types"
+description: Branded primitives, protocol constants, contract indexes, and shared error types. The foundation every other SDK package depends on.
+---
+
+[![npm](https://img.shields.io/npm/v/@qubic.org/types?style=flat-square)](https://www.npmjs.com/package/@qubic.org/types)
+
+`@qubic.org/types` has no runtime dependencies. It exports the branded types, constants, and error classes shared across the entire SDK.
+
+<Tabs items={["Bun", "npm", "pnpm"]}>
+<Tab value="Bun">
+```bash
+bun add @qubic.org/types
+```
+</Tab>
+<Tab value="npm">
+```bash
+npm install @qubic.org/types
+```
+</Tab>
+<Tab value="pnpm">
+```bash
+pnpm add @qubic.org/types
+```
+</Tab>
+</Tabs>
+
+## Concepts
+
+### Branded types
+
+TypeScript's structural typing means a plain `string` and an `Identity` are assignable to each other — the compiler won't catch `wallet.buildTransfer({ destination: someRandomString })`. Brands add a phantom property that makes the types nominally distinct at compile time with zero runtime overhead.
+
+```ts
+type Identity = string & { readonly __brand: "Identity" }
+```
+
+You get an `Identity` either by calling `toIdentity(s)` (throws if invalid) or by asserting with `as Identity` (only do this when you know the value is valid).
+
+### Constructors vs type guards
+
+Use **constructors** (`toIdentity`, `toSeed`, `toTxHash`) at input boundaries — reading from a form, a file, a CLI argument. They throw a typed error on invalid input.
+
+Use **type guards** (`isIdentity`, `isSeed`, `isTxHash`) in conditional branches where you need a boolean without throwing.
+
+```ts
+// At a boundary: throw early if bad input
+const id = toIdentity(process.argv[2])
+
+// In a conditional: check without throwing
+if (isIdentity(raw)) {
+  doSomethingWith(raw) // raw is now narrowed to Identity
+}
+```
+
+### Error hierarchy
+
+All SDK errors extend the abstract `QubicError` class. You can catch at the base level or at a specific subclass level.
+
+```ts
+try {
+  const id = toIdentity(input)
+} catch (e) {
+  if (e instanceof InvalidIdentityError) {
+    // Handle specifically
+  } else if (e instanceof QubicError) {
+    // Handle any SDK error
+  }
+}
+```
+
+## API reference
+
+### Branded types
+
+| Type | Format | Description |
+|---|---|---|
+| `Identity` | 60 uppercase chars | Qubic address derived from a public key |
+| `Seed` | 55 lowercase chars | Private key material |
+| `TxHash` | 60 lowercase chars | Transaction identifier |
+| `Base64` | standard base64 | Encoded transaction payload for broadcast |
+| `HexPublicKey` | 64 hex chars | 32-byte public key as a hex string |
+
+---
+
+### `toIdentity(s)`
+
+Parses and validates a string as an `Identity`.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `s` | `string` | The string to validate. Must be 60 uppercase characters. |
+
+**Returns** `Identity`
+
+**Throws** `InvalidIdentityError` — if the string does not match the 60-char uppercase pattern.
+
+```ts
+import { toIdentity } from "@qubic.org/types"
+
+const id = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
+```
+
+---
+
+### `toSeed(s)`
+
+Parses and validates a string as a `Seed`.
+
+**Throws** `InvalidSeedError` — if the string is not 55 lowercase characters.
+
+---
+
+### `toTxHash(s)`
+
+Parses and validates a string as a `TxHash`.
+
+<Callout>
+  Transaction hashes from some APIs come back uppercase. Call `.toLowerCase()` before passing to `toTxHash`.
+</Callout>
+
+**Throws** `InvalidTxHashError` — if the string is not 60 lowercase characters.
+
+---
+
+### `isIdentity(s)` / `isSeed(s)` / `isTxHash(s)`
+
+Type guard predicates. Return `true` if the string matches the format; `false` otherwise. Never throw.
+
+```ts
+import { isIdentity } from "@qubic.org/types"
+
+const raw: string = getFromSomewhere()
+if (isIdentity(raw)) {
+  // raw is narrowed to Identity here
+}
+```
+
+---
+
+### `PROTOCOL`
+
+Protocol constants.
+
+| Constant | Value | Description |
+|---|---|---|
+| `MAX_INPUT_SIZE` | `1024` | Maximum payload byte length |
+| `TX_HEADER_SIZE` | `80` | Fixed transaction header size |
+| `SIGNATURE_SIZE` | `64` | SchnorrQ signature size |
+| `PUBLIC_KEY_SIZE` | `32` | FourQ public key byte length |
+| `IDENTITY_LENGTH` | `60` | Identity string length |
+| `SEED_LENGTH` | `55` | Seed string length |
+| `TX_HASH_LENGTH` | `60` | Transaction hash string length |
+| `TICKS_TO_EXPIRY` | `5` | Default ticks ahead for `targetTick` |
+
+---
+
+### `CONTRACT_INDEX`
+
+Maps contract names to their on-chain index numbers. 27 contracts are defined.
+
+```ts
+import { CONTRACT_INDEX } from "@qubic.org/types"
+
+console.log(CONTRACT_INDEX.QEARN)     // 9
+console.log(CONTRACT_INDEX.QX)        // 1
+console.log(CONTRACT_INDEX.QUOTTERY)  // 4
+```
+
+Selected contracts:
+
+| Name | Index |
+|---|---|
+| `RANDOM` | 0 |
+| `QX` | 1 |
+| `QUOTTERY` | 4 |
+| `QUTIL` | 5 |
+| `QEARN` | 9 |
+| `QVAULT` | 10 |
+| `MSVAULT` | 11 |
+| `QBAY` | 12 |
+
+---
+
+### `LOG_TYPE`
+
+Maps log type names to their numeric IDs used in event streams.
+
+```ts
+import { LOG_TYPE } from "@qubic.org/types"
+
+console.log(LOG_TYPE.QU_TRANSFER)   // 0
+console.log(LOG_TYPE.ASSET_ISSUANCE) // 1
+```
+
+| ID | Name |
+|---|---|
+| `0` | `QU_TRANSFER` |
+| `1` | `ASSET_ISSUANCE` |
+| `2` | `ASSET_OWNERSHIP_CHANGE` |
+| `3` | `ASSET_POSSESSION_CHANGE` |
+| `4–7` | `CONTRACT_ERROR/WARNING/INFORMATION/DEBUG_MESSAGE` |
+| `8` | `BURNING` |
+| `9` | `DUST_BURNING` |
+| `10` | `SPECTRUM_STATS` |
+| `11` | `ASSET_OWNERSHIP_MANAGING_CONTRACT_CHANGE` |
+| `12` | `ASSET_POSSESSION_MANAGING_CONTRACT_CHANGE` |
+| `13` | `CONTRACT_RESERVE_DEDUCTION` |
+| `14` | `ORACLE_QUERY_STATUS_CHANGE` |
+| `15` | `ORACLE_SUBSCRIBER_LOG_MESSAGE` |
+| `255` | `CUSTOM_MESSAGE` |
+
+---
+
+### Error classes
+
+| Class | Thrown by |
+|---|---|
+| `QubicError` | Abstract base — never thrown directly |
+| `InvalidIdentityError` | `toIdentity`, `identityToPublicKey` |
+| `InvalidSeedError` | `toSeed`, `publicKeyFromSeed` |
+| `InvalidTxHashError` | `toTxHash` |
+| `InvalidBase64Error` | `toBase64` |
+
+## Complete example
+
+Validate an identity from the command line and display it:
+
+```ts title="validate-identity.ts"
+import { toIdentity, isIdentity, InvalidIdentityError } from "@qubic.org/types"
+
+const input = process.argv[2]
+
+if (!input) {
+  console.error("Usage: bun run validate-identity.ts <identity>")
+  process.exit(1)
+}
+
+try {
+  const id = toIdentity(input)
+  console.log("Valid identity:", id)
+} catch (e) {
+  if (e instanceof InvalidIdentityError) {
+    console.error("Invalid identity — must be 60 uppercase characters")
+  } else {
+    throw e
+  }
+}
+```

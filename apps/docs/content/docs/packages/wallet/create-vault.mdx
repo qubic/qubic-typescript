@@ -1,0 +1,44 @@
+---
+title: createVault
+description: Creates a new AES-256-GCM encrypted vault from a password and one or more seeds.
+---
+
+## Signature
+
+```ts
+createVault(password: string, seeds: Seed[]): Promise<VaultData>
+```
+
+## Purpose
+
+Creates a new encrypted vault from a password and one or more seeds. The vault encrypts seeds at rest using AES-256-GCM with a PBKDF2-SHA256 derived key (600,000 iterations). The result is a plain JSON object you can store anywhere — localStorage, a database, a file.
+
+```ts
+import { createVault, generateSeed } from "@qubic.org/wallet"
+
+const seed = generateSeed()
+const vault = await createVault("my-strong-passphrase", [seed])
+// vault: VaultData — safe to store anywhere
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `password` | `string` | The encryption passphrase. Not stored anywhere. |
+| `seeds` | `Seed[]` | Seeds to encrypt. At least one required. |
+
+## Returns
+
+`Promise<VaultData>` — `{ version, iterations, salt, iv, ciphertext }` — all hex-encoded binary. Contains no plaintext.
+
+## Security properties
+
+| Property | Detail |
+|---|---|
+| Encryption | AES-256-GCM with a random 12-byte IV per encryption |
+| Key derivation | PBKDF2-SHA256, 600,000 iterations |
+| Salt | 16 random bytes, unique per vault creation |
+| Stored material | Ciphertext + IV + salt — no plaintext seed material |
+
+The 600,000-iteration PBKDF2 makes brute-force attacks expensive. Choose a strong passphrase regardless — dictionary words are vulnerable even with high iterations.

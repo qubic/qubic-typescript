@@ -1,0 +1,48 @@
+---
+title: requestCurrentTickInfo
+description: Queries the current tick and epoch from a Qubic node.
+---
+
+## Signature
+
+```ts
+requestCurrentTickInfo(
+  conn: NodeConnection | NodePool,
+  options?: { signal?: AbortSignal },
+): Promise<CurrentTickInfo>
+```
+
+## Purpose
+
+Queries the current tick and epoch from a node.
+
+```ts
+import { createNodePool, requestCurrentTickInfo } from "@qubic.org/tcp"
+
+const pool = createNodePool(["node1.qubic.org", "node2.qubic.org"])
+const { epoch, tick, initialTick } = await requestCurrentTickInfo(pool)
+
+console.log(`Epoch ${epoch}, tick ${tick}`)
+pool.close()
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `conn` | `NodeConnection \| NodePool` | Connection or pool |
+| `options.signal` | `AbortSignal` | Optional. Abort the request early. |
+
+## Returns
+
+`Promise<CurrentTickInfo>` — `{ epoch: number, tick: number, initialTick: number }`
+
+## Combining with timeout
+
+```ts
+const info = await requestCurrentTickInfo(pool, {
+  signal: AbortSignal.timeout(3000),
+})
+
+console.log("Tick:", info.tick)
+```

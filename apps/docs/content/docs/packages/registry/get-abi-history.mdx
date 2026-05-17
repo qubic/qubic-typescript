@@ -1,0 +1,41 @@
+---
+title: getAbiHistory
+description: Returns all ABI versions for a contract sorted oldest-first, useful for migration audits.
+---
+
+## Signature
+
+```ts
+getAbiHistory(registry: ContractRegistry, contractIndex: number): ContractAbiVersion[]
+```
+
+## Purpose
+
+Returns all ABI versions for a contract, sorted from oldest to newest. Useful for migration audits or inspecting when a contract's interface changed.
+
+```ts
+import { getAbiHistory } from "@qubic.org/registry"
+import registry from "@qubic.org/registry/registry.json"
+import type { ContractRegistry } from "@qubic.org/registry"
+
+const reg = registry as ContractRegistry
+
+const history = getAbiHistory(reg, 9)
+// history[0] — oldest version
+// history[history.length - 1] — newest version
+
+for (const v of history) {
+  console.log(`Epoch ${v.effectiveFromEpoch}–${v.effectiveToEpoch ?? "current"}`)
+}
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `registry` | `ContractRegistry` | The imported registry JSON |
+| `contractIndex` | `number` | Contract index (e.g. `9` for Qearn) — or use `CONTRACT_INDEX` from `@qubic.org/types` |
+
+## Returns
+
+`ContractAbiVersion[]` — all versions sorted by `effectiveFromEpoch` ascending.

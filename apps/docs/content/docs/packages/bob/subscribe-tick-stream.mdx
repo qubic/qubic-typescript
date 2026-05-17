@@ -1,0 +1,55 @@
+---
+title: subscribeTickStream
+description: Emits full tick data including the list of transaction hashes for each tick.
+---
+
+## Signature
+
+```ts
+bob.subscribeTickStream(options?: SubscribeOptions): AsyncIterable<SubscriptionEvent<BobTickData>>
+```
+
+## Purpose
+
+Emits full tick data including the list of transaction hashes for each tick.
+
+```ts
+for await (const event of bob.subscription.subscribeTickStream()) {
+  const { tick, epoch, transactions } = event.data
+  console.log(`Tick ${tick}: ${transactions.length} transactions`)
+}
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `options.signal` | `AbortSignal` | Stops the iteration when aborted |
+
+## Returns
+
+`AsyncIterable<SubscriptionEvent<BobTickData>>`
+
+### `BobTickData` fields
+
+| Field | Type | Description |
+|---|---|---|
+| `data.tick` | `number` | Tick number |
+| `data.epoch` | `number` | Epoch number |
+| `data.transactions` | `TxHash[]` | Transaction hashes included in this tick |
+
+## Stopping a subscription
+
+Pass an `AbortSignal` to stop without closing the entire client.
+
+```ts
+const ac = new AbortController()
+
+setTimeout(() => ac.abort(), 60_000)
+
+for await (const event of bob.subscription.subscribeTickStream({ signal: ac.signal })) {
+  console.log(event.data.tick)
+}
+```
+
+To stop all subscriptions at once, call `bob.subscription.close()`.

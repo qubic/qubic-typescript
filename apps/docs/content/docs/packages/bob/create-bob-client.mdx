@@ -1,0 +1,69 @@
+---
+title: createBobClient
+description: Creates a composite Bob client with REST, RPC, and WebSocket subscription sub-clients in a single call.
+---
+
+## Signature
+
+```ts
+createBobClient(options?: BobClientOptions): {
+  rest: BobRestClient
+  rpc: BobRpcClient
+  subscription: BobSubscriptionClient
+}
+```
+
+## Purpose
+
+`createBobClient` is a composite factory that creates all three sub-clients at once. All three share the same base URL by default, but each can be overridden independently.
+
+```ts
+import { createBobClient } from "@qubic.org/bob"
+
+const bob = createBobClient({
+  baseUrl: "http://bob.example.com",
+  wsUrl: "ws://bob.example.com",
+})
+
+// REST: one-shot HTTP lookups
+const status = await bob.rest.getStatus()
+
+// RPC: JSON-RPC 2.0 queries
+const balance = await bob.rpc.getBalance(identity)
+
+// Subscription: real-time streams
+for await (const event of bob.subscription.subscribeNewTicks()) {
+  console.log("Tick:", event.data.tick)
+}
+```
+
+## Parameters
+
+| Name | Type | Default | Description |
+|---|---|---|---|
+| `baseUrl` | `string` | `"http://localhost:40420"` | HTTP base URL for REST and RPC clients |
+| `wsUrl` | `string` | Derived from `baseUrl` (`http` replaced with `ws`) | WebSocket URL for subscription client |
+| `rest` | `Partial<BobRestClientOptions>` | — | Override options for the REST client |
+| `rpc` | `Partial<BobRpcClientOptions>` | — | Override options for the RPC client |
+| `subscription` | `Partial<BobSubscriptionClientOptions>` | — | Override options for the subscription client |
+
+## Returns
+
+An object with three sub-clients:
+
+| Property | Type | Description |
+|---|---|---|
+| `rest` | `BobRestClient` | One-shot HTTP request client |
+| `rpc` | `BobRpcClient` | JSON-RPC 2.0 query client |
+| `subscription` | `BobSubscriptionClient` | WebSocket real-time subscription client |
+
+## Closing the client
+
+Call `bob.subscription.close()` to stop all active subscriptions and close all WebSocket connections.
+
+```ts
+process.on("SIGINT", () => {
+  bob.subscription.close()
+  process.exit(0)
+})
+```

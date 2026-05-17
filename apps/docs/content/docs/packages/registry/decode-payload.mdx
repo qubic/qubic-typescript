@@ -1,0 +1,47 @@
+---
+title: decodePayload
+description: Decodes binary response bytes into a typed Record using the field layout from the ABI.
+---
+
+## Signature
+
+```ts
+decodePayload(
+  data: Uint8Array,
+  fields: BinaryField[],
+  structs: Record<string, NamedStruct>,
+  publicKeyToIdentity: (pk: Uint8Array) => Identity,
+): Record<string, FieldValue>
+```
+
+## Purpose
+
+Decodes binary payload bytes into a typed object, following the field layout defined in the ABI. Use this to interpret the raw response bytes from a contract query or procedure call.
+
+```ts
+import { decodePayload } from "@qubic.org/registry"
+import { publicKeyToIdentity } from "@qubic.org/crypto"
+
+const output = decodePayload(
+  responseBytes,
+  proc.outputFields,
+  version.structs ?? {},
+  publicKeyToIdentity,
+)
+// Returns Record<string, unknown> with field names as keys
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `data` | `Uint8Array` | Raw response bytes from the node or archive |
+| `fields` | `BinaryField[]` | Field definitions from `procedure.outputFields` or `fn.outputFields` |
+| `structs` | `Record<string, NamedStruct>` | Named structs from `version.structs` |
+| `publicKeyToIdentity` | `(pk: Uint8Array) => Identity` | From `@qubic.org/crypto`. Used to decode `id`-type fields. |
+
+## Returns
+
+`Record<string, FieldValue>` — a typed object with field names as keys and decoded values.
+
+`identityToPublicKey` and `publicKeyToIdentity` are passed as parameters rather than imported directly, keeping `@qubic.org/registry` tree-shakeable for server-side registry browsing that does not need the crypto library.

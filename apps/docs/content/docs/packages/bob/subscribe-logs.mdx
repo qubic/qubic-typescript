@@ -1,0 +1,84 @@
+---
+title: subscribeLogs
+description: Emits raw log events matching a filter as an AsyncIterable; the base subscription used by all event helpers in @qubic.org/events.
+---
+
+## Signature
+
+```ts
+bob.subscribeLogs(
+  filter?: BobLogFilter,
+  options?: SubscribeLogsOptions,
+): AsyncIterable<SubscriptionEvent<BobLogEvent>>
+```
+
+## Purpose
+
+Emits log events matching the given filter. Resumes from `startLogId` or `startEpoch` if provided. This is the base subscription that all helpers in `@qubic.org/events` (`subscribeQuTransfers`, `subscribeAssetEvents`, etc.) use under the hood.
+
+```ts
+import { toIdentity } from "@qubic.org/types"
+
+const identity = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
+
+for await (const event of bob.subscription.subscribeLogs(
+  { identity, logType: 0 },  // logType 0 = QU_TRANSFER
+  { startEpoch: 150 },
+)) {
+  if (event.isCatchUp) continue  // skip historical events
+
+  const { logType, tick, data } = event.data
+  console.log("Log type:", logType, "at tick:", tick)
+  // Decode data with decodeEvent from @qubic.org/events
+}
+```
+
+## Parameters
+
+### Filter (`BobLogFilter`)
+
+| Name | Type | Description |
+|---|---|---|
+| `contractIndex` | `number` | Filter by contract |
+| `logType` | `number` | Filter by log type |
+| `identity` | `Identity` | Filter by identity |
+| `fromTick` | `number` | Start tick (inclusive) |
+| `toTick` | `number` | End tick (inclusive) |
+
+### Options
+
+| Name | Type | Description |
+|---|---|---|
+| `startLogId` | `bigint` | Resume from this log ID |
+| `startEpoch` | `number` | Start from the beginning of this epoch |
+| `signal` | `AbortSignal` | Stops the iteration when aborted |
+
+## Returns
+
+`AsyncIterable<SubscriptionEvent<BobLogEvent>>`
+
+### `BobLogEvent` fields
+
+| Field | Type | Description |
+|---|---|---|
+| `data.tick` | `number` | Tick the event occurred in |
+| `data.logId` | `bigint` | Unique log ID |
+| `data.contractIndex` | `number` | Emitting contract |
+| `data.logType` | `number` | Log type identifier |
+| `data.data` | `Base64` | Raw payload — decode with `decodeEvent` from `@qubic.org/events` |
+
+## Catch-up behavior
+
+When a subscription starts or reconnects after a gap, Bob delivers buffered historical events before switching to live. These have `isCatchUp: true`. The subscription client tracks the last received `logId` across reconnects, so the replay resumes from where it left off.
+
+```ts
+for await (const event of bob.subscription.subscribeLogs(filter)) {
+  if (event.isCatchUp) {
+    // Historical events filling the gap — process or skip
+    processHistoricalEvent(event.data)
+    continue
+  }
+  // Live event
+  processLiveEvent(event.data)
+}
+```

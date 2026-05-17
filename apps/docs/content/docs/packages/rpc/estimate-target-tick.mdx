@@ -1,0 +1,24 @@
+---
+title: estimateTargetTick
+description: Returns the recommended target tick for a transaction by adding an offset to the current tick.
+---
+
+## `estimateTargetTick(currentTick, offsetTicks?)`
+
+Returns `currentTick + offsetTicks` as the recommended tick to declare in a submitted transaction. Setting the target tick too close to the current tick risks the transaction arriving too late. The default offset of `5` gives approximately five seconds of buffer at standard tick rates.
+
+```ts
+import { estimateTargetTick } from "@qubic.org/rpc"
+
+const targetTick = estimateTargetTick(currentTick)       // currentTick + 5
+const furtherOut = estimateTargetTick(currentTick, 10)   // currentTick + 10
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `currentTick` | `number` | The current tick from `getTickInfo()` |
+| `offsetTicks` | `number` | Ticks to add. Default: `5` |
+
+**Returns** `number` — the target tick.

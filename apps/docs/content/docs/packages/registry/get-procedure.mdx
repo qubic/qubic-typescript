@@ -1,0 +1,44 @@
+---
+title: getProcedure
+description: Finds a procedure (write function) by its inputType number in an ABI version, throwing EntryNotFoundError if absent.
+---
+
+## Signature
+
+```ts
+getProcedure(version: ContractAbiVersion, inputType: number): Procedure
+```
+
+## Purpose
+
+Finds a procedure (write/state-changing function) by its `inputType` number within an ABI version. Use this to get the field definitions needed before calling `buildPayload`.
+
+```ts
+import { getCurrentAbi, getProcedure } from "@qubic.org/registry"
+import registry from "@qubic.org/registry/registry.json"
+import type { ContractRegistry } from "@qubic.org/registry"
+
+const reg = registry as ContractRegistry
+const version = getCurrentAbi(reg, 9)
+const proc = getProcedure(version, 6) // lock_input
+
+proc.name          // "lock_input"
+proc.inputType     // 6
+proc.inputFields   // BinaryField[]
+proc.outputFields  // BinaryField[]
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `version` | `ContractAbiVersion` | An ABI version returned by `getAbi` or `getCurrentAbi` |
+| `inputType` | `number` | The numeric input type identifier for the procedure |
+
+## Returns
+
+`Procedure` — the procedure definition including `name`, `inputType`, `inputFields`, and `outputFields`.
+
+## Throws
+
+`EntryNotFoundError` — if no procedure with the given `inputType` exists in the version.

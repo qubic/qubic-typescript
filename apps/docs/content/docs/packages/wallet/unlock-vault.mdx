@@ -1,0 +1,40 @@
+---
+title: unlockVault
+description: Decrypts a vault and returns all stored seeds.
+---
+
+## Signature
+
+```ts
+unlockVault(vaultData: VaultData, password: string): Promise<Seed[]>
+```
+
+## Purpose
+
+Decrypts the vault and returns all stored seeds. The passphrase is never stored — if lost, the vault cannot be decrypted.
+
+```ts
+import { unlockVault } from "@qubic.org/wallet"
+
+const seeds = await unlockVault(vault, "my-strong-passphrase")
+// seeds: Seed[] — one per account stored in the vault
+
+const wallet = createWallet(seeds[0])
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `vaultData` | `VaultData` | The vault to decrypt |
+| `password` | `string` | The passphrase used when `createVault` was called |
+
+## Returns
+
+`Promise<Seed[]>`
+
+## Throws
+
+`VaultDecryptionError` — if the password is wrong or the ciphertext is corrupt.
+
+`InvalidVaultError` — if `vaultData.version` is unsupported or the structure is malformed.

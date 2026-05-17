@@ -1,0 +1,41 @@
+---
+title: pollUntilConfirmed
+description: Waits until the network tick passes the target tick, confirming that a submitted transaction has been included.
+---
+
+## `pollUntilConfirmed(live, targetTick, options?)`
+
+Waits until the network tick passes `targetTick`, confirming that a submitted transaction has been included. This is equivalent to `waitForTick(live, targetTick + 1)`.
+
+Qubic executes transactions in a specific tick. A transaction is confirmed when the network has moved past that tick.
+
+```ts
+import { createQubicClient, pollUntilConfirmed, estimateTargetTick } from "@qubic.org/rpc"
+
+const { live } = createQubicClient()
+
+// Get current tick and estimate where to submit
+const tickResult = await live.getTickInfo()
+if (!tickResult.ok) throw tickResult.error
+const targetTick = estimateTargetTick(tickResult.value.tick)
+
+// ... build and broadcast transaction with targetTick ...
+
+// Wait for confirmation
+const confirmed = await pollUntilConfirmed(live, targetTick, { timeoutMs: 120_000 })
+if (!confirmed.ok) {
+  console.error("Confirmation timed out:", confirmed.error.message)
+}
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `live` | `LiveClient` | Live client to poll |
+| `targetTick` | `number` | The tick number the transaction was submitted for |
+| `intervalMs` | `number` | Poll interval in milliseconds. Default: `1000` |
+| `timeoutMs` | `number` | Maximum wait in milliseconds. Default: `60000` |
+| `signal` | `AbortSignal` | Cancels polling when aborted |
+
+**Returns** `Promise<Result<number, QubicRpcError>>` — `ok(targetTick)` when the tick passes, `err` on timeout or cancellation.

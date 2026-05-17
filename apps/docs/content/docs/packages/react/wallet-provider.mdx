@@ -1,0 +1,46 @@
+---
+title: WalletProvider
+description: Provides connected wallet identity and connector system.
+---
+
+Manages external wallet connector state: connection, disconnection, and restoring the last-used connector on page load. Add this provider when your app connects to browser wallets (extension, WalletConnect, MetaMask Snap).
+
+Requires `QubicProvider` as an ancestor.
+
+## Usage
+
+```tsx
+import { QubicProvider, WalletProvider, extensionConnector } from "@qubic.org/react"
+import { createWalletConnectConnector } from "@qubic.org/react"
+import { SignClient } from "@walletconnect/sign-client"
+
+const connectors = [
+  extensionConnector,
+  createWalletConnectConnector({
+    createClient: () => SignClient.create({ projectId: "your-project-id" }),
+  }),
+]
+
+export function App() {
+  return (
+    <QubicProvider liveClient={live}>
+      <WalletProvider connectors={connectors}>
+        {children}
+      </WalletProvider>
+    </QubicProvider>
+  )
+}
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `connectors` | `WalletConnector[]` | — | Required. Array of connector instances to make available. |
+| `storageKey` | `string` | `"qubic-connector"` | `localStorage` key used to persist the last active connector ID. |
+
+## Notes
+
+- On mount, `WalletProvider` reads `storageKey` from `localStorage` and attempts to silently reconnect to the previously active connector, avoiding a manual "connect" click on every page load.
+- `WalletProvider` is independent of `VaultProvider` — either or both can be omitted depending on your app's signing strategy.
+- See [extensionConnector](/docs/packages/react/extension-connector), [createWalletConnectConnector](/docs/packages/react/wallet-connect-connector), and [createMetaMaskSnapConnector](/docs/packages/react/metamask-snap-connector) for available connectors.

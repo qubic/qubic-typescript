@@ -1,0 +1,39 @@
+---
+title: verify
+description: Verifies a SchnorrQ signature over the FourQ curve, returning true if the signature is valid for the given data and public key.
+---
+
+## Signature
+
+```ts
+verify(data: Uint8Array, signature: Uint8Array, publicKey: Uint8Array): Promise<boolean>
+```
+
+## Purpose
+
+Verifies a SchnorrQ signature against a public key and message. Returns `true` if the signature is valid for the given data and key. Async for the same reason as `sign` — the WASM module may need to initialize on first call.
+
+```ts
+import { sign, verify, publicKeyFromSeed } from "@qubic.org/crypto"
+import { toSeed } from "@qubic.org/types"
+
+const seed = toSeed("aaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
+const publicKey = publicKeyFromSeed(seed)
+const message = new TextEncoder().encode("hello qubic")
+
+const sig = await sign(message, seed)
+const valid = await verify(message, sig, publicKey)
+// valid === true
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `data` | `Uint8Array` | The original signed bytes |
+| `signature` | `Uint8Array` | 64-byte SchnorrQ signature |
+| `publicKey` | `Uint8Array` | 32-byte FourQ public key |
+
+## Returns
+
+`Promise<boolean>` — `true` if the signature is valid, `false` otherwise.

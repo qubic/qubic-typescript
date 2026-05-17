@@ -9,9 +9,15 @@
     "---Building---",
     "build-transaction",
     "payload",
-    "binary-reader-writer",
-    "---Signing & encoding---",
+    "---Signing---",
     "sign-transaction",
-    "encode-decode"
+    "---Encoding---",
+    "encode-transaction",
+    "decode-transaction",
+    "compute-transaction-hash",
+    "verify-transaction-signature",
+    "---Binary I/O---",
+    "binary-reader",
+    "binary-writer"
   ]
 }

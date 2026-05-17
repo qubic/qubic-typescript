@@ -1,0 +1,44 @@
+---
+title: BinaryWriter
+description: Writes typed little-endian values into a fixed-size buffer sequentially.
+---
+
+## `BinaryWriter`
+
+Writes typed values into a fixed-size buffer sequentially. Each write method advances an internal cursor. All integers are encoded little-endian, matching the Qubic wire format.
+
+Most applications should use `buildPayload` from the payload codec instead. `BinaryWriter` is for custom wire formats or protocol extensions that don't fit the payload codec's field model.
+
+```ts
+import { BinaryWriter } from "@qubic.org/tx"
+
+// Encode a custom struct: { sessionId: uint32, balance: int64, flags: uint8 }
+const writer = new BinaryWriter(13) // 4 + 8 + 1 = 13 bytes
+
+writer.writeUint32(42)           // session ID
+writer.writeInt64(100_000_000n)  // balance
+writer.writeUint8(0b00000011)    // flags
+
+const frame = writer.getBytes()  // Uint8Array (13 bytes)
+```
+
+### Constructor
+
+```ts
+new BinaryWriter(size: number)
+```
+
+| Parameter | Type | Description |
+|---|---|---|
+| `size` | `number` | Number of bytes to allocate for the buffer |
+
+### Methods
+
+| Method | Parameter | Description |
+|---|---|---|
+| `writeBytes(bytes)` | `Uint8Array` | Writes raw bytes at the current position |
+| `writeUint8(v)` | `number` | Writes an unsigned 8-bit integer |
+| `writeUint16(v)` | `number` | Writes an unsigned 16-bit integer (LE) |
+| `writeUint32(v)` | `number` | Writes an unsigned 32-bit integer (LE) |
+| `writeInt64(v)` | `bigint` | Writes a signed 64-bit integer (LE) |
+| `getBytes()` | — | Returns the full buffer as `Uint8Array` |

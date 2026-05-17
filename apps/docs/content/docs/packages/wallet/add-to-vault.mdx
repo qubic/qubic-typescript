@@ -1,0 +1,40 @@
+---
+title: addToVault
+description: Adds a seed to an existing vault, re-encrypting with a fresh IV and salt.
+---
+
+## Signature
+
+```ts
+addToVault(vaultData: VaultData, password: string, seed: Seed): Promise<VaultData>
+```
+
+## Purpose
+
+Adds a seed to an existing vault. Internally decrypts, appends the seed, then re-encrypts with a fresh IV and salt. The returned `VaultData` replaces the old one — persist it after calling.
+
+```ts
+import { addToVault, generateSeed, exportVault } from "@qubic.org/wallet"
+
+const newSeed = generateSeed()
+const updatedVault = await addToVault(vault, "my-strong-passphrase", newSeed)
+
+// Persist the updated vault (replaces the old one)
+localStorage.setItem("vault", exportVault(updatedVault))
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `vaultData` | `VaultData` | The existing vault to add to |
+| `password` | `string` | The passphrase for the existing vault |
+| `seed` | `Seed` | The seed to append |
+
+## Returns
+
+`Promise<VaultData>` — a new vault object containing all previous seeds plus the new one.
+
+## Throws
+
+`VaultDecryptionError` — if the password is wrong.

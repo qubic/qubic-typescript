@@ -1,0 +1,31 @@
+---
+title: exportVault
+description: Serializes a VaultData object to a JSON string for storage.
+---
+
+## Signature
+
+```ts
+exportVault(vaultData: VaultData): string
+```
+
+## Purpose
+
+Synchronously serializes a `VaultData` object to a JSON string. Use this to persist a vault to localStorage, a file, or a database.
+
+```ts
+import { exportVault } from "@qubic.org/wallet"
+
+const json = exportVault(vault)
+localStorage.setItem("qubic-vault", json)
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `vaultData` | `VaultData` | The vault to serialize |
+
+## Returns
+
+`string` — a JSON string containing all vault fields (`version`, `iterations`, `salt`, `iv`, `ciphertext`). No plaintext seed material is included.

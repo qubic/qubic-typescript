@@ -1,0 +1,31 @@
+---
+title: publicKeyToIdentity
+description: Encodes a 32-byte FourQ public key as a 60-character Qubic identity string, the inverse of identityToPublicKey.
+---
+
+## Signature
+
+```ts
+publicKeyToIdentity(publicKey: Uint8Array): Identity
+```
+
+## Purpose
+
+Encodes a 32-byte FourQ public key as an `Identity` string. The inverse of `identityToPublicKey`. Use this after performing raw key operations that return a `Uint8Array` and you need the human-readable identity format.
+
+```ts
+import { publicKeyToIdentity } from "@qubic.org/crypto"
+
+const identity = publicKeyToIdentity(publicKey)
+// identity: Identity — 60-character uppercase string
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `publicKey` | `Uint8Array` | 32-byte FourQ public key |
+
+## Returns
+
+`Identity` — 60-character uppercase identity string.

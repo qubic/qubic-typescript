@@ -1,0 +1,71 @@
+---
+title: subscribeNewTicks
+description: Emits a notification on every new tick as an AsyncIterable of SubscriptionEvent.
+---
+
+## Signature
+
+```ts
+bob.subscribeNewTicks(options?: SubscribeOptions): AsyncIterable<SubscriptionEvent<BobTickNotification>>
+```
+
+## Purpose
+
+Emits a notification on every new tick. No historical replay.
+
+```ts
+import { createBobClient } from "@qubic.org/bob"
+
+const bob = createBobClient({ baseUrl: "http://localhost:40420" })
+const ac = new AbortController()
+
+for await (const event of bob.subscription.subscribeNewTicks({ signal: ac.signal })) {
+  const { tick, epoch } = event.data
+  console.log(`Tick ${tick} in epoch ${epoch}`)
+}
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `options.signal` | `AbortSignal` | Stops the iteration when aborted |
+
+## Returns
+
+`AsyncIterable<SubscriptionEvent<BobTickNotification>>`
+
+Every `SubscriptionEvent` has this shape:
+
+```ts
+interface SubscriptionEvent<T> {
+  data: T             // the event payload
+  isCatchUp: boolean  // true for historical events delivered after reconnect
+  logId?: bigint      // log ID (present on log and transfer events)
+  tick?: number       // tick number (present on some events)
+}
+```
+
+### `BobTickNotification` fields
+
+| Field | Type | Description |
+|---|---|---|
+| `data.tick` | `number` | Current tick number |
+| `data.epoch` | `number` | Current epoch number |
+
+## Stopping a subscription
+
+Pass an `AbortSignal` to stop without closing the entire client.
+
+```ts
+const ac = new AbortController()
+
+setTimeout(() => ac.abort(), 30_000) // stop after 30 seconds
+
+for await (const event of bob.subscription.subscribeNewTicks({ signal: ac.signal })) {
+  console.log(event.data.tick)
+}
+// loop ends when signal is aborted
+```
+
+To stop all subscriptions at once, call `bob.subscription.close()`.

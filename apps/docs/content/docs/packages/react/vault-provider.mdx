@@ -1,0 +1,41 @@
+---
+title: VaultProvider
+description: Provides encrypted in-memory seed vault state.
+---
+
+Manages an encrypted in-memory seed vault. The decrypted key lives in a `useRef` — it never appears in React state, Redux, or DevTools. Add this provider when your app manages keys directly, as opposed to delegating signing to an external wallet.
+
+Requires `QubicProvider` as an ancestor.
+
+## Usage
+
+```tsx
+import { QubicProvider, VaultProvider } from "@qubic.org/react"
+import { importVault } from "@qubic.org/wallet"
+
+const vaultData = importVault(localStorage.getItem("vault")!)
+
+export function App() {
+  return (
+    <QubicProvider liveClient={live}>
+      <VaultProvider vaultData={vaultData} persistSession autoLockMs={15 * 60_000}>
+        {children}
+      </VaultProvider>
+    </QubicProvider>
+  )
+}
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `vaultData` | `VaultData` | — | Required. Encrypted vault from `@qubic.org/wallet`. |
+| `persistSession` | `boolean` | `false` | Store the unlocked key in IndexedDB with `extractable: false`. The session survives page reloads but not browser restarts. |
+| `sessionStorageKey` | `string` | `"qubic-vault"` | Custom key for the IndexedDB record. |
+| `autoLockMs` | `number` | — | Lock the vault after this many milliseconds of inactivity. |
+
+## Notes
+
+- When `persistSession` is enabled, the Web Crypto API stores the key with `extractable: false`. The key is available for signing operations but its raw bytes can never be read back out.
+- `VaultProvider` is independent of `WalletProvider` — either or both can be omitted depending on your app's signing strategy.

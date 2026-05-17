@@ -1,0 +1,38 @@
+---
+title: toTxHash
+description: Validates a raw string as a Qubic transaction hash and returns it as the branded TxHash type, or throws if the format is invalid.
+---
+
+## Signature
+
+```ts
+toTxHash(s: string): TxHash
+```
+
+## Purpose
+
+Validates that `s` is exactly 60 lowercase characters, then brands it as `TxHash`. Use this when parsing transaction IDs from API responses before passing them to archive or RPC functions.
+
+```ts
+import { toTxHash } from "@qubic.org/types"
+
+const hash = toTxHash(apiResponse.txId)
+```
+
+<Callout>
+  Transaction hashes from some API responses come back uppercase. Call `.toLowerCase()` before passing to `toTxHash`.
+</Callout>
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `s` | `string` | Candidate transaction hash string |
+
+## Returns
+
+`TxHash` — the same string, narrowed to the branded type.
+
+## Throws
+
+`InvalidTxHashError` — if `s` is not exactly 60 lowercase characters.

@@ -1,0 +1,39 @@
+---
+title: validateSeed
+description: Type predicate that returns true when a string is a valid 55-character lowercase Seed, without throwing.
+---
+
+## Signature
+
+```ts
+validateSeed(s: string): s is Seed
+```
+
+## Purpose
+
+A type predicate that returns `true` when `s` is a valid seed (55 lowercase letters), narrowing the type to `Seed`. Does not throw — use this when you want to branch on valid/invalid input.
+
+```ts
+import { validateSeed } from "@qubic.org/wallet"
+
+function handleInput(raw: string) {
+  if (!validateSeed(raw)) {
+    showError("Invalid seed — must be 55 lowercase letters")
+    return
+  }
+  // raw is now typed as Seed
+  const wallet = createWallet(raw)
+}
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `s` | `string` | The string to check |
+
+## Returns
+
+`s is Seed` — `true` if the string is exactly 55 lowercase ASCII letters, `false` otherwise.
+
+Use `validateSeed` when you want to branch on valid/invalid without throwing. Use `toSeed` when you expect valid input and want an error for anything else.

@@ -1,0 +1,38 @@
+---
+title: validateRegistry
+description: Validates a registry object for internal consistency, throwing on any structural inconsistency.
+---
+
+## Signature
+
+```ts
+validateRegistry(registry: ContractRegistry): void
+```
+
+## Purpose
+
+Validates the registry structure for internal consistency — checks field sizes, epoch ordering, and struct references. Throws if any inconsistency is found. Useful when integrating a custom registry build or testing offline snapshots.
+
+```ts
+import { validateRegistry } from "@qubic.org/registry"
+import registry from "@qubic.org/registry/registry.json"
+import type { ContractRegistry } from "@qubic.org/registry"
+
+const reg = registry as ContractRegistry
+
+validateRegistry(reg) // throws if any inconsistency is found
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `registry` | `ContractRegistry` | The registry object to validate |
+
+## Returns
+
+`void`
+
+## Throws
+
+Throws a descriptive error if any inconsistency is detected, such as invalid field sizes, out-of-order epoch ranges, or unresolved struct references.

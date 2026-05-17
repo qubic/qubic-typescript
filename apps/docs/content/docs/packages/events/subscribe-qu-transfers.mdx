@@ -1,0 +1,83 @@
+---
+title: subscribeQuTransfers
+description: Subscribes to QU transfer events (log type 0) with fully decoded, type-narrowed payloads.
+---
+
+## Signature
+
+```ts
+subscribeQuTransfers(
+  bob: BobSubscriptionClient,
+  filter?: Omit<EventFilter, 'logTypes'>,
+  options?: SubOptions,
+): AsyncIterable<SubscriptionEvent<TypedEvent & { logType: 0 }>>
+```
+
+## Purpose
+
+Subscribes to QU transfer events (log type 0). Each event is decoded and narrowed to `TypedEvent & { logType: 0 }`, giving you typed access to `data.source`, `data.destination`, and `data.amount`.
+
+```ts
+import { subscribeQuTransfers } from "@qubic.org/events"
+import { createBobClient } from "@qubic.org/bob"
+import { toIdentity } from "@qubic.org/types"
+
+const bob = createBobClient({ baseUrl: "http://localhost:40420" })
+const identity = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
+const ac = new AbortController()
+
+for await (const event of subscribeQuTransfers(
+  bob.subscription,
+  { identity },
+  { signal: ac.signal },
+)) {
+  if (event.isCatchUp) continue
+
+  const { source, destination, amount } = event.data.data
+  const dir = source === identity ? "OUT" : "IN"
+  console.log(`[tick ${event.data.tick}] [${dir}] ${amount}n QU`)
+  console.log(`  ${source} -> ${destination}`)
+}
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `bob` | `BobSubscriptionClient` | Subscription client |
+| `filter` | `Omit<EventFilter, 'logTypes'>` | Optional filter — identity, contract, tick range |
+| `options.startLogId` | `bigint` | Resume from this log ID |
+| `options.startEpoch` | `number` | Start from the beginning of this epoch |
+| `options.signal` | `AbortSignal` | Stops the iteration when aborted |
+
+## Returns
+
+`AsyncIterable<SubscriptionEvent<TypedEvent & { logType: 0 }>>` — `event.data.data` has `source`, `destination`, and `amount`.
+
+## Watching multiple identities
+
+Each helper call creates an independent subscription. Run them in parallel with `Promise.all`.
+
+```ts
+import { toIdentity } from "@qubic.org/types"
+
+const identities = [
+  toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL"),
+  toIdentity("ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJ"),
+]
+
+const ac = new AbortController()
+
+async function watch(identity: ReturnType<typeof toIdentity>) {
+  for await (const event of subscribeQuTransfers(
+    bob.subscription,
+    { identity },
+    { signal: ac.signal },
+  )) {
+    if (event.isCatchUp) continue
+    console.log(identity.slice(0, 8), event.data.data.amount)
+  }
+}
+
+await Promise.all(identities.map(watch))
+```

@@ -1,0 +1,38 @@
+---
+title: createMetaMaskSnapConnector
+description: MetaMask Snap connector for Qubic.
+---
+
+Factory that creates a connector for the Qubic MetaMask Snap. MetaMask must be installed; the user approves the Snap on first use.
+
+## Usage
+
+```tsx
+import {
+  createMetaMaskSnapConnector,
+  WalletProvider,
+  DEFAULT_SNAP_ID,
+} from "@qubic.org/react"
+
+const snapConnector = createMetaMaskSnapConnector({
+  snapId: DEFAULT_SNAP_ID, // "npm:@qubic.org/metamask-snap"
+})
+
+<WalletProvider connectors={[snapConnector]}>
+  {children}
+</WalletProvider>
+```
+
+## Options
+
+| Name | Type | Default | Description |
+|---|---|---|---|
+| `snapId` | `string` | `DEFAULT_SNAP_ID` | Snap package identifier. Override to use a local or forked Snap during development. |
+
+`DEFAULT_SNAP_ID` is exported from `@qubic.org/react` and resolves to `"npm:@qubic.org/metamask-snap"`.
+
+## Notes
+
+- MetaMask Flask or a MetaMask version that supports Snaps must be installed in the browser.
+- The Snap installation prompt appears once; subsequent connections are silent.
+- Use `DEFAULT_SNAP_ID` in production and override `snapId` only when testing a local Snap build.

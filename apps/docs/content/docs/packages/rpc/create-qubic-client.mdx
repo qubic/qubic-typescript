@@ -1,0 +1,28 @@
+---
+title: createQubicClient
+description: Creates both a live and archive client in a single call, sharing the same fetch and abort configuration.
+---
+
+## `createQubicClient(options?)`
+
+Creates a `QubicClient` with `.live` (live API) and `.archive` (query API) sub-clients. Use this instead of calling `createLiveClient` and `createQueryClient` separately when you need both.
+
+```ts
+import { createQubicClient } from "@qubic.org/rpc"
+
+const client = createQubicClient()
+
+const tickResult = await client.live.getTickInfo()
+if (tickResult.ok) console.log(tickResult.value.tick)
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `liveBaseUrl` | `string` | Override the live API base URL. Default: `https://rpc.qubic.org/live/v1` |
+| `archiveBaseUrl` | `string` | Override the archive API base URL. Default: `https://rpc.qubic.org/query/v1` |
+| `signal` | `AbortSignal` | Applied to every request on both sub-clients |
+| `fetch` | `(input: Request) => Promise<Response>` | Custom fetch implementation |
+
+**Returns** `QubicClient` — an object with `live: LiveClient` and `archive: QueryClient`.

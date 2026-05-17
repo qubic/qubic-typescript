@@ -1,0 +1,57 @@
+---
+title: useIssuedAssets
+description: Query all assets issued by a Qubic identity.
+---
+
+Returns all assets that a given identity originally issued. An issuer is the identity that created the asset.
+
+Requires `QubicProvider` as an ancestor.
+
+## Signature
+
+```ts
+function useIssuedAssets(
+  identity: Identity | string | undefined,
+  options?: { refetchInterval?: number | false }
+): {
+  data: Asset[] | undefined
+  isLoading: boolean
+  error: QubicRpcError | null
+}
+```
+
+## Usage
+
+```tsx
+import { useIssuedAssets } from "@qubic.org/react"
+
+function IssuedAssets({ identity }: { identity: string }) {
+  const { data, isLoading, error } = useIssuedAssets(identity)
+
+  if (isLoading) return <p>Loading...</p>
+  if (error) return <p>Error: {error.message}</p>
+
+  return (
+    <ul>
+      {data?.map((asset) => (
+        <li key={asset.assetName}>{asset.assetName}</li>
+      ))}
+    </ul>
+  )
+}
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `identity` | `Identity \| string \| undefined` | The identity to query. Pass `undefined` to skip the fetch. |
+| `options.refetchInterval` | `number \| false` | Polling interval in milliseconds. Pass `false` to disable. |
+
+## Returns
+
+| Field | Type | Description |
+|---|---|---|
+| `data` | `Asset[] \| undefined` | List of assets issued by the identity, or `undefined` while loading. |
+| `isLoading` | `boolean` | `true` while the first fetch is in progress. |
+| `error` | `QubicRpcError \| null` | Network or parse error. |

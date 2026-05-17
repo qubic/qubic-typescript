@@ -1,0 +1,35 @@
+---
+title: isSeed
+description: Type predicate that returns true if a string is a valid Qubic seed, narrowing its type to Seed in the true branch.
+---
+
+## Signature
+
+```ts
+isSeed(s: string): s is Seed
+```
+
+## Purpose
+
+Returns `true` if `s` is exactly 55 lowercase characters. TypeScript narrows `s` to `Seed` in the true branch. Never throws — use this when you want to check validity without committing to an exception path.
+
+```ts
+import { isSeed } from "@qubic.org/types"
+
+function loadSeed(input: string): Seed {
+  if (!isSeed(input)) {
+    throw new Error(`Expected 55-char lowercase seed, got length ${input.length}`)
+  }
+  return input // input: Seed here
+}
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `s` | `string` | String to check |
+
+## Returns
+
+`s is Seed` — a type predicate. `true` if `s` is exactly 55 lowercase characters, `false` otherwise.

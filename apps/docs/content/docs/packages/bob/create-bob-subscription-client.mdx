@@ -1,0 +1,93 @@
+---
+title: createBobSubscriptionClient
+description: Creates a standalone WebSocket subscription client with auto-reconnect, without REST or RPC clients.
+---
+
+## Signature
+
+```ts
+createBobSubscriptionClient(options: BobSubscriptionClientOptions): BobSubscriptionClient
+```
+
+## Purpose
+
+Creates a WebSocket subscription client directly, without the REST and RPC clients. Use this when you only need real-time streams.
+
+```ts
+import { createBobSubscriptionClient } from "@qubic.org/bob"
+
+const sub = createBobSubscriptionClient({
+  wsUrl: "ws://bob.example.com",
+  autoReconnect: true,
+})
+```
+
+## Parameters
+
+| Name | Type | Default | Description |
+|---|---|---|---|
+| `wsUrl` | `string` | — | WebSocket endpoint URL (required) |
+| `autoReconnect` | `boolean` | `true` | Reconnect automatically after a connection drop |
+| `maxReconnects` | `number` | `Infinity` | Maximum reconnect attempts before stopping |
+| `bufferSize` | `number` | `1000` | Maximum queued events for slow consumers |
+| `onBufferOverflow` | `"drop" \| "error"` | `"error"` | Behavior when the event buffer fills up |
+| `onReconnect` | `(attempt, lastLogId) => void` | — | Called before each reconnect attempt |
+
+## Returns
+
+`BobSubscriptionClient` — a client with subscription methods and lifecycle utilities.
+
+## WebSocket reconnection
+
+The subscription client reconnects automatically when the WebSocket closes unexpectedly. Each reconnect attempt uses exponential backoff: 1s, 2s, 4s, 8s, up to 30s.
+
+When a subscription reconnects, it resumes from the last received `logId`. Events that arrived during the gap are delivered with `isCatchUp: true`. Once the client reaches live state, events arrive with `isCatchUp: false`.
+
+```ts
+const sub = createBobSubscriptionClient({
+  wsUrl: "ws://bob.example.com",
+  autoReconnect: true,
+  maxReconnects: 10,
+  onReconnect(attempt, lastLogId) {
+    console.log(`Reconnect attempt ${attempt}, resuming from log ${lastLogId}`)
+  },
+})
+```
+
+To disable automatic reconnection:
+
+```ts
+const sub = createBobSubscriptionClient({
+  wsUrl: "ws://bob.example.com",
+  autoReconnect: false,
+})
+```
+
+## Connection status stream
+
+The `connectionStatus` property is a `ReadableStream<"connected" | "disconnected" | "reconnecting">`. Read it to observe state changes.
+
+```ts
+const reader = sub.connectionStatus.getReader()
+
+async function watchStatus() {
+  while (true) {
+    const { done, value } = await reader.read()
+    if (done) break
+    console.log("Connection status:", value)
+  }
+}
+
+watchStatus()
+```
+
+## Closing the client
+
+Call `sub.close()` to stop all active subscriptions and close all WebSocket connections. After calling `close()`, all active `for await` loops will end and `connectionStatus` will emit `"disconnected"` before closing.
+
+```ts
+process.on("SIGINT", () => {
+  sub.close()
+  process.exit(0)
+})
+```

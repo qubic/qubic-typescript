@@ -1,0 +1,40 @@
+---
+title: toSeed
+description: Validates and brands a string as a Seed, throwing InvalidSeedError if the input is invalid.
+---
+
+## Signature
+
+```ts
+toSeed(s: string): Seed
+```
+
+## Purpose
+
+Validates and brands a string as a `Seed`. Use this when you have a known-good seed string (e.g. in dev/test environments) and want to assert its validity rather than silently ignoring errors.
+
+```ts
+import { toSeed } from "@qubic.org/wallet"
+
+// Hardcoded known-good seeds (dev/test environments)
+const seed = toSeed("aaaaabbbbbcccccdddddeeeeefffff11111222223333344444555")
+
+// Throws if wrong length or non-lowercase-letter characters
+toSeed("SHORT")  // InvalidSeedError
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `s` | `string` | The string to validate and brand as a `Seed` |
+
+## Returns
+
+`Seed` — the input string branded as a valid seed type.
+
+## Throws
+
+`InvalidSeedError` — if `s` is not exactly 55 lowercase ASCII letters.
+
+`toSeed` is a re-export of `@qubic.org/types`'s `toSeed`. Using it from `@qubic.org/wallet` works identically.

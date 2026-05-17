@@ -1,0 +1,56 @@
+---
+title: requestEntity
+description: Queries an identity's entity record (balance data) directly from a peer node.
+---
+
+## Signature
+
+```ts
+requestEntity(
+  conn: NodeConnection | NodePool,
+  publicKey: Uint8Array,
+  options?: { signal?: AbortSignal },
+): Promise<{ entity: EntityRecord, identity: Identity }>
+```
+
+## Purpose
+
+Queries an identity's entity record (balance data) directly from a peer.
+
+```ts
+import { createNodePool, requestEntity } from "@qubic.org/tcp"
+import { identityToPublicKey } from "@qubic.org/crypto"
+import { toIdentity } from "@qubic.org/types"
+
+const pool = createNodePool(["node1.qubic.org"])
+const pk = identityToPublicKey(toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL"))
+
+const { entity, identity } = await requestEntity(pool, pk)
+const balance = entity.incomingAmount - entity.outgoingAmount
+console.log(`${identity}: ${balance} QU`)
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `conn` | `NodeConnection \| NodePool` | Connection or pool |
+| `publicKey` | `Uint8Array` | 32-byte FourQ public key. Use `identityToPublicKey` from `@qubic.org/crypto`. |
+| `options.signal` | `AbortSignal` | Optional. Abort the request early. |
+
+## Returns
+
+`Promise<{ entity: EntityRecord, identity: Identity }>`
+
+### `EntityRecord` fields
+
+| Field | Type | Description |
+|---|---|---|
+| `incomingAmount` | `bigint` | Total QU received |
+| `outgoingAmount` | `bigint` | Total QU sent |
+| `numberOfIncomingTransfers` | `number` | Count of incoming transfers |
+| `numberOfOutgoingTransfers` | `number` | Count of outgoing transfers |
+| `latestIncomingTransferTick` | `number` | Tick of most recent incoming transfer |
+| `latestOutgoingTransferTick` | `number` | Tick of most recent outgoing transfer |
+
+Balance is `incomingAmount - outgoingAmount`.

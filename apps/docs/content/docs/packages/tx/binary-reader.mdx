@@ -1,0 +1,51 @@
+---
+title: BinaryReader
+description: Reads typed little-endian values from a Uint8Array sequentially.
+---
+
+## `BinaryReader`
+
+Reads typed values from a `Uint8Array` sequentially. Each read method advances an internal cursor. All integers are decoded little-endian, matching the Qubic wire format.
+
+Most applications should use `readField` from the payload codec instead. `BinaryReader` is for custom wire formats or protocol extensions that don't fit the payload codec's field model.
+
+```ts
+import { BinaryReader } from "@qubic.org/tx"
+
+const reader = new BinaryReader(frame)
+
+const sessionId = reader.readUint32()  // 42
+const balance = reader.readInt64()     // 100_000_000n
+const flags = reader.readUint8()       // 3
+
+console.log(reader.bytesRead)      // 13
+console.log(reader.bytesRemaining) // 0
+```
+
+### Constructor
+
+```ts
+new BinaryReader(bytes: Uint8Array)
+```
+
+| Parameter | Type | Description |
+|---|---|---|
+| `bytes` | `Uint8Array` | The buffer to read from |
+
+### Methods
+
+| Method | Returns | Description |
+|---|---|---|
+| `readBytes(length)` | `Uint8Array` | Reads `length` bytes at the current position |
+| `readUint8()` | `number` | Reads an unsigned 8-bit integer |
+| `readUint16()` | `number` | Reads an unsigned 16-bit integer (LE) |
+| `readUint32()` | `number` | Reads an unsigned 32-bit integer (LE) |
+| `readInt64()` | `bigint` | Reads a signed 64-bit integer (LE) |
+| `readUint64()` | `bigint` | Reads an unsigned 64-bit integer (LE) |
+
+### Properties
+
+| Property | Type | Description |
+|---|---|---|
+| `bytesRead` | `number` | Number of bytes consumed so far |
+| `bytesRemaining` | `number` | Number of bytes left in the buffer |

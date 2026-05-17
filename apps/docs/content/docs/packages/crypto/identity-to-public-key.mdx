@@ -1,0 +1,36 @@
+---
+title: identityToPublicKey
+description: Converts a 60-character Qubic identity string to a 32-byte FourQ public key for use in TCP requests and contract functions.
+---
+
+## Signature
+
+```ts
+identityToPublicKey(identity: Identity): Uint8Array
+```
+
+## Purpose
+
+Converts an `Identity` string to a 32-byte public key. Use this when you need to pass a public key to a TCP request or a contract function — those APIs work with raw bytes, not the string encoding.
+
+```ts
+import { identityToPublicKey } from "@qubic.org/crypto"
+import { toIdentity } from "@qubic.org/types"
+
+const pk = identityToPublicKey(toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL"))
+// pk: Uint8Array (32 bytes)
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `identity` | `Identity` | 60-character uppercase identity string |
+
+## Returns
+
+`Uint8Array` — 32-byte FourQ public key.
+
+## Throws
+
+`InvalidIdentityError` — if the identity string is not 60 uppercase characters.

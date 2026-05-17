@@ -1,0 +1,38 @@
+---
+title: sign
+description: Signs arbitrary bytes with the private key derived from a seed, returning a 64-byte SchnorrQ signature over the FourQ curve.
+---
+
+## Signature
+
+```ts
+sign(data: Uint8Array, seed: Seed): Promise<Uint8Array>
+```
+
+## Purpose
+
+Signs arbitrary bytes using the private key derived from a seed. Returns a 64-byte SchnorrQ signature. The function is async because the underlying SchnorrQ implementation runs in a WASM module that may need to initialize on first call — always `await` it.
+
+```ts
+import { sign } from "@qubic.org/crypto"
+import { toSeed } from "@qubic.org/types"
+
+const seed = toSeed("aaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
+const message = new TextEncoder().encode("hello qubic")
+
+const signature: Uint8Array = await sign(message, seed)
+// signature.length === 64
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `data` | `Uint8Array` | The bytes to sign |
+| `seed` | `Seed` | 55-character lowercase seed |
+
+## Returns
+
+`Promise<Uint8Array>` — 64-byte SchnorrQ signature.
+
+For signing Qubic transactions, use `signTransaction` from `@qubic.org/tx` instead — it serializes the transaction header, appends the signature, and returns the complete signed bytes ready for broadcast. `sign` is for signing arbitrary messages outside the transaction format.

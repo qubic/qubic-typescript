@@ -1,0 +1,36 @@
+---
+title: waitForTick
+description: Polls the live API until the network tick reaches or exceeds a target tick.
+---
+
+## `waitForTick(live, targetTick, options?)`
+
+Polls `live.getTickInfo()` at a regular interval until the network tick reaches or exceeds `targetTick`. Returns when the condition is met or the timeout expires.
+
+```ts
+import { createQubicClient, waitForTick } from "@qubic.org/rpc"
+
+const { live } = createQubicClient()
+
+const tickResult = await live.getTickInfo()
+if (!tickResult.ok) throw tickResult.error
+
+const target = tickResult.value.tick + 5
+
+const confirmation = await waitForTick(live, target, { timeoutMs: 90_000 })
+if (confirmation.ok) {
+  console.log("Tick reached:", confirmation.value)
+}
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `live` | `LiveClient` | Live client to poll |
+| `targetTick` | `number` | Tick number to wait for |
+| `intervalMs` | `number` | Poll interval in milliseconds. Default: `1000` |
+| `timeoutMs` | `number` | Maximum wait in milliseconds. Default: `60000` |
+| `signal` | `AbortSignal` | Cancels polling when aborted |
+
+**Returns** `Promise<Result<number, QubicRpcError>>` — `ok(targetTick)` when reached, `err` on timeout or cancellation.

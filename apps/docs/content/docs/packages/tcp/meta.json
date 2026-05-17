@@ -6,12 +6,17 @@
     "index",
     "---Concepts---",
     "tcp-protocol",
+    "message-types",
     "---Connections---",
     "connection",
     "pool",
-    "---Requests & frames---",
-    "requests",
-    "frame-utilities",
-    "message-types"
+    "---Requests---",
+    "request-current-tick-info",
+    "request-entity",
+    "broadcast-transaction",
+    "exchange-public-peers",
+    "---Frames---",
+    "encode-header",
+    "decode-header"
   ]
 }

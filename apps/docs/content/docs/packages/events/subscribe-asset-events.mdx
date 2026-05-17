@@ -1,0 +1,67 @@
+---
+title: subscribeAssetEvents
+description: Subscribes to all asset-related log types (issuance, ownership, and possession changes) with decoded payloads.
+---
+
+## Signature
+
+```ts
+subscribeAssetEvents(
+  bob: BobSubscriptionClient,
+  filter?: Omit<EventFilter, 'logTypes'>,
+  options?: SubOptions,
+): AsyncIterable<SubscriptionEvent<TypedEvent>>
+```
+
+## Purpose
+
+Subscribes to all asset-related log types: issuance (1), ownership change (2), possession change (3), ownership managing contract change (11), and possession managing contract change (12). Switch on `event.data.logType` using `LOG_TYPE` constants to narrow to specific event shapes.
+
+```ts
+import { subscribeAssetEvents, LOG_TYPE } from "@qubic.org/events"
+import { createBobClient } from "@qubic.org/bob"
+
+const bob = createBobClient({ baseUrl: "http://localhost:40420" })
+
+for await (const event of subscribeAssetEvents(bob.subscription, { identity })) {
+  if (event.isCatchUp) continue
+
+  const typed = event.data
+
+  if (typed.logType === LOG_TYPE.ASSET_ISSUANCE) {
+    console.log("New asset:", typed.data.assetName, "shares:", typed.data.numberOfShares)
+  } else if (typed.logType === LOG_TYPE.ASSET_OWNERSHIP_CHANGE) {
+    console.log(
+      typed.data.assetName,
+      "ownership:",
+      typed.data.source,
+      "->",
+      typed.data.destination,
+    )
+  }
+}
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `bob` | `BobSubscriptionClient` | Subscription client |
+| `filter` | `Omit<EventFilter, 'logTypes'>` | Optional filter |
+| `options.startLogId` | `bigint` | Resume from this log ID |
+| `options.startEpoch` | `number` | Start from the beginning of this epoch |
+| `options.signal` | `AbortSignal` | Stops the iteration when aborted |
+
+## Returns
+
+`AsyncIterable<SubscriptionEvent<TypedEvent>>` — switch on `event.data.logType` to narrow to the specific asset event shape.
+
+### Covered log types
+
+| `LOG_TYPE` constant | Value | Description |
+|---|---|---|
+| `ASSET_ISSUANCE` | 1 | New asset issued |
+| `ASSET_OWNERSHIP_CHANGE` | 2 | Asset ownership transferred |
+| `ASSET_POSSESSION_CHANGE` | 3 | Asset possession transferred |
+| `ASSET_OWNERSHIP_MANAGING_CONTRACT_CHANGE` | 11 | Ownership managing contract updated |
+| `ASSET_POSSESSION_MANAGING_CONTRACT_CHANGE` | 12 | Possession managing contract updated |

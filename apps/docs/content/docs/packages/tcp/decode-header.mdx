@@ -1,0 +1,51 @@
+---
+title: decodeHeader
+description: Parses an 8-byte Qubic TCP frame header into its size, message type, and dejavu fields.
+---
+
+## Signature
+
+```ts
+decodeHeader(bytes: Uint8Array): DecodedHeader
+```
+
+## Purpose
+
+Parses an 8-byte frame header. Use this when implementing custom TCP message flows that need to inspect incoming frame metadata before reading the payload.
+
+```ts
+import { decodeHeader } from "@qubic.org/tcp"
+
+const { size, messageType, dejavu } = decodeHeader(headerBytes)
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `bytes` | `Uint8Array` | Exactly 8 bytes — the raw frame header |
+
+## Returns
+
+`DecodedHeader` — `{ size: number, messageType: number, dejavu: number }`
+
+### `DecodedHeader` type
+
+```ts
+interface DecodedHeader {
+  size: number         // total message length (header + payload)
+  messageType: number  // message type constant
+  dejavu: number       // 32-bit nonce echoed from the request
+}
+```
+
+## Constants
+
+```ts
+import { HEADER_SIZE, DEFAULT_PORT } from "@qubic.org/tcp"
+
+HEADER_SIZE   // 8  — byte length of every TCP frame header
+DEFAULT_PORT  // 21841
+```
+
+`HEADER_SIZE` is useful when computing the payload length from a decoded header: `payloadLength = header.size - HEADER_SIZE`.

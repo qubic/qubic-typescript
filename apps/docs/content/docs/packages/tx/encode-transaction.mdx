@@ -1,0 +1,27 @@
+---
+title: encodeTransaction
+description: Base64-encodes signed transaction bytes for the RPC broadcast endpoint.
+---
+
+## `encodeTransaction(signedTx)`
+
+Base64-encodes signed transaction bytes so they can be passed to `broadcastTransaction`.
+
+```ts
+import { buildTransaction, signTransaction, encodeTransaction } from "@qubic.org/tx"
+import { createLiveClient } from "@qubic.org/rpc"
+
+const live = createLiveClient()
+const signed = await signTransaction(unsigned, seed)
+
+const encoded: Base64 = encodeTransaction(signed)
+await live.broadcastTransaction(encoded)
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `signedTx` | `Uint8Array` | Signed transaction bytes from `signTransaction` |
+
+**Returns** `Base64` — standard base64 string, ready for `broadcastTransaction`.

@@ -1,0 +1,28 @@
+---
+title: generateSeed
+description: Creates a cryptographically secure random Seed using crypto.getRandomValues.
+---
+
+## Signature
+
+```ts
+generateSeed(): Seed
+```
+
+## Purpose
+
+Creates a cryptographically secure random seed using `crypto.getRandomValues`. This is the correct function for new account creation — entropy comes from the OS, not user-provided strings.
+
+```ts
+import { generateSeed } from "@qubic.org/wallet"
+
+const seed = generateSeed()  // e.g. "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabc"
+const wallet = createWallet(seed)
+// save seed securely before continuing
+```
+
+## Returns
+
+`Seed` — a fresh 55-character lowercase seed.
+
+Never derive seeds yourself from user-provided strings or by hashing. Use `generateSeed()` so the entropy comes from the OS.

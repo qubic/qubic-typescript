@@ -6,9 +6,13 @@
     "index",
     "---Concepts---",
     "event-types",
-    "---API Reference---",
+    "---Helpers---",
     "decode-event",
     "event-filter",
-    "subscription-helpers"
+    "---Subscriptions---",
+    "subscribe-all-events",
+    "subscribe-qu-transfers",
+    "subscribe-asset-events",
+    "subscribe-contract-logs"
   ]
 }

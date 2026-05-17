@@ -6,10 +6,18 @@
     "index",
     "---Concepts---",
     "cryptography",
-    "---API Reference---",
-    "key-derivation",
-    "signing",
-    "hashing",
-    "random"
+    "---Key derivation---",
+    "public-key-from-seed",
+    "identity-from-seed",
+    "identity-to-public-key",
+    "public-key-to-identity",
+    "---Signing---",
+    "sign",
+    "verify",
+    "---Hashing---",
+    "k12",
+    "---Random---",
+    "generate-random-seed",
+    "get-random-bytes"
   ]
 }

@@ -1,0 +1,32 @@
+---
+title: generateRandomSeed
+description: Generates a cryptographically secure random 55-character Qubic seed using crypto.getRandomValues.
+---
+
+## Signature
+
+```ts
+generateRandomSeed(): Seed
+```
+
+## Purpose
+
+Generates a new random 55-character lowercase `Seed`. This is the correct way to create a Qubic wallet seed. Uses `crypto.getRandomValues` under the hood — never substitute `Math.random()`.
+
+```ts
+import { generateRandomSeed, identityFromSeed } from "@qubic.org/crypto"
+
+const seed = generateRandomSeed()
+// seed: Seed — 55-char lowercase string, ready for key derivation
+
+const identity = identityFromSeed(seed)
+// identity: Identity — the public address for this seed
+```
+
+## Returns
+
+`Seed` — a freshly generated seed, already branded as the `Seed` type.
+
+<Callout type="warn">
+  Store the seed securely. It is the only way to recover the wallet. There is no mnemonic phrase or recovery flow — if the seed is lost, the funds are inaccessible.
+</Callout>

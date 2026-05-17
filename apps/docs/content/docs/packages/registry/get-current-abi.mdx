@@ -1,0 +1,39 @@
+---
+title: getCurrentAbi
+description: Returns the currently-active ABI version for a contract (the one with effectiveToEpoch === null).
+---
+
+## Signature
+
+```ts
+getCurrentAbi(registry: ContractRegistry, contractIndex: number): ContractAbiVersion
+```
+
+## Purpose
+
+Returns the currently-active ABI version for a contract — the version whose `effectiveToEpoch` is `null`. Use this for live calls where you want the latest ABI.
+
+```ts
+import { getCurrentAbi } from "@qubic.org/registry"
+import registry from "@qubic.org/registry/registry.json"
+import type { ContractRegistry } from "@qubic.org/registry"
+
+const reg = registry as ContractRegistry
+
+const version = getCurrentAbi(reg, 9)  // Qearn's current ABI
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `registry` | `ContractRegistry` | The imported registry JSON |
+| `contractIndex` | `number` | Contract index (e.g. `9` for Qearn) — or use `CONTRACT_INDEX` from `@qubic.org/types` |
+
+## Returns
+
+`ContractAbiVersion` — the active version with `effectiveToEpoch === null`.
+
+## Throws
+
+`AbiNotFoundError` — if no current version exists for this contract index.

@@ -1,0 +1,35 @@
+---
+title: toSeed
+description: Validates a raw string as a Qubic seed and returns it as the branded Seed type, or throws if the format is invalid.
+---
+
+## Signature
+
+```ts
+toSeed(s: string): Seed
+```
+
+## Purpose
+
+Validates that `s` is exactly 55 lowercase characters, then brands it as `Seed`. Use this at your application's boundaries — for example when reading a seed from an environment variable or user input — before passing it to key derivation or signing functions.
+
+```ts
+import { toSeed } from "@qubic.org/types"
+
+const seed = toSeed(process.env.WALLET_SEED!)
+// seed: Seed — safe to pass to publicKeyFromSeed, signTransaction, etc.
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `s` | `string` | Candidate seed string |
+
+## Returns
+
+`Seed` — the same string, narrowed to the branded type.
+
+## Throws
+
+`InvalidSeedError` — if `s` is not exactly 55 lowercase characters.

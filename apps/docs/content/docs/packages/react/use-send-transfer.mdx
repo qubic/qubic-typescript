@@ -1,0 +1,111 @@
+---
+title: useSendTransfer
+description: Mutation hook for sending a QU transfer.
+---
+
+TanStack `useMutation` wrapper that signs and broadcasts a QU transfer from the connected wallet or unlocked vault. Returns standard mutation state alongside `mutate` and `mutateAsync`.
+
+Requires either `VaultProvider` or `WalletProvider` as an ancestor.
+
+## Signature
+
+```ts
+function useSendTransfer(): {
+  mutate(params: {
+    from: Identity
+    destination: Identity
+    amount: bigint
+    targetTick?: number
+  }): void
+  mutateAsync(params: {
+    from: Identity
+    destination: Identity
+    amount: bigint
+    targetTick?: number
+  }): Promise<{ hash: TxHash; peersBroadcastedTo: number }>
+  isPending: boolean
+  isSuccess: boolean
+  isError: boolean
+  error: QubicRpcError | null
+  reset(): void
+}
+```
+
+## Usage
+
+```tsx
+import { useSendTransfer } from "@qubic.org/react"
+import { useWallet } from "@qubic.org/react"
+import { toIdentity } from "@qubic.org/types"
+
+function SendButton() {
+  const { account } = useWallet()
+  const { mutate, isPending, isSuccess, isError, error, reset } = useSendTransfer()
+
+  function handleSend() {
+    mutate({
+      from: account!.identity,
+      destination: toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL"),
+      amount: 100_000n,
+    })
+  }
+
+  return (
+    <button type="button" onClick={handleSend} disabled={isPending}>
+      {isPending ? "Sending…" : "Send 100,000 QU"}
+    </button>
+  )
+}
+```
+
+## Input
+
+| Field | Type | Description |
+|---|---|---|
+| `from` | `Identity` | The sending identity. Must match the connected wallet or unlocked vault identity. |
+| `destination` | `Identity` | Recipient identity. |
+| `amount` | `bigint` | Amount in QU. |
+| `targetTick` | `number` | Optional. Overrides the auto-derived target tick (current tick + 5). |
+
+## Behavior
+
+1. Fetches the current tick from the live client (skipped if `targetTick` is provided)
+2. Builds and signs the transaction
+3. Broadcasts via `liveClient.broadcastTransaction`
+4. Resolves with `{ hash, peersBroadcastedTo }` on success
+
+## Handling results
+
+```tsx
+const { mutate, isPending, isSuccess, error, reset } = useSendTransfer()
+
+// With callbacks
+mutate(input, {
+  onSuccess: (result) => {
+    console.log("TX hash:", result.hash)
+    console.log("Peers:", result.peersBroadcastedTo)
+  },
+  onError: (err) => {
+    console.error("Broadcast failed:", err.message)
+  },
+})
+
+// Or with mutateAsync
+try {
+  const result = await mutateAsync(input)
+  console.log("Done:", result.hash)
+} catch (err) {
+  console.error(err)
+}
+```
+
+Call `reset()` to clear `isSuccess` / `isError` state after displaying feedback:
+
+```tsx
+{isSuccess && (
+  <p>
+    Transfer sent!{" "}
+    <button type="button" onClick={reset}>Dismiss</button>
+  </p>
+)}
+```

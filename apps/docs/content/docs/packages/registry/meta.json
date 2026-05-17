@@ -7,10 +7,20 @@
     "---Concepts---",
     "abi-and-epochs",
     "---ABI lookup---",
+    "get-current-abi",
     "get-abi",
-    "functions",
-    "---Codec & client---",
-    "codec",
+    "get-abi-history",
+    "---ABI usage---",
+    "get-procedure",
+    "get-function",
+    "---Contracts---",
+    "find-contract-by-index",
+    "find-contract-by-name",
+    "validate-registry",
+    "---Codec---",
+    "build-payload",
+    "decode-payload",
+    "---Client---",
     "client"
   ]
 }

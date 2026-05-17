@@ -1,0 +1,51 @@
+---
+title: usePossessedAssets
+description: Query all assets currently in the possession of a Qubic identity.
+---
+
+Returns all assets currently in a given identity's possession. Possession represents active control, which can differ from ownership — for example, a smart contract may possess assets on behalf of their owner.
+
+Requires `QubicProvider` as an ancestor.
+
+## Signature
+
+```ts
+function usePossessedAssets(
+  identity: Identity | string | undefined,
+  options?: { refetchInterval?: number | false }
+): {
+  data: Asset[] | undefined
+  isLoading: boolean
+  error: QubicRpcError | null
+}
+```
+
+## Usage
+
+```tsx
+import { usePossessedAssets } from "@qubic.org/react"
+
+function PossessedAssets({ identity }: { identity: string }) {
+  const { data, isLoading, error } = usePossessedAssets(identity)
+
+  if (isLoading) return <p>Loading...</p>
+  if (error) return <p>Error: {error.message}</p>
+
+  return <p>{data?.length ?? 0} asset(s) possessed</p>
+}
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `identity` | `Identity \| string \| undefined` | The identity to query. Pass `undefined` to skip the fetch. |
+| `options.refetchInterval` | `number \| false` | Polling interval in milliseconds. Pass `false` to disable. |
+
+## Returns
+
+| Field | Type | Description |
+|---|---|---|
+| `data` | `Asset[] \| undefined` | List of assets possessed by the identity, or `undefined` while loading. |
+| `isLoading` | `boolean` | `true` while the first fetch is in progress. |
+| `error` | `QubicRpcError \| null` | Network or parse error. |

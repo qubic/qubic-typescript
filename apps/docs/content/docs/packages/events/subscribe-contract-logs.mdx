@@ -1,0 +1,64 @@
+---
+title: subscribeContractLogs
+description: Subscribes to smart contract message log types (error, warning, information, debug) with decoded payloads.
+---
+
+## Signature
+
+```ts
+subscribeContractLogs(
+  bob: BobSubscriptionClient,
+  filter?: Omit<EventFilter, 'logTypes'>,
+  options?: SubOptions,
+): AsyncIterable<SubscriptionEvent<TypedEvent>>
+```
+
+## Purpose
+
+Subscribes to smart contract message log types: error (4), warning (5), information (6), and debug (7). Each event is decoded and provides `contractIndex` and `contractMessageType` on `event.data.data`.
+
+```ts
+import { subscribeContractLogs, LOG_TYPE } from "@qubic.org/events"
+import { createBobClient } from "@qubic.org/bob"
+
+const bob = createBobClient({ baseUrl: "http://localhost:40420" })
+
+for await (const event of subscribeContractLogs(bob.subscription, { contractIndex: 9 })) {
+  if (event.isCatchUp) continue
+
+  const typed = event.data
+
+  if (typed.logType === LOG_TYPE.CONTRACT_ERROR_MESSAGE) {
+    console.error(
+      `Contract ${typed.data.contractIndex} error (type ${typed.data.contractMessageType})`
+    )
+  } else if (typed.logType === LOG_TYPE.CONTRACT_INFORMATION_MESSAGE) {
+    console.log(
+      `Contract ${typed.data.contractIndex} info (type ${typed.data.contractMessageType})`
+    )
+  }
+}
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `bob` | `BobSubscriptionClient` | Subscription client |
+| `filter` | `Omit<EventFilter, 'logTypes'>` | Optional filter |
+| `options.startLogId` | `bigint` | Resume from this log ID |
+| `options.startEpoch` | `number` | Start from the beginning of this epoch |
+| `options.signal` | `AbortSignal` | Stops the iteration when aborted |
+
+## Returns
+
+`AsyncIterable<SubscriptionEvent<TypedEvent>>` — `event.data.data` has `contractIndex` and `contractMessageType`. Switch on `event.data.logType` to narrow to the specific message level.
+
+### Covered log types
+
+| `LOG_TYPE` constant | Value | Description |
+|---|---|---|
+| `CONTRACT_ERROR_MESSAGE` | 4 | Contract emitted an error |
+| `CONTRACT_WARNING_MESSAGE` | 5 | Contract emitted a warning |
+| `CONTRACT_INFORMATION_MESSAGE` | 6 | Contract emitted an informational message |
+| `CONTRACT_DEBUG_MESSAGE` | 7 | Contract emitted a debug message |

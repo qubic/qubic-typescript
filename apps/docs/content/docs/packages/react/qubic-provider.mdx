@@ -1,0 +1,40 @@
+---
+title: QubicProvider
+description: Root provider — initializes RPC clients and TanStack Query.
+---
+
+Required. Wrap your entire app in `QubicProvider` to make all data hooks work. It sets up TanStack Query and distributes the RPC clients through the component tree.
+
+`QubicProvider` must be the outermost ancestor when used alongside `VaultProvider` or `WalletProvider`.
+
+## Usage
+
+```tsx
+import { createLiveClient, createQueryClient } from "@qubic.org/rpc"
+import { QubicProvider } from "@qubic.org/react"
+
+const live = createLiveClient()
+const archive = createQueryClient()
+
+export function App() {
+  return (
+    <QubicProvider liveClient={live} archiveClient={archive}>
+      {children}
+    </QubicProvider>
+  )
+}
+```
+
+## Props
+
+| Prop | Type | Required | Description |
+|---|---|---|---|
+| `liveClient` | `LiveClient` | Yes | From `createLiveClient()`. Used by all live data hooks. |
+| `archiveClient` | `QueryClient` | No | From `createQueryClient()`. Required for `useTransaction` and `useEventLogs`. |
+| `queryClient` | `TanStackQueryClient` | No | Bring your own TanStack `QueryClient` if you already have one configured. |
+
+## Notes
+
+- Every hook in `@qubic.org/react` requires `QubicProvider` as an ancestor.
+- `archiveClient` is optional but must be provided when using `useTransaction` or `useEventLogs`.
+- Pass `queryClient` only if your app already configures TanStack Query elsewhere; otherwise a default client is created internally.

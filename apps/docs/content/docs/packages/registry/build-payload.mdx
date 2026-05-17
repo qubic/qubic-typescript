@@ -1,0 +1,57 @@
+---
+title: buildPayload
+description: Encodes a structured input object into a binary Uint8Array using the field layout from the ABI.
+---
+
+## Signature
+
+```ts
+buildPayload(
+  fields: BinaryField[],
+  structs: Record<string, NamedStruct>,
+  input: Record<string, unknown>,
+  identityToPublicKey: (id: Identity) => Uint8Array,
+): Uint8Array
+```
+
+## Purpose
+
+Encodes a structured input object into binary using the field layout from the ABI. The result is a `Uint8Array` ready to pass as `inputPayload` to transaction builders.
+
+```ts
+import { getAbi, getProcedure, buildPayload } from "@qubic.org/registry"
+import { identityToPublicKey } from "@qubic.org/crypto"
+import registry from "@qubic.org/registry/registry.json"
+import type { ContractRegistry } from "@qubic.org/registry"
+
+const reg = registry as ContractRegistry
+const { version } = getAbi(reg, 9, 212) // Qearn at epoch 212
+const proc = getProcedure(version, 6)   // lock_input
+
+const payload = buildPayload(
+  proc.inputFields,
+  version.structs ?? {},
+  { amount: 10_000_000n },
+  identityToPublicKey,
+)
+// Returns Uint8Array — pass to wallet.buildScTransaction as inputPayload
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `fields` | `BinaryField[]` | Field definitions from `procedure.inputFields` or `fn.inputFields` |
+| `structs` | `Record<string, NamedStruct>` | Named structs from `version.structs`. Pass `{}` if unused. |
+| `input` | `Record<string, unknown>` | Input object with keys matching the field names |
+| `identityToPublicKey` | `(id: Identity) => Uint8Array` | From `@qubic.org/crypto`. Used to encode `id`-type fields. |
+
+## Returns
+
+`Uint8Array` — the binary-encoded payload.
+
+## Throws
+
+`PayloadBuildError` — on type mismatch, missing required fields, or overflow.
+
+`identityToPublicKey` and `publicKeyToIdentity` are passed as parameters rather than imported directly, keeping `@qubic.org/registry` tree-shakeable for server-side registry browsing that does not need the crypto library.

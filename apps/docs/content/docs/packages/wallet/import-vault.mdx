@@ -1,0 +1,35 @@
+---
+title: importVault
+description: Parses a JSON string back into a VaultData object, validating required fields.
+---
+
+## Signature
+
+```ts
+importVault(json: string): VaultData
+```
+
+## Purpose
+
+Parses and validates a JSON string produced by `exportVault`, returning a `VaultData` object ready to pass to `unlockVault`.
+
+```ts
+import { importVault, unlockVault } from "@qubic.org/wallet"
+
+const loaded = importVault(localStorage.getItem("qubic-vault")!)
+const seeds = await unlockVault(loaded, passphrase)
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `json` | `string` | A JSON string previously produced by `exportVault` |
+
+## Returns
+
+`VaultData` — the deserialized vault object.
+
+## Throws
+
+`InvalidVaultError` — if the JSON is malformed or missing required fields.

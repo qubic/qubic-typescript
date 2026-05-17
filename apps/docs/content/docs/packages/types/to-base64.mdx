@@ -1,0 +1,35 @@
+---
+title: toBase64
+description: Validates a raw string as standard base64 and returns it as the branded Base64 type, or throws if the format is invalid.
+---
+
+## Signature
+
+```ts
+toBase64(s: string): Base64
+```
+
+## Purpose
+
+Validates that `s` is well-formed standard base64 (alphabet `A-Za-z0-9+/`, optional `=` padding, length divisible by 4), then brands it as `Base64`. Use this when receiving encoded transaction payloads from external sources before broadcasting.
+
+```ts
+import { toBase64 } from "@qubic.org/types"
+
+const encoded = toBase64(req.body.signedTransaction)
+await live.broadcastTransaction(encoded)
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `s` | `string` | Candidate base64 string |
+
+## Returns
+
+`Base64` — the same string, narrowed to the branded type.
+
+## Throws
+
+`InvalidBase64Error` — if `s` is not valid standard base64.

@@ -1,0 +1,33 @@
+---
+title: publicKeyFromSeed
+description: Derives the 32-byte FourQ public key from a seed by hashing with K12 and performing scalar multiplication on the FourQ curve.
+---
+
+## Signature
+
+```ts
+publicKeyFromSeed(seed: Seed): Uint8Array
+```
+
+## Purpose
+
+Derives a 32-byte FourQ public key from a `Seed`. The seed is hashed with KangarooTwelve (K12) to produce the private scalar, then the public key is computed as a scalar multiplication on the FourQ curve. The result is deterministic — the same seed always produces the same public key.
+
+```ts
+import { publicKeyFromSeed } from "@qubic.org/crypto"
+import { toSeed } from "@qubic.org/types"
+
+const seed = toSeed("aaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
+const publicKey: Uint8Array = publicKeyFromSeed(seed)
+// publicKey.length === 32
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `seed` | `Seed` | 55-character lowercase seed string |
+
+## Returns
+
+`Uint8Array` — 32-byte FourQ public key.

@@ -1,0 +1,44 @@
+---
+title: getFunction
+description: Finds a read-only function by its inputType number in an ABI version.
+---
+
+## Signature
+
+```ts
+getFunction(version: ContractAbiVersion, inputType: number): Function
+```
+
+## Purpose
+
+Finds a read-only function by its `inputType` number within an ABI version. Use this to get the field definitions needed before calling `buildPayload` or `decodePayload` for query calls.
+
+```ts
+import { getCurrentAbi, getFunction } from "@qubic.org/registry"
+import registry from "@qubic.org/registry/registry.json"
+import type { ContractRegistry } from "@qubic.org/registry"
+
+const reg = registry as ContractRegistry
+const version = getCurrentAbi(reg, 9)
+const fn = getFunction(version, 1) // getStateOfRound
+
+fn.name          // "getStateOfRound"
+fn.inputType     // 1
+fn.inputFields   // BinaryField[]
+fn.outputFields  // BinaryField[]
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `version` | `ContractAbiVersion` | An ABI version returned by `getAbi` or `getCurrentAbi` |
+| `inputType` | `number` | The numeric input type identifier for the function |
+
+## Returns
+
+`Function` — the function definition including `name`, `inputType`, `inputFields`, and `outputFields`.
+
+## Throws
+
+`EntryNotFoundError` — if no function with the given `inputType` exists in the version.

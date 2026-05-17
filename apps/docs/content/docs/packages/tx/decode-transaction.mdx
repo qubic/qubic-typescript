@@ -1,0 +1,34 @@
+---
+title: decodeTransaction
+description: Decodes raw transaction bytes back into their constituent fields.
+---
+
+## `decodeTransaction(bytes)`
+
+Parses raw transaction bytes and returns a structured `DecodedTransaction` object. Works on both signed and unsigned transaction bytes.
+
+```ts
+import { decodeTransaction } from "@qubic.org/tx"
+
+const tx = decodeTransaction(signed)
+console.log("Amount:", tx.amount)          // bigint
+console.log("Target tick:", tx.targetTick) // number
+console.log("Payload:", tx.payload)        // Uint8Array
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `bytes` | `Uint8Array` | Raw transaction bytes (signed or unsigned) |
+
+**Returns** `DecodedTransaction`:
+
+| Field | Type | Description |
+|---|---|---|
+| `sourcePublicKey` | `Uint8Array` | 32-byte sender public key |
+| `destinationPublicKey` | `Uint8Array` | 32-byte recipient public key |
+| `amount` | `bigint` | Transfer amount in QU |
+| `targetTick` | `number` | Tick deadline |
+| `inputType` | `number` | Procedure index (0 for plain transfers) |
+| `payload` | `Uint8Array` | Remaining payload bytes |

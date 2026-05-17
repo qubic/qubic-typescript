@@ -1,0 +1,35 @@
+---
+title: toIdentity
+description: Validates a raw string as a Qubic identity and returns it as the branded Identity type, or throws if the format is invalid.
+---
+
+## Signature
+
+```ts
+toIdentity(s: string): Identity
+```
+
+## Purpose
+
+Validates that `s` is exactly 60 uppercase characters, then brands it as `Identity`. Use this at the edges of your app — reading from user input, parsing an API response, pulling from environment variables — to ensure downstream code only ever sees well-formed identity strings.
+
+```ts
+import { toIdentity } from "@qubic.org/types"
+
+const id = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
+// id: Identity — safe to pass to identityToPublicKey, buildTransaction, etc.
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `s` | `string` | Candidate identity string |
+
+## Returns
+
+`Identity` — the same string, narrowed to the branded type.
+
+## Throws
+
+`InvalidIdentityError` — if `s` is not exactly 60 uppercase characters.

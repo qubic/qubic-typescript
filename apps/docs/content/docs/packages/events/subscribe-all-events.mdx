@@ -1,0 +1,81 @@
+---
+title: subscribeAllEvents
+description: Subscribes to every log type and yields fully decoded TypedEvents, with optional filter support.
+---
+
+## Signature
+
+```ts
+subscribeAllEvents(
+  bob: BobSubscriptionClient,
+  filter?: EventFilter,
+  options?: SubOptions,
+): AsyncIterable<SubscriptionEvent<TypedEvent>>
+```
+
+## Purpose
+
+Subscribes to every log type and decodes each event. Apply a filter to narrow the stream. Use `eventFilter()` to build a typed filter with specific log types.
+
+```ts
+import { subscribeAllEvents, eventFilter, LOG_TYPE } from "@qubic.org/events"
+import { createBobClient } from "@qubic.org/bob"
+
+const bob = createBobClient({ baseUrl: "http://localhost:40420" })
+
+const filter = eventFilter()
+  .ofTypes(LOG_TYPE.BURNING, LOG_TYPE.DUST_BURNING)
+  .build()
+
+for await (const event of subscribeAllEvents(bob.subscription, filter)) {
+  if (event.isCatchUp) continue
+
+  const typed = event.data
+
+  if (typed.logType === LOG_TYPE.BURNING) {
+    console.log("Burned:", typed.data.amount, "QU from", typed.data.source)
+  } else if (typed.logType === LOG_TYPE.DUST_BURNING) {
+    console.log("Dust burn:", typed.data.burns.length, "accounts")
+  }
+}
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `bob` | `BobSubscriptionClient` | Subscription client |
+| `filter` | `EventFilter` | Optional filter including `logTypes` |
+| `options.startLogId` | `bigint` | Resume from this log ID |
+| `options.startEpoch` | `number` | Start from the beginning of this epoch |
+| `options.signal` | `AbortSignal` | Stops the iteration when aborted |
+
+## Returns
+
+`AsyncIterable<SubscriptionEvent<TypedEvent>>` — switch on `event.data.logType` to narrow to specific event shapes.
+
+## Catch-up behavior
+
+When a subscription starts or reconnects after a gap, Bob delivers buffered historical events before switching to live. These have `isCatchUp: true`.
+
+Skip catch-up events when you only need live data:
+
+```ts
+for await (const event of subscribeAllEvents(bob.subscription)) {
+  if (event.isCatchUp) continue
+  // only live events
+}
+```
+
+Process them when you want a complete history starting from a known point:
+
+```ts
+for await (const event of subscribeAllEvents(
+  bob.subscription,
+  undefined,
+  { startEpoch: 150 },
+)) {
+  // isCatchUp: true until live; process all
+  processEvent(event.data)
+}
+```

@@ -6,10 +6,15 @@
     "index",
     "---Concepts---",
     "subscriptions-model",
-    "---API Reference---",
-    "connection",
+    "---Client---",
+    "create-bob-client",
+    "create-bob-subscription-client",
     "rest-client",
     "rpc-client",
-    "subscriptions"
+    "---Subscriptions---",
+    "subscribe-new-ticks",
+    "subscribe-transfers",
+    "subscribe-logs",
+    "subscribe-tick-stream"
   ]
 }

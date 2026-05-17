@@ -1,0 +1,51 @@
+---
+title: extensionConnector
+description: Connects to the Qubic browser extension wallet.
+---
+
+Pre-built connector that communicates with the Qubic browser extension via `window.qubic`. No configuration needed — import and pass directly to `WalletProvider`.
+
+## Usage
+
+```tsx
+import { extensionConnector, WalletProvider } from "@qubic.org/react"
+
+<WalletProvider connectors={[extensionConnector]}>
+  {children}
+</WalletProvider>
+```
+
+## Availability check
+
+`extensionConnector.isAvailable()` returns `false` during SSR and when the extension is not installed. Filter connectors with `c.isAvailable()` before rendering connect buttons:
+
+```tsx
+import { extensionConnector } from "@qubic.org/react"
+import { useWalletConnectors } from "@qubic.org/react"
+
+function ConnectButtons() {
+  const connectors = useWalletConnectors()
+
+  return (
+    <>
+      {connectors.filter((c) => c.isAvailable()).map((c) => (
+        <button key={c.id} onClick={() => c.connect()}>
+          Connect {c.id}
+        </button>
+      ))}
+    </>
+  )
+}
+```
+
+## WalletConnector interface
+
+`extensionConnector` implements the standard `WalletConnector` interface:
+
+| Member | Type | Description |
+|---|---|---|
+| `id` | `string` | `"qubic-extension"` — stored in `localStorage` to restore the last-used connector. |
+| `isAvailable()` | `() => boolean` | Whether the extension is present in the current environment. |
+| `connect()` | `() => Promise<{ identity: Identity }>` | Opens a connection and returns the active account. |
+| `disconnect()` | `() => Promise<void>` | Closes the connection. |
+| `signTransaction(tx)` | `(tx: Uint8Array) => Promise<Uint8Array>` | Signs transaction bytes via the extension. |

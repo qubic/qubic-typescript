@@ -1,0 +1,40 @@
+---
+title: exchangePublicPeers
+description: Requests the node's known peer list, useful for bootstrapping peer discovery.
+---
+
+## Signature
+
+```ts
+exchangePublicPeers(
+  conn: NodeConnection | NodePool,
+  options?: { signal?: AbortSignal },
+): Promise<ExchangePublicPeers>
+```
+
+## Purpose
+
+Requests the node's known peer list. Useful for bootstrapping your own peer discovery.
+
+```ts
+import { createNodePool, exchangePublicPeers } from "@qubic.org/tcp"
+
+const pool = createNodePool(["node1.qubic.org"])
+const { peers } = await exchangePublicPeers(pool)
+console.log("Known peers:", peers)
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `conn` | `NodeConnection \| NodePool` | Connection or pool |
+| `options.signal` | `AbortSignal` | Optional. Abort the request early. |
+
+## Returns
+
+`Promise<ExchangePublicPeers>` — `{ peers: string[] }`
+
+| Field | Type | Description |
+|---|---|---|
+| `peers` | `string[]` | IP addresses of known peers reported by the node |

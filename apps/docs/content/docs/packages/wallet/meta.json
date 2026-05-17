@@ -6,9 +6,17 @@
     "index",
     "---Concepts---",
     "wallet-and-vault",
-    "---API Reference---",
+    "---Transfers---",
     "transfers",
-    "vault",
-    "seed-utils"
+    "---Vault---",
+    "create-vault",
+    "unlock-vault",
+    "add-to-vault",
+    "export-vault",
+    "import-vault",
+    "---Seeds---",
+    "generate-seed",
+    "validate-seed",
+    "to-seed"
   ]
 }

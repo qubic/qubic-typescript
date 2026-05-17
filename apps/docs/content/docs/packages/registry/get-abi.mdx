@@ -1,26 +1,24 @@
 ---
-title: ABI lookup
-description: Look up contract ABI versions by epoch — getAbi, getCurrentAbi, getAbiHistory.
+title: getAbi
+description: Returns the ABI version active at a given epoch, throwing AbiNotFoundError if no version covers it.
 ---
 
-`@qubic.org/registry` stores every historical ABI snapshot keyed by epoch range. These functions let you find the right version for any epoch — past or present.
+## Signature
 
 ```ts
-import { getAbi, getCurrentAbi, getAbiHistory } from "@qubic.org/registry"
+getAbi(registry: ContractRegistry, contractIndex: number, epoch: number): AbiLookupResult
+```
+
+## Purpose
+
+Returns the ABI version that was active at the given epoch. Use this when decoding historical data from a specific epoch.
+
+```ts
+import { getAbi } from "@qubic.org/registry"
 import registry from "@qubic.org/registry/registry.json"
 import type { ContractRegistry } from "@qubic.org/registry"
 
 const reg = registry as ContractRegistry
-```
-
----
-
-## `getAbi(registry, contractIndex, epoch)`
-
-Returns the ABI version active at the given epoch. Use this when decoding historical data from a specific epoch.
-
-```ts
-import { getAbi } from "@qubic.org/registry"
 
 const { version, isCurrent, isRegistryPossiblyStale } = getAbi(reg, 9, 213)
 // version: ContractAbiVersion
@@ -28,7 +26,7 @@ const { version, isCurrent, isRegistryPossiblyStale } = getAbi(reg, 9, 213)
 // isRegistryPossiblyStale: true if isCurrent and epoch > the known-active range
 ```
 
-**Parameters**
+## Parameters
 
 | Name | Type | Description |
 |---|---|---|
@@ -36,7 +34,7 @@ const { version, isCurrent, isRegistryPossiblyStale } = getAbi(reg, 9, 213)
 | `contractIndex` | `number` | Contract index (e.g. `9` for Qearn, `1` for Qx) — or use `CONTRACT_INDEX` from `@qubic.org/types` |
 | `epoch` | `number` | The epoch to look up |
 
-**Returns**
+## Returns
 
 | Field | Type | Description |
 |---|---|---|
@@ -44,48 +42,12 @@ const { version, isCurrent, isRegistryPossiblyStale } = getAbi(reg, 9, 213)
 | `isCurrent` | `boolean` | `true` if this is the currently-active version |
 | `isRegistryPossiblyStale` | `boolean` | `true` if `isCurrent` and the registry may be out of date |
 
-**Throws** `AbiNotFoundError` — if no version covers the requested epoch.
+## Throws
 
----
-
-## `getCurrentAbi(registry, contractIndex)`
-
-Returns the currently-active ABI version (the one with `effectiveToEpoch === null`). Use this for live calls.
+`AbiNotFoundError` — if no version covers the requested epoch.
 
 ```ts
-import { getCurrentAbi } from "@qubic.org/registry"
-
-const version = getCurrentAbi(reg, 9)  // Qearn's current ABI
-```
-
-**Throws** `AbiNotFoundError` — if no current version exists for this contract.
-
----
-
-## `getAbiHistory(registry, contractIndex)`
-
-Returns all ABI versions for a contract, sorted from oldest to newest. Useful for migration audits.
-
-```ts
-import { getAbiHistory } from "@qubic.org/registry"
-
-const history = getAbiHistory(reg, 9)
-// history[0] — oldest version
-// history[history.length - 1] — newest version
-
-for (const v of history) {
-  console.log(`Epoch ${v.effectiveFromEpoch}–${v.effectiveToEpoch ?? "current"}`)
-}
-```
-
-**Returns** `ContractAbiVersion[]` — sorted by `effectiveFromEpoch` ascending.
-
----
-
-## Error types
-
-```ts
-import { AbiNotFoundError, EntryNotFoundError } from "@qubic.org/registry"
+import { AbiNotFoundError } from "@qubic.org/registry"
 
 try {
   const { version } = getAbi(reg, 9, 50)  // epoch 50 predates Qearn
@@ -96,21 +58,4 @@ try {
 }
 ```
 
-`EntryNotFoundError` extends `AbiNotFoundError` — thrown by `getProcedure` and `getFunction` when the requested input type doesn't exist in a version.
-
-| Class | `code` | When |
-|---|---|---|
-| `AbiNotFoundError` | — | No version covers the requested epoch |
-| `EntryNotFoundError` | — | Procedure or function input type not found in version |
-
----
-
-## Working with `CONTRACT_INDEX`
-
-```ts
-import { CONTRACT_INDEX } from "@qubic.org/types"
-
-const { version } = getAbi(reg, CONTRACT_INDEX.QEARN, 213)
-```
-
-`CONTRACT_INDEX` maps well-known contract names to their numeric index. Prefer it over hardcoding numbers.
+Prefer `CONTRACT_INDEX` from `@qubic.org/types` over hardcoding numeric contract indices.

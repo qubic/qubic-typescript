@@ -6,11 +6,19 @@
     "index",
     "---Concepts---",
     "type-safety",
-    "---API Reference---",
     "branded-types",
-    "constructors",
-    "guards",
+    "---Constructors---",
+    "to-identity",
+    "to-seed",
+    "to-tx-hash",
+    "to-base64",
+    "---Guards---",
+    "is-identity",
+    "is-seed",
+    "is-tx-hash",
+    "---Constants---",
     "constants",
+    "---Errors---",
     "errors"
   ]
 }

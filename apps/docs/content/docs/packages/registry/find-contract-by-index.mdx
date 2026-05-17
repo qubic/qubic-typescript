@@ -1,0 +1,39 @@
+---
+title: findContractByIndex
+description: Looks up a contract name from its numeric index in the registry.
+---
+
+## Signature
+
+```ts
+findContractByIndex(registry: ContractRegistry, index: number): string
+```
+
+## Purpose
+
+Looks up a contract name from its numeric index. Use this to resolve a raw contract index to a human-readable name.
+
+```ts
+import { findContractByIndex } from "@qubic.org/registry"
+import registry from "@qubic.org/registry/registry.json"
+import type { ContractRegistry } from "@qubic.org/registry"
+
+const reg = registry as ContractRegistry
+
+const name = findContractByIndex(reg, 9) // "Qearn"
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `registry` | `ContractRegistry` | The imported registry JSON |
+| `index` | `number` | The numeric contract index to look up |
+
+## Returns
+
+`string` — the contract name corresponding to the given index.
+
+## Throws
+
+`EntryNotFoundError` — if the index is not present in the registry.

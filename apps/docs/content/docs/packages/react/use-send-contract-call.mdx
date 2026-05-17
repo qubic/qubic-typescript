@@ -1,0 +1,92 @@
+---
+title: useSendContractCall
+description: Mutation hook for calling a smart contract procedure.
+---
+
+TanStack `useMutation` wrapper that signs and broadcasts a smart contract procedure call. Returns standard mutation state alongside `mutate` and `mutateAsync`.
+
+Requires either `VaultProvider` or `WalletProvider` as an ancestor.
+
+## Signature
+
+```ts
+function useSendContractCall(): {
+  mutate(params: {
+    from: Identity
+    inputType: number
+    payload: Uint8Array
+    amount?: bigint
+    contractIndex?: number
+    targetTick?: number
+  }): void
+  mutateAsync(params: {
+    from: Identity
+    inputType: number
+    payload: Uint8Array
+    amount?: bigint
+    contractIndex?: number
+    targetTick?: number
+  }): Promise<{ hash: TxHash; peersBroadcastedTo: number }>
+  isPending: boolean
+  isSuccess: boolean
+  isError: boolean
+  error: QubicRpcError | null
+  reset(): void
+}
+```
+
+## Usage
+
+```tsx
+import { useSendContractCall } from "@qubic.org/react"
+import { useWallet } from "@qubic.org/react"
+import { qearn } from "@qubic.org/contracts"
+
+function LockButton() {
+  const { account } = useWallet()
+  const { mutate, isPending } = useSendContractCall()
+
+  function handleLock() {
+    mutate({
+      from: account!.identity,
+      inputType: qearn.LOCK_INPUT_TYPE,
+      payload: qearn.buildLockInput({ amount: 10_000_000n }),
+      amount: 10_000_000n,
+    })
+  }
+
+  return (
+    <button type="button" onClick={handleLock} disabled={isPending || !account}>
+      {isPending ? "Locking…" : "Lock 10 MQUSD"}
+    </button>
+  )
+}
+```
+
+## Input
+
+| Field | Type | Description |
+|---|---|---|
+| `from` | `Identity` | The calling identity. |
+| `inputType` | `number` | The procedure's input type constant (e.g. `qearn.LOCK_INPUT_TYPE`). |
+| `payload` | `Uint8Array` | Encoded procedure payload from a `build*Input` function. |
+| `amount` | `bigint` | QU to attach to the call. Use `0n` for procedures that don't transfer funds. |
+| `contractIndex` | `number` | Optional. Override the contract index if not inferable from `inputType`. |
+| `targetTick` | `number` | Optional. Overrides the auto-derived target tick. |
+
+## Handling results
+
+```tsx
+const { mutate, isSuccess, isError, error, reset } = useSendContractCall()
+
+mutate(input, {
+  onSuccess: (result) => {
+    console.log("TX hash:", result.hash)
+  },
+  onError: (err) => {
+    console.error("Call failed:", err.message)
+  },
+})
+```
+
+Call `reset()` to clear `isSuccess` / `isError` state after displaying feedback.

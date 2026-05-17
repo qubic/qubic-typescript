@@ -6,10 +6,15 @@
     "index",
     "---Concepts---",
     "clients-and-errors",
-    "---API Reference---",
+    "---Client---",
+    "create-qubic-client",
     "live-client",
     "archive-client",
-    "utils",
+    "---Utilities---",
+    "wait-for-tick",
+    "poll-until-confirmed",
+    "estimate-target-tick",
+    "---Errors---",
     "errors"
   ]
 }

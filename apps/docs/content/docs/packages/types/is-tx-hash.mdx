@@ -1,0 +1,33 @@
+---
+title: isTxHash
+description: Type predicate that returns true if a string is a valid Qubic transaction hash, narrowing its type to TxHash in the true branch.
+---
+
+## Signature
+
+```ts
+isTxHash(s: string): s is TxHash
+```
+
+## Purpose
+
+Returns `true` if `s` is exactly 60 lowercase characters. TypeScript narrows `s` to `TxHash` in the true branch. Works directly as a `.filter()` predicate — the inferred element type of the resulting array is `TxHash`.
+
+```ts
+import { isTxHash } from "@qubic.org/types"
+
+const candidates: string[] = apiResponse.hashes
+
+const validHashes = candidates.filter(isTxHash)
+// validHashes: TxHash[] — TypeScript infers the narrowed element type
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `s` | `string` | String to check |
+
+## Returns
+
+`s is TxHash` — a type predicate. `true` if `s` is exactly 60 lowercase characters, `false` otherwise.

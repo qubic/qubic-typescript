@@ -1,0 +1,58 @@
+---
+title: subscribeTransfers
+description: Emits decoded QU transfer events as structured objects, without needing to decode raw log payloads.
+---
+
+## Signature
+
+```ts
+bob.subscribeTransfers(
+  filter?: BobTransferFilter,
+  options?: SubscribeOptions,
+): AsyncIterable<SubscriptionEvent<BobTransferEvent>>
+```
+
+## Purpose
+
+Emits QU transfer events as structured objects, without needing to decode raw log payloads. Use this for a simple transfer stream; use `subscribeQuTransfers` from `@qubic.org/events` for full type safety with decoded payloads.
+
+```ts
+for await (const event of bob.subscription.subscribeTransfers({ identity })) {
+  if (event.isCatchUp) continue
+
+  const { source, destination, amount, tick } = event.data
+  const dir = source === identity ? "OUT" : "IN"
+  console.log(`[${dir}] ${amount}n QU at tick ${tick}`)
+}
+```
+
+## Parameters
+
+### Filter (`BobTransferFilter`)
+
+| Name | Type | Description |
+|---|---|---|
+| `identity` | `Identity` | Filter by sender or recipient |
+| `fromTick` | `number` | Start tick (inclusive) |
+| `toTick` | `number` | End tick (inclusive) |
+
+### Options
+
+| Name | Type | Description |
+|---|---|---|
+| `startLogId` | `bigint` | Resume from this log ID |
+| `signal` | `AbortSignal` | Stops the iteration when aborted |
+
+## Returns
+
+`AsyncIterable<SubscriptionEvent<BobTransferEvent>>`
+
+### `BobTransferEvent` fields
+
+| Field | Type | Description |
+|---|---|---|
+| `data.tick` | `number` | Tick the transfer occurred in |
+| `data.logId` | `bigint` | Unique log ID |
+| `data.source` | `Identity` | Sender |
+| `data.destination` | `Identity` | Recipient |
+| `data.amount` | `bigint` | QU amount |

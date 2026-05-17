@@ -1,0 +1,51 @@
+---
+title: useOwnedAssets
+description: Query all assets where a Qubic identity holds legal ownership.
+---
+
+Returns all assets where a given identity is the recorded owner. Ownership represents legal title, which can differ from possession — for example, a smart contract may possess assets on behalf of their owner.
+
+Requires `QubicProvider` as an ancestor.
+
+## Signature
+
+```ts
+function useOwnedAssets(
+  identity: Identity | string | undefined,
+  options?: { refetchInterval?: number | false }
+): {
+  data: Asset[] | undefined
+  isLoading: boolean
+  error: QubicRpcError | null
+}
+```
+
+## Usage
+
+```tsx
+import { useOwnedAssets } from "@qubic.org/react"
+
+function OwnedAssets({ identity }: { identity: string }) {
+  const { data, isLoading, error } = useOwnedAssets(identity)
+
+  if (isLoading) return <p>Loading...</p>
+  if (error) return <p>Error: {error.message}</p>
+
+  return <p>{data?.length ?? 0} asset(s) owned</p>
+}
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `identity` | `Identity \| string \| undefined` | The identity to query. Pass `undefined` to skip the fetch. |
+| `options.refetchInterval` | `number \| false` | Polling interval in milliseconds. Pass `false` to disable. |
+
+## Returns
+
+| Field | Type | Description |
+|---|---|---|
+| `data` | `Asset[] \| undefined` | List of assets owned by the identity, or `undefined` while loading. |
+| `isLoading` | `boolean` | `true` while the first fetch is in progress. |
+| `error` | `QubicRpcError \| null` | Network or parse error. |

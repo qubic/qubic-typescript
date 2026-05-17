@@ -1,0 +1,37 @@
+---
+title: isIdentity
+description: Type predicate that returns true if a string is a valid Qubic identity, narrowing its type to Identity in the true branch.
+---
+
+## Signature
+
+```ts
+isIdentity(s: string): s is Identity
+```
+
+## Purpose
+
+Returns `true` if `s` is exactly 60 uppercase characters. TypeScript narrows `s` to `Identity` inside the `if` branch. Never throws — use this for conditional logic where you want to branch on validity rather than catch an exception.
+
+```ts
+import { isIdentity } from "@qubic.org/types"
+
+const raw: string = getFromSomewhere()
+
+if (isIdentity(raw)) {
+  // raw is Identity here — the compiler knows
+  renderIdentityCard(raw)
+} else {
+  showValidationError("Not a valid Qubic identity")
+}
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `s` | `string` | String to check |
+
+## Returns
+
+`s is Identity` — a type predicate. `true` if `s` is exactly 60 uppercase characters, `false` otherwise.

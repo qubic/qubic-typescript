@@ -1,0 +1,46 @@
+---
+title: createWalletConnectConnector
+description: WalletConnect v2 connector — QR code or mobile deep link.
+---
+
+Factory that creates a WalletConnect v2 connector. Supports QR code scanning and mobile deep links. Requires `@walletconnect/sign-client` as a separate dependency.
+
+## Usage
+
+```tsx
+import {
+  createWalletConnectConnector,
+  WalletProvider,
+} from "@qubic.org/react"
+import { SignClient } from "@walletconnect/sign-client"
+
+const wcConnector = createWalletConnectConnector({
+  createClient: () =>
+    SignClient.create({
+      projectId: "your-walletconnect-project-id",
+      metadata: {
+        name: "My Qubic App",
+        description: "A Qubic dApp",
+        url: "https://your-app.com",
+        icons: ["https://your-app.com/icon.png"],
+      },
+    }),
+})
+
+<WalletProvider connectors={[wcConnector]}>
+  {children}
+</WalletProvider>
+```
+
+## Options
+
+| Name | Type | Description |
+|---|---|---|
+| `createClient` | `() => Promise<SignClient>` | Factory for the WalletConnect `SignClient`. Called lazily on the first connection attempt. |
+
+The `projectId` is obtained from [cloud.walletconnect.com](https://cloud.walletconnect.com). Each app requires its own project ID.
+
+## Notes
+
+- The `SignClient` is created lazily — no network call is made until the user initiates a connection.
+- Install `@walletconnect/sign-client` separately; it is not bundled with `@qubic.org/react`.

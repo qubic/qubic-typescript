@@ -1,0 +1,31 @@
+---
+title: getRandomBytes
+description: Returns a Uint8Array of the requested length filled with cryptographically secure random bytes from crypto.getRandomValues.
+---
+
+## Signature
+
+```ts
+getRandomBytes(length: number): Uint8Array
+```
+
+## Purpose
+
+Returns `length` cryptographically random bytes via `crypto.getRandomValues`. Use this when you need raw entropy for a nonce, a custom key derivation scheme, or any other low-level operation. For wallet seeds specifically, use `generateRandomSeed` — it handles the 55-char lowercase encoding.
+
+```ts
+import { getRandomBytes } from "@qubic.org/crypto"
+
+const nonce = getRandomBytes(16)   // Uint8Array, 16 bytes
+const key = getRandomBytes(32)     // Uint8Array, 32 bytes
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `length` | `number` | Number of random bytes to generate |
+
+## Returns
+
+`Uint8Array` of length `length`.

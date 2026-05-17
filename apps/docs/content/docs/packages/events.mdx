@@ -1,0 +1,191 @@
+---
+title: "@qubic.org/events"
+description: Typed event decoding, chainable filter builder, and subscription helpers that sit above the raw Bob log API.
+---
+
+[![npm](https://img.shields.io/npm/v/@qubic.org/events?style=flat-square)](https://www.npmjs.com/package/@qubic.org/events)
+
+`@qubic.org/events` turns raw Bob log events (base64 blobs with a type number) into fully typed TypeScript objects. It also provides a fluent filter builder and convenience subscription wrappers for the four most common event categories.
+
+<Tabs items={["Bun", "npm", "pnpm"]}>
+<Tab value="Bun">
+```bash
+bun add @qubic.org/events
+```
+</Tab>
+<Tab value="npm">
+```bash
+npm install @qubic.org/events
+```
+</Tab>
+<Tab value="pnpm">
+```bash
+pnpm add @qubic.org/events
+```
+</Tab>
+</Tabs>
+
+## Concepts
+
+### Raw logs vs typed events
+
+A `BobLogEvent` from `@qubic.org/bob` has a `data` field that is a base64-encoded binary blob and a `logType` number. `decodeEvent()` parses that blob into a strongly typed discriminated union:
+
+```ts
+// Before: raw
+event.data.data // Base64 string
+
+// After: typed
+const typed = decodeEvent(event.data)
+if (typed.logType === LOG_TYPE.QU_TRANSFER) {
+  typed.data.source      // Identity
+  typed.data.destination // Identity
+  typed.data.amount      // bigint
+}
+```
+
+### Filter builder
+
+The filter builder is chainable and immutable — each method returns a new builder instance:
+
+```ts
+const filter = eventFilter()
+  .ofTypes(LOG_TYPE.QU_TRANSFER, LOG_TYPE.ASSET_ISSUANCE)
+  .forIdentity(myIdentity)
+  .fromTick(25_000_000)
+  .build()
+```
+
+Call `.build()` to get an `EventFilter`. Call `.toBobFilter()` to get a `BobLogFilter` for direct use with `bob.subscribeLogs()`.
+
+### Subscription helpers
+
+The four helpers (`subscribeQuTransfers`, `subscribeAssetEvents`, `subscribeContractLogs`, `subscribeAllEvents`) are thin wrappers around `bob.subscribeLogs()` that apply a type-appropriate filter and decode each event automatically.
+
+## Log types
+
+| ID | Name | Data fields |
+|---|---|---|
+| `0` | `QU_TRANSFER` | `source`, `destination`, `amount` |
+| `1` | `ASSET_ISSUANCE` | `issuer`, `assetName`, `numberOfShares`, `unitOfMeasurement` |
+| `2` | `ASSET_OWNERSHIP_CHANGE` | `issuer`, `assetName`, `owner`, `newOwner`, `numberOfShares` |
+| `3` | `ASSET_POSSESSION_CHANGE` | `issuer`, `assetName`, `owner`, `newPossessor`, `numberOfShares` |
+| `4` | `CONTRACT_ERROR_MESSAGE` | `contractIndex`, `message` |
+| `5` | `CONTRACT_WARNING_MESSAGE` | `contractIndex`, `message` |
+| `6` | `CONTRACT_INFORMATION_MESSAGE` | `contractIndex`, `message` |
+| `7` | `CONTRACT_DEBUG_MESSAGE` | `contractIndex`, `message` |
+| `8` | `BURNING` | `sourceId`, `amount` |
+| `9` | `DUST_BURNING` | `numberOfBurns`, `totalAmount` |
+| `10` | `SPECTRUM_STATS` | `totalAmount`, `dustThreshold`, `numberOfEntities` |
+| `11` | `ASSET_OWNERSHIP_MANAGING_CONTRACT_CHANGE` | `issuer`, `assetName`, `managingContract` |
+| `12` | `ASSET_POSSESSION_MANAGING_CONTRACT_CHANGE` | `issuer`, `assetName`, `managingContract` |
+| `13` | `CONTRACT_RESERVE_DEDUCTION` | `contractIndex`, `amount` |
+| `14` | `ORACLE_QUERY_STATUS_CHANGE` | `oracleId`, `status` |
+| `15` | `ORACLE_SUBSCRIBER_LOG_MESSAGE` | `subscriberId`, `message` |
+| `255` | `CUSTOM_MESSAGE` | `Uint8Array` (contract-specific) |
+
+## API reference
+
+### `decodeEvent(bobLogEvent)`
+
+Decodes a raw `BobLogEvent` into a typed discriminated union.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `bobLogEvent` | `BobLogEvent` | Raw log event from `bob.subscribeLogs()` or `bob.getLogs()`. |
+
+**Returns** `TypedEvent` — discriminated by `logType`.
+
+**Throws** `EventDecodeError` — if the payload is malformed. Wrap in `try/catch` in subscription loops.
+
+```ts
+import { decodeEvent, LOG_TYPE } from "@qubic.org/events"
+
+const typed = decodeEvent(rawEvent)
+if (typed.logType === LOG_TYPE.QU_TRANSFER) {
+  const { source, destination, amount } = typed.data
+}
+```
+
+---
+
+### `eventFilter()`
+
+Creates a new filter builder.
+
+**Returns** a chainable `EventFilterBuilder` with these methods:
+
+| Method | Description |
+|---|---|
+| `.forIdentity(identity)` | Filter to events involving this identity. |
+| `.forContract(index)` | Filter to events from this contract index. |
+| `.ofTypes(...logTypes)` | Filter to specific log type IDs. |
+| `.fromTick(n)` | Only events at or after tick `n`. |
+| `.toTick(n)` | Only events up to and including tick `n`. |
+| `.build()` | Returns `EventFilter`. |
+| `.toBobFilter()` | Returns `BobLogFilter` for direct use with Bob clients. |
+
+---
+
+### `subscribeQuTransfers(bob, filter?)`
+
+Subscribes to QU transfer events, decoded and typed.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `bob` | `BobSubscriptionClient` | Subscription client from `@qubic.org/bob`. |
+| `filter` | `EventFilter` | Optional. Filter built with `eventFilter()`. |
+
+**Returns** `AsyncIterable<SubscriptionEvent<TypedEvent>>`
+
+---
+
+### `subscribeAssetEvents(bob, filter?)`
+
+Subscribes to all asset-related log types (issuance, ownership change, possession change).
+
+---
+
+### `subscribeContractLogs(bob, filter?)`
+
+Subscribes to contract message log types (error, warning, information, debug).
+
+---
+
+### `subscribeAllEvents(bob, filter?)`
+
+Subscribes to all log types. Apply a filter to narrow the stream.
+
+## Complete example
+
+Filter QU transfers for a specific identity and log each one:
+
+```ts title="track-transfers.ts"
+import { createBobSubscriptionClient } from "@qubic.org/bob"
+import { subscribeQuTransfers, eventFilter, LOG_TYPE } from "@qubic.org/events"
+import { toIdentity } from "@qubic.org/types"
+
+const myIdentity = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
+
+const bob = createBobSubscriptionClient({
+  wsUrl: "wss://bob.qubic.org/v1/ws",
+  autoReconnect: true,
+})
+
+const filter = eventFilter().forIdentity(myIdentity).build()
+
+process.on("SIGINT", () => { bob.close(); process.exit(0) })
+
+for await (const event of subscribeQuTransfers(bob, filter)) {
+  if (event.isCatchUp) continue
+
+  const { source, destination, amount } = event.data.data
+  const direction = source === myIdentity ? "OUT" : "IN"
+  console.log(`[${direction}] ${amount}n QU at tick ${event.tick}`)
+  console.log(`  ${source} → ${destination}`)
+}
+```

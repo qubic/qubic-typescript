@@ -1,0 +1,86 @@
+---
+title: Installation
+description: Install the packages you need. Everything is independently installable.
+---
+
+The SDK is split into focused packages. Install only what your project needs.
+
+<Callout>
+  The SDK is built for [Bun](https://bun.sh). All packages work with Node.js ≥ 18 as well — swap `bun add` for `npm install` or `pnpm add`.
+</Callout>
+
+---
+
+## Packages
+
+| Package | What it does |
+|---|---|
+| `@qubic.org/types` | Branded primitives, protocol constants, shared errors |
+| `@qubic.org/crypto` | K12, SchnorrQ signatures, FourQ key derivation |
+| `@qubic.org/tx` | Transaction builder, signer, encoder |
+| `@qubic.org/wallet` | Wallet, encrypted vault, seed utilities |
+| `@qubic.org/rpc` | Type-safe HTTP client for the Qubic RPC gateway |
+| `@qubic.org/bob` | Live node client — JSON-RPC, REST, WebSocket subscriptions |
+| `@qubic.org/events` | Binary event decoder and typed subscription helpers |
+| `@qubic.org/tcp` | Low-level TCP connection to Qubic nodes |
+| `@qubic.org/registry` | Versioned ABI registry and binary payload codec |
+| `@qubic.org/contracts` | Generated typed wrappers for every deployed contract |
+| `@qubic.org/react` | React hooks and wallet connectors for dApps |
+
+---
+
+## Common setups
+
+### Send a transfer or call a contract
+
+```bash
+bun add @qubic.org/wallet @qubic.org/rpc
+```
+
+### Build a dApp with React
+
+```bash
+bun add @qubic.org/react @qubic.org/contracts
+```
+
+### Work with raw cryptography
+
+```bash
+bun add @qubic.org/crypto @qubic.org/types
+```
+
+### Full SDK
+
+```bash
+bun add @qubic.org/types @qubic.org/crypto @qubic.org/tx @qubic.org/wallet @qubic.org/rpc @qubic.org/contracts @qubic.org/react
+```
+
+---
+
+## TypeScript configuration
+
+The SDK targets ES2020. Your `tsconfig.json` should include:
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true
+  }
+}
+```
+
+If you're using Node.js with `moduleResolution: "node16"` or `"nodenext"`, the packages ship dual CJS/ESM builds and resolve correctly in both modes.
+
+---
+
+## Bun vs Node.js
+
+All packages work in both runtimes. The main difference:
+
+- **Bun** — `bun add`, `bun run`, no extra config needed. Environment variables are loaded automatically.
+- **Node.js** — `npm install` / `pnpm add`, standard `tsconfig.json`. The WASM crypto module is loaded the same way in both.
+
+There is no browser-specific build required. The packages use standard Web APIs (`fetch`, `WebSocket`, `crypto.subtle`) and work in modern browsers, Bun, and Node.js.

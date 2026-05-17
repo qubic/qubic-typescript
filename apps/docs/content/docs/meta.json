@@ -1,4 +1,12 @@
 {
   "title": "Qubic TypeScript SDK",
-  "pages": ["index", "getting-started", "---Packages---", "packages", "---Guides---", "guides"]
+  "pages": [
+    "index",
+    "---Introduction---",
+    "why-qubic-typescript",
+    "installation",
+    "getting-started",
+    "packages",
+    "guides"
+  ]
 }

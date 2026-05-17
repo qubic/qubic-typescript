@@ -1,0 +1,74 @@
+---
+title: Why Qubic TypeScript
+description: What the SDK gives you and when you need it.
+---
+
+The Qubic network exposes a raw binary protocol over HTTP and WebSocket. Every contract call requires manual byte-packing, every key operation requires cryptographic primitives not available in standard libraries, and every transaction requires a specific binary layout with a 64-byte SchnorrQ signature.
+
+The SDK handles all of this so you ship features instead of binary parsers.
+
+---
+
+## What you get
+
+### Type-safe primitives
+
+Identities, seeds, and transaction hashes are distinct branded types — not plain strings. If you pass a seed where an identity is expected, TypeScript catches it at compile time.
+
+```ts
+import { toIdentity, toSeed } from "@qubic.org/types"
+
+const id = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
+const seed = toSeed("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+
+// id and seed are distinct types — you can't mix them up
+```
+
+### Cryptography that works
+
+Qubic uses FourQ curve operations and the K12 hash. Neither appears in Web Crypto or Node's crypto module. The SDK ships a compiled WASM implementation so you get the right primitives in any environment.
+
+```ts
+import { identityFromSeed, sign, k12 } from "@qubic.org/crypto"
+
+const { identity, privateKey } = await identityFromSeed(seed)
+const signature = await sign(privateKey, messageBytes)
+```
+
+### Transaction building without the binary spec
+
+A raw Qubic transaction is a specific sequence of fields packed into bytes with a 64-byte signature appended. The SDK builds and signs it from a plain object.
+
+```ts
+const { encoded, hash } = await wallet.buildTransfer({
+  destination,
+  amount: 1_000_000n,
+  targetTick: tick + 5,
+  currentTick: tick,
+})
+```
+
+### Generated contract wrappers
+
+Every deployed Qubic smart contract has a generated TypeScript wrapper. Calling a contract is one import and one function call — no ABI lookup, no manual payload encoding.
+
+```ts
+import { qearn } from "@qubic.org/contracts"
+
+const result = await qearn.getStateOfRound(live, { epoch: 213 }, converters)
+```
+
+### React hooks
+
+If you're building a dApp, `@qubic.org/react` wraps everything in TanStack Query hooks with wallet connector support out of the box.
+
+```tsx
+const { data } = useBalance(identity)
+const { mutate: sendTransfer } = useSendTransfer()
+```
+
+---
+
+## When you might not need it
+
+If you're writing a one-off script that only calls the live API and doesn't need to sign anything, the raw `fetch` API against `rpc.qubic.org` may be simpler. The SDK is most valuable when you're building transactions, working with contracts, or shipping a product that users interact with.

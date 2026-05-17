@@ -10,6 +10,7 @@ import {
 import _registry from '@qubic.org/registry/registry.json'
 import { Hono } from 'hono'
 import type { Storage } from '../storage'
+import { isValidIndex } from '../utils'
 
 const registry = _registry as ContractRegistry
 
@@ -86,36 +87,32 @@ export function buildApiRoutes(storage: Storage) {
       const match = registry.versions.find(
         (v) => v.contractName.toLowerCase() === name && v.effectiveToEpoch === null,
       )
-      if (!match)
-        return c.json({ error: `Contract '${c.req.param('name')}' not found`, status: 404 }, 404)
+      if (!match) return c.json({ error: `Contract '${c.req.param('name')}' not found` }, 404)
       try {
         return c.json(getCurrentAbi(registry, match.contractIndex))
       } catch (e) {
-        if (e instanceof AbiNotFoundError) return c.json({ error: e.message, status: 404 }, 404)
+        if (e instanceof AbiNotFoundError) return c.json({ error: e.message }, 404)
         throw e
       }
     })
 
     .get('/contracts/:index', (c) => {
       const idx = Number(c.req.param('index'))
-      if (!Number.isInteger(idx) || idx < 0)
-        return c.json({ error: 'Invalid contract index', status: 400 }, 400)
+      if (!isValidIndex(idx)) return c.json({ error: 'Invalid contract index' }, 400)
       try {
         c.header('cache-control', 'public, max-age=3600')
         return c.json(getCurrentAbi(registry, idx))
       } catch (e) {
-        if (e instanceof AbiNotFoundError) return c.json({ error: e.message, status: 404 }, 404)
+        if (e instanceof AbiNotFoundError) return c.json({ error: e.message }, 404)
         throw e
       }
     })
 
     .get('/contracts/:index/history', (c) => {
       const idx = Number(c.req.param('index'))
-      if (!Number.isInteger(idx) || idx < 0)
-        return c.json({ error: 'Invalid contract index', status: 400 }, 400)
+      if (!isValidIndex(idx)) return c.json({ error: 'Invalid contract index' }, 400)
       const history = getAbiHistory(registry, idx)
-      if (history.length === 0)
-        return c.json({ error: `No ABI found for contract ${idx}`, status: 404 }, 404)
+      if (history.length === 0) return c.json({ error: `No ABI found for contract ${idx}` }, 404)
       c.header('cache-control', 'public, max-age=3600')
       return c.json(history)
     })
@@ -123,8 +120,8 @@ export function buildApiRoutes(storage: Storage) {
     .get('/contracts/:index/epoch/:epoch', async (c) => {
       const idx = Number(c.req.param('index'))
       const epoch = Number(c.req.param('epoch'))
-      if (!Number.isInteger(idx) || idx < 0 || !Number.isInteger(epoch) || epoch < 0)
-        return c.json({ error: 'Invalid index or epoch', status: 400 }, 400)
+      if (!isValidIndex(idx) || !isValidIndex(epoch))
+        return c.json({ error: 'Invalid index or epoch' }, 400)
       const fromStorage = await storage.getContractSnapshot(idx, epoch)
       if (fromStorage) {
         c.header('cache-control', 'public, max-age=31536000, immutable')
@@ -139,7 +136,7 @@ export function buildApiRoutes(storage: Storage) {
         c.header('cache-control', 'public, max-age=31536000, immutable')
         return c.json(getAbi(registry, idx, epoch))
       } catch (e) {
-        if (e instanceof AbiNotFoundError) return c.json({ error: e.message, status: 404 }, 404)
+        if (e instanceof AbiNotFoundError) return c.json({ error: e.message }, 404)
         throw e
       }
     })
@@ -161,11 +158,9 @@ export function buildApiRoutes(storage: Storage) {
 
     .get('/epochs/:epoch', async (c) => {
       const epoch = Number(c.req.param('epoch'))
-      if (!Number.isInteger(epoch) || epoch < 0)
-        return c.json({ error: 'Invalid epoch', status: 400 }, 400)
+      if (!isValidIndex(epoch)) return c.json({ error: 'Invalid epoch' }, 400)
       const result = await allActiveAtEpoch(storage, epoch)
-      if (result.length === 0)
-        return c.json({ error: `No contracts found at epoch ${epoch}`, status: 404 }, 404)
+      if (result.length === 0) return c.json({ error: `No contracts found at epoch ${epoch}` }, 404)
       c.header('cache-control', 'public, max-age=31536000, immutable')
       return c.json(result)
     })

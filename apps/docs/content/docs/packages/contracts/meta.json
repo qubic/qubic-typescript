@@ -11,12 +11,6 @@
     "builders",
     "decoders",
     "callers",
-    "call-contract-function",
-    "---Contracts---",
-    "qearn",
-    "qx",
-    "quottery",
-    "qvault",
-    "msvault"
+    "call-contract-function"
   ]
 }

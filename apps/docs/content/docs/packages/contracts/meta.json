@@ -1,5 +1,6 @@
 {
   "title": "@qubic.org/contracts",
-  "icon": "FileCode2",
-  "root": true
+  "icon": "FileCode",
+  "root": true,
+  "pages": ["index", "namespace", "builders", "decoders", "callers", "call-contract-function"]
 }

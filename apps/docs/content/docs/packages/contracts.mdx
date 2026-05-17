@@ -1,0 +1,237 @@
+---
+title: "@qubic.org/contracts"
+description: Generated typed wrappers for every deployed Qubic smart contract. Zero manual payload construction required.
+---
+
+[![npm](https://img.shields.io/npm/v/@qubic.org/contracts?style=flat-square)](https://www.npmjs.com/package/@qubic.org/contracts)
+
+`@qubic.org/contracts` provides ready-to-use TypeScript wrappers generated from the latest ABI snapshot in `@qubic.org/registry`. You get fully typed payload builders, output decoders, and live read callers for every deployed contract.
+
+<Tabs items={["Bun", "npm", "pnpm"]}>
+<Tab value="Bun">
+```bash
+bun add @qubic.org/contracts
+```
+</Tab>
+<Tab value="npm">
+```bash
+npm install @qubic.org/contracts
+```
+</Tab>
+<Tab value="pnpm">
+```bash
+pnpm add @qubic.org/contracts
+```
+</Tab>
+</Tabs>
+
+## Concepts
+
+### Generated code
+
+The files in this package are output from `packages/contracts/scripts/generate.ts`, which reads the latest registry snapshot and produces typed wrappers for every contract and every procedure/function. The generated code is committed — consumers do not run the generator.
+
+When a new epoch ships a changed ABI, the SDK maintainers run the generator and publish an updated version.
+
+### Namespace pattern
+
+Each contract is exported both as named functions and as a **namespace object** that groups everything under one identifier:
+
+```ts
+import { qearn } from "@qubic.org/contracts"
+
+// Payload builder
+const payload = qearn.buildLockInput({ amount: 10_000_000n })
+
+// Live read (returns Result, never throws)
+const result = await qearn.getStateOfRound(live, { epoch: 213 })
+
+// Output decoder
+const output = qearn.decodeLockOutput(rawBytes, publicKeyToIdentity)
+```
+
+The namespace name is the lowercase contract name.
+
+### Error model
+
+- **Read functions** (`qearn.getStateOfRound`, etc.) return `Promise<Result<Output, QubicRpcError>>`. Network failures are in the `Result`, not thrown.
+- **Payload builders** (`qearn.buildLockInput`, etc.) throw `PayloadBuildError` synchronously on malformed input.
+
+## Supported contracts
+
+28 contracts are currently covered:
+
+| # | Name | Index | Procedures | Functions |
+|---|---|---|---|---|
+| 1 | Random | 0 | — | — |
+| 2 | MyLastMatch | — | varies | varies |
+| 3 | Qx | 1 | 6 | 5 |
+| 4 | Quottery | 4 | 6 | 4 |
+| 5 | QUtil | 5 | 2 | 1 |
+| 6 | SupplyWatcher | — | — | 1 |
+| 7 | ComputorControlledFund | — | 2 | — |
+| 8 | **Qearn** | **9** | 2 | 7 |
+| 9 | QVault | 10 | 3 | 4 |
+| 10 | MsVault | 11 | 5 | 2 |
+| 11 | Qbay | 12 | varies | varies |
+| 12 | Qswap | — | varies | varies |
+| 13 | Nostromo | — | varies | varies |
+| 14 | Qdraw | — | varies | varies |
+| 15 | RandomLottery | — | varies | varies |
+| 16 | QBond | — | varies | varies |
+| 17 | QIP | — | varies | varies |
+| 18 | QRaffle | — | varies | varies |
+| 19 | qRWA | — | varies | varies |
+| 20 | QReservePool | — | varies | varies |
+| 21 | QThirtyFour | — | varies | varies |
+| 22 | QDuel | — | varies | varies |
+| 23 | Pulse | — | varies | varies |
+| 24 | VottunBridge | — | varies | varies |
+| 25 | Qusino | — | varies | varies |
+| 26 | Escrow | — | varies | varies |
+| 27 | GeneralQuorumProposal | — | varies | varies |
+
+## API reference
+
+### Per-contract pattern
+
+Using **Qearn** (index 9) as an example:
+
+#### Constants
+
+```ts
+import { QEARN_CONTRACT_INDEX, QEARN_LOCK_INPUT_TYPE } from "@qubic.org/contracts"
+
+console.log(QEARN_CONTRACT_INDEX)   // 9
+console.log(QEARN_LOCK_INPUT_TYPE)  // 6
+```
+
+---
+
+#### `build{Contract}{Procedure}Input(input)`
+
+Encodes a procedure input into binary.
+
+```ts
+import { buildQearnLockInput } from "@qubic.org/contracts"
+
+const payload = buildQearnLockInput({ amount: 10_000_000n })
+// Returns Uint8Array — pass as the payload to wallet.buildScTransaction
+```
+
+**Throws** `PayloadBuildError` — on malformed input (missing fields, wrong types).
+
+---
+
+#### `decode{Contract}{Procedure}Output(data, publicKeyToIdentity?)`
+
+Decodes the binary output of a procedure call.
+
+```ts
+import { decodeQearnLockOutput } from "@qubic.org/contracts"
+import { publicKeyToIdentity } from "@qubic.org/crypto"
+
+const output = decodeQearnLockOutput(rawBytes, publicKeyToIdentity)
+```
+
+---
+
+#### `{contract}{Function}(live, input?, options?)`
+
+Calls a read-only contract function via the RPC client.
+
+```ts
+import { qearnGetStateOfRound } from "@qubic.org/contracts"
+import { identityToPublicKey, publicKeyToIdentity } from "@qubic.org/crypto"
+
+const result = await qearnGetStateOfRound(
+  live,
+  { epoch: 213 },
+  { identityToPublicKey, publicKeyToIdentity },
+)
+
+if (result.ok) {
+  console.log("State:", result.value)
+}
+```
+
+**Returns** `Promise<Result<Output, QubicRpcError>>`
+
+---
+
+#### Namespace object
+
+```ts
+import { qearn } from "@qubic.org/contracts"
+
+qearn.contractIndex           // 9
+qearn.buildLockInput(...)     // payload builder
+qearn.decodeLockOutput(...)   // output decoder
+qearn.getStateOfRound(...)    // live read function
+// ...all other procedures and functions
+```
+
+---
+
+### `callContractFunction(options)`
+
+The internal primitive used by all generated read callers. You typically don't call this directly, but it's available if you need to call a contract function that isn't yet in the generated wrappers.
+
+**Options**
+
+| Name | Type | Description |
+|---|---|---|
+| `live` | `SmartContractCaller` | Any object with a `querySmartContract` method. |
+| `contractIndex` | `number` | Contract index. |
+| `inputType` | `number` | Function input type. |
+| `inputPayload` | `Uint8Array` | Optional. Encoded input. |
+| `outputDecoder` | `(bytes: Uint8Array) => T` | Decodes the response. |
+
+**Returns** `Promise<Result<T, QubicRpcError>>`
+
+## Complete example
+
+Read `getStateOfRound`, check the result, then build and broadcast a lock transaction:
+
+```ts title="qearn-lock.ts"
+import { qearn } from "@qubic.org/contracts"
+import { createLiveClient } from "@qubic.org/rpc"
+import { createWallet, generateSeed } from "@qubic.org/wallet"
+import { identityToPublicKey, publicKeyToIdentity } from "@qubic.org/crypto"
+import { toIdentity } from "@qubic.org/types"
+
+const live = createLiveClient()
+const wallet = createWallet(generateSeed())
+const { tick } = await live.getTickInfo()
+
+// 1. Read current round state
+const state = await qearn.getStateOfRound(
+  live,
+  { epoch: 213 },
+  { identityToPublicKey, publicKeyToIdentity },
+)
+if (!state.ok) {
+  console.error("Failed to read state:", state.error)
+  process.exit(1)
+}
+console.log("Round state:", state.value)
+
+// 2. Build lock payload
+const payload = qearn.buildLockInput({ amount: 10_000_000n })
+
+// 3. Build SC transaction (zero-address destination for contract calls)
+const destination = toIdentity("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+const { encoded, hash } = await wallet.buildScTransaction({
+  destination,
+  amount: 10_000_000n,
+  targetTick: tick + 5,
+  currentTick: tick,
+  inputType: qearn.LOCK_INPUT_TYPE,
+  payload,
+})
+
+// 4. Broadcast
+const result = await live.broadcastTransaction(encoded)
+console.log(`Broadcast to ${result.peersBroadcastedTo} peers`)
+console.log(`TX hash: ${hash}`)
+```

@@ -48,11 +48,15 @@ function snapshotToVersion(snap: ContractSnapshot, epoch: number): ContractAbiVe
       effectiveFromEpoch: version.effectiveFromEpoch,
       effectiveToEpoch: version.effectiveToEpoch,
     }
-  } catch {
+  } catch (err) {
+    console.warn(
+      `snapshotToVersion fallback for contract ${snap.contractIndex} @ epoch ${epoch}:`,
+      err,
+    )
     return {
       ...snap,
       effectiveFromEpoch: snap.epoch ?? epoch,
-      effectiveToEpoch: snap.epoch ?? epoch,
+      effectiveToEpoch: null,
     }
   }
 }

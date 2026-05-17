@@ -1,0 +1,366 @@
+---
+title: "@qubic.org/react"
+description: React hooks and providers for the Qubic SDK — TanStack Query data fetching, encrypted vault, and pluggable wallet connectors.
+---
+
+[![npm](https://img.shields.io/npm/v/@qubic.org/react?style=flat-square)](https://www.npmjs.com/package/@qubic.org/react)
+
+`@qubic.org/react` integrates the entire SDK into React 18+. Data hooks are powered by TanStack Query. Seeds never appear in React state or DevTools. Wallet connectors (browser extension, WalletConnect, MetaMask Snap) are pluggable.
+
+<Tabs items={["Bun", "npm", "pnpm"]}>
+<Tab value="Bun">
+```bash
+bun add @qubic.org/react @qubic.org/rpc @tanstack/react-query
+```
+</Tab>
+<Tab value="npm">
+```bash
+npm install @qubic.org/react @qubic.org/rpc @tanstack/react-query
+```
+</Tab>
+<Tab value="pnpm">
+```bash
+pnpm add @qubic.org/react @qubic.org/rpc @tanstack/react-query
+```
+</Tab>
+</Tabs>
+
+**Peer dependency:** React 18 or later.
+
+## Concepts
+
+### Provider hierarchy
+
+Wrap your app with providers in this order:
+
+```tsx
+<QubicProvider liveClient={live} archiveClient={archive}>
+  {/* optional: wallet connector flow */}
+  <WalletProvider connectors={connectors}>
+    {/* optional: vault-based signing */}
+    <VaultProvider vaultData={vault}>
+      <App />
+    </VaultProvider>
+  </WalletProvider>
+</QubicProvider>
+```
+
+`QubicProvider` is required. `WalletProvider` and `VaultProvider` are independent and optional — include only what your app needs.
+
+### Seeds never in React state
+
+`VaultProvider` stores the unlocked seed in a `useRef`, not `useState`. This means it's never serialized, never in Redux/Zustand, never in TanStack Query's cache, and never visible in React DevTools. This is intentional security behavior.
+
+### Session persistence
+
+When `persistSession` is enabled on `VaultProvider`, the decrypted seed is stored in IndexedDB with `extractable: false`. It survives page reload within the same session but cannot be read back as raw bytes — only used for signing.
+
+### Connector architecture
+
+A `WalletConnector` is an object with `id`, `isAvailable()`, `connect()`, `disconnect()`, `sendTransaction()`, `signTransaction()`, and `signMessage()`. Three built-in connectors implement this interface. You can write a custom one.
+
+<Callout>
+  `extensionConnector` checks for `window.qubic`. It returns `isAvailable() === false` during SSR. Guard with `typeof window !== "undefined"` if needed.
+</Callout>
+
+## API reference
+
+### Providers
+
+#### `QubicProvider`
+
+**Props**
+
+| Prop | Type | Description |
+|---|---|---|
+| `liveClient` | `LiveClient` | From `createLiveClient()`. Required. |
+| `archiveClient` | `QueryClient` | From `createQueryClient()`. Optional. |
+| `queryClient` | `TanStackQueryClient` | Custom TanStack QueryClient. Optional. |
+
+---
+
+#### `VaultProvider`
+
+**Props**
+
+| Prop | Type | Description |
+|---|---|---|
+| `vaultData` | `VaultData` | Encrypted vault from `@qubic.org/wallet`. Required. |
+| `persistSession` | `boolean` | Store unlocked seed in IndexedDB for page reload. Default: `false`. |
+| `sessionStorageKey` | `string` | Custom key for the IndexedDB record. |
+| `autoLockMs` | `number` | Milliseconds of idle time before auto-lock. |
+
+---
+
+#### `WalletProvider`
+
+**Props**
+
+| Prop | Type | Description |
+|---|---|---|
+| `connectors` | `WalletConnector[]` | Array of connector instances. Required. |
+| `storageKey` | `string` | localStorage key for persisting the last active connector ID. |
+
+---
+
+### Vault hooks
+
+#### `useVaultState()`
+
+Returns the current vault state and methods to lock/unlock it.
+
+**Returns**
+
+```ts
+{
+  isUnlocked: boolean
+  identities: Identity[]
+  isUnlocking: boolean
+  error: Error | null
+  unlock: (password: string) => Promise<void>
+  lock: () => void
+}
+```
+
+Requires `VaultProvider` as an ancestor.
+
+---
+
+### Send mutations
+
+#### `useSendTransfer()`
+
+TanStack mutation for broadcasting a QU transfer.
+
+```tsx
+const { mutate, isPending } = useSendTransfer()
+
+mutate({
+  from: wallet.identity,
+  destination: toIdentity("CFBMEMZOI..."),
+  amount: 1_000_000n,
+})
+```
+
+Requires `VaultProvider` as an ancestor.
+
+---
+
+#### `useSendContractCall()`
+
+TanStack mutation for broadcasting a smart contract call.
+
+```tsx
+const { mutate } = useSendContractCall()
+
+mutate({
+  from: wallet.identity,
+  inputType: qearn.LOCK_INPUT_TYPE,
+  payload: qearn.buildLockInput({ amount: 10_000_000n }),
+  amount: 10_000_000n,
+})
+```
+
+---
+
+### Live data hooks
+
+All hooks return TanStack Query result objects and accept standard `queryOptions` overrides as the last argument.
+
+| Hook | Returns |
+|---|---|
+| `useTickInfo(refetchIntervalMs?)` | `{ tick, epoch, duration, initialTick }` |
+| `useBalance(identity)` | `{ balance }` |
+| `useBalances(identities)` | `BalancesResult` |
+| `useIssuedAssets(identity)` | `Asset[]` |
+| `useOwnedAssets(identity)` | `Asset[]` |
+| `usePossessedAssets(identity)` | `Asset[]` |
+| `useContractQuery(fn, input)` | The typed output of the contract function |
+
+`useContractQuery` takes a contract read function from `@qubic.org/contracts` as the first argument:
+
+```tsx
+import { qearnGetStateOfRound } from "@qubic.org/contracts"
+
+// Declare outside the component to keep a stable reference
+const getStateOfRound = qearnGetStateOfRound
+
+function Component() {
+  const { data } = useContractQuery(getStateOfRound, { epoch: 213 })
+}
+```
+
+<Callout type="warn">
+  If you pass a new function reference on every render (e.g. inline arrow), the query key changes on every render and the cache is never hit. Declare the function outside the component.
+</Callout>
+
+---
+
+### Archive hooks
+
+| Hook | Returns |
+|---|---|
+| `useTransaction(hash)` | `QueryTransaction` |
+| `useEventLogs(request)` | `EventLogsResult` |
+| `useTransactionsForIdentity(request)` | `TransactionsForIdentityResult` |
+
+---
+
+### Utility hooks
+
+#### `useQubic()`
+
+Returns the raw clients from `QubicProvider`.
+
+```ts
+const { liveClient, archiveClient } = useQubic()
+```
+
+---
+
+### Wallet hooks
+
+#### `useWallet()`
+
+Returns the current wallet connection state and actions.
+
+**Returns**
+
+```ts
+{
+  connectors: WalletConnector[]
+  isConnected: boolean
+  isConnecting: boolean
+  account: { identity: Identity } | null
+  activeConnector: WalletConnector | null
+  connect: (connectorId: string) => Promise<void>
+  disconnect: () => void
+  error: Error | null
+}
+```
+
+---
+
+#### `useWalletConnector(connector)`
+
+Use a specific connector directly without `WalletProvider`. Useful for headless or custom wallet UIs.
+
+---
+
+### Connectors
+
+#### `extensionConnector`
+
+Connects to the Qubic browser extension via `window.qubic`. Built-in, no configuration.
+
+---
+
+#### `createWalletConnectConnector(options)`
+
+Creates a WalletConnect v2 connector.
+
+**Options**
+
+| Name | Type | Description |
+|---|---|---|
+| `createClient` | `() => Promise<SignClient>` | Factory for the WalletConnect `SignClient`. |
+
+Requires `@walletconnect/sign-client` to be installed separately.
+
+---
+
+#### `createMetaMaskSnapConnector(options)`
+
+Creates a MetaMask Snap connector.
+
+---
+
+#### Custom connectors
+
+Implement the `WalletConnector` interface to add a custom backend:
+
+```ts
+const myConnector: WalletConnector = {
+  id: "my-wallet",
+  isAvailable: () => typeof window !== "undefined" && !!window.myWallet,
+  connect: async () => { /* ... */ },
+  disconnect: async () => { /* ... */ },
+  sendTransaction: async (tx) => { /* ... */ },
+  signTransaction: async (tx) => { /* ... */ },
+  signMessage: async (msg) => { /* ... */ },
+}
+```
+
+## Complete example
+
+Full app with providers, wallet connection, balance display, and a transfer form:
+
+```tsx title="app.tsx"
+import { createLiveClient, createQueryClient } from "@qubic.org/rpc"
+import {
+  QubicProvider,
+  WalletProvider,
+  extensionConnector,
+  useWallet,
+  useBalance,
+  useTickInfo,
+  useSendTransfer,
+} from "@qubic.org/react"
+import { toIdentity } from "@qubic.org/types"
+import type { Identity } from "@qubic.org/types"
+
+const live = createLiveClient()
+const archive = createQueryClient()
+const connectors = [extensionConnector]
+
+export function App() {
+  return (
+    <QubicProvider liveClient={live} archiveClient={archive}>
+      <WalletProvider connectors={connectors}>
+        <Dashboard />
+      </WalletProvider>
+    </QubicProvider>
+  )
+}
+
+function Dashboard() {
+  const { isConnected, account, connect, disconnect, connectors } = useWallet()
+  const { data: tickData } = useTickInfo(5000)
+  const { data: balanceData } = useBalance(account?.identity as Identity | undefined)
+  const { mutate: sendTransfer, isPending } = useSendTransfer()
+
+  if (!isConnected) {
+    return (
+      <div>
+        {connectors.filter(c => c.isAvailable()).map(c => (
+          <button key={c.id} type="button" onClick={() => connect(c.id)}>
+            Connect {c.id}
+          </button>
+        ))}
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      <p>Identity: {account?.identity}</p>
+      <p>Balance: {balanceData?.balance?.toString()} QU</p>
+      <p>Tick: {tickData?.tick}</p>
+      <button
+        type="button"
+        disabled={isPending}
+        onClick={() =>
+          sendTransfer({
+            from: account!.identity,
+            destination: toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL"),
+            amount: 100_000n,
+          })
+        }
+      >
+        {isPending ? "Sending…" : "Send 100,000 QU"}
+      </button>
+      <button type="button" onClick={disconnect}>Disconnect</button>
+    </div>
+  )
+}
+```

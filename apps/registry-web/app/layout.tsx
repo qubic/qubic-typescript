@@ -42,6 +42,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html
       lang="en"
       data-density="comfortable"
+      suppressHydrationWarning
       className={`${inter.variable} ${jetbrainsMono.variable}`}
     >
       <body>

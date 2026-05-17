@@ -1,5 +1,5 @@
 'use client'
-import { Search } from 'lucide-react'
+import { ArrowUpRight, Download, Search } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { ContractSummary } from '../lib/api'
@@ -188,15 +188,22 @@ export function SearchFilter({ contracts }: { contracts: ContractSummary[] }) {
                     onClick={(e) => e.stopPropagation()}
                     onKeyDown={(e) => e.stopPropagation()}
                   >
-                    <a className="btn sm ghost" href={`/contract/${c.contractIndex}`}>
-                      Open →
+                    <a
+                      className="btn sm ghost icon"
+                      href={`/contract/${c.contractIndex}`}
+                      title={`Open ${c.contractName}`}
+                      aria-label={`Open ${c.contractName}`}
+                    >
+                      <ArrowUpRight size={13} />
                     </a>
                     <a
-                      className="btn sm ghost"
+                      className="btn sm ghost icon"
                       href={`/download/epoch/${c.currentFromEpoch}/${c.contractName}.json`}
                       download
+                      title={`Download ${c.contractName}.json`}
+                      aria-label={`Download ${c.contractName}.json`}
                     >
-                      JSON
+                      <Download size={13} />
                     </a>
                   </div>
                 </td>

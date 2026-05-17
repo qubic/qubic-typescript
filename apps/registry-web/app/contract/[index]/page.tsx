@@ -1,4 +1,5 @@
 import { contractIndexToIdentity } from '@qubic.org/crypto'
+import { Archive, ArrowUpRight, Download } from 'lucide-react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { AbiView } from '../../../components/abi-view'
@@ -54,10 +55,10 @@ export default async function ContractPage({ params }: { params: Promise<{ index
             </span>
           </div>
           <div className="contract-address">
-            <span className="mono fmuted" style={{ fontSize: 11, letterSpacing: '0.03em' }}>
-              {address}
-            </span>
-            <CopyButton value={address} label="copy address" />
+            <div className="addr-card">
+              <span>{address}</span>
+              <CopyButton value={address} />
+            </div>
           </div>
         </div>
         <div className="actions">
@@ -65,17 +66,26 @@ export default async function ContractPage({ params }: { params: Promise<{ index
             className="btn sm"
             href={`/download/epoch/${current.effectiveFromEpoch}/${current.contractName}.json`}
             download
+            title="Download JSON"
           >
-            Download JSON
+            <Download size={13} />
+            JSON
           </a>
-          <a className="btn sm" href={`/download/contract/${idx}/all.zip`} download>
-            All epochs (.zip)
+          <a
+            className="btn sm"
+            href={`/download/contract/${idx}/all.zip`}
+            download
+            title="Download all epochs as zip"
+          >
+            <Archive size={13} />
+            All epochs
           </a>
           <Link
             className="btn sm primary"
             href={`/contract/${idx}/epoch/${current.effectiveFromEpoch}`}
           >
-            Open Snapshot →
+            Open Snapshot
+            <ArrowUpRight size={13} />
           </Link>
         </div>
       </header>
@@ -101,7 +111,8 @@ export default async function ContractPage({ params }: { params: Promise<{ index
         <span className="count">e{current.effectiveFromEpoch}</span>
         <span className="grow" />
         <Link className="btn sm" href={`/contract/${idx}/epoch/${current.effectiveFromEpoch}`}>
-          Open Snapshot →
+          Open Snapshot
+          <ArrowUpRight size={13} />
         </Link>
       </div>
       <AbiView version={current} compact />

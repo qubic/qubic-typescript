@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { HeroHeadline } from '../components/hero-headline'
 import { SearchFilter } from '../components/search-filter'
 import { api } from '../lib/api'
 
@@ -42,23 +43,17 @@ export default async function Home() {
             <span className="dot pulse" />
             Live · Epoch {currentEpoch}
           </div>
-          <h1>
-            Every Qubic contract, <span className="accent">exactly as it shipped</span>.
-          </h1>
+          <HeroHeadline />
           <p className="lead">
-            Each ABI is captured from the source code when an epoch closes and locked in place. Link
-            to a specific version in your SDK or docs — it'll be there, unchanged, for as long as
-            you need it.
+            Every contract ABI is captured when an epoch closes. Browse them, link to a specific
+            version, or pull them via API — they&apos;re not going anywhere.
           </p>
           <div className="hero-actions">
-            <Link href="/api-docs" className="btn primary">
-              API Reference →
-            </Link>
-            <a href="#contracts" className="btn ghost">
+            <a href="#contracts" className="btn primary lg">
               Browse contracts ↓
             </a>
-            <Link href="/epochs" className="btn ghost">
-              Epoch history
+            <Link href="/api-docs" className="btn ghost lg">
+              API Reference →
             </Link>
           </div>
         </div>

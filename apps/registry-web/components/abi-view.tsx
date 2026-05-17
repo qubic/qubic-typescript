@@ -5,6 +5,7 @@ import type {
   ContractCallBase,
   NamedStruct,
 } from '@qubic.org/registry'
+import { Code2, X } from 'lucide-react'
 import { useState } from 'react'
 import { CopyButton } from './copy-button'
 import { FieldTable } from './field-table'
@@ -253,17 +254,21 @@ function MethodBlock({
         </span>
         <div className="sizes">
           <span className="pill">
-            in <b>{call.inputSize}</b>B
+            in <b>{call.inputSize}</b>
+            <span className="unit">B</span>
           </span>
           <span className="pill">
-            out <b>{call.outputSize}</b>B
+            out <b>{call.outputSize}</b>
+            <span className="unit">B</span>
           </span>
           <button
             type="button"
             className={`code-toggle${showCode ? ' on' : ''}`}
             onClick={() => setShowCode((v) => !v)}
+            title={showCode ? 'Hide code' : 'Show code'}
+            aria-label={showCode ? 'Hide code' : 'Show code'}
           >
-            {showCode ? '× code' : '</> code'}
+            {showCode ? <X size={11} /> : <Code2 size={11} />}
           </button>
           <CopyButton value={call.name} />
         </div>
@@ -336,7 +341,8 @@ function StructBlock({ struct }: { struct: NamedStruct }) {
         <span className="name">{struct.name}</span>
         <div className="sizes">
           <span className="pill">
-            <b>{struct.byteLength ?? 0}</b>B
+            <b>{struct.byteLength ?? 0}</b>
+            <span className="unit">B</span>
           </span>
           <span className="pill">
             <b>{fields.length}</b> field{fields.length === 1 ? '' : 's'}

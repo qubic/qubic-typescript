@@ -1,14 +1,17 @@
 import {
   AbiNotFoundError,
   type ContractAbiVersion,
+  type ContractRegistry,
   type ContractSnapshot,
   getAbi,
   getAbiHistory,
   getCurrentAbi,
 } from '@qubic.org/registry'
-import registry from '@qubic.org/registry/registry.json'
+import _registry from '@qubic.org/registry/registry.json'
 import { Hono } from 'hono'
 import type { Storage } from '../storage'
+
+const registry = _registry as ContractRegistry
 
 // Computed once at startup — registry.json is static for the lifetime of the worker.
 const CONTRACT_SUMMARIES = (() => {
@@ -24,10 +27,7 @@ const CONTRACT_SUMMARIES = (() => {
   return Array.from(seen.entries())
     .sort((a, b) => a[0] - b[0])
     .map(([, current]) => {
-      const history = getAbiHistory(
-        registry as Parameters<typeof getAbiHistory>[0],
-        current.contractIndex,
-      )
+      const history = getAbiHistory(registry, current.contractIndex)
       return {
         contractIndex: current.contractIndex,
         contractName: current.contractName,
@@ -42,7 +42,7 @@ const CONTRACT_SUMMARIES = (() => {
 
 function snapshotToVersion(snap: ContractSnapshot, epoch: number): ContractAbiVersion {
   try {
-    const { version } = getAbi(registry as Parameters<typeof getAbi>[0], snap.contractIndex, epoch)
+    const { version } = getAbi(registry, snap.contractIndex, epoch)
     return {
       ...snap,
       effectiveFromEpoch: version.effectiveFromEpoch,
@@ -64,7 +64,7 @@ async function allActiveAtEpoch(storage: Storage, epoch: number): Promise<Contra
   const result: ContractAbiVersion[] = []
   for (const idx of indices) {
     try {
-      const { version } = getAbi(registry as Parameters<typeof getAbi>[0], idx, epoch)
+      const { version } = getAbi(registry, idx, epoch)
       result.push(version as ContractAbiVersion)
     } catch (e) {
       if (!(e instanceof AbiNotFoundError)) throw e
@@ -85,9 +85,7 @@ export function buildApiRoutes(storage: Storage) {
       if (!match)
         return c.json({ error: `Contract '${c.req.param('name')}' not found`, status: 404 }, 404)
       try {
-        return c.json(
-          getCurrentAbi(registry as Parameters<typeof getCurrentAbi>[0], match.contractIndex),
-        )
+        return c.json(getCurrentAbi(registry, match.contractIndex))
       } catch (e) {
         if (e instanceof AbiNotFoundError) return c.json({ error: e.message, status: 404 }, 404)
         throw e
@@ -100,7 +98,7 @@ export function buildApiRoutes(storage: Storage) {
         return c.json({ error: 'Invalid contract index', status: 400 }, 400)
       try {
         c.header('cache-control', 'public, max-age=3600')
-        return c.json(getCurrentAbi(registry as Parameters<typeof getCurrentAbi>[0], idx))
+        return c.json(getCurrentAbi(registry, idx))
       } catch (e) {
         if (e instanceof AbiNotFoundError) return c.json({ error: e.message, status: 404 }, 404)
         throw e
@@ -111,7 +109,7 @@ export function buildApiRoutes(storage: Storage) {
       const idx = Number(c.req.param('index'))
       if (!Number.isInteger(idx) || idx < 0)
         return c.json({ error: 'Invalid contract index', status: 400 }, 400)
-      const history = getAbiHistory(registry as Parameters<typeof getAbiHistory>[0], idx)
+      const history = getAbiHistory(registry, idx)
       if (history.length === 0)
         return c.json({ error: `No ABI found for contract ${idx}`, status: 404 }, 404)
       c.header('cache-control', 'public, max-age=3600')
@@ -135,7 +133,7 @@ export function buildApiRoutes(storage: Storage) {
       }
       try {
         c.header('cache-control', 'public, max-age=31536000, immutable')
-        return c.json(getAbi(registry as Parameters<typeof getAbi>[0], idx, epoch))
+        return c.json(getAbi(registry, idx, epoch))
       } catch (e) {
         if (e instanceof AbiNotFoundError) return c.json({ error: e.message, status: 404 }, 404)
         throw e

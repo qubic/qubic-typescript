@@ -1,5 +1,7 @@
-import { findContractByIndex } from '@qubic.org/registry'
-import registry from '@qubic.org/registry/registry.json'
+import { type ContractRegistry, findContractByIndex } from '@qubic.org/registry'
+import _registry from '@qubic.org/registry/registry.json'
+
+const registry = _registry as ContractRegistry
 import { zipSync } from 'fflate'
 import { Hono } from 'hono'
 import type { Storage } from '../storage'
@@ -68,7 +70,7 @@ export function buildDownloadRoutes(storage: Storage): Hono {
         return c.json({ error: 'Invalid contract index', status: 400 }, 400)
       let name: string
       try {
-        name = findContractByIndex(registry as Parameters<typeof findContractByIndex>[0], idx)
+        name = findContractByIndex(registry, idx)
       } catch {
         return c.json({ error: `Contract ${idx} not found`, status: 404 }, 404)
       }

@@ -61,6 +61,7 @@ export function PackageSigil({
         borderRadius: 3,
         border: `1px solid ${color}22`,
         flexShrink: 0,
+        padding: 2,
       }}
     >
       <svg

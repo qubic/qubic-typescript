@@ -86,40 +86,10 @@ export function PackageSigil({
   );
 }
 
-export function PackageHeader({
-  name,
-  label,
-}: {
-  name: string;
-  label?: string;
-}) {
+export function PackageHeader({ name }: { name: string; label?: string }) {
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 14,
-        marginBottom: 8,
-      }}
-    >
+    <div style={{ marginBottom: 16 }}>
       <PackageSigil name={name} size={52} />
-      <div>
-        <div
-          style={{
-            fontSize: 13,
-            opacity: 0.5,
-            fontFamily: "var(--font-geist-mono), monospace",
-            marginBottom: 2,
-          }}
-        >
-          {name}
-        </div>
-        {label && (
-          <div style={{ fontSize: 15, fontWeight: 600, lineHeight: 1.3 }}>
-            {label}
-          </div>
-        )}
-      </div>
     </div>
   );
 }

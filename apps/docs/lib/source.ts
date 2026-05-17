@@ -1,13 +1,38 @@
 import { docs } from "collections/server";
 import { loader } from "fumadocs-core/source";
+import type { LoaderPlugin } from "fumadocs-core/source";
 import { lucideIconsPlugin } from "fumadocs-core/source/lucide-icons";
+import { createElement } from "react";
+import { PackageSigil } from "@/components/package-sigil";
 import { docsContentRoute, docsImageRoute, docsRoute } from "./shared";
+
+function sigilPlugin(): LoaderPlugin {
+  // biome-ignore lint/suspicious/noExplicitAny: fumadocs node types are internal
+  function replaceIcon(node: any) {
+    if (
+      typeof node.title === "string" &&
+      node.title.startsWith("@qubic.org/") &&
+      (node.icon === undefined || typeof node.icon === "string")
+    ) {
+      node.icon = createElement(PackageSigil, { name: node.title, size: 20 });
+    }
+    return node;
+  }
+  return {
+    name: "sigil-icons",
+    transformPageTree: {
+      folder: replaceIcon,
+      file: replaceIcon,
+      separator: replaceIcon,
+    },
+  };
+}
 
 // See https://fumadocs.dev/docs/headless/source-api for more info
 export const source = loader({
   baseUrl: docsRoute,
   source: docs.toFumadocsSource(),
-  plugins: [lucideIconsPlugin()],
+  plugins: [sigilPlugin(), lucideIconsPlugin()],
 });
 
 export function getPageImage(page: (typeof source)["$inferPage"]) {

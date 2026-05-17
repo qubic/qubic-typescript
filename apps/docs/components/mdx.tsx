@@ -4,6 +4,7 @@ import { TypeTable } from "fumadocs-ui/components/type-table";
 import defaultMdxComponents from "fumadocs-ui/mdx";
 import type { MDXComponents } from "mdx/types";
 import { PackageHeader, PackageSigil } from "./package-sigil";
+import { ContractTable } from "./contract-table";
 
 export function getMDXComponents(components?: MDXComponents) {
   return {
@@ -15,6 +16,7 @@ export function getMDXComponents(components?: MDXComponents) {
     TypeTable,
     PackageSigil,
     PackageHeader,
+    ContractTable,
     ...components,
   } satisfies MDXComponents;
 }

@@ -5,14 +5,11 @@
     "crypto",
     "tx",
     "wallet",
-    "---",
     "rpc",
     "bob",
     "events",
-    "---",
     "registry",
     "contracts",
-    "---",
     "tcp",
     "react"
   ]

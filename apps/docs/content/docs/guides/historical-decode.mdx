@@ -1,0 +1,197 @@
+---
+title: Decode historical event logs
+description: Fetch and decode past transaction event logs from the archive using @qubic.org/rpc and @qubic.org/events.
+---
+
+The Qubic archive indexes event logs for every tick. This guide shows how to fetch logs for a specific identity or tick range and decode them into typed structures.
+
+## Prerequisites
+
+<Tabs items={["Bun", "npm", "pnpm"]}>
+<Tab value="Bun">
+```bash
+bun add @qubic.org/rpc @qubic.org/events @qubic.org/crypto @qubic.org/types
+```
+</Tab>
+<Tab value="npm">
+```bash
+npm install @qubic.org/rpc @qubic.org/events @qubic.org/crypto @qubic.org/types
+```
+</Tab>
+<Tab value="pnpm">
+```bash
+pnpm add @qubic.org/rpc @qubic.org/events @qubic.org/crypto @qubic.org/types
+```
+</Tab>
+</Tabs>
+
+## Fetch event logs for an identity
+
+`getEventLogs` returns all logs for a given identity within an optional epoch range:
+
+```ts
+import { createQueryClient } from "@qubic.org/rpc"
+import { toIdentity } from "@qubic.org/types"
+
+const archive = createQueryClient()
+
+const logs = await archive.getEventLogs({
+  identity: toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL"),
+  startTick: 17_000_000,
+  endTick: 17_001_000,
+})
+
+console.log(`Found ${logs.events.length} events`)
+```
+
+Each event in `logs.events` has `eventType`, `eventData` (base64), `tick`, and `txId` fields.
+
+## Decode events
+
+`decodeEvent` from `@qubic.org/events` parses the base64 `eventData` into a typed structure:
+
+```ts
+import { decodeEvent } from "@qubic.org/events"
+import { publicKeyToIdentity } from "@qubic.org/crypto"
+
+for (const raw of logs.events) {
+  const decoded = decodeEvent(raw, publicKeyToIdentity)
+  if (!decoded) {
+    console.log("Unknown event type:", raw.eventType)
+    continue
+  }
+
+  console.log(`Tick ${raw.tick} — type ${decoded.eventType}:`, decoded.data)
+}
+```
+
+`decodeEvent` returns `null` for unknown event types (not yet in the decoder table). Check for `null` before using the result.
+
+## Filter by event type
+
+Use `eventFilter()` to pre-filter before decoding:
+
+```ts
+import { eventFilter } from "@qubic.org/events"
+
+const isQuTransfer = eventFilter().type(14).build()
+const transfers = logs.events.filter(isQuTransfer)
+
+for (const raw of transfers) {
+  const decoded = decodeEvent(raw, publicKeyToIdentity)
+  if (decoded) {
+    // decoded.data is typed as QuTransferData
+    const { sourceIdentity, destIdentity, amount } = decoded.data as { sourceIdentity: string; destIdentity: string; amount: bigint }
+    console.log(`${sourceIdentity} → ${destIdentity}: ${amount} QU`)
+  }
+}
+```
+
+## Fetch transactions for an identity
+
+For a higher-level view of an account's transaction history, use `getTransactionsForIdentity` from the archive client:
+
+```ts
+const txs = await archive.getTransactionsForIdentity({
+  identity: toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL"),
+  startTick: 17_000_000,
+  endTick: 17_001_000,
+})
+
+for (const tx of txs.transactions) {
+  console.log(`TX ${tx.txId} in tick ${tx.tickNumber}: ${tx.amount} QU → ${tx.destId}`)
+}
+```
+
+## Fetch a single transaction
+
+If you have a transaction hash (e.g. from a broadcast), look it up directly:
+
+```ts
+const tx = await archive.getTransaction("your-tx-hash-here")
+
+console.log("Source:", tx.sourceId)
+console.log("Destination:", tx.destId)
+console.log("Amount:", tx.amount)
+console.log("Tick:", tx.tickNumber)
+console.log("Status:", tx.transactionStatus)
+```
+
+`getTransaction` throws `QubicRpcError` if the transaction is not indexed yet or the hash is unknown.
+
+## React with archive hooks
+
+In a React app, use the archive hooks from `@qubic.org/react`:
+
+```tsx
+import { useEventLogs, useTransactionsForIdentity, useTransaction } from "@qubic.org/react"
+import { decodeEvent } from "@qubic.org/events"
+import { publicKeyToIdentity } from "@qubic.org/crypto"
+import { toIdentity } from "@qubic.org/types"
+import type { Identity } from "@qubic.org/types"
+
+const identity: Identity = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
+
+function EventHistory() {
+  const { data, isPending } = useEventLogs({
+    identity,
+    startTick: 17_000_000,
+    endTick: 17_001_000,
+  })
+
+  if (isPending) return <p>Loading…</p>
+
+  return (
+    <ul>
+      {data?.events.map((raw) => {
+        const decoded = decodeEvent(raw, publicKeyToIdentity)
+        return (
+          <li key={`${raw.tick}-${raw.eventType}`}>
+            Tick {raw.tick} — type {raw.eventType}
+            {decoded && `: ${JSON.stringify(decoded.data)}`}
+          </li>
+        )
+      })}
+    </ul>
+  )
+}
+```
+
+## Complete example
+
+```ts title="decode-history.ts"
+import { createQueryClient } from "@qubic.org/rpc"
+import { decodeEvent, eventFilter } from "@qubic.org/events"
+import { publicKeyToIdentity } from "@qubic.org/crypto"
+import { toIdentity } from "@qubic.org/types"
+
+const archive = createQueryClient()
+
+const identity = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
+const isTransfer = eventFilter().type(14).build()
+
+const logs = await archive.getEventLogs({
+  identity,
+  startTick: 17_000_000,
+  endTick: 17_001_000,
+})
+
+console.log(`${logs.events.length} total events`)
+
+for (const raw of logs.events.filter(isTransfer)) {
+  const decoded = decodeEvent(raw, publicKeyToIdentity)
+  if (decoded) {
+    console.log(`Tick ${raw.tick} transfer:`, decoded.data)
+  }
+}
+```
+
+Run it:
+
+```bash
+bun decode-history.ts
+```
+
+## Event type reference
+
+See the [`@qubic.org/events` reference](/docs/packages/events) for a table of all 17 event types and the shape of each event's `data` field.

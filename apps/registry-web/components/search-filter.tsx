@@ -12,6 +12,39 @@ function SortArrow({ dir }: { dir: SortDir }) {
   return <span className="sort-arrow">{dir === 'asc' ? '↑' : '↓'}</span>
 }
 
+function SortTh({
+  col,
+  label,
+  className,
+  style,
+  activeCol,
+  dir,
+  onToggle,
+}: {
+  col: SortKey
+  label: string
+  className?: string
+  style?: React.CSSProperties
+  activeCol: SortKey
+  dir: SortDir
+  onToggle: (col: SortKey) => void
+}) {
+  const active = activeCol === col
+  return (
+    <th
+      scope="col"
+      aria-sort={active ? (dir === 'asc' ? 'ascending' : 'descending') : 'none'}
+      className={`sortable${className ? ` ${className}` : ''}${active ? ' sort-active' : ''}`}
+      style={style}
+    >
+      <button type="button" onClick={() => onToggle(col)}>
+        {label}
+        {active && <SortArrow dir={dir} />}
+      </button>
+    </th>
+  )
+}
+
 function NumBar({
   value,
   max,
@@ -83,28 +116,6 @@ export function SearchFilter({ contracts }: { contracts: ContractSummary[] }) {
     router.push(`/contract/${idx}`)
   }
 
-  function SortTh({
-    col,
-    label,
-    className,
-    style,
-  }: { col: SortKey; label: string; className?: string; style?: React.CSSProperties }) {
-    const active = sort === col
-    return (
-      <th
-        scope="col"
-        aria-sort={active ? (dir === 'asc' ? 'ascending' : 'descending') : 'none'}
-        className={`sortable${className ? ` ${className}` : ''}${active ? ' sort-active' : ''}`}
-        style={style}
-      >
-        <button type="button" onClick={() => toggleSort(col)}>
-          {label}
-          {active && <SortArrow dir={dir} />}
-        </button>
-      </th>
-    )
-  }
-
   return (
     <>
       <div className="toolbar">
@@ -131,15 +142,49 @@ export function SearchFilter({ contracts }: { contracts: ContractSummary[] }) {
         <table className="tbl" aria-label="Smart contracts">
           <thead>
             <tr>
-              <SortTh col="idx" label="#" className="col-idx" style={{ width: 44 }} />
-              <SortTh col="name" label="Contract" className="col-name" />
-              <SortTh col="procs" label="Procs" className="col-procs right" style={{ width: 90 }} />
-              <SortTh col="funcs" label="Funcs" className="col-funcs right" style={{ width: 90 }} />
+              <SortTh
+                col="idx"
+                label="#"
+                className="col-idx"
+                style={{ width: 44 }}
+                activeCol={sort}
+                dir={dir}
+                onToggle={toggleSort}
+              />
+              <SortTh
+                col="name"
+                label="Contract"
+                className="col-name"
+                activeCol={sort}
+                dir={dir}
+                onToggle={toggleSort}
+              />
+              <SortTh
+                col="procs"
+                label="Procs"
+                className="col-procs right"
+                style={{ width: 90 }}
+                activeCol={sort}
+                dir={dir}
+                onToggle={toggleSort}
+              />
+              <SortTh
+                col="funcs"
+                label="Funcs"
+                className="col-funcs right"
+                style={{ width: 90 }}
+                activeCol={sort}
+                dir={dir}
+                onToggle={toggleSort}
+              />
               <SortTh
                 col="structs"
                 label="Structs"
                 className="col-structs right"
                 style={{ width: 70 }}
+                activeCol={sort}
+                dir={dir}
+                onToggle={toggleSort}
               />
               <th scope="col" className="col-actions right" style={{ width: 130 }} />
             </tr>

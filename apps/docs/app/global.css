@@ -4,6 +4,14 @@
 
 html {
   scrollbar-gutter: stable;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+code,
+kbd,
+samp,
+pre {
+  font-family: var(--font-geist-mono), ui-monospace, "Cascadia Code", monospace;
 }
 
 html > body[data-scroll-locked] {

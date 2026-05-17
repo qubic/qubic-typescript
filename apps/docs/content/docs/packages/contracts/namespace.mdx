@@ -85,12 +85,14 @@ import { QEARN_CONTRACT_INDEX, QEARN_UNLOCK_INPUT_TYPE } from "@qubic.org/contra
 
 ### Builders
 
-Builders encode a JavaScript object into a `Uint8Array` ready to pass as the transaction payload:
+Builders encode a JavaScript object into a binary payload ready to attach to a transaction:
 
 ```ts
 qearn.buildUnlockInput({ amount: 10_000_000n, lockedEpoch: 213 })
-// → ContractCall { contractIndex, inputType, payload: Uint8Array }
+// → ContractCall { contractIndex: 9, inputType: 2, payload: Uint8Array }
 ```
+
+Not every procedure has a builder. When there are no input fields (like Qearn's Lock), the payload is empty and only the transaction amount and input type are needed.
 
 See [Builders](./builders) for input type mapping and error handling.
 
@@ -146,9 +148,9 @@ if (lockStatus.ok) {
 
 // wallet.buildScTransaction({
 //   destination: QEARN_CONTRACT_ADDRESS,
-//   amount: 10_000_000n,
+//   amount: 10_000_000n,           // the lock amount
 //   targetTick: currentTick + 5,
 //   inputType: QEARN_LOCK_INPUT_TYPE,
-//   payload: lockPayload.payload,
+//   payload: new Uint8Array(0),    // no payload for lock
 // })
 ```

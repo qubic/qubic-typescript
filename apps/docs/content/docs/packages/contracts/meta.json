@@ -14,6 +14,9 @@
     "call-contract-function",
     "---Contracts---",
     "qearn",
-    "qx"
+    "qx",
+    "quottery",
+    "qvault",
+    "msvault"
   ]
 }

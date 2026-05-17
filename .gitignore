@@ -5,7 +5,8 @@ node_modules
 out
 dist
 *.tgz
-docs/
+./docs
+.agents
 
 # code coverage
 coverage

@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "skills": {
+    "adev-writing-guide": {
+      "source": "angular/angular",
+      "sourceType": "github",
+      "skillPath": ".agent/skills/adev-writing-guide/SKILL.md",
+      "computedHash": "da960d6201a2f8ea2dcb5709205188392764c5d717567e5668cea094cde2d0f0"
+    },
+    "typescript-docs": {
+      "source": "giuseppe-trisciuoglio/developer-kit",
+      "sourceType": "github",
+      "skillPath": "plugins/developer-kit-typescript/skills/typescript-docs/SKILL.md",
+      "computedHash": "9e2c39b8a9ea569feb0c90080b10a71371e2d2d8ffb35de4fc5f7afe2a442f67"
+    }
+  }
+}

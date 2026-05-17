@@ -22,6 +22,7 @@ export default {
         'deps',
         'release',
         'planning',
+        'docs',
       ],
     ],
     'scope-empty': [0],

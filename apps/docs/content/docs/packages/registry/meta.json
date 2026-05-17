@@ -9,9 +9,8 @@
     "---ABI lookup---",
     "get-abi",
     "functions",
-    "---Codec---",
+    "---Codec & client---",
     "codec",
-    "---Client---",
     "client"
   ]
 }

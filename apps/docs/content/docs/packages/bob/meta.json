@@ -6,11 +6,10 @@
     "index",
     "---Concepts---",
     "subscriptions-model",
-    "---Clients---",
+    "---API Reference---",
     "connection",
     "rest-client",
     "rpc-client",
-    "---Subscriptions---",
     "subscriptions"
   ]
 }

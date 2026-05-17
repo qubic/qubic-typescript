@@ -6,11 +6,9 @@
     "index",
     "---Concepts---",
     "wallet-and-vault",
-    "---Wallet---",
+    "---API Reference---",
     "transfers",
-    "---Vault---",
     "vault",
-    "---Seeds---",
     "seed-utils"
   ]
 }

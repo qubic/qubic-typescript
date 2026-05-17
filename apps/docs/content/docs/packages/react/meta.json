@@ -16,14 +16,12 @@
     "use-contract-query",
     "use-transaction",
     "use-event-logs",
-    "---Wallet hooks---",
+    "---Wallet & vault---",
     "use-wallet",
     "use-wallet-connector",
     "use-vault-state",
     "use-qubic",
-    "---Mutations---",
     "send-mutations",
-    "---Connectors---",
     "connectors"
   ]
 }

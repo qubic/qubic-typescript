@@ -6,11 +6,10 @@
     "index",
     "---Concepts---",
     "clients-and-errors",
-    "---Clients---",
+    "---API Reference---",
     "live-client",
     "archive-client",
     "utils",
-    "---Errors---",
     "errors"
   ]
 }

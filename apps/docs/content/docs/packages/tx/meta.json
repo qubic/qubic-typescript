@@ -9,10 +9,9 @@
     "---Building---",
     "build-transaction",
     "payload",
+    "binary-reader-writer",
     "---Signing & encoding---",
     "sign-transaction",
-    "encode-decode",
-    "---Low-level---",
-    "binary-reader-writer"
+    "encode-decode"
   ]
 }

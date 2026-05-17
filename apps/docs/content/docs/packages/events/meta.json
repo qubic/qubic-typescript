@@ -6,11 +6,9 @@
     "index",
     "---Concepts---",
     "event-types",
-    "---Decoding---",
+    "---API Reference---",
     "decode-event",
-    "---Filtering---",
     "event-filter",
-    "---Subscriptions---",
     "subscription-helpers"
   ]
 }

@@ -9,9 +9,8 @@
     "---Connections---",
     "connection",
     "pool",
-    "---Requests---",
+    "---Requests & frames---",
     "requests",
-    "---Low-level---",
     "frame-utilities",
     "message-types"
   ]

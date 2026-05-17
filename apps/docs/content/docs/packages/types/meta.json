@@ -6,15 +6,11 @@
     "index",
     "---Concepts---",
     "type-safety",
-    "---Types---",
+    "---API Reference---",
     "branded-types",
-    "---Constructors---",
     "constructors",
-    "---Guards---",
     "guards",
-    "---Constants---",
     "constants",
-    "---Errors---",
     "errors"
   ]
 }

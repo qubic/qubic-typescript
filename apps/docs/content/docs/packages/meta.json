@@ -1,16 +1,16 @@
 {
   "collapsible": false,
   "pages": [
-    "types",
-    "crypto",
-    "tx",
-    "wallet",
-    "rpc",
-    "bob",
-    "events",
-    "registry",
-    "contracts",
-    "tcp",
-    "react"
+    "types/index",
+    "crypto/index",
+    "tx/index",
+    "wallet/index",
+    "rpc/index",
+    "bob/index",
+    "events/index",
+    "registry/index",
+    "contracts/index",
+    "tcp/index",
+    "react/index"
   ]
 }

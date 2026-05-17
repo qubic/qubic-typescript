@@ -1,0 +1,186 @@
+---
+title: Query a contract function
+description: Read live state from a deployed smart contract using @qubic.org/contracts and the React useContractQuery hook.
+---
+
+Contract **read functions** return data from the current contract state without broadcasting a transaction. They are free (no QU required) and can be called any number of times.
+
+## Node.js / server-side
+
+Use `@qubic.org/contracts` directly with a live RPC client.
+
+### Prerequisites
+
+<Tabs items={["Bun", "npm", "pnpm"]}>
+<Tab value="Bun">
+```bash
+bun add @qubic.org/contracts @qubic.org/rpc @qubic.org/crypto
+```
+</Tab>
+<Tab value="npm">
+```bash
+npm install @qubic.org/contracts @qubic.org/rpc @qubic.org/crypto
+```
+</Tab>
+<Tab value="pnpm">
+```bash
+pnpm add @qubic.org/contracts @qubic.org/rpc @qubic.org/crypto
+```
+</Tab>
+</Tabs>
+
+### Calling a read function
+
+Read functions return `Promise<Result<Output, QubicRpcError>>`. They never throw on network errors — the error is wrapped in the `Result`.
+
+```ts title="query-contract.ts"
+import { qearnGetStateOfRound } from "@qubic.org/contracts"
+import { identityToPublicKey, publicKeyToIdentity } from "@qubic.org/crypto"
+import { createLiveClient } from "@qubic.org/rpc"
+
+const live = createLiveClient()
+
+const result = await qearnGetStateOfRound(
+  live,
+  { epoch: 213 },
+  { identityToPublicKey, publicKeyToIdentity },
+)
+
+if (result.ok) {
+  console.log("Round state:", result.value)
+} else {
+  console.error("Error:", result.error.message)
+}
+```
+
+The third argument (`{ identityToPublicKey, publicKeyToIdentity }`) is the **injected converter** pattern — it lets the contracts package avoid importing the full crypto library, so you only pay for what you use.
+
+### Using the namespace
+
+```ts
+import { qearn } from "@qubic.org/contracts"
+import { identityToPublicKey, publicKeyToIdentity } from "@qubic.org/crypto"
+import { createLiveClient } from "@qubic.org/rpc"
+
+const live = createLiveClient()
+
+const result = await qearn.getStateOfRound(
+  live,
+  { epoch: 213 },
+  { identityToPublicKey, publicKeyToIdentity },
+)
+```
+
+### Result type
+
+```ts
+type Result<T, E> =
+  | { ok: true;  value: T }
+  | { ok: false; error: E }
+```
+
+Always check `result.ok` before accessing `result.value`. If you access `result.value` on a failed result TypeScript will give a type error.
+
+---
+
+## React with `useContractQuery`
+
+`@qubic.org/react` wraps contract read functions in a TanStack Query hook that handles caching, background refetch, and loading states.
+
+### Prerequisites
+
+<Tabs items={["Bun", "npm", "pnpm"]}>
+<Tab value="Bun">
+```bash
+bun add @qubic.org/react @qubic.org/contracts @qubic.org/rpc @tanstack/react-query
+```
+</Tab>
+<Tab value="npm">
+```bash
+npm install @qubic.org/react @qubic.org/contracts @qubic.org/rpc @tanstack/react-query
+```
+</Tab>
+<Tab value="pnpm">
+```bash
+pnpm add @qubic.org/react @qubic.org/contracts @qubic.org/rpc @tanstack/react-query
+```
+</Tab>
+</Tabs>
+
+### Setup
+
+Wrap your app in `QubicProvider`:
+
+```tsx
+import { createLiveClient } from "@qubic.org/rpc"
+import { QubicProvider } from "@qubic.org/react"
+
+const live = createLiveClient()
+
+export function App() {
+  return (
+    <QubicProvider liveClient={live}>
+      <Dashboard />
+    </QubicProvider>
+  )
+}
+```
+
+### Reading contract state in a component
+
+```tsx
+import { qearnGetStateOfRound } from "@qubic.org/contracts"
+import { useContractQuery } from "@qubic.org/react"
+
+// Declare outside the component to keep a stable reference.
+// A new function reference on every render defeats the query cache.
+const getStateOfRound = qearnGetStateOfRound
+
+function EarnStatus() {
+  const { data, isPending, isError } = useContractQuery(getStateOfRound, { epoch: 213 })
+
+  if (isPending) return <p>Loading…</p>
+  if (isError) return <p>Failed to load round state</p>
+
+  return <p>Total locked: {data?.lockedAmount?.toString()} QU</p>
+}
+```
+
+<Callout type="warn">
+  Pass a stable function reference — declared at module scope or with `useCallback`. An inline arrow on every render creates a new query key on every render and the cache is never reused.
+</Callout>
+
+### Refreshing on an interval
+
+```tsx
+const { data } = useContractQuery(
+  getStateOfRound,
+  { epoch: currentEpoch },
+  { refetchInterval: 30_000 }, // refetch every 30 seconds
+)
+```
+
+---
+
+## callContractFunction (advanced)
+
+If the contract you need isn't in the generated wrappers yet, call the underlying primitive directly:
+
+```ts
+import { callContractFunction } from "@qubic.org/contracts"
+
+const result = await callContractFunction({
+  live,
+  contractIndex: 9,
+  inputType: 1,
+  inputPayload: new Uint8Array(0),
+  outputDecoder: (bytes) => {
+    // custom decode logic
+    return bytes
+  },
+})
+```
+
+## Which contracts are supported?
+
+See the [contracts reference](/docs/packages/contracts) for the full list of 28 contracts with their indices, procedure counts, and function counts.

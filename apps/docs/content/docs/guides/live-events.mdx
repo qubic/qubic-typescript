@@ -1,0 +1,189 @@
+---
+title: Subscribe to live events
+description: Stream real-time tick data and account events using @qubic.org/bob and @qubic.org/events.
+---
+
+`@qubic.org/bob` provides a persistent WebSocket connection to the Qubic live node. Combined with `@qubic.org/events`, you can decode typed event logs from every tick as they arrive.
+
+## Prerequisites
+
+<Tabs items={["Bun", "npm", "pnpm"]}>
+<Tab value="Bun">
+```bash
+bun add @qubic.org/bob @qubic.org/events @qubic.org/types
+```
+</Tab>
+<Tab value="npm">
+```bash
+npm install @qubic.org/bob @qubic.org/events @qubic.org/types
+```
+</Tab>
+<Tab value="pnpm">
+```bash
+pnpm add @qubic.org/bob @qubic.org/events @qubic.org/types
+```
+</Tab>
+</Tabs>
+
+## Connect and subscribe to ticks
+
+```ts
+import { createBobClient } from "@qubic.org/bob"
+
+const bob = createBobClient()
+await bob.connect()
+
+bob.subscribe("tickInfo", (tick) => {
+  console.log(`Tick ${tick.tick} — epoch ${tick.epoch}`)
+})
+```
+
+`subscribe` returns an unsubscribe function. Call it to stop receiving updates:
+
+```ts
+const unsub = bob.subscribe("tickInfo", handler)
+
+// Later:
+unsub()
+```
+
+## Subscribe to account events
+
+```ts
+import { toIdentity } from "@qubic.org/types"
+
+const identity = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
+
+bob.subscribe("eventLogs", identity, (events) => {
+  for (const event of events) {
+    console.log("Event type:", event.eventType, "data:", event.eventData)
+  }
+})
+```
+
+## Decode event data with @qubic.org/events
+
+`eventData` from `bob` is raw base64. Use `decodeEvent` to parse it into typed objects:
+
+```ts
+import { decodeEvent } from "@qubic.org/events"
+import { publicKeyToIdentity } from "@qubic.org/crypto"
+
+bob.subscribe("eventLogs", identity, (events) => {
+  for (const raw of events) {
+    const decoded = decodeEvent(raw, publicKeyToIdentity)
+    if (!decoded) continue
+
+    switch (decoded.eventType) {
+      case 14: // QuTransfer
+        console.log("Transfer:", decoded.data.sourceIdentity, "→", decoded.data.destIdentity, decoded.data.amount)
+        break
+      case 0: // QuTransferInRegistration
+        console.log("Registration transfer:", decoded.data)
+        break
+    }
+  }
+})
+```
+
+See [`@qubic.org/events`](/docs/packages/events) for all 17 event type constants and their data shapes.
+
+## Filter events
+
+Use `eventFilter()` to build a predicate that matches only the events you care about:
+
+```ts
+import { eventFilter } from "@qubic.org/events"
+
+const isTransfer = eventFilter()
+  .type(14)              // QuTransfer
+  .build()
+
+bob.subscribe("eventLogs", identity, (events) => {
+  const transfers = events.filter(isTransfer)
+  for (const t of transfers) {
+    console.log("Transfer:", t.eventData)
+  }
+})
+```
+
+Chain multiple conditions:
+
+```ts
+const isIncomingTransfer = eventFilter()
+  .type(14)
+  .destIdentity(identity)
+  .build()
+```
+
+## Handle reconnects
+
+bob reconnects automatically on disconnection. Use the `reconnect` event to re-register subscriptions if needed, or pass `autoResubscribe: true`:
+
+```ts
+const bob = createBobClient({ autoResubscribe: true })
+await bob.connect()
+```
+
+With `autoResubscribe`, all active subscriptions are re-registered after each reconnect. Without it, you must re-subscribe manually in the `connect` event handler:
+
+```ts
+bob.on("connect", () => {
+  bob.subscribe("tickInfo", onTick)
+  bob.subscribe("eventLogs", identity, onEvents)
+})
+```
+
+## Catch-up on missed ticks
+
+When bob reconnects after a gap it can deliver buffered ticks. The `isCatchUp` flag on tick data distinguishes buffered delivery from live delivery:
+
+```ts
+bob.subscribe("tickInfo", (tick, meta) => {
+  if (meta.isCatchUp) {
+    console.log("Replaying missed tick:", tick.tick)
+  } else {
+    console.log("Live tick:", tick.tick)
+  }
+})
+```
+
+## Complete example
+
+```ts title="live-events.ts"
+import { createBobClient } from "@qubic.org/bob"
+import { decodeEvent, eventFilter } from "@qubic.org/events"
+import { publicKeyToIdentity } from "@qubic.org/crypto"
+import { toIdentity } from "@qubic.org/types"
+
+const bob = createBobClient({ autoResubscribe: true })
+await bob.connect()
+
+const identity = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
+const isTransfer = eventFilter().type(14).build()
+
+bob.subscribe("tickInfo", (tick) => {
+  console.log(`Tick ${tick.tick} (epoch ${tick.epoch})`)
+})
+
+bob.subscribe("eventLogs", identity, (events) => {
+  for (const raw of events.filter(isTransfer)) {
+    const decoded = decodeEvent(raw, publicKeyToIdentity)
+    if (decoded) {
+      console.log("Transfer:", decoded.data)
+    }
+  }
+})
+
+// Run until Ctrl-C
+process.on("SIGINT", async () => {
+  await bob.disconnect()
+  process.exit(0)
+})
+```
+
+Run:
+
+```bash
+bun live-events.ts
+```

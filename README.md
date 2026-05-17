@@ -6,17 +6,17 @@ TypeScript SDK for the [Qubic](https://qubic.org) network. Modular, tree-shakeab
 
 | Package | Version | Description |
 |---|---|---|
-| [`@qubic.org/types`](packages/types) | 0.2.0 | Branded primitives, protocol constants, shared error types |
-| [`@qubic.org/crypto`](packages/crypto) | 0.2.0 | K12 hash, SchnorrQ signatures, FourQ key derivation |
-| [`@qubic.org/tx`](packages/tx) | 0.2.0 | Binary transaction builder, signer, and verifier |
-| [`@qubic.org/rpc`](packages/rpc) | 0.2.0 | Type-safe REST client for the Qubic RPC gateway |
-| [`@qubic.org/bob`](packages/bob) | 0.2.0 | Live node client — JSON-RPC 2.0, REST, WebSocket subscriptions |
-| [`@qubic.org/registry`](packages/registry) | 0.2.0 | Versioned ABI registry for all Qubic smart contracts across all epochs |
-| [`@qubic.org/contracts`](packages/contracts) | 0.2.0 | Generated typed wrappers for every deployed contract |
-| [`@qubic.org/events`](packages/events) | 0.2.0 | Binary event decoder, filter builder, and typed Bob subscription helpers |
-| [`@qubic.org/wallet`](packages/wallet) | 0.2.0 | Wallet, encrypted vault, and seed utilities |
-| [`@qubic.org/tcp`](packages/tcp) | 0.2.0 | Direct TCP transport — framing, connection pool, typed request helpers |
-| [`@qubic.org/react`](packages/react) | 0.2.0 | React hooks and providers — TanStack Query, VaultProvider, WalletProvider (extension / WalletConnect / MetaMask Snap), contract queries, send mutations |
+| [`@qubic.org/types`](packages/types) | [![npm](https://img.shields.io/npm/v/@qubic.org/types)](https://www.npmjs.com/package/@qubic.org/types) | Branded primitives, protocol constants, shared error types |
+| [`@qubic.org/crypto`](packages/crypto) | [![npm](https://img.shields.io/npm/v/@qubic.org/crypto)](https://www.npmjs.com/package/@qubic.org/crypto) | K12 hash, SchnorrQ signatures, FourQ key derivation |
+| [`@qubic.org/tx`](packages/tx) | [![npm](https://img.shields.io/npm/v/@qubic.org/tx)](https://www.npmjs.com/package/@qubic.org/tx) | Binary transaction builder, signer, and verifier |
+| [`@qubic.org/rpc`](packages/rpc) | [![npm](https://img.shields.io/npm/v/@qubic.org/rpc)](https://www.npmjs.com/package/@qubic.org/rpc) | Type-safe REST client for the Qubic RPC gateway |
+| [`@qubic.org/bob`](packages/bob) | [![npm](https://img.shields.io/npm/v/@qubic.org/bob)](https://www.npmjs.com/package/@qubic.org/bob) | Live node client — JSON-RPC 2.0, REST, WebSocket subscriptions |
+| [`@qubic.org/registry`](packages/registry) | [![npm](https://img.shields.io/npm/v/@qubic.org/registry)](https://www.npmjs.com/package/@qubic.org/registry) | Versioned ABI registry for all Qubic smart contracts across all epochs |
+| [`@qubic.org/contracts`](packages/contracts) | [![npm](https://img.shields.io/npm/v/@qubic.org/contracts)](https://www.npmjs.com/package/@qubic.org/contracts) | Generated typed wrappers for every deployed contract |
+| [`@qubic.org/events`](packages/events) | [![npm](https://img.shields.io/npm/v/@qubic.org/events)](https://www.npmjs.com/package/@qubic.org/events) | Binary event decoder, filter builder, and typed Bob subscription helpers |
+| [`@qubic.org/wallet`](packages/wallet) | [![npm](https://img.shields.io/npm/v/@qubic.org/wallet)](https://www.npmjs.com/package/@qubic.org/wallet) | Wallet, encrypted vault, and seed utilities |
+| [`@qubic.org/tcp`](packages/tcp) | [![npm](https://img.shields.io/npm/v/@qubic.org/tcp)](https://www.npmjs.com/package/@qubic.org/tcp) | Direct TCP transport — framing, connection pool, typed request helpers |
+| [`@qubic.org/react`](packages/react) | [![npm](https://img.shields.io/npm/v/@qubic.org/react)](https://www.npmjs.com/package/@qubic.org/react) | React hooks and providers — TanStack Query, VaultProvider, WalletProvider (extension / WalletConnect / MetaMask Snap), contract queries, send mutations |
 
 ## Quick start
 

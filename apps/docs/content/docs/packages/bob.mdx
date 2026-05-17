@@ -1,0 +1,220 @@
+---
+title: "@qubic.org/bob"
+description: Live Qubic node client with three transports — JSON-RPC 2.0, REST, and WebSocket subscriptions. All return Result, never throw on network errors.
+---
+
+[![npm](https://img.shields.io/npm/v/@qubic.org/bob?style=flat-square)](https://www.npmjs.com/package/@qubic.org/bob)
+
+`@qubic.org/bob` wraps the Bob indexer with three transport modes that share a consistent `Result<T, E>` error model. Nothing throws on transport failures — errors appear as `Result.err` values you handle explicitly.
+
+<Tabs items={["Bun", "npm", "pnpm"]}>
+<Tab value="Bun">
+```bash
+bun add @qubic.org/bob
+```
+</Tab>
+<Tab value="npm">
+```bash
+npm install @qubic.org/bob
+```
+</Tab>
+<Tab value="pnpm">
+```bash
+pnpm add @qubic.org/bob
+```
+</Tab>
+</Tabs>
+
+## Concepts
+
+### Three transports
+
+| Client | Use when |
+|---|---|
+| `BobRpcClient` | Request/response queries — balances, transactions, smart contract calls |
+| `BobRestClient` | REST-style queries against the Bob REST API |
+| `BobSubscriptionClient` | Long-running WebSocket event streams |
+
+### Result type
+
+All methods return `Result<T, E>` — a discriminated union that never throws on transport failures:
+
+```ts
+const result = await bob.getBalance(identity)
+
+if (result.ok) {
+  console.log("Balance:", result.value)
+} else {
+  console.error("Error code:", result.error.code)
+}
+```
+
+### `isCatchUp` flag
+
+When a WebSocket subscription reconnects, it replays missed events from the last received `logId`. Those replayed events have `isCatchUp: true`. Skip them in business logic that only cares about new events:
+
+```ts
+for await (const event of bob.subscribeLogs()) {
+  if (event.isCatchUp) continue
+  // process only new events
+}
+```
+
+### Buffer and overflow
+
+The subscription client buffers up to `bufferSize` events (default: 1000) when the consumer is slow. When the buffer fills, behavior is controlled by `onBufferOverflow`:
+
+- `"error"` (default) — throws `BobSubscriptionError`.
+- `"drop"` — silently discards the oldest buffered events.
+
+### Auto-reconnect
+
+The subscription client reconnects automatically with exponential backoff: 1s → 2s → 4s → 8s → 30s (capped). It resumes from the last received `logId` so no events are missed across reconnects.
+
+## API reference
+
+### `createBobRpcClient(options)`
+
+Creates a JSON-RPC 2.0 client.
+
+**Options**
+
+| Name | Type | Default | Description |
+|---|---|---|---|
+| `endpoint` | `string` | `http://localhost:40420` | Bob JSON-RPC endpoint. |
+| `retries` | `number` | `2` | Retry count before returning an error result. |
+| `timeoutMs` | `number` | `10000` | Per-request timeout in milliseconds. |
+| `fetch` | `typeof fetch` | global `fetch` | Optional. Custom fetch implementation. |
+
+---
+
+#### RPC methods
+
+All methods return `Promise<Result<T, BobRpcError>>` and accept an optional `{ signal: AbortSignal }` as the last argument.
+
+| Method | Returns |
+|---|---|
+| `rpc.getChainId()` | `Result<string, BobRpcError>` |
+| `rpc.getTickNumber()` | `Result<number, BobRpcError>` |
+| `rpc.getBalance(identity)` | `Result<bigint, BobRpcError>` |
+| `rpc.getLogs(filter)` | `Result<BobLogEvent[], BobRpcError>` |
+| `rpc.getTransfers(filter)` | `Result<BobTransferEvent[], BobRpcError>` |
+| `rpc.getTransactionByHash(hash)` | `Result<BobTransaction, BobRpcError>` |
+| `rpc.querySmartContract(index, funcNum, base64Data)` | `Result<Base64, BobRpcError>` |
+| `rpc.broadcastTransaction(signedTxHex)` | `Result<TxHash, BobRpcError>` |
+
+<Callout type="warn">
+  `rpc.broadcastTransaction` expects a **hex-encoded** signed transaction, unlike `@qubic.org/rpc`'s `broadcastTransaction` which expects base64.
+</Callout>
+
+---
+
+### `createBobRestClient(options?)`
+
+Creates a REST client.
+
+**Options** — `{ baseUrl?, signal?, fetch? }`
+
+#### REST methods
+
+| Method | Returns |
+|---|---|
+| `rest.getStatus()` | `Result<BobStatus, BobRpcError>` |
+| `rest.getBalance(identity)` | `Result<BobBalance, BobRpcError>` |
+| `rest.getAsset(issuer, name)` | `Result<BobAsset, BobRpcError>` |
+| `rest.getEpochInfo(epoch)` | `Result<BobEpochInfo, BobRpcError>` |
+| `rest.getTransaction(hash)` | `Result<BobTx, BobRpcError>` |
+| `rest.getTick(tickNumber)` | `Result<BobTickResponse, BobRpcError>` |
+| `rest.querySmartContract(body)` | `Result<Base64, BobRpcError>` |
+| `rest.broadcastTransaction(body)` | `Result<TxHash, BobRpcError>` |
+
+---
+
+### `createBobSubscriptionClient(options)`
+
+Creates a WebSocket subscription client.
+
+**Options**
+
+| Name | Type | Default | Description |
+|---|---|---|---|
+| `wsUrl` | `string` | — | **Required.** WebSocket endpoint URL. |
+| `autoReconnect` | `boolean` | `true` | Reconnect on disconnect. |
+| `maxReconnects` | `number` | `Infinity` | Max reconnect attempts before giving up. |
+| `bufferSize` | `number` | `1000` | Max buffered events. |
+| `onBufferOverflow` | `"error" \| "drop"` | `"error"` | Overflow behavior. |
+| `onReconnect` | `() => void` | — | Optional. Called on each reconnect. |
+
+**Properties**
+
+| Name | Type | Description |
+|---|---|---|
+| `connectionStatus` | `ReadableStream<"connected" \| "disconnected" \| "reconnecting">` | Connection state stream. |
+
+---
+
+#### Subscription methods
+
+All return `AsyncIterable<SubscriptionEvent<T>>`.
+
+| Method | Event data type |
+|---|---|
+| `bob.subscribeNewTicks(options?)` | `BobTickNotification` |
+| `bob.subscribeLogs(filter?, options?)` | `BobLogEvent` |
+| `bob.subscribeTransfers(filter?, options?)` | `BobTransferEvent` |
+| `bob.subscribeTickStream(options?)` | `BobTickData` |
+
+**`SubscriptionEvent<T>` shape**
+
+| Field | Type | Description |
+|---|---|---|
+| `data` | `T` | The event payload. |
+| `isCatchUp` | `boolean` | `true` if replayed after a reconnect. |
+| `logId` | `bigint \| undefined` | Cursor for resumption. |
+| `tick` | `number \| undefined` | Tick number, when available. |
+
+---
+
+#### `bob.close()`
+
+Closes the WebSocket connection and stops all subscriptions.
+
+---
+
+### Error types
+
+| Class | Code | When thrown |
+|---|---|---|
+| `BobRpcError` | `"BOB_RPC_ERROR"` | Non-2xx or JSON-RPC error response |
+| `BobConnectionError` | `"BOB_CONNECTION_ERROR"` | WebSocket connection failed |
+| `BobSubscriptionError` | `"BOB_SUBSCRIPTION_ERROR"` | Buffer overflow or subscription error |
+
+## Complete example
+
+Subscribe to all logs for an identity, skip catch-up events, and close on SIGINT:
+
+```ts title="bob-subscribe.ts"
+import { createBobSubscriptionClient } from "@qubic.org/bob"
+import { toIdentity } from "@qubic.org/types"
+
+const identity = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
+
+const bob = createBobSubscriptionClient({
+  wsUrl: "wss://bob.qubic.org/v1/ws",
+  autoReconnect: true,
+  onReconnect: () => console.log("Reconnected, resuming from last logId..."),
+})
+
+process.on("SIGINT", () => {
+  bob.close()
+  process.exit(0)
+})
+
+for await (const event of bob.subscribeLogs({ identity })) {
+  if (event.isCatchUp) continue
+
+  console.log(
+    `Tick ${event.tick} | logId ${event.logId} | type ${event.data.logType}`,
+  )
+}
+```

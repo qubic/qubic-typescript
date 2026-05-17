@@ -1,9 +1,9 @@
 ---
 title: "@qubic.org/registry"
-description: Versioned ABI registry and binary payload codec for Qubic smart contracts. Covers epochs 122–213 with per-epoch snapshots.
+description: Versioned ABI registry and binary payload codec for Qubic smart contracts.
 ---
 
-`@qubic.org/registry` stores per-epoch snapshots of every deployed Qubic smart contract's binary interface. The codec engine (`buildPayload` / `decodePayload`) lets you encode inputs and decode outputs for any contract at any epoch — including historical transactions.
+`@qubic.org/registry` stores per-epoch snapshots of every deployed Qubic smart contract's binary interface. The codec engine lets you encode inputs and decode outputs for any contract at any epoch — including historical transactions.
 
 <Tabs items={["Bun", "npm", "pnpm"]}>
 <Tab value="Bun">
@@ -23,174 +23,32 @@ pnpm add @qubic.org/registry
 </Tab>
 </Tabs>
 
+## What's inside
+
+| Page | Description |
+|---|---|
+| [Functions](./functions) | `getAbi`, `getCurrentAbi`, `getProcedure`, `getFunction`, `findContractByIndex` |
+| [Codec](./codec) | `buildPayload`, `decodePayload` — binary encoding and decoding |
+| [Client](./client) | `createRegistryClient` — HTTP registry client with caching |
+
 ## Concepts
 
 ### Epoch versioning
 
-An ABI version is valid for a range of epochs. `effectiveFromEpoch` marks when it became active. `effectiveToEpoch: null` means the ABI is still current — no newer version exists.
+An ABI version is valid for a range of epochs. `effectiveFromEpoch` marks when it became active. `effectiveToEpoch: null` means the ABI is still current.
 
-`getAbi(registry, contractIndex, epoch)` finds the version whose range covers the requested epoch. If no version covers that epoch, it throws `AbiNotFoundError`.
+`getAbi(registry, contractIndex, epoch)` finds the version whose range covers the requested epoch.
 
 ### Static import vs registry client
 
 Two ways to access the registry:
 
-- **Static import** (`import registry from "@qubic.org/registry/registry.json"`) — ships with the package, no network required. Use this for production apps that just need current ABIs.
-- **Registry client** (`createRegistryClient()`) — fetches from a remote registry API. Use this when you need historical ABI lookups from a browser and want to avoid bundling the full registry JSON.
+- **Static import** — ships with the package, no network required. Best for production apps that only need current ABIs.
+- **Registry client** (`createRegistryClient()`) — fetches from a remote API. Useful when you need historical lookups from a browser without bundling the full registry JSON.
 
-### Injected identity converters
-
-`buildPayload` and `decodePayload` accept `identityToPublicKey` and `publicKeyToIdentity` as parameters instead of importing `@qubic.org/crypto` directly. This keeps `@qubic.org/registry` tree-shakeable for server-side registry browsing that doesn't need crypto.
+## Quick start
 
 ```ts
-import { identityToPublicKey, publicKeyToIdentity } from "@qubic.org/crypto"
-
-buildPayload(fields, structs, input, identityToPublicKey)
-decodePayload(bytes, fields, structs, publicKeyToIdentity)
-```
-
-### Field types
-
-| Type | Size | Notes |
-|---|---|---|
-| `uint8` / `sint8` | 1 B | |
-| `uint16` / `sint16` | 2 B LE | |
-| `uint32` / `sint32` | 4 B LE | |
-| `uint64` / `sint64` | 8 B LE | `bigint` in JavaScript |
-| `uint128` | 16 B LE | `bigint` in JavaScript |
-| `id` | 32 B | Stored as identity string in JSON; `identityToPublicKey` converts on encode |
-| `bytes` | N B | Fixed-length raw bytes |
-| `array` | N × element | Fixed-length array of a primitive type |
-| `struct` | varies | Nested struct reference by name |
-
-## API reference
-
-### Registry functions
-
-#### `getAbi(registry, contractIndex, epoch)`
-
-Finds the ABI version active at the given epoch.
-
-**Returns** `AbiLookupResult` — `{ version, isCurrent, isRegistryPossiblyStale }`
-
-**Throws** `AbiNotFoundError` — if no version covers the requested epoch.
-
-```ts
-import { getAbi } from "@qubic.org/registry"
-import registry from "@qubic.org/registry/registry.json"
-
-const { version, isCurrent } = getAbi(registry, 9, 212)
-// version is the ContractAbiVersion active at epoch 212 for contract index 9 (Qearn)
-```
-
----
-
-#### `getCurrentAbi(registry, contractIndex)`
-
-Returns the currently active ABI version for a contract.
-
-**Throws** `AbiNotFoundError` — if the contract index is unknown.
-
----
-
-#### `getAbiHistory(registry, contractIndex)`
-
-Returns all historical ABI versions for a contract, oldest first.
-
-**Returns** `ContractAbiVersion[]`
-
----
-
-#### `getProcedure(version, inputType)`
-
-Finds a procedure by its `inputType` number in an ABI version.
-
-**Throws** if no procedure with that `inputType` exists.
-
----
-
-#### `getFunction(version, inputType)`
-
-Finds a read function by its `inputType` number.
-
----
-
-#### `findContractByIndex(registry, index)` / `findContractByName(registry, name)`
-
-Look up a contract name from its index, or its index from its name.
-
-**Throws** if not found.
-
----
-
-#### `validateRegistry(registry)`
-
-Validates the registry structure for internal consistency.
-
-**Throws** a descriptive error if inconsistencies are found.
-
----
-
-### Payload codec
-
-#### `buildPayload(fields, structs, input, identityToPublicKey)`
-
-Encodes a structured input object into binary using the field layout from the ABI.
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `fields` | `BinaryField[]` | Field definitions from `procedure.inputFields`. |
-| `structs` | `Record<string, NamedStruct>` | Named structs from `version.structs`. Pass `{}` if unused. |
-| `input` | `Record<string, unknown>` | Input object matching the field names. |
-| `identityToPublicKey` | `(id: Identity) => Uint8Array` | From `@qubic.org/crypto`. |
-
-**Returns** `Uint8Array`
-
-**Throws** `PayloadBuildError` — on type mismatch or missing fields.
-
----
-
-#### `decodePayload(data, fields, structs, publicKeyToIdentity)`
-
-Decodes binary payload bytes into a typed object.
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `data` | `Uint8Array` | Raw payload bytes. |
-| `fields` | `BinaryField[]` | Field definitions from `procedure.outputFields`. |
-| `structs` | `Record<string, NamedStruct>` | Named structs from `version.structs`. |
-| `publicKeyToIdentity` | `(pk: Uint8Array) => Identity` | From `@qubic.org/crypto`. |
-
-**Returns** `Record<string, unknown>`
-
----
-
-### Registry client
-
-#### `createRegistryClient(options?)`
-
-Creates a registry client that fetches ABIs over HTTP with optional caching.
-
-**Options**
-
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `url` | `string` | public registry API | Registry API base URL. |
-| `cache` | `"none" \| "session" \| "persistent"` | `"session"` | Cache strategy. |
-| `ttlMs` | `number` | `300000` | Cache TTL in milliseconds (5 min default). |
-| `fetch` | `typeof fetch` | global `fetch` | Optional. Custom fetch implementation. |
-
-**Returns** `RegistryClient` with async methods: `getAbi(index, epoch)`, `getCurrentAbi(index)`, `getAbiHistory(index)`, `getRegistry()`.
-
-## Complete example
-
-Fetch the ABI for Qearn at epoch 212, build a lock payload, then decode a response:
-
-```ts title="registry-codec.ts"
 import { getAbi, getProcedure, buildPayload, decodePayload } from "@qubic.org/registry"
 import { identityToPublicKey, publicKeyToIdentity } from "@qubic.org/crypto"
 import registry from "@qubic.org/registry/registry.json"
@@ -198,30 +56,13 @@ import type { ContractRegistry } from "@qubic.org/registry"
 
 const reg = registry as ContractRegistry
 
-// Get the Qearn ABI at epoch 212
-const { version } = getAbi(reg, 9, 212)
-console.log("ABI from epoch", version.effectiveFromEpoch, "—", version.effectiveToEpoch ?? "current")
+const { version } = getAbi(reg, 9, 212) // Qearn at epoch 212
+const proc = getProcedure(version, 6)   // lock_input procedure
 
-// Find the lock_input procedure (inputType 6)
-const lockProc = getProcedure(version, 6)
-
-// Build the input payload
 const payload = buildPayload(
-  lockProc.inputFields,
+  proc.inputFields,
   version.structs ?? {},
   { amount: 10_000_000n },
   identityToPublicKey,
 )
-
-console.log("Payload bytes:", payload.length)
-
-// Decode a response (mock bytes for illustration)
-const mockResponse = new Uint8Array(lockProc.outputFields.reduce((acc, f) => acc + f.byteLength, 0))
-const decoded = decodePayload(
-  mockResponse,
-  lockProc.outputFields,
-  version.structs ?? {},
-  publicKeyToIdentity,
-)
-console.log("Decoded response:", decoded)
 ```

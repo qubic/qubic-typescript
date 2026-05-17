@@ -1,0 +1,116 @@
+---
+title: Key derivation
+description: Derive public keys and identities from seeds — publicKeyFromSeed, identityFromSeed, identityToPublicKey, publicKeyToIdentity.
+---
+
+The complete derivation chain from a seed string to an on-chain identity:
+
+```
+seed (55 chars) → public key (32 bytes) → identity (60 chars)
+```
+
+Each step is deterministic. The same seed always produces the same public key and identity.
+
+## `publicKeyFromSeed(seed)`
+
+Derives the 32-byte FourQ public key from a `Seed`.
+
+```ts
+import { publicKeyFromSeed } from "@qubic.org/crypto"
+import { toSeed } from "@qubic.org/types"
+
+const seed = toSeed("aaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
+const publicKey: Uint8Array = publicKeyFromSeed(seed)
+// publicKey.length === 32
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `seed` | `Seed` | 55-character lowercase seed string |
+
+**Returns** `Uint8Array` — 32-byte FourQ public key.
+
+---
+
+## `identityFromSeed(seed)`
+
+Derives the Qubic identity string directly from a `Seed`. Equivalent to `publicKeyToIdentity(publicKeyFromSeed(seed))`.
+
+```ts
+import { identityFromSeed } from "@qubic.org/crypto"
+import { toSeed } from "@qubic.org/types"
+
+const identity = identityFromSeed(toSeed("aaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"))
+// identity is a 60-character uppercase string
+```
+
+**Returns** `Identity`
+
+---
+
+## `identityToPublicKey(identity)`
+
+Converts an `Identity` string back to a 32-byte public key. Used when you need to pass a public key to a TCP request or a contract function.
+
+```ts
+import { identityToPublicKey } from "@qubic.org/crypto"
+import { toIdentity } from "@qubic.org/types"
+
+const pk = identityToPublicKey(toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL"))
+// pk is Uint8Array (32 bytes)
+```
+
+**Throws** `InvalidIdentityError` — if the identity string is not 60 uppercase characters.
+
+---
+
+## `publicKeyToIdentity(publicKey)`
+
+Encodes a 32-byte public key as an `Identity` string. The inverse of `identityToPublicKey`.
+
+```ts
+import { publicKeyToIdentity } from "@qubic.org/crypto"
+
+const identity = publicKeyToIdentity(publicKey)
+// identity is a 60-character uppercase string
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `publicKey` | `Uint8Array` | 32-byte FourQ public key |
+
+**Returns** `Identity`
+
+---
+
+## Complete derivation pipeline
+
+```ts
+import {
+  publicKeyFromSeed,
+  identityFromSeed,
+  identityToPublicKey,
+  publicKeyToIdentity,
+} from "@qubic.org/crypto"
+import { toSeed } from "@qubic.org/types"
+
+const seed = toSeed("aaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
+
+// Option A: derive identity directly
+const identity = identityFromSeed(seed)
+
+// Option B: derive step by step
+const publicKey = publicKeyFromSeed(seed)
+const identityB = publicKeyToIdentity(publicKey)
+
+// identity === identityB
+
+// Round-trip: identity → public key → identity
+const pk2 = identityToPublicKey(identity)
+const identity2 = publicKeyToIdentity(pk2)
+// identity2 === identity
+```

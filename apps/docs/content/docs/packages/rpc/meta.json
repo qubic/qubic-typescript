@@ -1,5 +1,6 @@
 {
   "title": "@qubic.org/rpc",
   "icon": "Globe",
-  "root": true
+  "root": true,
+  "pages": ["index", "live-client", "archive-client", "errors"]
 }

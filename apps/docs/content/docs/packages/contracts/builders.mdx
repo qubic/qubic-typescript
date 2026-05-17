@@ -1,0 +1,117 @@
+---
+title: Builders
+description: build{Contract}{Procedure}Input — encode procedure inputs into binary payloads.
+---
+
+Payload builders encode a JavaScript object into binary using the field layout defined in the contract's ABI. The result is a `Uint8Array` ready to pass as the `payload` argument of a smart contract transaction.
+
+---
+
+## Naming convention
+
+```
+build{ContractName}{ProcedureName}Input(input)
+```
+
+Examples:
+
+```ts
+import {
+  buildQearnLockInput,
+  buildQearnUnlockInput,
+  buildQxTransferShareInput,
+  buildMsvaultAddSignerInput,
+} from "@qubic.org/contracts"
+```
+
+Or use the [namespace object](./namespace):
+
+```ts
+import { qearn } from "@qubic.org/contracts"
+
+qearn.buildLockInput({ amount: 10_000_000n })
+```
+
+---
+
+## Usage
+
+```ts
+import { buildQearnLockInput } from "@qubic.org/contracts"
+
+const payload = buildQearnLockInput({ amount: 10_000_000n })
+// Returns Uint8Array
+
+// Pass to wallet.buildScTransaction
+const { encoded } = await wallet.buildScTransaction({
+  destination,
+  amount: 10_000_000n,
+  targetTick: tick + 5,
+  currentTick: tick,
+  inputType: QEARN_LOCK_INPUT_TYPE,
+  payload,
+})
+```
+
+---
+
+## Input types
+
+Input types match the field layout from the ABI. Field types map to JavaScript types as follows:
+
+| ABI type | JavaScript type |
+|---|---|
+| `uint8` / `uint16` / `uint32` | `number` |
+| `uint64` / `sint64` / `uint128` | `bigint` |
+| `id` | `Identity` (from `@qubic.org/types`) |
+| `bytes` | `Uint8Array` |
+| `array` | Array of the element type |
+| `struct` | Object with nested fields |
+
+---
+
+## Error handling
+
+Builders throw `PayloadBuildError` synchronously on bad input:
+
+```ts
+import { buildQearnLockInput, PayloadBuildError } from "@qubic.org/contracts"
+
+try {
+  const payload = buildQearnLockInput({ amount: -1n }) // invalid
+} catch (e) {
+  if (e instanceof PayloadBuildError) {
+    console.error("Bad input:", e.message)
+  }
+}
+```
+
+Common causes: missing required fields, wrong JavaScript type, value out of range for the ABI type.
+
+---
+
+## Constants
+
+Each procedure has an associated `INPUT_TYPE` constant:
+
+```ts
+import {
+  QEARN_CONTRACT_INDEX,
+  QEARN_LOCK_INPUT_TYPE,
+  QEARN_UNLOCK_INPUT_TYPE,
+} from "@qubic.org/contracts"
+
+console.log(QEARN_CONTRACT_INDEX)   // 9
+console.log(QEARN_LOCK_INPUT_TYPE)  // 6
+```
+
+Or via namespace:
+
+```ts
+import { qearn } from "@qubic.org/contracts"
+
+qearn.contractIndex      // 9
+qearn.LOCK_INPUT_TYPE    // 6
+```
+
+Use `contractIndex` and the input type constant when constructing the transaction header.

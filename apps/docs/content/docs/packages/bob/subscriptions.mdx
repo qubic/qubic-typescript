@@ -1,0 +1,96 @@
+---
+title: Subscriptions
+description: bob.subscribe — tick info and account event log subscriptions.
+---
+
+## `bob.subscribe(topic, ...args)`
+
+Registers a callback for a specific data stream. Returns an unsubscribe function that removes the callback.
+
+```ts
+const unsub = bob.subscribe("tickInfo", (tick) => {
+  console.log(`Tick ${tick.tick} (epoch ${tick.epoch})`)
+})
+
+// Later — stop receiving updates
+unsub()
+```
+
+---
+
+## `"tickInfo"` — live tick updates
+
+Fires on every new tick. The second argument is optional metadata.
+
+```ts
+bob.subscribe("tickInfo", (tick, meta) => {
+  tick.tick        // current tick number
+  tick.epoch       // current epoch
+  tick.duration    // tick duration ms
+  tick.initialTick // first tick of epoch
+
+  meta.isCatchUp   // true if this is a buffered tick from a gap
+})
+```
+
+---
+
+## `"eventLogs"` — account event logs
+
+Fires when new event logs are available for the given identity.
+
+```ts
+import { toIdentity } from "@qubic.org/types"
+
+const identity = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
+
+bob.subscribe("eventLogs", identity, (events) => {
+  for (const event of events) {
+    event.eventType  // number
+    event.eventData  // base64-encoded raw data
+    event.tick       // tick where event occurred
+    event.txId       // transaction that produced the event
+  }
+})
+```
+
+Decode `eventData` with `decodeEvent` from `@qubic.org/events`.
+
+---
+
+## Multiple subscriptions
+
+You can subscribe to the same topic multiple times — each call returns an independent unsubscribe function:
+
+```ts
+const unsub1 = bob.subscribe("tickInfo", handlerA)
+const unsub2 = bob.subscribe("tickInfo", handlerB)
+
+unsub1() // only removes handlerA
+```
+
+---
+
+## Subscribing to multiple identities
+
+```ts
+for (const identity of watchedIdentities) {
+  bob.subscribe("eventLogs", identity, (events) => {
+    handleEvents(identity, events)
+  })
+}
+```
+
+Each `subscribe("eventLogs", identity, handler)` call creates a separate server-side subscription for that identity.
+
+---
+
+## `bob.unsubscribeAll()`
+
+Removes all active subscriptions without disconnecting.
+
+```ts
+bob.unsubscribeAll()
+```
+
+Useful before re-registering a fresh set of subscriptions after a navigation change.

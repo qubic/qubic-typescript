@@ -1,5 +1,6 @@
 {
   "title": "@qubic.org/wallet",
   "icon": "Wallet",
-  "root": true
+  "root": true,
+  "pages": ["index", "transfers", "vault"]
 }

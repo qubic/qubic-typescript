@@ -1,0 +1,133 @@
+---
+title: Namespace
+description: Per-contract namespace objects — qearn, qx, qvault, and others — that group builders, decoders, and callers under one identifier.
+---
+
+Each contract is exported as a **namespace object** that groups every builder, decoder, and caller under one identifier. The namespace name is the lowercase contract name.
+
+```ts
+import { qearn } from "@qubic.org/contracts"
+
+qearn.contractIndex          // 9
+qearn.buildLockInput(...)    // payload builder
+qearn.decodeLockOutput(...)  // output decoder
+qearn.getStateOfRound(...)   // live read function
+```
+
+---
+
+## Available namespaces
+
+| Export | Contract | Index |
+|---|---|---|
+| `random` | Random | 0 |
+| `qx` | Qx | 1 |
+| `quottery` | Quottery | 4 |
+| `qutil` | QUtil | 5 |
+| `supplyWatcher` | SupplyWatcher | — |
+| `computorControlledFund` | ComputorControlledFund | — |
+| `qearn` | Qearn | 9 |
+| `qvault` | QVault | 10 |
+| `msvault` | MsVault | 11 |
+| `qbay` | Qbay | 12 |
+| `qswap` | Qswap | — |
+| `nostromo` | Nostromo | — |
+| `qdraw` | Qdraw | — |
+| `randomLottery` | RandomLottery | — |
+| `qbond` | QBond | — |
+| `qip` | QIP | — |
+| `qraffle` | QRaffle | — |
+| `qrwa` | qRWA | — |
+| `qreservePool` | QReservePool | — |
+| `qthirtyFour` | QThirtyFour | — |
+| `qduel` | QDuel | — |
+| `pulse` | Pulse | — |
+| `vottunBridge` | VottunBridge | — |
+| `qusino` | Qusino | — |
+| `escrow` | Escrow | — |
+| `generalQuorumProposal` | GeneralQuorumProposal | — |
+| `myLastMatch` | MyLastMatch | — |
+
+---
+
+## Namespace members
+
+Using **Qearn** as a representative example:
+
+### Constants
+
+```ts
+qearn.contractIndex      // 9
+qearn.LOCK_INPUT_TYPE    // 6
+qearn.UNLOCK_INPUT_TYPE  // 7
+// ...one constant per procedure input type
+```
+
+### Builders
+
+```ts
+qearn.buildLockInput({ amount: 10_000_000n })    // Uint8Array
+qearn.buildUnlockInput({ lockedEpoch: 212 })     // Uint8Array
+```
+
+See [Builders](./builders) for full parameter reference.
+
+### Decoders
+
+```ts
+qearn.decodeLockOutput(rawBytes, publicKeyToIdentity)
+qearn.decodeUnlockOutput(rawBytes, publicKeyToIdentity)
+```
+
+See [Decoders](./decoders) for full parameter reference.
+
+### Callers
+
+```ts
+await qearn.getStateOfRound(live, { epoch: 213 }, { identityToPublicKey, publicKeyToIdentity })
+await qearn.getUserLockInfo(live, { identity, epoch }, { identityToPublicKey, publicKeyToIdentity })
+```
+
+See [Callers](./callers) for full parameter reference.
+
+---
+
+## Qearn example
+
+```ts
+import { qearn } from "@qubic.org/contracts"
+import { createLiveClient } from "@qubic.org/rpc"
+import { createWallet, generateSeed } from "@qubic.org/wallet"
+import { identityToPublicKey, publicKeyToIdentity } from "@qubic.org/crypto"
+import { toIdentity } from "@qubic.org/types"
+
+const live = createLiveClient()
+const wallet = createWallet(generateSeed())
+const { tick } = await live.getTickInfo()
+
+// Read round state
+const state = await qearn.getStateOfRound(
+  live,
+  { epoch: 213 },
+  { identityToPublicKey, publicKeyToIdentity },
+)
+
+if (!state.ok) throw new Error(state.error.message)
+console.log("Round state:", state.value)
+
+// Build lock transaction
+const payload = qearn.buildLockInput({ amount: 10_000_000n })
+const destination = toIdentity("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+
+const { encoded } = await wallet.buildScTransaction({
+  destination,
+  amount: 10_000_000n,
+  targetTick: tick + 5,
+  currentTick: tick,
+  inputType: qearn.LOCK_INPUT_TYPE,
+  payload,
+})
+
+const result = await live.broadcastTransaction(encoded)
+console.log(`Broadcast to ${result.peersBroadcastedTo} peers`)
+```

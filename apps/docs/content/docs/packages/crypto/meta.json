@@ -1,5 +1,6 @@
 {
   "title": "@qubic.org/crypto",
   "icon": "KeyRound",
-  "root": true
+  "root": true,
+  "pages": ["index", "key-derivation", "hashing", "signing"]
 }

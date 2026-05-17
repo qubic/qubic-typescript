@@ -1,0 +1,118 @@
+---
+title: Connection
+description: createBobClient, connect, disconnect — connection lifecycle and automatic reconnection.
+---
+
+## `createBobClient(options?)`
+
+Creates a new bob client. Does not connect automatically — call `await bob.connect()` to open the WebSocket.
+
+```ts
+import { createBobClient } from "@qubic.org/bob"
+
+const bob = createBobClient({
+  autoResubscribe: true,
+})
+
+await bob.connect()
+```
+
+**Options**
+
+| Name | Type | Default | Description |
+|---|---|---|---|
+| `url` | `string` | Qubic live node URL | WebSocket endpoint |
+| `autoResubscribe` | `boolean` | `false` | Re-register all subscriptions after each reconnect |
+| `reconnectDelayMs` | `number` | `1000` | Base delay before reconnect attempt |
+| `maxReconnectAttempts` | `number` | unlimited | Maximum reconnect attempts before giving up |
+
+---
+
+## `bob.connect()`
+
+Opens the WebSocket connection. Returns a Promise that resolves when connected.
+
+```ts
+await bob.connect()
+```
+
+---
+
+## `bob.disconnect()`
+
+Closes the WebSocket connection. Resolves when the socket is fully closed.
+
+```ts
+await bob.disconnect()
+```
+
+---
+
+## Auto-reconnect
+
+Bob reconnects automatically after a connection drop. With `autoResubscribe: true`, all active subscriptions are re-registered after each reconnect — you don't need to call `subscribe` again.
+
+Without `autoResubscribe`, you must re-subscribe manually by listening to the `"connect"` event:
+
+```ts
+const bob = createBobClient() // no autoResubscribe
+
+async function startSubscriptions() {
+  bob.subscribe("tickInfo", onTick)
+  bob.subscribe("eventLogs", identity, onEvents)
+}
+
+bob.on("connect", startSubscriptions)
+await bob.connect()
+await startSubscriptions() // also call immediately after first connect
+```
+
+---
+
+## Events
+
+Bob emits lifecycle events you can listen to with `bob.on`:
+
+| Event | Payload | Description |
+|---|---|---|
+| `"connect"` | none | WebSocket connected |
+| `"disconnect"` | `{ code, reason }` | WebSocket closed |
+| `"error"` | `Error` | Connection error |
+| `"reconnect"` | `{ attempt }` | Reconnect attempt started |
+
+```ts
+bob.on("error", (err) => {
+  console.error("Bob error:", err.message)
+})
+
+bob.on("disconnect", ({ code }) => {
+  console.log("Disconnected with code:", code)
+})
+```
+
+---
+
+## Catch-up buffering
+
+When bob reconnects after a gap, the server may send buffered tick data for ticks that arrived during the disconnection. The `meta.isCatchUp` flag in the `"tickInfo"` callback identifies these:
+
+```ts
+bob.subscribe("tickInfo", (tick, meta) => {
+  if (meta.isCatchUp) {
+    // Process historical gap tick
+  } else {
+    // Live tick — process in real-time
+  }
+})
+```
+
+---
+
+## Graceful shutdown
+
+```ts
+process.on("SIGINT", async () => {
+  await bob.disconnect()
+  process.exit(0)
+})
+```

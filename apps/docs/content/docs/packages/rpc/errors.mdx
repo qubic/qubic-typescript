@@ -1,0 +1,79 @@
+---
+title: Errors
+description: QubicRpcError — structure, properties, and handling patterns for RPC client errors.
+---
+
+Both the live and archive clients throw `QubicRpcError` on any failure — network error, HTTP error response, or malformed payload.
+
+## `QubicRpcError`
+
+```ts
+import { QubicRpcError } from "@qubic.org/rpc"
+
+try {
+  await live.getTickInfo()
+} catch (e) {
+  if (e instanceof QubicRpcError) {
+    console.error("RPC error:", e.status, e.message)
+  } else {
+    throw e // re-throw unknown errors
+  }
+}
+```
+
+**Properties**
+
+| Property | Type | Description |
+|---|---|---|
+| `message` | `string` | Human-readable error description |
+| `status` | `number \| undefined` | HTTP status code (undefined for network failures) |
+| `cause` | `unknown` | The underlying error, if any |
+
+---
+
+## Common errors
+
+| Status | Cause |
+|---|---|
+| `404` | Transaction or identity not found |
+| `429` | Rate limit exceeded |
+| `500` | Gateway or node error |
+| `undefined` | Network unreachable, DNS failure, timeout |
+
+---
+
+## Retry pattern
+
+```ts
+import { QubicRpcError } from "@qubic.org/rpc"
+
+async function withRetry<T>(fn: () => Promise<T>, retries = 3): Promise<T> {
+  for (let i = 0; i < retries; i++) {
+    try {
+      return await fn()
+    } catch (e) {
+      if (e instanceof QubicRpcError && e.status === 429 && i < retries - 1) {
+        await new Promise((r) => setTimeout(r, 1000 * (i + 1)))
+        continue
+      }
+      throw e
+    }
+  }
+  throw new Error("unreachable")
+}
+
+const info = await withRetry(() => live.getTickInfo())
+```
+
+---
+
+## RPC errors vs Result errors
+
+`@qubic.org/rpc` uses **exceptions** (throw/catch). `@qubic.org/contracts` read functions use the **Result pattern** (`{ ok: true, value } | { ok: false, error }`). Be aware of which style each package uses:
+
+| Package | Error model |
+|---|---|
+| `@qubic.org/rpc` | throws `QubicRpcError` |
+| `@qubic.org/bob` | `onError` callback / event |
+| `@qubic.org/contracts` (read fns) | `Result<T, QubicRpcError>` |
+| `@qubic.org/types` constructors | throws typed `QubicError` subclass |

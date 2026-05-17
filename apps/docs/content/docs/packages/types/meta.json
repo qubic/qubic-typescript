@@ -1,5 +1,6 @@
 {
   "title": "@qubic.org/types",
   "icon": "Tag",
-  "root": true
+  "root": true,
+  "pages": ["index", "branded-types", "constants", "errors"]
 }

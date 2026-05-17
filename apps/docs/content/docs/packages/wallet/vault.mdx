@@ -1,0 +1,111 @@
+---
+title: Vault
+description: createVault, exportVault, importVault, unlockVault — AES-256-GCM encrypted seed storage with PBKDF2 key derivation.
+---
+
+The vault encrypts seeds with AES-256-GCM using a password-derived key (PBKDF2-SHA256, 600,000 iterations). Seeds never leave the vault in plaintext — you get identities and signing capability, never raw seed bytes.
+
+## `createVault(params)`
+
+Creates a new encrypted vault containing one or more seeds.
+
+```ts
+import { createVault, generateSeed } from "@qubic.org/wallet"
+
+const seed = generateSeed()
+
+const vault = await createVault({
+  password: "hunter2",
+  seeds: [seed],
+})
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `password` | `string` | Encryption password. Use a strong random passphrase. |
+| `seeds` | `Seed[]` | One or more seeds to encrypt. |
+
+**Returns** `Promise<VaultData>` — a serializable object with no plaintext seed material.
+
+---
+
+## `exportVault(vault)` / `importVault(json)`
+
+Serialize and deserialize `VaultData` for storage.
+
+```ts
+import { exportVault, importVault } from "@qubic.org/wallet"
+
+// Persist
+const json = exportVault(vault)
+localStorage.setItem("qubic-vault", json)
+
+// Later — load
+const loaded = importVault(localStorage.getItem("qubic-vault")!)
+```
+
+`exportVault` returns a JSON string. `importVault` parses it back to `VaultData`. Both are synchronous.
+
+---
+
+## `unlockVault(vault, password)`
+
+Decrypts the vault with the given password. Returns an `UnlockedVault` that exposes identities and signing without exposing raw seed bytes.
+
+```ts
+import { unlockVault } from "@qubic.org/wallet"
+
+const unlocked = await unlockVault(loaded, "hunter2")
+
+for (const identity of unlocked.identities) {
+  console.log("Identity:", identity)
+}
+```
+
+**Throws** — if the password is wrong or the vault data is corrupt. Check `e instanceof InvalidPasswordError`.
+
+---
+
+## `createWalletFromVault(unlocked, identity)`
+
+Creates a signing wallet from an unlocked vault for a specific identity.
+
+```ts
+import { createWalletFromVault } from "@qubic.org/wallet"
+
+const wallet = createWalletFromVault(unlocked, unlocked.identities[0])
+
+const { encoded, hash } = await wallet.buildTransfer({ ... })
+```
+
+---
+
+## `addSeedToVault(vault, seed, password)`
+
+Adds a new seed to an existing vault (requires re-encryption).
+
+```ts
+import { addSeedToVault, generateSeed } from "@qubic.org/wallet"
+
+const newSeed = generateSeed()
+const updatedVault = await addSeedToVault(vault, newSeed, "hunter2")
+
+// Persist the updated vault
+localStorage.setItem("qubic-vault", exportVault(updatedVault))
+```
+
+---
+
+## Security properties
+
+| Property | Detail |
+|---|---|
+| Encryption | AES-256-GCM with a random 12-byte IV per encryption |
+| Key derivation | PBKDF2-SHA256, 600,000 iterations |
+| Stored material | Ciphertext + IV + salt. No plaintext. |
+| Seeds | Never accessible as plaintext after vault creation |
+| Identities | Derived and stored in plaintext for display (public data) |
+
+The 600,000-iteration PBKDF2 makes brute-force attacks expensive. Choose a strong password regardless — dictionary words are vulnerable even with high iterations.

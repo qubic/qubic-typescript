@@ -1,5 +1,6 @@
 {
   "title": "@qubic.org/events",
   "icon": "Bell",
-  "root": true
+  "root": true,
+  "pages": ["index", "decode-event", "event-filter"]
 }

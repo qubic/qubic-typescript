@@ -1,0 +1,80 @@
+---
+title: Signing
+description: sign and verify — SchnorrQ signatures over the FourQ curve.
+---
+
+Qubic uses **SchnorrQ** signatures over the **FourQ** elliptic curve. This is not secp256k1 (Bitcoin/Ethereum) and not Ed25519. Keys and signatures are not interchangeable with other blockchain systems.
+
+## `sign(data, seed)`
+
+Signs arbitrary bytes using the private key derived from a seed. Returns a 64-byte SchnorrQ signature.
+
+```ts
+import { sign } from "@qubic.org/crypto"
+import { toSeed } from "@qubic.org/types"
+
+const seed = toSeed("aaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
+const message = new TextEncoder().encode("hello qubic")
+
+const signature: Uint8Array = await sign(message, seed)
+// signature.length === 64
+```
+
+<Callout>
+  `sign` is **async** — it calls into the WASM runtime. Always `await` it.
+</Callout>
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `data` | `Uint8Array` | The bytes to sign |
+| `seed` | `Seed` | 55-character lowercase seed |
+
+**Returns** `Promise<Uint8Array>` — 64-byte signature.
+
+---
+
+## `verify(data, signature, publicKey)`
+
+Verifies a SchnorrQ signature against a public key and message. Returns `true` if valid.
+
+```ts
+import { sign, verify, publicKeyFromSeed } from "@qubic.org/crypto"
+import { toSeed } from "@qubic.org/types"
+
+const seed = toSeed("aaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
+const publicKey = publicKeyFromSeed(seed)
+const message = new TextEncoder().encode("hello qubic")
+
+const sig = await sign(message, seed)
+const valid = await verify(message, sig, publicKey)
+// valid === true
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `data` | `Uint8Array` | The original signed bytes |
+| `signature` | `Uint8Array` | 64-byte SchnorrQ signature |
+| `publicKey` | `Uint8Array` | 32-byte FourQ public key |
+
+**Returns** `Promise<boolean>`
+
+---
+
+## Transaction signing
+
+In practice you rarely call `sign` directly — use `signTransaction` from `@qubic.org/tx` instead, which handles the transaction serialization before signing:
+
+```ts
+import { buildTransaction, signTransaction } from "@qubic.org/tx"
+import { toSeed } from "@qubic.org/types"
+
+const seed = toSeed("...")
+const unsigned = buildTransaction({ ... })
+const signed: Uint8Array = await signTransaction(unsigned, seed)
+```
+
+`sign` is useful when you need to sign an arbitrary message outside of the transaction format, for example to prove ownership of an identity off-chain.

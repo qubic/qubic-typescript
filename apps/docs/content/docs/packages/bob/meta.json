@@ -1,5 +1,6 @@
 {
   "title": "@qubic.org/bob",
   "icon": "Radio",
-  "root": true
+  "root": true,
+  "pages": ["index", "subscriptions", "connection"]
 }

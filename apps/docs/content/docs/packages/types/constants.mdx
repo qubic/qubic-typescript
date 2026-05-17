@@ -1,0 +1,86 @@
+---
+title: Constants
+description: PROTOCOL, CONTRACT_INDEX, and LOG_TYPE — Qubic protocol constants exported from @qubic.org/types.
+---
+
+## `PROTOCOL`
+
+Low-level protocol constants. Useful for building custom transports or validating wire-format data.
+
+```ts
+import { PROTOCOL } from "@qubic.org/types"
+```
+
+| Constant | Value | Description |
+|---|---|---|
+| `MAX_INPUT_SIZE` | `1024` | Maximum payload byte length |
+| `TX_HEADER_SIZE` | `80` | Fixed transaction header size in bytes |
+| `SIGNATURE_SIZE` | `64` | SchnorrQ signature size in bytes |
+| `PUBLIC_KEY_SIZE` | `32` | FourQ public key byte length |
+| `IDENTITY_LENGTH` | `60` | Identity string character count |
+| `SEED_LENGTH` | `55` | Seed string character count |
+| `TX_HASH_LENGTH` | `60` | Transaction hash character count |
+| `TICKS_TO_EXPIRY` | `5` | Default ticks ahead used for `targetTick` |
+
+---
+
+## `CONTRACT_INDEX`
+
+Maps contract names to their on-chain index numbers. Used internally by `@qubic.org/contracts` and `@qubic.org/rpc`.
+
+```ts
+import { CONTRACT_INDEX } from "@qubic.org/types"
+
+console.log(CONTRACT_INDEX.QEARN)     // 9
+console.log(CONTRACT_INDEX.QX)        // 1
+console.log(CONTRACT_INDEX.QUOTTERY)  // 4
+```
+
+| Name | Index |
+|---|---|
+| `RANDOM` | 0 |
+| `QX` | 1 |
+| `QUOTTERY` | 4 |
+| `QUTIL` | 5 |
+| `SUPPLY_WATCHER` | — |
+| `COMPUTOR_CONTROLLED_FUND` | — |
+| `QEARN` | 9 |
+| `QVAULT` | 10 |
+| `MSVAULT` | 11 |
+| `QBAY` | 12 |
+
+---
+
+## `LOG_TYPE`
+
+Maps event log type names to their numeric IDs used in the live event stream and archive.
+
+```ts
+import { LOG_TYPE } from "@qubic.org/types"
+
+console.log(LOG_TYPE.QU_TRANSFER)    // 14
+console.log(LOG_TYPE.ASSET_ISSUANCE) // 1
+```
+
+| ID | Name | Description |
+|---|---|---|
+| `0` | `QU_TRANSFER_IN_REGISTRATION` | QU transfer during identity registration |
+| `1` | `ASSET_ISSUANCE` | New asset issued |
+| `2` | `ASSET_OWNERSHIP_CHANGE` | Asset ownership transferred |
+| `3` | `ASSET_POSSESSION_CHANGE` | Asset possession transferred |
+| `4` | `CONTRACT_ERROR_MESSAGE` | Contract emitted an error |
+| `5` | `CONTRACT_WARNING_MESSAGE` | Contract warning |
+| `6` | `CONTRACT_INFORMATION_MESSAGE` | Contract info log |
+| `7` | `CONTRACT_DEBUG_MESSAGE` | Contract debug log |
+| `8` | `BURNING` | QU burned |
+| `9` | `DUST_BURNING` | Dust threshold burning |
+| `10` | `SPECTRUM_STATS` | Network spectrum statistics |
+| `11` | `ASSET_OWNERSHIP_MANAGING_CONTRACT_CHANGE` | Asset management contract changed |
+| `12` | `ASSET_POSSESSION_MANAGING_CONTRACT_CHANGE` | Asset possession manager changed |
+| `13` | `CONTRACT_RESERVE_DEDUCTION` | Contract reserve deducted |
+| `14` | `QU_TRANSFER` | Standard QU transfer |
+| `15` | `ORACLE_QUERY_STATUS_CHANGE` | Oracle query status update |
+| `16` | `ORACLE_SUBSCRIBER_LOG_MESSAGE` | Oracle subscriber log |
+| `255` | `CUSTOM_MESSAGE` | Custom contract message |
+
+`LOG_TYPE` IDs correspond to `eventType` values in event log responses from `@qubic.org/bob` and `@qubic.org/rpc`.

@@ -1,0 +1,126 @@
+---
+title: Registry client
+description: createRegistryClient — HTTP client for fetching ABIs from the remote registry with optional caching.
+---
+
+## `createRegistryClient(options?)`
+
+Creates a registry client that fetches ABIs over HTTP. Use this when you need historical ABI lookups from a browser and want to avoid bundling the full registry JSON.
+
+```ts
+import { createRegistryClient } from "@qubic.org/registry"
+
+const client = createRegistryClient()
+// defaults to the public registry API
+```
+
+**Options**
+
+| Name | Type | Default | Description |
+|---|---|---|---|
+| `url` | `string` | public registry API | Registry API base URL. |
+| `cache` | `"none" \| "session" \| "persistent"` | `"session"` | Cache strategy. |
+| `ttlMs` | `number` | `300000` | Cache TTL in milliseconds (5 min). |
+| `fetch` | `typeof fetch` | global `fetch` | Custom fetch implementation. |
+
+---
+
+## `client.getAbi(contractIndex, epoch)`
+
+Fetches the ABI version active at the given epoch.
+
+```ts
+const { version, isCurrent } = await client.getAbi(9, 212)
+
+version.effectiveFromEpoch  // when this ABI became active
+isCurrent                   // true if no newer version exists
+```
+
+**Returns** `Promise<AbiLookupResult>`
+
+**Throws** `AbiNotFoundError` — if no version covers the requested epoch.
+
+---
+
+## `client.getCurrentAbi(contractIndex)`
+
+Fetches the currently active ABI version.
+
+```ts
+const { version } = await client.getCurrentAbi(9)
+```
+
+---
+
+## `client.getAbiHistory(contractIndex)`
+
+Fetches all historical ABI versions for a contract, oldest first.
+
+```ts
+const versions = await client.getAbiHistory(9)
+for (const v of versions) {
+  console.log(`Epoch ${v.effectiveFromEpoch} – ${v.effectiveToEpoch ?? "current"}`)
+}
+```
+
+**Returns** `Promise<ContractAbiVersion[]>`
+
+---
+
+## `client.getRegistry()`
+
+Fetches the full registry as a `ContractRegistry` object. Useful when you need to run multiple lookups and want to avoid repeated round-trips.
+
+```ts
+const reg = await client.getRegistry()
+// Use reg with the static functions from "@qubic.org/registry"
+import { getAbi } from "@qubic.org/registry"
+const { version } = getAbi(reg, 9, 212)
+```
+
+---
+
+## Static import vs client
+
+| | Static import | Registry client |
+|---|---|---|
+| Network required | No | Yes |
+| Bundle size | Larger (includes full JSON) | Smaller |
+| Historical ABIs | Yes (bundled) | Yes (fetched on demand) |
+| Always up-to-date | Only on package update | Yes |
+
+For server-side scripts and CLI tools, static import is usually simpler:
+
+```ts
+import registry from "@qubic.org/registry/registry.json"
+import type { ContractRegistry } from "@qubic.org/registry"
+
+const reg = registry as ContractRegistry
+```
+
+For browser apps where bundle size matters or you need the latest epoch data without republishing, use the registry client.
+
+---
+
+## Complete example
+
+```ts title="registry-client.ts"
+import { createRegistryClient, getProcedure, buildPayload, decodePayload } from "@qubic.org/registry"
+import { identityToPublicKey, publicKeyToIdentity } from "@qubic.org/crypto"
+import { createLiveClient } from "@qubic.org/rpc"
+
+const regClient = createRegistryClient({ cache: "session" })
+const live = createLiveClient()
+
+const { version } = await regClient.getCurrentAbi(9)
+const proc = getProcedure(version, 6) // lock_input
+
+const payload = buildPayload(
+  proc.inputFields,
+  version.structs ?? {},
+  { amount: 5_000_000n },
+  identityToPublicKey,
+)
+
+console.log("Encoded payload:", payload.length, "bytes")
+```

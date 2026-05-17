@@ -1,9 +1,9 @@
 ---
 title: "@qubic.org/rpc"
-description: Type-safe HTTP clients for the Qubic live RPC gateway and archive indexer. Types are generated from OpenAPI schemas.
+description: Type-safe HTTP clients for the Qubic live RPC gateway and archive indexer. Types generated from OpenAPI schemas.
 ---
 
-`@qubic.org/rpc` provides two HTTP clients — one for real-time chain state and one for indexed historical data. Types are auto-generated from the Qubic OpenAPI schemas.
+`@qubic.org/rpc` provides two HTTP clients: one for real-time chain state and one for indexed historical data. All types are generated from the official Qubic OpenAPI schemas.
 
 <Tabs items={["Bun", "npm", "pnpm"]}>
 <Tab value="Bun">
@@ -23,185 +23,31 @@ pnpm add @qubic.org/rpc
 </Tab>
 </Tabs>
 
-## Concepts
+## Live vs archive
 
-### Live vs archive
-
-| Client | Base URL | Use for |
+| Client | Factory | Use for |
 |---|---|---|
-| `LiveClient` | `https://rpc.qubic.org/live/v1` | Current tick, balances, broadcast, asset listings |
-| `QueryClient` | `https://rpc.qubic.org/query/v1` | Historical transactions, event logs, tick data, computor lists |
+| **Live** | `createLiveClient()` | Current tick, balances, broadcasting, contract queries |
+| **Archive** | `createQueryClient()` | Historical transactions, event logs, computor lists |
 
-Both URLs are configurable via the `baseUrl` option.
+## Error model
 
-### Error model: throw, not Result
-
-Unlike `@qubic.org/bob`, these clients **throw** `QubicRpcError` on non-2xx responses. Wrap calls in `try/catch`.
+Both clients **throw** `QubicRpcError` on network failure or non-2xx responses. There is no `Result` wrapper — use `try/catch`.
 
 ```ts
 try {
-  const { balance } = await live.getBalance(identity)
+  const info = await live.getTickInfo()
 } catch (e) {
   if (e instanceof QubicRpcError) {
-    console.error(`HTTP ${e.status} from ${e.endpoint}`)
+    console.error(e.status, e.message)
   }
 }
 ```
 
-### Custom fetch
+## Reference
 
-Pass a `fetch` option to inject a custom `fetch` implementation for testing, proxying, or retry logic.
-
-```ts
-const live = createLiveClient({ fetch: myCustomFetch })
-```
-
-## API reference
-
-### `createLiveClient(options?)`
-
-Creates a client for real-time chain state.
-
-**Options**
-
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `baseUrl` | `string` | `https://rpc.qubic.org/live/v1` | Gateway base URL. |
-| `signal` | `AbortSignal` | — | Optional. Applied to every request. |
-| `fetch` | `typeof fetch` | global `fetch` | Optional. Custom fetch implementation. |
-
-**Returns** `LiveClient`
-
----
-
-#### `live.getTickInfo()`
-
-Returns the current tick, epoch, and tick duration.
-
-**Returns** `Promise<LiveTickInfo>` — `{ tick, epoch, duration, initialTick }`
-
-```ts
-const { tick, epoch } = await live.getTickInfo()
-```
-
----
-
-#### `live.getBalance(identity)`
-
-Returns the current balance and balance history for an identity.
-
-**Returns** `Promise<LiveBalance>` — `{ balance, history[] }`
-
-<Callout>
-  `balance` is the current epoch balance. `history` contains balances from previous epochs. Most apps only need `balance`.
-</Callout>
-
----
-
-#### `live.broadcastTransaction(encoded)`
-
-Broadcasts a signed, base64-encoded transaction to the network.
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `encoded` | `Base64` | The base64 output of `encodeTransaction` or `wallet.buildTransfer`. |
-
-**Returns** `Promise<{ peersBroadcastedTo: number, transactionId: string }>`
-
-<Callout type="warn">
-  Pass the **base64-encoded** signed transaction (the `encoded` field from `wallet.buildTransfer`). Passing raw bytes will fail.
-</Callout>
-
----
-
-#### `live.querySmartContract(req)`
-
-Calls a smart contract read function and returns the raw base64 output.
-
-**Returns** `Promise<{ encodedResult: Base64 }>`
-
-Use `@qubic.org/contracts` or `@qubic.org/registry`'s `decodePayload` to interpret the result.
-
----
-
-#### Asset methods
-
-| Method | Returns |
+| Section | What's in it |
 |---|---|
-| `live.getIssuedAssets(identity)` | `Promise<Asset[]>` |
-| `live.getOwnedAssets(identity)` | `Promise<Asset[]>` |
-| `live.getPossessedAssets(identity)` | `Promise<Asset[]>` |
-| `live.getAssetIssuances(filter?)` | `Promise<AssetIssuance[]>` |
-| `live.getAssetOwnerships(filter?)` | `Promise<AssetOwnership[]>` |
-| `live.getAssetPossessions(filter?)` | `Promise<AssetPossession[]>` |
-| `live.getActiveIpos()` | `Promise<Ipo[]>` |
-
----
-
-### `createQueryClient(options?)`
-
-Creates a client for indexed historical data.
-
-**Options** — same shape as `createLiveClient`.
-
-**Returns** `QueryClient`
-
----
-
-#### Archive methods
-
-| Method | Returns |
-|---|---|
-| `archive.getLastProcessedTick()` | `Promise<{ tick, epoch }>` |
-| `archive.getProcessedTickIntervals()` | `Promise<ProcessedTickInterval[]>` |
-| `archive.getComputorListsForEpoch(epoch)` | `Promise<QueryComputorList[]>` |
-| `archive.getTickData(tickNumber)` | `Promise<QueryTickData>` |
-| `archive.getTransactionByHash(hash)` | `Promise<QueryTransaction>` |
-| `archive.getTransactionsForIdentity(req)` | `Promise<{ transactions, hits, validForTick }>` |
-| `archive.getTransactionsForTick(tickNumber)` | `Promise<QueryTransaction[]>` |
-| `archive.getEventLogs(req)` | `Promise<{ eventLogs, hits, validForTick }>` |
-
----
-
-### `QubicRpcError`
-
-Thrown by both clients on non-2xx HTTP responses.
-
-| Property | Type | Description |
-|---|---|---|
-| `code` | `"RPC_ERROR"` | Error discriminant. |
-| `status` | `number` | HTTP status code. |
-| `endpoint` | `string` | The URL that returned the error. |
-
-## Complete example
-
-Check a balance then broadcast a transaction:
-
-```ts title="rpc-example.ts"
-import { createLiveClient, createQueryClient, QubicRpcError } from "@qubic.org/rpc"
-import { createWallet, generateSeed } from "@qubic.org/wallet"
-import { toIdentity } from "@qubic.org/types"
-
-const live = createLiveClient()
-const archive = createQueryClient()
-
-try {
-  const { tick } = await live.getTickInfo()
-  const wallet = createWallet(generateSeed())
-  const { balance } = await live.getBalance(wallet.identity)
-
-  console.log("Balance:", balance, "QU at tick", tick)
-
-  // Look up a historical transaction
-  const txData = await archive.getTickData(tick - 10)
-  console.log("Transactions in tick:", txData.transactions?.length ?? 0)
-} catch (e) {
-  if (e instanceof QubicRpcError) {
-    console.error(`RPC error ${e.status}: ${e.endpoint}`)
-  } else {
-    throw e
-  }
-}
-```
+| [Live client](/docs/packages/rpc/live-client) | `getTickInfo`, `getBalance`, `broadcastTransaction`, `querySmartContract`, … |
+| [Archive client](/docs/packages/rpc/archive-client) | `getTransaction`, `getEventLogs`, `getTransactionsForIdentity`, … |
+| [Errors](/docs/packages/rpc/errors) | `QubicRpcError` — structure and handling |

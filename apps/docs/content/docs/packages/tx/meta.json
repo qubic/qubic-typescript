@@ -1,5 +1,6 @@
 {
   "title": "@qubic.org/tx",
   "icon": "ArrowLeftRight",
-  "root": true
+  "root": true,
+  "pages": ["index", "build-transaction", "sign-transaction", "payload"]
 }

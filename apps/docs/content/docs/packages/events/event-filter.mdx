@@ -1,0 +1,162 @@
+---
+title: Event filter
+description: eventFilter() — chainable filter builder and subscription helpers for Qubic log events.
+---
+
+## `eventFilter()`
+
+Creates a new chainable filter builder. Each method returns a new builder instance — the builder is immutable.
+
+```ts
+import { eventFilter, LOG_TYPE } from "@qubic.org/events"
+import { toIdentity } from "@qubic.org/types"
+
+const identity = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
+
+const filter = eventFilter()
+  .forIdentity(identity)
+  .ofTypes(LOG_TYPE.QU_TRANSFER, LOG_TYPE.BURNING)
+  .fromTick(25_000_000)
+  .build()
+```
+
+---
+
+## Builder methods
+
+| Method | Description |
+|---|---|
+| `.forIdentity(identity)` | Filter to events involving this identity (source or destination). |
+| `.forContract(index)` | Filter to events from a specific contract index. |
+| `.ofTypes(...logTypes)` | Filter to specific log type IDs. Pass multiple to match any. |
+| `.fromTick(n)` | Only events at or after tick `n`. |
+| `.toTick(n)` | Only events up to and including tick `n`. |
+| `.build()` | Returns an `EventFilter` object. |
+| `.toBobFilter()` | Returns a `BobLogFilter` for direct use with Bob. |
+
+---
+
+## Subscription helpers
+
+Each helper wraps `bob.subscribe("eventLogs", ...)`, applies a type-appropriate filter, and decodes every event automatically.
+
+### `subscribeQuTransfers(bob, identity, callback, filter?)`
+
+Subscribes to QU transfer events for an identity.
+
+```ts
+import { createBobClient } from "@qubic.org/bob"
+import { subscribeQuTransfers, eventFilter } from "@qubic.org/events"
+import { toIdentity } from "@qubic.org/types"
+
+const bob = createBobClient({ autoResubscribe: true })
+await bob.connect()
+
+const identity = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
+
+const unsub = subscribeQuTransfers(bob, identity, (transfer, meta) => {
+  if (meta.isCatchUp) return
+  const { source, destination, amount } = transfer.data
+  const direction = source === identity ? "OUT" : "IN"
+  console.log(`[${direction}] ${amount}n QU at tick ${transfer.tick}`)
+})
+
+// Later — stop listening
+unsub()
+```
+
+---
+
+### `subscribeAssetEvents(bob, identity, callback, filter?)`
+
+Subscribes to all asset-related log types: issuance, ownership change, and possession change.
+
+```ts
+import { subscribeAssetEvents } from "@qubic.org/events"
+
+const unsub = subscribeAssetEvents(bob, identity, (event, meta) => {
+  console.log("Asset event type:", event.logType)
+})
+```
+
+---
+
+### `subscribeContractLogs(bob, identity, callback, filter?)`
+
+Subscribes to contract message log types: error, warning, information, and debug.
+
+```ts
+import { subscribeContractLogs, LOG_TYPE } from "@qubic.org/events"
+
+const unsub = subscribeContractLogs(bob, identity, (event, meta) => {
+  if (event.logType === LOG_TYPE.CONTRACT_ERROR_MESSAGE) {
+    console.error(`Contract ${event.data.contractIndex}: ${event.data.message}`)
+  }
+})
+```
+
+---
+
+### `subscribeAllEvents(bob, identity, callback, filter?)`
+
+Subscribes to all log types. Apply a filter to narrow the stream.
+
+```ts
+import { subscribeAllEvents, eventFilter, LOG_TYPE } from "@qubic.org/events"
+
+const filter = eventFilter()
+  .ofTypes(LOG_TYPE.BURNING, LOG_TYPE.DUST_BURNING)
+  .build()
+
+const unsub = subscribeAllEvents(bob, identity, (event, meta) => {
+  console.log("Event:", event.logType, event.data)
+}, filter)
+```
+
+---
+
+## Watching multiple identities
+
+```ts
+const identities = [identity1, identity2, identity3]
+
+const unsubs = identities.map((id) =>
+  subscribeQuTransfers(bob, id, (transfer) => {
+    handleTransfer(id, transfer)
+  })
+)
+
+// Unsubscribe all
+unsubs.forEach((fn) => fn())
+```
+
+---
+
+## Complete example
+
+Track QU transfers for an identity, skip catch-up ticks, and log each one:
+
+```ts title="track-transfers.ts"
+import { createBobClient } from "@qubic.org/bob"
+import { subscribeQuTransfers } from "@qubic.org/events"
+import { toIdentity } from "@qubic.org/types"
+
+const identity = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
+
+const bob = createBobClient({ autoResubscribe: true })
+await bob.connect()
+
+process.on("SIGINT", async () => {
+  await bob.disconnect()
+  process.exit(0)
+})
+
+const unsub = subscribeQuTransfers(bob, identity, (transfer, meta) => {
+  if (meta.isCatchUp) return
+
+  const { source, destination, amount } = transfer.data
+  const direction = source === identity ? "OUT" : "IN"
+  console.log(`[tick ${transfer.tick}] [${direction}] ${amount}n QU`)
+  console.log(`  ${source} → ${destination}`)
+})
+```

@@ -1,0 +1,126 @@
+---
+title: Connectors
+description: Built-in wallet connectors for the Qubic browser extension, WalletConnect, and MetaMask Snap — plus the interface for building custom ones.
+---
+
+A `WalletConnector` is an object that implements a standard interface. Pass connector instances to `WalletProvider` to make them available via `useWallet`.
+
+## Built-in connectors
+
+### `extensionConnector`
+
+Connects to the Qubic browser extension via `window.qubic`. No configuration required — import and use directly.
+
+```tsx
+import { extensionConnector } from "@qubic.org/react"
+
+// Pass to WalletProvider
+const connectors = [extensionConnector]
+```
+
+`extensionConnector.isAvailable()` returns `false` during SSR (when `typeof window === "undefined"`) and when the extension is not installed. Filter with `c.isAvailable()` before rendering connect buttons.
+
+---
+
+### `createWalletConnectConnector(options)`
+
+Creates a WalletConnect v2 connector. Requires `@walletconnect/sign-client` installed separately.
+
+```tsx
+import { createWalletConnectConnector } from "@qubic.org/react"
+import { SignClient } from "@walletconnect/sign-client"
+
+const wcConnector = createWalletConnectConnector({
+  createClient: () =>
+    SignClient.create({
+      projectId: "your-walletconnect-project-id",
+      metadata: {
+        name: "My Qubic App",
+        description: "A Qubic dApp",
+        url: "https://your-app.com",
+        icons: ["https://your-app.com/icon.png"],
+      },
+    }),
+})
+
+const connectors = [extensionConnector, wcConnector]
+```
+
+**Options**
+
+| Name | Type | Description |
+|---|---|---|
+| `createClient` | `() => Promise<SignClient>` | Factory that creates the WalletConnect `SignClient`. Called lazily on first connect. |
+
+---
+
+### `createMetaMaskSnapConnector(options)`
+
+Creates a connector for the Qubic MetaMask Snap. MetaMask must be installed and the user must approve the Snap on first connect.
+
+```tsx
+import { createMetaMaskSnapConnector } from "@qubic.org/react"
+
+const snapConnector = createMetaMaskSnapConnector({
+  snapId: "npm:@qubic.org/metamask-snap",
+})
+
+const connectors = [extensionConnector, snapConnector]
+```
+
+---
+
+## Custom connectors
+
+Implement the `WalletConnector` interface to connect any signing backend:
+
+```ts
+import type { WalletConnector } from "@qubic.org/react"
+
+const myConnector: WalletConnector = {
+  id: "my-wallet",
+
+  isAvailable() {
+    return typeof window !== "undefined" && !!window.myWallet
+  },
+
+  async connect() {
+    const accounts = await window.myWallet.requestAccounts()
+    return { identity: accounts[0].address }
+  },
+
+  async disconnect() {
+    await window.myWallet.disconnect()
+  },
+
+  async sendTransaction(tx) {
+    return window.myWallet.sendTransaction(tx)
+  },
+
+  async signTransaction(tx) {
+    return window.myWallet.signTransaction(tx)
+  },
+
+  async signMessage(msg) {
+    return window.myWallet.signMessage(msg)
+  },
+}
+```
+
+### `WalletConnector` interface
+
+| Method | Signature | Description |
+|---|---|---|
+| `id` | `string` | Unique identifier. Used by `connect(id)` and persisted in localStorage. |
+| `isAvailable()` | `() => boolean` | Whether the connector can be used in the current environment. |
+| `connect()` | `() => Promise<{ identity: Identity }>` | Establish a connection and return the account. |
+| `disconnect()` | `() => Promise<void>` | Close the connection. |
+| `sendTransaction(tx)` | `(tx) => Promise<string>` | Sign and broadcast a transaction. Returns the tx hash. |
+| `signTransaction(tx)` | `(tx) => Promise<Uint8Array>` | Sign a transaction and return the signed bytes. |
+| `signMessage(msg)` | `(msg: string) => Promise<string>` | Sign an arbitrary message. |
+
+### Connector ID guidelines
+
+- Use a lowercase slug: `"my-wallet"`, `"ledger"`, `"coinbase"`
+- The ID is stored in localStorage to restore the last-used connector on reload
+- The `id` field is what you pass to `connect(id)` from `useWallet()`

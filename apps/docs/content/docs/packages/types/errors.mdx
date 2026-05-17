@@ -1,0 +1,69 @@
+---
+title: Error classes
+description: The QubicError hierarchy — base class and typed subclasses thrown by SDK constructors and API calls.
+---
+
+All SDK errors extend the abstract `QubicError` base class. This lets you catch at any level of specificity.
+
+## Hierarchy
+
+```
+Error
+└── QubicError (abstract)
+    ├── InvalidIdentityError
+    ├── InvalidSeedError
+    ├── InvalidTxHashError
+    └── InvalidBase64Error
+```
+
+## Catching errors
+
+```ts
+import { toIdentity, QubicError, InvalidIdentityError } from "@qubic.org/types"
+
+try {
+  const id = toIdentity(input)
+} catch (e) {
+  if (e instanceof InvalidIdentityError) {
+    // input was not a valid 60-char uppercase identity
+    console.error("Bad identity:", e.message)
+  } else if (e instanceof QubicError) {
+    // any other SDK error
+    console.error("SDK error:", e.message)
+  } else {
+    throw e // re-throw unknown errors
+  }
+}
+```
+
+## Error reference
+
+| Class | Thrown by | Condition |
+|---|---|---|
+| `QubicError` | — | Abstract base. Never thrown directly. |
+| `InvalidIdentityError` | `toIdentity`, `identityToPublicKey` | String is not 60 uppercase characters |
+| `InvalidSeedError` | `toSeed`, `publicKeyFromSeed` | String is not 55 lowercase characters |
+| `InvalidTxHashError` | `toTxHash` | String is not 60 lowercase characters |
+| `InvalidBase64Error` | `toBase64` | String is not valid standard base64 |
+
+## `QubicError` properties
+
+All SDK errors include:
+
+| Property | Type | Description |
+|---|---|---|
+| `message` | `string` | Human-readable error description |
+| `name` | `string` | The class name (e.g. `"InvalidIdentityError"`) |
+| `stack` | `string \| undefined` | Standard JS stack trace |
+
+## Narrowing without `instanceof`
+
+If you're using a bundler that may break `instanceof` across module boundaries, check `error.name` instead:
+
+```ts
+} catch (e) {
+  if (e instanceof Error && e.name === "InvalidIdentityError") {
+    // handle
+  }
+}
+```

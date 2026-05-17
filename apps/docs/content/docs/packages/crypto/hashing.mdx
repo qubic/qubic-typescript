@@ -1,0 +1,47 @@
+---
+title: Hashing
+description: KangarooTwelve (K12) — Qubic's hash function.
+---
+
+Qubic uses **KangarooTwelve (K12)** as its hash function — a member of the Keccak family but distinct from SHA-3/Keccak-256. Do not confuse K12 with Ethereum's `keccak256`.
+
+## `K12(input, outputLength?)`
+
+Computes a K12 hash of arbitrary input bytes.
+
+```ts
+import { K12 } from "@qubic.org/crypto"
+
+const input = new TextEncoder().encode("hello qubic")
+const hash = K12(input)            // Uint8Array, default 32 bytes
+const longHash = K12(input, 64)    // Uint8Array, 64 bytes
+```
+
+**Parameters**
+
+| Name | Type | Default | Description |
+|---|---|---|---|
+| `input` | `Uint8Array` | — | Bytes to hash |
+| `outputLength` | `number` | `32` | Number of output bytes to produce |
+
+**Returns** `Uint8Array` of length `outputLength`.
+
+## When you need K12 directly
+
+Most SDK consumers never call `K12` directly — it's used internally by `publicKeyFromSeed`, `signTransaction`, and `verifyTransaction`. Reach for it when:
+
+- Building a custom transaction type outside the SDK
+- Verifying a message hash manually
+- Computing a checksum over raw Qubic data
+
+## K12 vs SHA-3
+
+Both K12 and SHA-3 originate from the Keccak sponge construction, but they use different parameters:
+
+| | K12 | SHA-3 |
+|---|---|---|
+| Round function | Keccak-p[1600, 12] | Keccak-p[1600, 24] |
+| Customization string | Yes | No |
+| Standardized by | IETF (RFC 8702) | NIST (FIPS 202) |
+
+Never substitute SHA-3 or `keccak256` for K12 in Qubic computations — the outputs are different.

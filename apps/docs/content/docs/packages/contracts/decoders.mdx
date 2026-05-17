@@ -1,0 +1,113 @@
+---
+title: Decoders
+description: decode{Contract}{Procedure}Output — decode binary procedure response bytes into typed objects.
+---
+
+Output decoders parse the raw binary response of a smart contract procedure call into a typed JavaScript object.
+
+---
+
+## Naming convention
+
+```
+decode{ContractName}{ProcedureName}Output(data, publicKeyToIdentity?)
+```
+
+Examples:
+
+```ts
+import {
+  decodeQearnLockOutput,
+  decodeQearnUnlockOutput,
+  decodeQxTransferShareOutput,
+} from "@qubic.org/contracts"
+```
+
+Or via the [namespace object](./namespace):
+
+```ts
+import { qearn } from "@qubic.org/contracts"
+
+qearn.decodeLockOutput(rawBytes, publicKeyToIdentity)
+```
+
+---
+
+## Usage
+
+Decoders are used when a procedure call returns output data — typically when you broadcast a transaction and later retrieve its result from the archive.
+
+```ts
+import { decodeQearnLockOutput } from "@qubic.org/contracts"
+import { publicKeyToIdentity } from "@qubic.org/crypto"
+
+const output = decodeQearnLockOutput(rawBytes, publicKeyToIdentity)
+console.log("Lock output:", output)
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `data` | `Uint8Array` | Raw output bytes from the node or archive. |
+| `publicKeyToIdentity` | `(pk: Uint8Array) => Identity` | From `@qubic.org/crypto`. Required only if output contains `id`-type fields. |
+
+**Returns** a typed object with keys matching the procedure's output fields.
+
+---
+
+## Decoding archive responses
+
+When fetching a historical transaction's output from the archive, use the decoder on the raw response bytes:
+
+```ts
+import { createQueryClient } from "@qubic.org/rpc"
+import { decodeQearnLockOutput } from "@qubic.org/contracts"
+import { publicKeyToIdentity } from "@qubic.org/crypto"
+import { toTxHash } from "@qubic.org/types"
+
+const archive = createQueryClient()
+const tx = await archive.getTransaction(toTxHash("abcdef..."))
+
+// tx.inputHex contains the raw input; response bytes come from event logs
+// Decode the output from the transaction's response field if available
+const output = decodeQearnLockOutput(
+  Buffer.from(tx.responseData, "base64"),
+  publicKeyToIdentity,
+)
+console.log("Decoded output:", output)
+```
+
+---
+
+## Output field types
+
+Output field types use the same JavaScript type mapping as [builders](./builders):
+
+| ABI type | JavaScript type |
+|---|---|
+| `uint8` / `uint16` / `uint32` | `number` |
+| `uint64` / `sint64` / `uint128` | `bigint` |
+| `id` | `Identity` string |
+| `bytes` | `Uint8Array` |
+| `array` | Array of the element type |
+| `struct` | Nested object |
+
+---
+
+## Historical decoding with the registry
+
+For transactions from older epochs where the ABI may have changed, use `@qubic.org/registry` directly to get the ABI version active at that epoch:
+
+```ts
+import { getAbi, getFunction, decodePayload } from "@qubic.org/registry"
+import { publicKeyToIdentity } from "@qubic.org/crypto"
+import registry from "@qubic.org/registry/registry.json"
+import type { ContractRegistry } from "@qubic.org/registry"
+
+const reg = registry as ContractRegistry
+const { version } = getAbi(reg, 9, 150) // Qearn at epoch 150
+
+const fn = getFunction(version, 1)
+const output = decodePayload(rawBytes, fn.outputFields, version.structs ?? {}, publicKeyToIdentity)
+```

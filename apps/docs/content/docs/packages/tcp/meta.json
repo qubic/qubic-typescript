@@ -1,5 +1,6 @@
 {
   "title": "@qubic.org/tcp",
   "icon": "Network",
-  "root": true
+  "root": true,
+  "pages": ["index", "connection", "requests", "frame-utilities"]
 }

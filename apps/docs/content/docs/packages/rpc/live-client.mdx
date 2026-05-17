@@ -1,0 +1,128 @@
+---
+title: Live client
+description: createLiveClient — real-time node data, balance queries, transaction broadcast, and contract queries.
+---
+
+## `createLiveClient(options?)`
+
+```ts
+import { createLiveClient } from "@qubic.org/rpc"
+
+const live = createLiveClient()
+// defaults to rpc.qubic.org
+```
+
+**Options**
+
+| Name | Type | Default | Description |
+|---|---|---|---|
+| `baseUrl` | `string` | `"https://rpc.qubic.org"` | RPC gateway URL |
+| `fetch` | `typeof fetch` | global `fetch` | Custom fetch implementation |
+
+---
+
+## `live.getTickInfo()`
+
+Returns the current tick, epoch, and tick timing data.
+
+```ts
+const { tick, epoch, duration, initialTick } = await live.getTickInfo()
+```
+
+| Field | Type | Description |
+|---|---|---|
+| `tick` | `number` | Current tick number |
+| `epoch` | `number` | Current epoch number |
+| `duration` | `number` | Tick duration in milliseconds |
+| `initialTick` | `number` | First tick of the current epoch |
+
+---
+
+## `live.getBalance(identity)`
+
+Returns the QU balance of an identity.
+
+```ts
+import { toIdentity } from "@qubic.org/types"
+
+const { balance } = await live.getBalance(
+  toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
+)
+// balance is bigint
+```
+
+---
+
+## `live.getBalances(identities)`
+
+Returns balances for multiple identities in one request.
+
+```ts
+const result = await live.getBalances([id1, id2, id3])
+// result is BalancesResult
+```
+
+---
+
+## `live.broadcastTransaction(encoded)`
+
+Broadcasts a signed, base64-encoded transaction to the network.
+
+```ts
+const result = await live.broadcastTransaction(encoded)
+console.log(`Broadcast to ${result.peersBroadcastedTo} peers`)
+```
+
+**Returns** `{ peersBroadcastedTo: number }`
+
+---
+
+## `live.querySmartContract(params)`
+
+Calls a contract read function and returns raw response bytes.
+
+```ts
+const response = await live.querySmartContract({
+  contractIndex: 9,      // Qearn
+  inputType: 1,          // getStateOfRound
+  inputSize: 4,
+  requestData: encodedInput,
+})
+```
+
+The `@qubic.org/contracts` generated callers wrap this method — use those instead of calling directly.
+
+---
+
+## `live.getIssuedAssets(identity)` / `getOwnedAssets(identity)` / `getPossessedAssets(identity)`
+
+Returns issued, owned, or possessed assets for an identity.
+
+```ts
+const assets = await live.getIssuedAssets(identity)
+// assets is Asset[]
+```
+
+Each `Asset` includes `assetName`, `issuerIdentity`, `numberOfUnits`, `numberOfDecimalPlaces`.
+
+---
+
+## `live.getComputors(epoch?)`
+
+Returns the computor list for the given epoch (or current epoch if omitted).
+
+```ts
+const { computors } = await live.getComputors()
+// computors is an array of identity strings
+```
+
+---
+
+## `live.getHealthCheck()`
+
+Checks whether the RPC gateway is healthy.
+
+```ts
+const ok = await live.getHealthCheck()
+// true if the gateway responds
+```

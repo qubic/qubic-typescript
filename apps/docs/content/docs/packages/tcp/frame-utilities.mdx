@@ -1,0 +1,162 @@
+---
+title: Frame utilities
+description: encodeHeader, decodeHeader, MESSAGE_TYPE, and payload decoders — low-level primitives for custom TCP message flows.
+---
+
+These utilities are for building custom request flows or handling message types not covered by the typed [request helpers](./requests). Most applications don't need them directly.
+
+---
+
+## Frame format
+
+Every Qubic TCP message uses an 8-byte frame header followed by an optional payload:
+
+```
+[size: 3 bytes LE][type: 1 byte][dejavu: 4 bytes LE][payload: N bytes]
+```
+
+| Field | Size | Description |
+|---|---|---|
+| `size` | 3 bytes LE | Total message length including the 8-byte header |
+| `type` | 1 byte | Message type constant |
+| `dejavu` | 4 bytes LE | Random nonce; echoed in responses to pair request/response |
+| `payload` | N bytes | Message-specific binary payload |
+
+---
+
+## `encodeHeader(size, messageType, dejavu)`
+
+Encodes an 8-byte frame header.
+
+```ts
+import { encodeHeader, HEADER_SIZE } from "@qubic.org/tcp"
+
+const payload = new Uint8Array(32)
+const totalSize = HEADER_SIZE + payload.length
+
+const header = encodeHeader(totalSize, 26, crypto.getRandomValues(new Uint32Array(1))[0])
+// Returns Uint8Array of length 8
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `size` | `number` | Total message length (header + payload). |
+| `messageType` | `number` | Message type constant. |
+| `dejavu` | `number` | 32-bit random nonce. |
+
+**Returns** `Uint8Array` (8 bytes)
+
+---
+
+## `decodeHeader(buffer)`
+
+Parses an 8-byte frame header.
+
+```ts
+import { decodeHeader } from "@qubic.org/tcp"
+
+const { size, messageType, dejavu } = decodeHeader(headerBytes)
+```
+
+**Returns** `{ size: number, messageType: number, dejavu: number }`
+
+---
+
+## Constants
+
+```ts
+import { HEADER_SIZE, DEFAULT_PORT } from "@qubic.org/tcp"
+
+HEADER_SIZE   // 8
+DEFAULT_PORT  // 21841
+```
+
+---
+
+## `MESSAGE_TYPE`
+
+Enum of known message type constants:
+
+```ts
+import { MESSAGE_TYPE } from "@qubic.org/tcp"
+
+MESSAGE_TYPE.EXCHANGE_PUBLIC_PEERS   // 0
+MESSAGE_TYPE.BROADCAST_MESSAGE       // 1
+MESSAGE_TYPE.BROADCAST_COMPUTORS     // 2
+MESSAGE_TYPE.BROADCAST_TICK          // 3
+MESSAGE_TYPE.BROADCAST_TRANSACTION   // 24
+MESSAGE_TYPE.REQUEST_CURRENT_TICK_INFO // 27
+MESSAGE_TYPE.RESPOND_CURRENT_TICK_INFO // 28
+MESSAGE_TYPE.REQUEST_ENTITY          // 31
+MESSAGE_TYPE.RESPOND_ENTITY          // 32
+MESSAGE_TYPE.END_RESPONSE            // 35
+MESSAGE_TYPE.TRY_AGAIN               // 36
+```
+
+---
+
+## Payload decoders
+
+Low-level decoders for building custom request flows:
+
+### `decodeCurrentTickInfo(payload)`
+
+Parses a `RESPOND_CURRENT_TICK_INFO` payload.
+
+```ts
+import { decodeCurrentTickInfo } from "@qubic.org/tcp"
+
+const { epoch, tick, initialTick } = decodeCurrentTickInfo(payloadBytes)
+```
+
+### `decodeExchangePublicPeers(payload)`
+
+Parses an `EXCHANGE_PUBLIC_PEERS` response payload.
+
+```ts
+import { decodeExchangePublicPeers } from "@qubic.org/tcp"
+
+const { peers } = decodeExchangePublicPeers(payloadBytes)
+```
+
+### `decodeRespondEntity(payload)`
+
+Parses a `RESPOND_ENTITY` payload into an `EntityRecord`.
+
+```ts
+import { decodeRespondEntity } from "@qubic.org/tcp"
+
+const { entity } = decodeRespondEntity(payloadBytes)
+const balance = entity.incomingAmount - entity.outgoingAmount
+```
+
+---
+
+## Custom request example
+
+Sending a raw message using the low-level API:
+
+```ts
+import {
+  createNodeConnection,
+  encodeHeader,
+  decodeHeader,
+  decodeCurrentTickInfo,
+  MESSAGE_TYPE,
+  HEADER_SIZE,
+} from "@qubic.org/tcp"
+
+const conn = await createNodeConnection("node1.qubic.org")
+
+// Build raw request with no payload
+const dejavu = crypto.getRandomValues(new Uint32Array(1))[0]
+const header = encodeHeader(HEADER_SIZE, MESSAGE_TYPE.REQUEST_CURRENT_TICK_INFO, dejavu)
+
+const packets = await conn.request(MESSAGE_TYPE.REQUEST_CURRENT_TICK_INFO)
+const info = decodeCurrentTickInfo(packets[0])
+
+console.log("Tick:", info.tick)
+conn.close()
+```

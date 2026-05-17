@@ -1,0 +1,161 @@
+---
+title: Registry functions
+description: getAbi, getCurrentAbi, getAbiHistory, getProcedure, getFunction, findContractByIndex, findContractByName, validateRegistry.
+---
+
+All functions operate on a `ContractRegistry` object, which you import statically or fetch via the [registry client](./client).
+
+```ts
+import registry from "@qubic.org/registry/registry.json"
+import type { ContractRegistry } from "@qubic.org/registry"
+
+const reg = registry as ContractRegistry
+```
+
+---
+
+## `getAbi(registry, contractIndex, epoch)`
+
+Finds the ABI version that was active at the given epoch.
+
+```ts
+import { getAbi } from "@qubic.org/registry"
+
+const { version, isCurrent, isRegistryPossiblyStale } = getAbi(reg, 9, 212)
+
+version.effectiveFromEpoch  // epoch when this ABI became active
+version.effectiveToEpoch    // null if still current
+isCurrent                   // true if no newer version exists
+```
+
+**Returns** `AbiLookupResult` — `{ version, isCurrent, isRegistryPossiblyStale }`
+
+**Throws** `AbiNotFoundError` — if no ABI version covers the requested epoch.
+
+---
+
+## `getCurrentAbi(registry, contractIndex)`
+
+Returns the currently active ABI version for a contract.
+
+```ts
+import { getCurrentAbi } from "@qubic.org/registry"
+
+const { version } = getCurrentAbi(reg, 9)
+```
+
+**Throws** `AbiNotFoundError` — if the contract index is unknown.
+
+---
+
+## `getAbiHistory(registry, contractIndex)`
+
+Returns all historical ABI versions for a contract, oldest first.
+
+```ts
+import { getAbiHistory } from "@qubic.org/registry"
+
+const versions = getAbiHistory(reg, 9)
+for (const v of versions) {
+  console.log(`Epoch ${v.effectiveFromEpoch} – ${v.effectiveToEpoch ?? "current"}`)
+}
+```
+
+**Returns** `ContractAbiVersion[]`
+
+---
+
+## `getProcedure(version, inputType)`
+
+Finds a procedure (write function) by its `inputType` number in an ABI version.
+
+```ts
+import { getCurrentAbi, getProcedure } from "@qubic.org/registry"
+
+const { version } = getCurrentAbi(reg, 9)
+const proc = getProcedure(version, 6) // lock_input
+
+proc.name          // "lock_input"
+proc.inputType     // 6
+proc.inputFields   // BinaryField[]
+proc.outputFields  // BinaryField[]
+```
+
+**Throws** if no procedure with that `inputType` exists in the version.
+
+---
+
+## `getFunction(version, inputType)`
+
+Finds a read-only function by its `inputType` number.
+
+```ts
+import { getFunction } from "@qubic.org/registry"
+
+const fn = getFunction(version, 1) // getStateOfRound
+
+fn.name          // "getStateOfRound"
+fn.inputType     // 1
+fn.inputFields   // BinaryField[]
+fn.outputFields  // BinaryField[]
+```
+
+**Throws** if no function with that `inputType` exists in the version.
+
+---
+
+## `findContractByIndex(registry, index)`
+
+Looks up a contract name from its numeric index.
+
+```ts
+import { findContractByIndex } from "@qubic.org/registry"
+
+const name = findContractByIndex(reg, 9) // "Qearn"
+```
+
+**Throws** if the index is not in the registry.
+
+---
+
+## `findContractByName(registry, name)`
+
+Looks up a contract's index from its name.
+
+```ts
+import { findContractByName } from "@qubic.org/registry"
+
+const index = findContractByName(reg, "Qearn") // 9
+```
+
+**Throws** if the name is not in the registry.
+
+---
+
+## `validateRegistry(registry)`
+
+Validates the registry structure for internal consistency — checks field sizes, epoch ordering, and struct references.
+
+```ts
+import { validateRegistry } from "@qubic.org/registry"
+
+validateRegistry(reg) // throws if any inconsistency is found
+```
+
+Useful when integrating a custom registry build or testing offline snapshots.
+
+---
+
+## Field types
+
+| Type | Size | JS representation |
+|---|---|---|
+| `uint8` / `sint8` | 1 B | `number` |
+| `uint16` / `sint16` | 2 B LE | `number` |
+| `uint32` / `sint32` | 4 B LE | `number` |
+| `uint64` / `sint64` | 8 B LE | `bigint` |
+| `uint128` | 16 B LE | `bigint` |
+| `id` | 32 B | `Identity` string; `identityToPublicKey` converts on encode |
+| `bytes` | N B | `Uint8Array` |
+| `array` | N × element | Array of primitive type |
+| `struct` | varies | Nested struct reference by name |

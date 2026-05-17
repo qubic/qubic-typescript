@@ -1,0 +1,83 @@
+---
+title: buildTransaction
+description: Construct the unsigned binary header for a Qubic transaction.
+---
+
+`buildTransaction` serializes a transaction header into 80 bytes (plus optional payload). The result is unsigned — pass it to `signTransaction` next.
+
+## `buildTransaction(params)`
+
+```ts
+import { buildTransaction } from "@qubic.org/tx"
+import { publicKeyFromSeed } from "@qubic.org/crypto"
+import { toSeed, toIdentity } from "@qubic.org/types"
+
+const seed = toSeed("...")
+const sourcePublicKey = publicKeyFromSeed(seed)
+const destinationPublicKey = new Uint8Array(32) // zero = contract calls
+
+const unsigned = buildTransaction({
+  sourcePublicKey,
+  destinationPublicKey,
+  amount: 1_000_000n,
+  targetTick: currentTick + 5,
+  inputType: 0,              // 0 = plain transfer
+  inputSize: 0,              // no payload
+})
+// unsigned is Uint8Array (80 bytes for a plain transfer)
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `sourcePublicKey` | `Uint8Array` | 32-byte sender public key |
+| `destinationPublicKey` | `Uint8Array` | 32-byte recipient public key |
+| `amount` | `bigint` | Transfer amount in QU |
+| `targetTick` | `number` | Tick by which the node must process the transaction |
+| `inputType` | `number` | 0 for transfers; procedure index for contract calls |
+| `inputSize` | `number` | Payload byte length (0 for plain transfers) |
+| `payload` | `Uint8Array \| undefined` | Optional payload bytes for contract calls |
+
+**Returns** `Uint8Array` — 80 bytes header (+ `inputSize` payload bytes).
+
+---
+
+## Target tick
+
+The network rejects transactions whose target tick has already passed. The standard convention:
+
+```ts
+const { tick } = await live.getTickInfo()
+const targetTick = tick + 5  // process within the next 5 ticks
+```
+
+Increase the offset on congested networks. The `PROTOCOL.TICKS_TO_EXPIRY` constant from `@qubic.org/types` defaults to `5`.
+
+---
+
+## Header field layout
+
+| Field | Offset | Size | Description |
+|---|---|---|---|
+| `sourcePublicKey` | 0 | 32 B | Sender FourQ public key |
+| `destinationPublicKey` | 32 | 32 B | Recipient FourQ public key |
+| `amount` | 64 | 8 B (LE) | QU amount as little-endian int64 |
+| `targetTick` | 72 | 4 B (LE) | Target tick as little-endian uint32 |
+| `inputType` | 76 | 2 B (LE) | Procedure index |
+| `inputSize` | 78 | 2 B (LE) | Payload byte length |
+
+---
+
+## Plain transfer vs contract call
+
+For a **plain transfer** (identity to identity):
+- `destinationPublicKey` = recipient's public key (from `identityToPublicKey`)
+- `inputType` = `0`
+- `inputSize` = `0`, no `payload`
+
+For a **contract call** (SC transaction):
+- `destinationPublicKey` = 32 zero bytes (the contract's canonical address)
+- `inputType` = the procedure's input type constant
+- `inputSize` = `payload.length`
+- `payload` = encoded procedure input from a `build*Input` function

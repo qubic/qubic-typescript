@@ -1,0 +1,131 @@
+---
+title: Callers
+description: "{contract}{Function} — typed live read functions that call contract query endpoints and return Result<T, QubicRpcError>."
+---
+
+Callers are typed async functions that query a contract's read-only functions via the RPC gateway. They never throw — failures come back as `{ ok: false, error }`.
+
+---
+
+## Naming convention
+
+```
+{contractName}{FunctionName}(live, input, converters)
+```
+
+Examples:
+
+```ts
+import {
+  qearnGetStateOfRound,
+  qearnGetUserLockInfo,
+  qxGetAssetIssuanceInfo,
+} from "@qubic.org/contracts"
+```
+
+Or via the [namespace object](./namespace):
+
+```ts
+import { qearn } from "@qubic.org/contracts"
+
+await qearn.getStateOfRound(live, { epoch: 213 }, converters)
+```
+
+---
+
+## Usage
+
+```ts
+import { qearnGetStateOfRound } from "@qubic.org/contracts"
+import { createLiveClient } from "@qubic.org/rpc"
+import { identityToPublicKey, publicKeyToIdentity } from "@qubic.org/crypto"
+
+const live = createLiveClient()
+
+const result = await qearnGetStateOfRound(
+  live,
+  { epoch: 213 },
+  { identityToPublicKey, publicKeyToIdentity },
+)
+
+if (result.ok) {
+  console.log("State:", result.value)
+} else {
+  console.error("RPC error:", result.error.status, result.error.message)
+}
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `live` | `SmartContractCaller` | Any object with `querySmartContract` — typically `createLiveClient()`. |
+| `input` | object | Input fields for the function. May be `undefined` if the function takes no input. |
+| `converters` | `{ identityToPublicKey, publicKeyToIdentity }` | From `@qubic.org/crypto`. Required when input or output contains `id`-type fields. |
+
+**Returns** `Promise<Result<Output, QubicRpcError>>`
+
+---
+
+## Error handling
+
+Callers never throw. Check `result.ok` before using `result.value`:
+
+```ts
+const result = await qearn.getStateOfRound(live, { epoch: 213 }, converters)
+
+if (!result.ok) {
+  if (result.error.status === 404) {
+    console.log("No data for this epoch")
+  } else {
+    throw result.error
+  }
+  return
+}
+
+// result.value is typed
+console.log(result.value)
+```
+
+---
+
+## Converters
+
+Converters are injected rather than imported internally, keeping `@qubic.org/contracts` tree-shakeable when used in environments that don't need crypto:
+
+```ts
+import { identityToPublicKey, publicKeyToIdentity } from "@qubic.org/crypto"
+
+const converters = { identityToPublicKey, publicKeyToIdentity }
+
+const result = await qearn.getStateOfRound(live, { epoch: 213 }, converters)
+```
+
+You can share one `converters` object across all caller invocations.
+
+---
+
+## All Qearn read functions
+
+```ts
+// State of a lock round
+await qearn.getStateOfRound(live, { epoch: 213 }, converters)
+
+// Lock info for a specific identity and epoch
+await qearn.getUserLockInfo(live, { identity, epoch: 213 }, converters)
+
+// All lock info for an identity across epochs
+await qearn.getUserAllLockInfo(live, { identity }, converters)
+
+// Endurance score for an identity
+await qearn.getUserEnduranceScore(live, { identity, epoch: 213 }, converters)
+
+// All endurance scores
+await qearn.getAllEnduranceScores(live, undefined, converters)
+
+// Average APY for an epoch
+await qearn.getAverageApy(live, { epoch: 213 }, converters)
+
+// Unlocking stats
+await qearn.getUnlockingTable(live, undefined, converters)
+```

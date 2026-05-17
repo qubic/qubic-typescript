@@ -1,0 +1,131 @@
+---
+title: Requests
+description: requestCurrentTickInfo, requestEntity, broadcastTransaction, exchangePublicPeers — typed request helpers for common node queries.
+---
+
+All request helpers accept either a `NodeConnection` or a `NodePool` as their first argument.
+
+---
+
+## `requestCurrentTickInfo(conn, options?)`
+
+Queries the current tick and epoch from a node.
+
+```ts
+import { createNodePool, requestCurrentTickInfo } from "@qubic.org/tcp"
+
+const pool = createNodePool(["node1.qubic.org", "node2.qubic.org"])
+const { epoch, tick, initialTick } = await requestCurrentTickInfo(pool)
+
+console.log(`Epoch ${epoch}, tick ${tick}`)
+pool.close()
+```
+
+**Returns** `Promise<CurrentTickInfo>` — `{ epoch, tick, initialTick }`
+
+**Options**
+
+| Name | Type | Description |
+|---|---|---|
+| `signal` | `AbortSignal` | Optional. Abort the request early. |
+
+---
+
+## `requestEntity(conn, publicKey, options?)`
+
+Queries an identity's entity record (balance data) directly from a peer.
+
+```ts
+import { createNodePool, requestEntity } from "@qubic.org/tcp"
+import { identityToPublicKey } from "@qubic.org/crypto"
+import { toIdentity } from "@qubic.org/types"
+
+const pool = createNodePool(["node1.qubic.org"])
+const pk = identityToPublicKey(toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL"))
+
+const { entity, identity } = await requestEntity(pool, pk)
+const balance = entity.incomingAmount - entity.outgoingAmount
+console.log(`${identity}: ${balance} QU`)
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `conn` | `NodeConnection \| NodePool` | Connection or pool. |
+| `publicKey` | `Uint8Array` | 32-byte FourQ public key. Use `identityToPublicKey` from `@qubic.org/crypto`. |
+| `options.signal` | `AbortSignal` | Optional. Abort the request early. |
+
+**Returns** `Promise<{ entity: EntityRecord, identity: Identity }>`
+
+### `EntityRecord` fields
+
+| Field | Type | Description |
+|---|---|---|
+| `incomingAmount` | `bigint` | Total QU received |
+| `outgoingAmount` | `bigint` | Total QU sent |
+| `numberOfIncomingTransfers` | `number` | Count of incoming transfers |
+| `numberOfOutgoingTransfers` | `number` | Count of outgoing transfers |
+| `latestIncomingTransferTick` | `number` | Tick of most recent incoming transfer |
+| `latestOutgoingTransferTick` | `number` | Tick of most recent outgoing transfer |
+
+Balance is `incomingAmount - outgoingAmount`.
+
+---
+
+## `broadcastTransaction(conn, txBytes, options?)`
+
+Sends a signed transaction directly to a peer node, bypassing the HTTP gateway.
+
+```ts
+import { broadcastTransaction } from "@qubic.org/tcp"
+
+// txBytes is a Uint8Array from buildTransaction + signTransaction
+await broadcastTransaction(pool, txBytes)
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `conn` | `NodeConnection \| NodePool` | Connection or pool. |
+| `txBytes` | `Uint8Array` | Signed transaction bytes (not base64-encoded). |
+| `options.signal` | `AbortSignal` | Optional. |
+
+**Returns** `Promise<void>`
+
+<Callout>
+  The transaction bytes here are raw binary — not base64. Use `encodeTransaction` from `@qubic.org/tx` to get the raw bytes, not the base64-encoded form used by `live.broadcastTransaction`.
+</Callout>
+
+---
+
+## `exchangePublicPeers(conn, options?)`
+
+Requests the node's known peer list. Useful for bootstrapping your own peer discovery.
+
+```ts
+import { exchangePublicPeers } from "@qubic.org/tcp"
+
+const { peers } = await exchangePublicPeers(pool)
+console.log("Known peers:", peers)
+```
+
+**Returns** `Promise<ExchangePublicPeers>` — `{ peers: string[] }`
+
+---
+
+## Combining with timeout
+
+```ts
+import { createNodePool, requestCurrentTickInfo } from "@qubic.org/tcp"
+
+const pool = createNodePool(["node1.qubic.org", "node2.qubic.org", "node3.qubic.org"])
+
+const info = await requestCurrentTickInfo(pool, {
+  signal: AbortSignal.timeout(3000),
+})
+
+console.log("Tick:", info.tick)
+pool.close()
+```

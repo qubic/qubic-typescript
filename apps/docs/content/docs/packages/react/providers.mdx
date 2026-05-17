@@ -1,0 +1,123 @@
+---
+title: Providers
+description: QubicProvider, VaultProvider, and WalletProvider — the three context providers for @qubic.org/react.
+---
+
+## `QubicProvider`
+
+The root provider. Required for all other hooks. Wraps TanStack Query and exposes the RPC clients to the component tree.
+
+```tsx
+import { createLiveClient, createQueryClient } from "@qubic.org/rpc"
+import { QubicProvider } from "@qubic.org/react"
+
+const live = createLiveClient()
+const archive = createQueryClient()
+
+export function App() {
+  return (
+    <QubicProvider liveClient={live} archiveClient={archive}>
+      {children}
+    </QubicProvider>
+  )
+}
+```
+
+**Props**
+
+| Prop | Type | Required | Description |
+|---|---|---|---|
+| `liveClient` | `LiveClient` | Yes | From `createLiveClient()` |
+| `archiveClient` | `QueryClient` | No | From `createQueryClient()`. Required for archive hooks. |
+| `queryClient` | `TanStackQueryClient` | No | Custom TanStack `QueryClient`. Use if you already have one. |
+
+---
+
+## `VaultProvider`
+
+Manages vault lifecycle: unlocking, locking, session persistence, and auto-lock. The decrypted seed is stored in a `useRef` — it never appears in React state, Redux, or DevTools.
+
+```tsx
+import { VaultProvider } from "@qubic.org/react"
+import { importVault } from "@qubic.org/wallet"
+
+const vaultData = importVault(localStorage.getItem("vault")!)
+
+export function App() {
+  return (
+    <QubicProvider liveClient={live}>
+      <VaultProvider vaultData={vaultData} persistSession autoLockMs={15 * 60_000}>
+        {children}
+      </VaultProvider>
+    </QubicProvider>
+  )
+}
+```
+
+**Props**
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `vaultData` | `VaultData` | — | Required. Encrypted vault from `@qubic.org/wallet`. |
+| `persistSession` | `boolean` | `false` | Store unlocked key in IndexedDB (`extractable: false`). Survives page reload. |
+| `sessionStorageKey` | `string` | `"qubic-vault"` | Custom key for the IndexedDB record. |
+| `autoLockMs` | `number` | — | Milliseconds of inactivity before auto-lock. |
+
+### Session persistence detail
+
+When `persistSession` is enabled, the Web Crypto API stores the key with `extractable: false`. The key can be used for signing but its raw bytes can never be read back. The session is cleared when the browser session ends, even if IndexedDB data persists.
+
+---
+
+## `WalletProvider`
+
+Manages wallet connector state: connection, disconnection, and persisting the last-used connector across reloads.
+
+```tsx
+import { WalletProvider, extensionConnector } from "@qubic.org/react"
+import { createWalletConnectConnector } from "@qubic.org/react"
+
+const connectors = [
+  extensionConnector,
+  createWalletConnectConnector({ createClient: () => SignClient.create({ ... }) }),
+]
+
+export function App() {
+  return (
+    <QubicProvider liveClient={live}>
+      <WalletProvider connectors={connectors}>
+        {children}
+      </WalletProvider>
+    </QubicProvider>
+  )
+}
+```
+
+**Props**
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `connectors` | `WalletConnector[]` | — | Required. Array of connector instances. |
+| `storageKey` | `string` | `"qubic-connector"` | localStorage key for persisting the last active connector ID. |
+
+### Re-connecting on load
+
+When the component mounts, `WalletProvider` reads `storageKey` from localStorage and attempts to reconnect to the connector that was last active. This allows a wallet-connected state to persist across page loads without requiring the user to click "connect" every time.
+
+---
+
+## Nesting order
+
+The providers must be nested in this specific order:
+
+```tsx
+<QubicProvider>       {/* always outermost */}
+  <WalletProvider>    {/* before VaultProvider */}
+    <VaultProvider>   {/* innermost */}
+      <App />
+    </VaultProvider>
+  </WalletProvider>
+</QubicProvider>
+```
+
+`WalletProvider` and `VaultProvider` do not depend on each other — you can omit either one. But `QubicProvider` must always be the ancestor of any hook.

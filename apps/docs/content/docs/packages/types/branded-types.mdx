@@ -1,0 +1,110 @@
+---
+title: Branded types
+description: Identity, Seed, TxHash, and Base64 — compile-time branded string types, constructors, and type guards.
+---
+
+TypeScript's structural typing means `string` and `Identity` are assignable to each other at compile time. Brands add a phantom property that makes them nominally distinct with zero runtime overhead:
+
+```ts
+type Identity = string & { readonly __brand: "Identity" }
+```
+
+The compiler rejects `wallet.buildTransfer({ destination: someRandomString })` but accepts `wallet.buildTransfer({ destination: toIdentity(input) })`.
+
+## Types
+
+| Type | Format | Description |
+|---|---|---|
+| `Identity` | 60 uppercase chars | Qubic address derived from a public key |
+| `Seed` | 55 lowercase chars | Private key material |
+| `TxHash` | 60 lowercase chars | Transaction identifier |
+| `Base64` | standard base64 | Encoded transaction payload for RPC broadcast |
+| `HexPublicKey` | 64 hex chars | 32-byte FourQ public key as a hex string |
+
+---
+
+## Constructors
+
+Use constructors **at system boundaries** — reading from user input, a file, a CLI argument, an API response. They throw typed errors on invalid input.
+
+### `toIdentity(s)`
+
+```ts
+import { toIdentity } from "@qubic.org/types"
+
+const id = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
+```
+
+**Throws** `InvalidIdentityError` — if `s` is not exactly 60 uppercase characters.
+
+---
+
+### `toSeed(s)`
+
+```ts
+const seed = toSeed("aaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
+```
+
+**Throws** `InvalidSeedError` — if `s` is not exactly 55 lowercase characters.
+
+---
+
+### `toTxHash(s)`
+
+```ts
+const hash = toTxHash("abcdef...") // 60 lowercase chars
+```
+
+<Callout>
+  Transaction hashes from some API responses come back uppercase. Call `.toLowerCase()` before passing to `toTxHash`.
+</Callout>
+
+**Throws** `InvalidTxHashError` — if `s` is not 60 lowercase characters.
+
+---
+
+## Type guards
+
+Use type guards **inside conditional branches** when you need a `boolean` without throwing.
+
+```ts
+import { isIdentity, isSeed, isTxHash } from "@qubic.org/types"
+
+const raw: string = getFromSomewhere()
+
+if (isIdentity(raw)) {
+  // raw is narrowed to Identity here
+  process(raw)
+}
+```
+
+| Guard | Returns |
+|---|---|
+| `isIdentity(s)` | `s is Identity` |
+| `isSeed(s)` | `s is Seed` |
+| `isTxHash(s)` | `s is TxHash` |
+
+Type guards never throw. They return `true` if the format matches, `false` otherwise.
+
+---
+
+## Constructors vs guards — when to use which
+
+| Situation | Use |
+|---|---|
+| Reading from user input, file, CLI, API | Constructor — fail fast with a typed error |
+| Conditional logic — "do X if valid" | Guard — narrows the type, no exception |
+| You **know** the value is valid | `as Identity` assertion — bypasses validation entirely |
+
+```ts
+// Boundary: throw on bad input
+const id = toIdentity(req.body.identity)
+
+// Conditional: safe check
+if (isIdentity(raw)) {
+  renderIdentity(raw)
+}
+
+// Trust: internal known-valid value
+const zero = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" as Identity
+```

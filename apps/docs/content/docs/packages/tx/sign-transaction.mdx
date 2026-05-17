@@ -1,0 +1,111 @@
+---
+title: signTransaction
+description: Sign, encode to base64, verify, and hash transactions.
+---
+
+## `signTransaction(unsigned, seed)`
+
+Signs the unsigned transaction bytes (output of `buildTransaction`) with a SchnorrQ signature.
+
+```ts
+import { buildTransaction, signTransaction } from "@qubic.org/tx"
+import { toSeed } from "@qubic.org/types"
+
+const seed = toSeed("...")
+const unsigned = buildTransaction({ ... })
+
+const signed: Uint8Array = await signTransaction(unsigned, seed)
+// signed = unsigned (80 B) + signature (64 B) = 144 bytes minimum
+```
+
+<Callout>
+  `signTransaction` is **async** — it awaits the WASM SchnorrQ implementation.
+</Callout>
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `unsigned` | `Uint8Array` | Output of `buildTransaction` |
+| `seed` | `Seed` | 55-character lowercase seed |
+
+**Returns** `Promise<Uint8Array>` — signed transaction bytes (header + payload + 64-byte signature).
+
+---
+
+## `encodeTransaction(signed)`
+
+Encodes signed transaction bytes to base64 for the RPC broadcast API.
+
+```ts
+import { encodeTransaction } from "@qubic.org/tx"
+import type { Base64 } from "@qubic.org/types"
+
+const encoded: Base64 = encodeTransaction(signed)
+// pass to live.broadcastTransaction(encoded)
+```
+
+**Returns** `Base64` — standard base64 string.
+
+---
+
+## `hashTransaction(signed)`
+
+Computes the canonical transaction hash — the K12 hash of the signed bytes, encoded as a 60-character hex string.
+
+```ts
+import { hashTransaction } from "@qubic.org/tx"
+import type { TxHash } from "@qubic.org/types"
+
+const hash: TxHash = hashTransaction(signed)
+// use to look up the transaction in the archive
+```
+
+**Returns** `TxHash`
+
+---
+
+## `verifyTransaction(signed, publicKey)`
+
+Verifies the SchnorrQ signature on a signed transaction.
+
+```ts
+import { verifyTransaction } from "@qubic.org/tx"
+import { publicKeyFromSeed } from "@qubic.org/crypto"
+
+const publicKey = publicKeyFromSeed(seed)
+const valid: boolean = await verifyTransaction(signed, publicKey)
+```
+
+**Returns** `Promise<boolean>` — `true` if the signature is valid for the given public key.
+
+---
+
+## Complete sign-and-broadcast flow
+
+```ts
+import { buildTransaction, signTransaction, encodeTransaction, hashTransaction } from "@qubic.org/tx"
+import { publicKeyFromSeed } from "@qubic.org/crypto"
+import { toSeed } from "@qubic.org/types"
+import { createLiveClient } from "@qubic.org/rpc"
+
+const live = createLiveClient()
+const seed = toSeed(process.env.SEED!)
+const { tick } = await live.getTickInfo()
+
+const unsigned = buildTransaction({
+  sourcePublicKey: publicKeyFromSeed(seed),
+  destinationPublicKey: new Uint8Array(32),
+  amount: 0n,
+  targetTick: tick + 5,
+  inputType: 0,
+  inputSize: 0,
+})
+
+const signed = await signTransaction(unsigned, seed)
+const encoded = encodeTransaction(signed)
+const hash = hashTransaction(signed)
+
+await live.broadcastTransaction(encoded)
+console.log("TX hash:", hash)
+```

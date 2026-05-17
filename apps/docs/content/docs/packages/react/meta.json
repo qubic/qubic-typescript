@@ -1,5 +1,6 @@
 {
   "title": "@qubic.org/react",
   "icon": "Layers",
-  "root": true
+  "root": true,
+  "pages": ["index", "providers", "data-hooks", "send-mutations", "wallet-hooks", "connectors"]
 }

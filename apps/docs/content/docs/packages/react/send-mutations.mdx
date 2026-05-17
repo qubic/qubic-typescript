@@ -1,0 +1,140 @@
+---
+title: Send mutations
+description: useSendTransfer and useSendContractCall — TanStack mutations for broadcasting signed transactions.
+---
+
+Send mutations are TanStack `useMutation` wrappers. They sign and broadcast transactions, returning `isPending`, `isSuccess`, `isError`, and `error` state alongside the standard `mutate` / `mutateAsync` API.
+
+Both hooks require either `VaultProvider` or `WalletProvider` as an ancestor to access the signing key.
+
+---
+
+## `useSendTransfer()`
+
+Broadcasts a QU transfer from the connected wallet or unlocked vault.
+
+```tsx
+import { useSendTransfer } from "@qubic.org/react"
+import { toIdentity } from "@qubic.org/types"
+import { useWallet } from "@qubic.org/react"
+
+function SendButton() {
+  const { account } = useWallet()
+  const { mutate, mutateAsync, isPending, isSuccess, isError, error, reset } = useSendTransfer()
+
+  function handleSend() {
+    mutate({
+      from: account!.identity,
+      destination: toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL"),
+      amount: 100_000n,
+    })
+  }
+
+  return (
+    <button type="button" onClick={handleSend} disabled={isPending}>
+      {isPending ? "Sending…" : "Send 100,000 QU"}
+    </button>
+  )
+}
+```
+
+### Input
+
+| Field | Type | Description |
+|---|---|---|
+| `from` | `Identity` | The sending identity. Must match the connected wallet or unlocked vault identity. |
+| `destination` | `Identity` | Recipient identity. |
+| `amount` | `bigint` | Amount in QU. |
+| `targetTick` | `number` | Optional. Overrides the auto-derived target tick (current tick + 5). |
+
+### Behavior
+
+1. Fetches the current tick from the live client (skipped if `targetTick` is provided)
+2. Builds and signs the transaction
+3. Broadcasts via `liveClient.broadcastTransaction`
+4. Resolves with `{ hash, peersBroadcastedTo }` on success
+
+---
+
+## `useSendContractCall()`
+
+Broadcasts a smart contract procedure call.
+
+```tsx
+import { useSendContractCall } from "@qubic.org/react"
+import { qearn } from "@qubic.org/contracts"
+import { useWallet } from "@qubic.org/react"
+
+function LockButton() {
+  const { account } = useWallet()
+  const { mutate, isPending } = useSendContractCall()
+
+  function handleLock() {
+    mutate({
+      from: account!.identity,
+      inputType: qearn.LOCK_INPUT_TYPE,
+      payload: qearn.buildLockInput({ amount: 10_000_000n }),
+      amount: 10_000_000n,
+    })
+  }
+
+  return (
+    <button type="button" onClick={handleLock} disabled={isPending || !account}>
+      {isPending ? "Locking…" : "Lock 10 MQUSD"}
+    </button>
+  )
+}
+```
+
+### Input
+
+| Field | Type | Description |
+|---|---|---|
+| `from` | `Identity` | The calling identity. |
+| `inputType` | `number` | The procedure's input type constant (e.g. `qearn.LOCK_INPUT_TYPE`). |
+| `payload` | `Uint8Array` | Encoded procedure payload from a `build*Input` function. |
+| `amount` | `bigint` | QU to attach to the call. Use `0n` for procedures that don't transfer funds. |
+| `contractIndex` | `number` | Optional. Override the contract index if not inferable from `inputType`. |
+| `targetTick` | `number` | Optional. Overrides auto-derived target tick. |
+
+---
+
+## Handling results
+
+Both hooks are standard TanStack mutations. Use `onSuccess`, `onError`, or the returned state to react to outcomes:
+
+```tsx
+const { mutate, isPending, isSuccess, isError, error } = useSendTransfer()
+
+// With callbacks
+mutate(input, {
+  onSuccess: (result) => {
+    console.log("TX hash:", result.hash)
+    console.log("Peers:", result.peersBroadcastedTo)
+  },
+  onError: (err) => {
+    console.error("Broadcast failed:", err.message)
+  },
+})
+
+// Or with mutateAsync
+try {
+  const result = await mutateAsync(input)
+  console.log("Done:", result.hash)
+} catch (err) {
+  console.error(err)
+}
+```
+
+### Resetting state
+
+Call `reset()` to clear `isSuccess` / `isError` state after displaying feedback:
+
+```tsx
+{isSuccess && (
+  <p>
+    Transfer sent!{" "}
+    <button type="button" onClick={reset}>Dismiss</button>
+  </p>
+)}
+```

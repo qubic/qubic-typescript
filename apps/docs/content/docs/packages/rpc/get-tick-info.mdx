@@ -1,0 +1,39 @@
+---
+title: getTickInfo
+description: Returns the current tick number, epoch, tick duration, and the first tick of the current epoch.
+---
+
+## Signature
+
+```ts
+live.getTickInfo(opts?): Promise<Result<LiveTickInfo, QubicRpcError>>
+```
+
+## Purpose
+
+Fetch the current network tick to synchronise your application with the live chain state.
+
+```ts
+const result = await live.getTickInfo()
+if (!result.ok) throw result.error
+
+const { tick, epoch, duration, initialTick } = result.value
+console.log(`Tick ${tick} in epoch ${epoch}`)
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `opts` | `RequestOptions` | Optional per-request overrides (`signal`, `fetch`) |
+
+## Returns
+
+`Result<LiveTickInfo, QubicRpcError>` — the current tick state.
+
+| Field | Type | Description |
+|---|---|---|
+| `tick` | `number` | Current tick number |
+| `epoch` | `number` | Current epoch number |
+| `duration` | `number` | Tick duration in milliseconds |
+| `initialTick` | `number` | First tick of the current epoch |

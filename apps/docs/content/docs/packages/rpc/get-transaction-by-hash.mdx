@@ -1,0 +1,44 @@
+---
+title: getTransactionByHash
+description: Fetches a single historical transaction by its 60-character hex hash.
+---
+
+## Signature
+
+```ts
+archive.getTransactionByHash(hash, opts?): Promise<Result<QueryTransaction, QubicRpcError>>
+```
+
+## Purpose
+
+Look up a specific transaction to inspect its sender, recipient, amount, and tick.
+
+```ts
+const result = await archive.getTransactionByHash(
+  "abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"
+)
+if (!result.ok) throw result.error
+
+const tx = result.value
+console.log(tx.sourceId, "->", tx.destId, tx.amount)
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `hash` | `string` | 60-character hex transaction hash |
+| `opts` | `RequestOptions` | Optional per-request overrides (`signal`, `fetch`) |
+
+## Returns
+
+`Result<QueryTransaction, QubicRpcError>` — the matching transaction.
+
+| Field | Type | Description |
+|---|---|---|
+| `sourceId` | `string` | Sender identity |
+| `destId` | `string` | Recipient identity |
+| `amount` | `string` | Transfer amount (string; parse as `BigInt` if needed) |
+| `tickNumber` | `number` | Tick the transaction was included in |
+| `inputType` | `number` | Contract function selector, or `0` for a QU transfer |
+| `inputHex` | `string` | Raw payload as hex |

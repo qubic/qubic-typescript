@@ -1,0 +1,34 @@
+---
+title: getComputorListsForEpoch
+description: Returns the computor lists recorded for a given epoch, including any lists from leadership changes during the epoch.
+---
+
+## Signature
+
+```ts
+archive.getComputorListsForEpoch(epoch, opts?): Promise<Result<QueryComputorList[], QubicRpcError>>
+```
+
+## Purpose
+
+Retrieve the computor sets that were active during an epoch. Multiple lists may exist if there were leadership changes mid-epoch.
+
+```ts
+const result = await archive.getComputorListsForEpoch(150)
+if (!result.ok) throw result.error
+
+for (const list of result.value) {
+  console.log(`Epoch ${list.epoch}: ${list.identities.length} computors`)
+}
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `epoch` | `number` | Epoch number to query |
+| `opts` | `RequestOptions` | Optional per-request overrides (`signal`, `fetch`) |
+
+## Returns
+
+`Result<QueryComputorList[], QubicRpcError>` — array of computor lists for the epoch. Each list contains an `epoch` number and an `identities` array.

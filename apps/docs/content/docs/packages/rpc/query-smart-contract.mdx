@@ -1,0 +1,39 @@
+---
+title: querySmartContract
+description: Calls a contract read-only function and returns the raw base64-encoded response bytes.
+---
+
+## Signature
+
+```ts
+live.querySmartContract(request, opts?): Promise<Result<QuerySmartContractResponse, QubicRpcError>>
+```
+
+## Purpose
+
+Execute a read-only contract function call. The generated callers in `@qubic.org/contracts` wrap this method and handle encoding and decoding automatically — prefer those over calling `querySmartContract` directly.
+
+```ts
+const result = await live.querySmartContract({
+  contractIndex: 9,   // Qearn contract
+  inputType: 1,       // getStateOfRound function
+  inputSize: 4,
+  requestData: encodedInput,
+})
+if (!result.ok) throw result.error
+// result.value.responseData is base64-encoded
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `contractIndex` | `number` | Contract index on the Qubic network |
+| `inputType` | `number` | Function selector |
+| `inputSize` | `number` | Byte length of the encoded input |
+| `requestData` | `string` | Base64-encoded input payload |
+| `opts` | `RequestOptions` | Optional per-request overrides (`signal`, `fetch`) |
+
+## Returns
+
+`Result<QuerySmartContractResponse, QubicRpcError>` — contains `responseData: string` (base64-encoded output bytes).

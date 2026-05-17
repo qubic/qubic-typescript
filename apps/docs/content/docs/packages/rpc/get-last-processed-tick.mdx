@@ -1,0 +1,38 @@
+---
+title: getLastProcessedTick
+description: Returns the most recent tick the archive has fully indexed, useful for checking indexer lag before historical queries.
+---
+
+## Signature
+
+```ts
+archive.getLastProcessedTick(opts?): Promise<Result<{ tickNumber: number, epoch: number, intervalInitialTick: number, logTickNumber: number }, QubicRpcError>>
+```
+
+## Purpose
+
+Check how far the archive has indexed before issuing historical queries to avoid requesting data the indexer has not yet processed.
+
+```ts
+const result = await archive.getLastProcessedTick()
+if (!result.ok) throw result.error
+
+console.log("Archive indexed up to tick:", result.value.tickNumber)
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `opts` | `RequestOptions` | Optional per-request overrides (`signal`, `fetch`) |
+
+## Returns
+
+`Result<{ tickNumber: number, epoch: number, intervalInitialTick: number, logTickNumber: number }, QubicRpcError>` — the last fully indexed tick and related epoch metadata.
+
+| Field | Type | Description |
+|---|---|---|
+| `tickNumber` | `number` | Most recent fully-indexed tick |
+| `epoch` | `number` | Epoch containing that tick |
+| `intervalInitialTick` | `number` | First tick of the current indexing interval |
+| `logTickNumber` | `number` | Last tick for which event logs are available |

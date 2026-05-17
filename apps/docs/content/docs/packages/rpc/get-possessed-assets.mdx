@@ -1,0 +1,34 @@
+---
+title: getPossessedAssets
+description: Returns all assets possessed by a given identity, which may differ from ownership when a managing contract holds custody.
+---
+
+## Signature
+
+```ts
+live.getPossessedAssets(identity, opts?): Promise<Result<PossessedAsset[], QubicRpcError>>
+```
+
+## Purpose
+
+Fetch assets where an identity is the possessor. Possession differs from ownership when a managing contract holds custody on the owner's behalf.
+
+```ts
+const result = await live.getPossessedAssets(identity)
+if (!result.ok) throw result.error
+
+for (const asset of result.value) {
+  console.log(asset.data?.possessionInfo.assetName)
+}
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `identity` | `string` | The possessor identity |
+| `opts` | `RequestOptions` | Optional per-request overrides (`signal`, `fetch`) |
+
+## Returns
+
+`Result<PossessedAsset[], QubicRpcError>` — array of assets possessed by the identity.

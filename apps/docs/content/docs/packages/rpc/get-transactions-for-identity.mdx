@@ -1,0 +1,44 @@
+---
+title: getTransactionsForIdentity
+description: Returns transactions involving an identity, filtered by tick range.
+---
+
+## Signature
+
+```ts
+archive.getTransactionsForIdentity(request, opts?): Promise<Result<{ transactions: QueryTransaction[], hits: Hits, validForTick: number }, QubicRpcError>>
+```
+
+## Purpose
+
+Retrieve the transaction history for an identity within a tick range to build activity feeds or audit trails.
+
+```ts
+import { toIdentity } from "@qubic.org/types"
+
+const result = await archive.getTransactionsForIdentity({
+  identity: toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL"),
+  startTick: 17_000_000,
+  endTick: 17_001_000,
+})
+if (!result.ok) throw result.error
+
+for (const tx of result.value.transactions) {
+  console.log(tx.sourceId, tx.amount, "at tick", tx.tickNumber)
+}
+```
+
+## Parameters
+
+`request` is a `GetTransactionsForIdentityRequest` object:
+
+| Name | Type | Description |
+|---|---|---|
+| `identity` | `string` | The identity to query |
+| `startTick` | `number` | First tick of the range (inclusive) |
+| `endTick` | `number` | Last tick of the range (inclusive) |
+| `opts` | `RequestOptions` | Optional per-request overrides (`signal`, `fetch`) |
+
+## Returns
+
+`Result<{ transactions: QueryTransaction[], hits: Hits, validForTick: number }, QubicRpcError>` — matching transactions, total hit count, and the tick at which the result was valid.

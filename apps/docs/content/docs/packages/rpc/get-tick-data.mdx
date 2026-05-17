@@ -1,0 +1,33 @@
+---
+title: getTickData
+description: Returns full tick data for a specific tick number, including transaction hashes and computor info.
+---
+
+## Signature
+
+```ts
+archive.getTickData(tickNumber, opts?): Promise<Result<QueryTickData, QubicRpcError>>
+```
+
+## Purpose
+
+Retrieve the complete record for a tick — useful for enumerating all transactions processed at that point in the chain.
+
+```ts
+const result = await archive.getTickData(17_000_500)
+if (!result.ok) throw result.error
+
+const { tickNumber, epoch, transactionIds } = result.value
+console.log(`Tick ${tickNumber} had ${transactionIds?.length} transactions`)
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `tickNumber` | `number` | The tick to query |
+| `opts` | `RequestOptions` | Optional per-request overrides (`signal`, `fetch`) |
+
+## Returns
+
+`Result<QueryTickData, QubicRpcError>` — full tick record including `tickNumber`, `epoch`, `transactionIds`, and computor data.

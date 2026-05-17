@@ -1,0 +1,34 @@
+---
+title: getOwnedAssets
+description: Returns all assets owned by a given identity, including unit counts and ownership metadata.
+---
+
+## Signature
+
+```ts
+live.getOwnedAssets(identity, opts?): Promise<Result<OwnedAsset[], QubicRpcError>>
+```
+
+## Purpose
+
+Fetch the assets held by an identity to display a portfolio or verify ownership before a transfer.
+
+```ts
+const result = await live.getOwnedAssets(identity)
+if (!result.ok) throw result.error
+
+for (const asset of result.value) {
+  console.log(asset.data?.ownershipInfo.assetName, asset.data?.ownershipInfo.numberOfUnits)
+}
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `identity` | `string` | The owner identity |
+| `opts` | `RequestOptions` | Optional per-request overrides (`signal`, `fetch`) |
+
+## Returns
+
+`Result<OwnedAsset[], QubicRpcError>` — array of assets owned by the identity.

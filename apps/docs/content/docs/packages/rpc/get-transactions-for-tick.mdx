@@ -1,0 +1,34 @@
+---
+title: getTransactionsForTick
+description: Returns all transactions included in a specific tick.
+---
+
+## Signature
+
+```ts
+archive.getTransactionsForTick(tickNumber, opts?): Promise<Result<QueryTransaction[], QubicRpcError>>
+```
+
+## Purpose
+
+Fetch the full list of transactions processed in a single tick, useful for block-explorer style views or batch processing.
+
+```ts
+const result = await archive.getTransactionsForTick(17_000_500)
+if (!result.ok) throw result.error
+
+for (const tx of result.value) {
+  console.log(tx.sourceId, "->", tx.destId)
+}
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `tickNumber` | `number` | The tick to query |
+| `opts` | `RequestOptions` | Optional per-request overrides (`signal`, `fetch`) |
+
+## Returns
+
+`Result<QueryTransaction[], QubicRpcError>` — array of all transactions included in the tick.

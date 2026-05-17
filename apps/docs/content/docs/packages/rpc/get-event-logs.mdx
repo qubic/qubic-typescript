@@ -1,0 +1,47 @@
+---
+title: getEventLogs
+description: Queries archived event logs with filtering by identity, log type, tick range, and pagination.
+---
+
+## Signature
+
+```ts
+archive.getEventLogs(request, opts?): Promise<Result<{ eventLogs: QueryEvent[], hits: Hits, validForTick: number }, QubicRpcError>>
+```
+
+## Purpose
+
+Retrieve filtered event logs for a tick range. Decode the `data` field of each event with `decodeEvent` from `@qubic.org/events`.
+
+```ts
+import { toIdentity } from "@qubic.org/types"
+
+const result = await archive.getEventLogs({
+  identity: toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL"),
+  startTick: 17_000_000,
+  endTick: 17_001_000,
+})
+if (!result.ok) throw result.error
+
+for (const event of result.value.eventLogs) {
+  console.log(event.logType, event.tick)
+}
+```
+
+## Parameters
+
+`request` is a `GetEventLogsRequest` object:
+
+| Name | Type | Description |
+|---|---|---|
+| `identity` | `string` | Filter to events involving this identity |
+| `startTick` | `number` | First tick of the range (inclusive) |
+| `endTick` | `number` | Last tick of the range (inclusive) |
+| `logType` | `number` | Filter to a specific log type |
+| `pageSize` | `number` | Number of results per page |
+| `pageNumber` | `number` | Page index (zero-based) |
+| `opts` | `RequestOptions` | Optional per-request overrides (`signal`, `fetch`) |
+
+## Returns
+
+`Result<{ eventLogs: QueryEvent[], hits: Hits, validForTick: number }, QubicRpcError>` — matching events, total hit count, and the tick at which the result was valid.

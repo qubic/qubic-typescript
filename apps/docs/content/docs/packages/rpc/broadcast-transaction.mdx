@@ -1,0 +1,32 @@
+---
+title: broadcastTransaction
+description: Broadcasts a signed, base64-encoded transaction to the Qubic network and returns the number of peers it was sent to.
+---
+
+## Signature
+
+```ts
+live.broadcastTransaction(encodedTransaction, opts?): Promise<Result<BroadcastTransactionResponse, QubicRpcError>>
+```
+
+## Purpose
+
+Submit a signed transaction to the network. Use `buildTransaction` and `signTransaction` from `@qubic.org/tx` to produce the encoded transaction.
+
+```ts
+const result = await live.broadcastTransaction(encodedTransaction)
+if (!result.ok) throw result.error
+
+console.log(`Broadcast to ${result.value.peersBroadcastedTo} peers`)
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `encodedTransaction` | `string` | Base64-encoded signed transaction |
+| `opts` | `RequestOptions` | Optional per-request overrides (`signal`, `fetch`) |
+
+## Returns
+
+`Result<BroadcastTransactionResponse, QubicRpcError>` — contains `peersBroadcastedTo: number` indicating how many peers received the transaction.

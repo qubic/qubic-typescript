@@ -1,0 +1,49 @@
+---
+title: getBalance
+description: Returns the QU balance and transfer history for a Qubic identity, with numeric fields as bigint.
+---
+
+## Signature
+
+```ts
+live.getBalance(identity, opts?): Promise<Result<QubicBalance, QubicRpcError>>
+```
+
+## Purpose
+
+Fetch the current balance and epoch-level transfer totals for an identity. All amounts are returned as `bigint` to preserve precision.
+
+```ts
+import { toIdentity } from "@qubic.org/types"
+
+const result = await live.getBalance(
+  toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
+)
+if (!result.ok) throw result.error
+
+console.log(result.value.balance)           // bigint QU amount
+console.log(result.value.validForTick)      // tick at which the balance was valid
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `identity` | `string` | 60-character Qubic identity |
+| `opts` | `RequestOptions` | Optional per-request overrides (`signal`, `fetch`) |
+
+## Returns
+
+`Result<QubicBalance, QubicRpcError>` — balance and transfer history for the identity.
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | `string` | The identity |
+| `balance` | `bigint` | Current QU balance |
+| `validForTick` | `number` | Tick at which this balance was computed |
+| `latestIncomingTransferTick` | `number` | Most recent incoming transfer tick |
+| `latestOutgoingTransferTick` | `number` | Most recent outgoing transfer tick |
+| `incomingAmount` | `bigint` | Total QU received in this epoch |
+| `outgoingAmount` | `bigint` | Total QU sent in this epoch |
+| `numberOfIncomingTransfers` | `number` | Count of incoming transfers |
+| `numberOfOutgoingTransfers` | `number` | Count of outgoing transfers |

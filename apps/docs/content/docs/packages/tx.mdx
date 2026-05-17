@@ -1,0 +1,245 @@
+---
+title: "@qubic.org/tx"
+description: Binary transaction builder, signer, verifier, and payload codec. The low-level layer beneath @qubic.org/wallet.
+---
+
+[![npm](https://img.shields.io/npm/v/@qubic.org/tx?style=flat-square)](https://www.npmjs.com/package/@qubic.org/tx)
+
+`@qubic.org/tx` handles the full transaction lifecycle at the binary level: header serialization, SchnorrQ signing, base64 encoding for broadcast, and hash computation. Most apps should use [`@qubic.org/wallet`](/docs/packages/wallet) instead, which wraps this package with a friendlier API.
+
+<Tabs items={["Bun", "npm", "pnpm"]}>
+<Tab value="Bun">
+```bash
+bun add @qubic.org/tx
+```
+</Tab>
+<Tab value="npm">
+```bash
+npm install @qubic.org/tx
+```
+</Tab>
+<Tab value="pnpm">
+```bash
+pnpm add @qubic.org/tx
+```
+</Tab>
+</Tabs>
+
+## Concepts
+
+### Transaction anatomy
+
+A Qubic transaction has three parts:
+
+```
+[  header: 80 bytes  ][  payload: 0–1024 bytes  ][  signature: 64 bytes  ]
+```
+
+The header encodes:
+
+| Field | Size | Description |
+|---|---|---|
+| `sourcePublicKey` | 32 B | Sender's FourQ public key |
+| `destinationPublicKey` | 32 B | Recipient's FourQ public key |
+| `amount` | 8 B (LE) | Transfer amount in QU |
+| `targetTick` | 4 B (LE) | Tick by which the node must process this TX |
+| `inputType` | 2 B (LE) | Procedure index (0 for plain transfers) |
+| `inputSize` | 2 B (LE) | Payload byte length |
+
+### Tick window
+
+`targetTick` must be greater than `currentTick`. The network rejects transactions whose target tick has already passed. A common convention is `targetTick = currentTick + 5`.
+
+### Encoded vs signed vs raw
+
+There are three forms of a transaction:
+
+1. **Unsigned bytes** — output of `buildTransaction`. No signature appended.
+2. **Signed bytes** — output of `signTransaction`. Header + payload + 64-byte signature.
+3. **Encoded** — output of `encodeTransaction`. Base64 string, ready for `broadcastTransaction`.
+
+### Payload field types
+
+`buildPayload` encodes structured inputs into binary using Qubic's little-endian field layout.
+
+| Type | Size | Notes |
+|---|---|---|
+| `uint8` / `sint8` | 1 B | |
+| `uint16` / `sint16` | 2 B LE | |
+| `uint32` / `sint32` | 4 B LE | |
+| `uint64` / `sint64` | 8 B LE | Use `bigint` values |
+| `uint128` | 16 B LE | Use `bigint` values |
+| `id` | 32 B | Identity string → 32-byte public key via injected converter |
+| `bytes` | N B | Raw bytes, fixed length |
+| `array` | N × element | Fixed-length array of a primitive type |
+| `struct` | varies | Nested struct reference |
+
+## API reference
+
+### `buildTransaction(input)`
+
+Constructs the unsigned 80-byte transaction header, optionally followed by a payload.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `input.sourcePublicKey` | `Uint8Array` | 32-byte sender public key. |
+| `input.destinationPublicKey` | `Uint8Array` | 32-byte destination public key. |
+| `input.amount` | `bigint` | Transfer amount in QU. |
+| `input.targetTick` | `number` | Target processing tick. |
+| `input.inputType` | `number` | Procedure index. Use `0` for plain transfers. |
+| `input.payload` | `Uint8Array` | Optional. Smart contract input payload. |
+| `input.currentTick` | `number` | Optional. Current tick — used to validate `targetTick`. |
+
+**Returns** `Uint8Array` — unsigned transaction bytes (header + payload, no signature).
+
+**Throws**
+- `PayloadTooLargeError` — if the payload exceeds 1024 bytes.
+- `TickInThePastError` — if `targetTick <= currentTick` (only when `currentTick` is provided).
+
+---
+
+### `signTransaction(txBytes, seed)`
+
+Appends a SchnorrQ signature to unsigned transaction bytes.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `txBytes` | `Uint8Array` | Unsigned transaction bytes from `buildTransaction`. |
+| `seed` | `Seed` | The sender's seed. |
+
+**Returns** `Promise<Uint8Array>` — signed bytes (header + payload + 64-byte signature).
+
+**Throws** `InvalidSeedError`
+
+---
+
+### `encodeTransaction(signedTx)`
+
+Base64-encodes signed transaction bytes for the broadcast API.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `signedTx` | `Uint8Array` | Signed bytes from `signTransaction`. |
+
+**Returns** `Base64`
+
+<Callout type="warn">
+  Pass the **signed** bytes, not the unsigned bytes. Encoding unsigned bytes produces a transaction with an empty signature that the network will reject.
+</Callout>
+
+---
+
+### `decodeTransaction(bytes)`
+
+Parses all fields from raw transaction bytes.
+
+**Returns** `DecodedTransaction` — `{ sourcePublicKey, destinationPublicKey, amount, targetTick, inputType, inputSize, payload, signature }`
+
+---
+
+### `computeTransactionHash(signedTxBytes)`
+
+Computes the 60-character transaction hash from signed bytes. The hash is `K12(signedTxBytes, 32)` encoded as base-26 with a 4-char checksum.
+
+**Returns** `TxHash`
+
+---
+
+### `verifyTransactionSignature(signedTxBytes)`
+
+Verifies the SchnorrQ signature embedded in signed transaction bytes.
+
+**Returns** `boolean`
+
+Never throws. Returns `false` for malformed inputs.
+
+---
+
+### `buildPayload(fields)`
+
+Serializes a structured payload into binary using Qubic's little-endian layout. Use this when constructing transactions for contracts that aren't covered by `@qubic.org/contracts`.
+
+**Parameters**
+
+`fields` is an array of field descriptors. Each descriptor has `type` and `value`:
+
+```ts
+import { buildPayload } from "@qubic.org/tx"
+
+const payload = buildPayload([
+  { type: "uint64", value: 10_000_000n },
+  { type: "uint32", value: 5 },
+  { type: "id", value: "CFBMEMZOI...", identityToPublicKey },
+])
+```
+
+**Returns** `Uint8Array`
+
+**Throws** `PayloadTooLargeError` — if the encoded result exceeds 1024 bytes.
+
+---
+
+### `BinaryReader` / `BinaryWriter`
+
+Low-level little-endian reader and writer classes. Use these when building custom protocol extensions or decoding raw network frames.
+
+```ts
+import { BinaryWriter } from "@qubic.org/tx"
+
+const w = new BinaryWriter(16)
+w.writeUint32(42)
+w.writeUint64(1_000_000n)
+const bytes = w.toUint8Array()
+```
+
+## Complete example
+
+Build, sign, encode, and verify a smart contract transaction:
+
+```ts title="build-tx.ts"
+import {
+  buildTransaction,
+  signTransaction,
+  encodeTransaction,
+  computeTransactionHash,
+  verifyTransactionSignature,
+  buildPayload,
+} from "@qubic.org/tx"
+import { generateRandomSeed, publicKeyFromSeed, identityToPublicKey } from "@qubic.org/crypto"
+import { toIdentity } from "@qubic.org/types"
+
+const seed = generateRandomSeed()
+const sourcePublicKey = publicKeyFromSeed(seed)
+
+// Zero-address destination for smart contract calls
+const destinationPublicKey = new Uint8Array(32)
+
+const payload = buildPayload([
+  { type: "uint64", value: 10_000_000n },
+])
+
+const currentTick = 25_000_000
+const unsigned = buildTransaction({
+  sourcePublicKey,
+  destinationPublicKey,
+  amount: 10_000_000n,
+  targetTick: currentTick + 5,
+  inputType: 6,
+  payload,
+  currentTick,
+})
+
+const signed = await signTransaction(unsigned, seed)
+const encoded = encodeTransaction(signed)
+const hash = computeTransactionHash(signed)
+
+console.log("Hash:", hash)
+console.log("Valid signature:", verifyTransactionSignature(signed)) // true
+console.log("Encoded (first 20 chars):", encoded.slice(0, 20))
+```

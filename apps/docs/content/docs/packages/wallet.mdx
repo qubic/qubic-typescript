@@ -1,0 +1,258 @@
+---
+title: "@qubic.org/wallet"
+description: Seed management, encrypted vault (AES-256-GCM), wallet object, and transaction signing helpers.
+---
+
+[![npm](https://img.shields.io/npm/v/@qubic.org/wallet?style=flat-square)](https://www.npmjs.com/package/@qubic.org/wallet)
+
+`@qubic.org/wallet` is the recommended entry point for most applications that need to send transactions. It wraps `@qubic.org/tx` and `@qubic.org/crypto` with a simpler API and adds an encrypted vault for safe seed storage.
+
+<Tabs items={["Bun", "npm", "pnpm"]}>
+<Tab value="Bun">
+```bash
+bun add @qubic.org/wallet
+```
+</Tab>
+<Tab value="npm">
+```bash
+npm install @qubic.org/wallet
+```
+</Tab>
+<Tab value="pnpm">
+```bash
+pnpm add @qubic.org/wallet
+```
+</Tab>
+</Tabs>
+
+## Concepts
+
+### Seed vs wallet
+
+A **seed** is a 55-character lowercase string — raw private key material. A **wallet** is a stateful object derived from a seed that caches the public key and identity, and exposes transaction builders. Create a wallet with `createWallet(seed)`.
+
+### `buildTransfer` vs `buildScTransaction`
+
+- `buildTransfer` — plain QU transfer to any Qubic identity.
+- `buildScTransaction` — smart contract invocation. Automatically routes to the zero-address destination (`SC_DESTINATION`) and attaches the `inputType` and `payload` you provide.
+
+### Vault encryption
+
+The vault uses AES-256-GCM with PBKDF2-SHA256 at 600,000 iterations for key derivation. A random 16-byte salt and 12-byte IV are generated per vault creation. The resulting JSON is safe to store in `localStorage`, on disk, or in a database — it cannot be decrypted without the password.
+
+<Callout type="warn">
+  The vault password is not stored anywhere. If you lose it, the seeds are unrecoverable.
+</Callout>
+
+## API reference
+
+### `generateSeed()`
+
+Generates a cryptographically secure random 55-character seed.
+
+**Returns** `Seed`
+
+```ts
+import { generateSeed } from "@qubic.org/wallet"
+
+const seed = generateSeed()
+```
+
+---
+
+### `toSeed(s)`
+
+Parses and validates a string as a `Seed`.
+
+**Throws** `InvalidSeedError` — if the string is not 55 lowercase characters.
+
+---
+
+### `validateSeed(s)`
+
+Returns `true` if `s` is a valid seed; `false` otherwise. Never throws.
+
+---
+
+### `createWallet(seed)`
+
+Creates a wallet object from a seed.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `seed` | `Seed` | A valid 55-character lowercase seed. |
+
+**Returns** `Wallet`
+
+The `Wallet` object has:
+
+| Property / Method | Type | Description |
+|---|---|---|
+| `identity` | `Identity` | The 60-char Qubic address derived from the seed. |
+| `publicKey` | `Uint8Array` | The 32-byte FourQ public key. |
+| `buildTransfer(params)` | `Promise<TxResult>` | Build a signed QU transfer. |
+| `buildScTransaction(params)` | `Promise<TxResult>` | Build a signed smart contract call. |
+
+`TxResult` shape: `{ encoded: Base64, hash: TxHash, bytes: Uint8Array }`
+
+Use `encoded` for `broadcastTransaction`, `hash` to track the transaction later, and `bytes` if you need the raw signed bytes.
+
+---
+
+### `wallet.buildTransfer(params)`
+
+Builds, signs, and encodes a QU transfer transaction.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `params.destination` | `Identity` | Recipient identity. |
+| `params.amount` | `bigint` | Amount in QU. |
+| `params.targetTick` | `number` | Tick by which the node must process the TX. |
+| `params.currentTick` | `number` | Optional. Current tick — validates `targetTick`. |
+
+**Returns** `Promise<{ encoded: Base64, hash: TxHash, bytes: Uint8Array }>`
+
+**Throws** `TickInThePastError` — if `targetTick <= currentTick`.
+
+```ts
+const { encoded, hash } = await wallet.buildTransfer({
+  destination: toIdentity("CFBMEMZOI..."),
+  amount: 1_000_000n,
+  targetTick: tick + 5,
+  currentTick: tick,
+})
+```
+
+---
+
+### `wallet.buildScTransaction(params)`
+
+Builds, signs, and encodes a smart contract invocation.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `params.destination` | `Identity` | Contract destination (usually the zero-address). |
+| `params.amount` | `bigint` | Amount to lock or transfer to the contract. |
+| `params.targetTick` | `number` | Target processing tick. |
+| `params.inputType` | `number` | Procedure index in the contract ABI. |
+| `params.payload` | `Uint8Array` | Encoded contract input payload. |
+| `params.currentTick` | `number` | Optional. |
+
+**Returns** `Promise<{ encoded: Base64, hash: TxHash, bytes: Uint8Array }>`
+
+---
+
+### `createVault(password, seeds)`
+
+Creates an encrypted vault containing one or more seeds.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `password` | `string` | Encryption password. Not stored. |
+| `seeds` | `Seed[]` | Array of seeds to encrypt. |
+
+**Returns** `Promise<VaultData>`
+
+```ts
+import { generateSeed, createVault } from "@qubic.org/wallet"
+
+const vault = await createVault("strong-password", [generateSeed()])
+```
+
+---
+
+### `unlockVault(vault, password)`
+
+Decrypts a vault and returns its seeds.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `vault` | `VaultData` | The vault object to decrypt. |
+| `password` | `string` | The vault's encryption password. |
+
+**Returns** `Promise<Seed[]>` — seeds in the order they were added.
+
+**Throws**
+- `VaultDecryptionError` — if the password is wrong or the ciphertext is corrupted.
+- `InvalidVaultError` — if the vault structure is malformed.
+
+---
+
+### `addToVault(vault, password, newSeed)`
+
+Adds a seed to an existing vault. Requires the current password to re-encrypt.
+
+**Returns** `Promise<VaultData>`
+
+---
+
+### `exportVault(vault)`
+
+Serializes a vault to a JSON string for persistence.
+
+**Returns** `string`
+
+---
+
+### `importVault(json)`
+
+Parses and validates a vault JSON string.
+
+**Returns** `VaultData`
+
+**Throws** `InvalidVaultError` — if the JSON is malformed or missing required fields.
+
+## Complete example
+
+Full vault lifecycle from creation to transaction signing:
+
+```ts title="vault-lifecycle.ts"
+import {
+  generateSeed,
+  createWallet,
+  createVault,
+  exportVault,
+  importVault,
+  unlockVault,
+} from "@qubic.org/wallet"
+import { createLiveClient } from "@qubic.org/rpc"
+import { toIdentity } from "@qubic.org/types"
+
+// 1. Create and persist a vault
+const seed = generateSeed()
+const vault = await createVault("strong-password", [seed])
+const json = exportVault(vault)
+// In a real app: write json to disk / localStorage
+
+// 2. Later: reimport, unlock, and use
+const reloaded = importVault(json)
+const [storedSeed] = await unlockVault(reloaded, "strong-password")
+
+const wallet = createWallet(storedSeed)
+console.log("Identity:", wallet.identity)
+
+// 3. Send a transfer
+const live = createLiveClient()
+const { tick } = await live.getTickInfo()
+
+const { encoded, hash } = await wallet.buildTransfer({
+  destination: toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL"),
+  amount: 1_000_000n,
+  targetTick: tick + 5,
+  currentTick: tick,
+})
+
+const result = await live.broadcastTransaction(encoded)
+console.log(`Broadcast to ${result.peersBroadcastedTo} peers`)
+console.log(`TX hash: ${hash}`)
+```

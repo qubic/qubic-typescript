@@ -1,0 +1,177 @@
+---
+title: Call a smart contract
+description: Build, sign, and broadcast a smart contract procedure call using @qubic.org/contracts and @qubic.org/wallet.
+---
+
+Smart contract calls in Qubic are regular transactions sent to the contract's canonical zero-based identity (`AAAA...`), with an `inputType` and an encoded payload. This guide uses the Qearn **Lock** procedure as a concrete example, but the pattern applies to any contract in `@qubic.org/contracts`.
+
+## Prerequisites
+
+<Tabs items={["Bun", "npm", "pnpm"]}>
+<Tab value="Bun">
+```bash
+bun add @qubic.org/contracts @qubic.org/wallet @qubic.org/rpc @qubic.org/types
+```
+</Tab>
+<Tab value="npm">
+```bash
+npm install @qubic.org/contracts @qubic.org/wallet @qubic.org/rpc @qubic.org/types
+```
+</Tab>
+<Tab value="pnpm">
+```bash
+pnpm add @qubic.org/contracts @qubic.org/wallet @qubic.org/rpc @qubic.org/types
+```
+</Tab>
+</Tabs>
+
+## How contract calls work
+
+Every Qubic smart contract has a fixed **contract index** (e.g. Qearn is `9`) and a canonical **destination identity** derived from that index. Procedure calls pass an `inputType` number and an encoded binary `payload`. You never construct the destination manually — `buildScTransaction` handles it.
+
+```
+Contract call = { contractIndex, inputType, payload, amount } → SC transaction
+```
+
+## Steps
+
+<Steps>
+
+<Step>
+
+### Set up the wallet and RPC client
+
+```ts
+import { createWallet } from "@qubic.org/wallet"
+import { createLiveClient } from "@qubic.org/rpc"
+
+const live = createLiveClient()
+const wallet = createWallet(process.env.SEED!)
+const { tick } = await live.getTickInfo()
+```
+
+</Step>
+
+<Step>
+
+### Build the payload
+
+`@qubic.org/contracts` exports a typed payload builder for every procedure. `buildQearnLockInput` validates the input fields and returns a `Uint8Array`:
+
+```ts
+import { buildQearnLockInput, QEARN_CONTRACT_INDEX, QEARN_LOCK_INPUT_TYPE } from "@qubic.org/contracts"
+
+const payload = buildQearnLockInput({ amount: 10_000_000n })
+```
+
+The builder throws `PayloadBuildError` synchronously on bad input (wrong types, missing fields), so you get an error before sending anything to the network.
+
+</Step>
+
+<Step>
+
+### Build the SC transaction
+
+`buildScTransaction` constructs the transaction, sets the correct contract destination identity, and signs it with your seed:
+
+```ts
+import { toIdentity } from "@qubic.org/types"
+
+// All SC calls go to the zero-address for the given contract index.
+// buildScTransaction derives this automatically from contractIndex.
+const { encoded, hash } = await wallet.buildScTransaction({
+  destination: toIdentity("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"),
+  amount: 10_000_000n,
+  targetTick: tick + 5,
+  currentTick: tick,
+  inputType: QEARN_LOCK_INPUT_TYPE,
+  payload,
+})
+```
+
+`amount` should equal the QU you want the contract to receive (for Qearn Lock, this is the amount you're locking). For procedures that don't transfer funds, pass `0n`.
+
+</Step>
+
+<Step>
+
+### Broadcast
+
+```ts
+const result = await live.broadcastTransaction(encoded)
+console.log(`TX hash: ${hash}`)
+console.log(`Broadcast to ${result.peersBroadcastedTo} peers`)
+```
+
+</Step>
+
+</Steps>
+
+## Using the namespace object
+
+`@qubic.org/contracts` also exports a namespace that bundles all builders, decoders, and constants for a contract:
+
+```ts
+import { qearn } from "@qubic.org/contracts"
+
+// Same as buildQearnLockInput
+const payload = qearn.buildLockInput({ amount: 10_000_000n })
+
+// Access constants
+console.log(qearn.contractIndex)    // 9
+console.log(qearn.LOCK_INPUT_TYPE)  // 6
+```
+
+## Complete example
+
+```ts title="qearn-lock.ts"
+import { qearn } from "@qubic.org/contracts"
+import { createWallet } from "@qubic.org/wallet"
+import { createLiveClient } from "@qubic.org/rpc"
+import { toIdentity } from "@qubic.org/types"
+
+const live = createLiveClient()
+const wallet = createWallet(process.env.SEED!)
+const { tick } = await live.getTickInfo()
+
+const payload = qearn.buildLockInput({ amount: 10_000_000n })
+
+const { encoded, hash } = await wallet.buildScTransaction({
+  destination: toIdentity("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"),
+  amount: 10_000_000n,
+  targetTick: tick + 5,
+  currentTick: tick,
+  inputType: qearn.LOCK_INPUT_TYPE,
+  payload,
+})
+
+const result = await live.broadcastTransaction(encoded)
+console.log(`TX hash: ${hash}`)
+console.log(`Broadcast to ${result.peersBroadcastedTo} peers`)
+```
+
+Run it:
+
+```bash
+SEED=your_seed bun qearn-lock.ts
+```
+
+## Other contracts
+
+The same pattern works for any procedure in any supported contract — find the contract namespace in the [`@qubic.org/contracts` reference](/docs/packages/contracts), pick the right `build*Input` builder and `*_INPUT_TYPE` constant, and wire them into `buildScTransaction`.
+
+| Swap `qearn.buildLockInput` with | `wallet.buildScTransaction` `inputType` | Contract |
+|---|---|---|
+| `buildQxAddToAskOrderInput` | `QX_ADD_TO_ASK_ORDER_INPUT_TYPE` | Qx |
+| `buildQuotteryBetInput` | `QUOTTERY_BET_INPUT_TYPE` | Quottery |
+| `buildQvaultProposeSCInput` | `QVAULT_PROPOSE_SC_INPUT_TYPE` | QVault |
+
+See the [contracts package reference](/docs/packages/contracts) for the full list.
+
+## Common errors
+
+| Error | Cause | Fix |
+|---|---|---|
+| `PayloadBuildError` | Bad input to a builder (wrong field type, missing field) | Check the TypeScript type for the builder's input |
+| `QubicRpcError` on broadcast | Gateway unreachable or transaction malformed | Fetch a fresh tick and retry |
+| Transaction not confirmed | Target tick passed before broadcast | Use `tick + 10` for slower networks |

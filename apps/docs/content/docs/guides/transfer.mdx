@@ -1,0 +1,164 @@
+---
+title: Send a QU transfer
+description: Build, sign, and broadcast a QU transfer in four steps using @qubic.org/wallet and @qubic.org/rpc.
+---
+
+This guide walks through the minimum code needed to transfer QU from one identity to another. The same pattern applies to any transfer — only the destination and amount change.
+
+## Prerequisites
+
+Install the required packages:
+
+<Tabs items={["Bun", "npm", "pnpm"]}>
+<Tab value="Bun">
+```bash
+bun add @qubic.org/wallet @qubic.org/rpc @qubic.org/types
+```
+</Tab>
+<Tab value="npm">
+```bash
+npm install @qubic.org/wallet @qubic.org/rpc @qubic.org/types
+```
+</Tab>
+<Tab value="pnpm">
+```bash
+pnpm add @qubic.org/wallet @qubic.org/rpc @qubic.org/types
+```
+</Tab>
+</Tabs>
+
+## Steps
+
+<Steps>
+
+<Step>
+
+### Create a wallet from a seed
+
+A wallet holds your identity and signs transactions. Pass a 55-character lowercase seed string.
+
+```ts
+import { createWallet } from "@qubic.org/wallet"
+
+const wallet = createWallet("your_seed_here_aaaaaa...")
+console.log("Identity:", wallet.identity)
+```
+
+<Callout type="warn">
+  Never hard-code a real seed in source code. Read it from an environment variable or a secrets manager.
+</Callout>
+
+</Step>
+
+<Step>
+
+### Connect to the network and fetch the current tick
+
+The target tick determines when the transaction is valid. Set it a few ticks ahead of the current tick to give nodes time to process.
+
+```ts
+import { createLiveClient } from "@qubic.org/rpc"
+
+const live = createLiveClient()
+const { tick } = await live.getTickInfo()
+```
+
+By default `createLiveClient` connects to the public Qubic RPC gateway.
+
+</Step>
+
+<Step>
+
+### Build and sign the transaction
+
+`buildTransfer` returns `{ encoded, hash }`. `encoded` is the signed transaction bytes ready to broadcast; `hash` is the canonical transaction hash.
+
+```ts
+import { toIdentity } from "@qubic.org/types"
+
+const destination = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
+
+const { encoded, hash } = await wallet.buildTransfer({
+  destination,
+  amount: 1_000_000n,       // amount in QU (bigint)
+  targetTick: tick + 5,     // ~5 ticks ahead
+  currentTick: tick,
+})
+
+console.log("TX hash:", hash)
+```
+
+`amount` is a `bigint`. Use `n` suffix literals (`100_000n`) or `BigInt("100000")`.
+
+</Step>
+
+<Step>
+
+### Broadcast
+
+```ts
+const result = await live.broadcastTransaction(encoded)
+console.log(`Broadcast to ${result.peersBroadcastedTo} peers`)
+```
+
+`broadcastTransaction` throws `QubicRpcError` on network failure. The node does not confirm inclusion at this point — you need to query the tick's transactions after the target tick passes to confirm.
+
+</Step>
+
+</Steps>
+
+## Complete example
+
+```ts title="transfer.ts"
+import { createWallet } from "@qubic.org/wallet"
+import { createLiveClient } from "@qubic.org/rpc"
+import { toIdentity } from "@qubic.org/types"
+
+const live = createLiveClient()
+const wallet = createWallet(process.env.SEED!)
+
+const { tick } = await live.getTickInfo()
+
+const destination = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
+
+const { encoded, hash } = await wallet.buildTransfer({
+  destination,
+  amount: 1_000_000n,
+  targetTick: tick + 5,
+  currentTick: tick,
+})
+
+const result = await live.broadcastTransaction(encoded)
+console.log(`TX hash: ${hash}`)
+console.log(`Broadcast to ${result.peersBroadcastedTo} peers`)
+```
+
+Run it:
+
+```bash
+SEED=your_seed bun transfer.ts
+```
+
+## Confirming the transaction
+
+After the target tick has passed, query the archive to confirm inclusion:
+
+```ts
+import { createQueryClient } from "@qubic.org/rpc"
+
+const archive = createQueryClient()
+const tx = await archive.getTransaction(hash)
+
+console.log("Included in tick:", tx.tickNumber)
+console.log("Status:", tx.transactionStatus)
+```
+
+`getTransaction` throws if the transaction is not found or the archive hasn't indexed the tick yet.
+
+## Common errors
+
+| Error | Cause | Fix |
+|---|---|---|
+| `QubicRpcError` on broadcast | Gateway unreachable or malformed transaction | Check the seed and amount; retry with a new `tick` |
+| `toIdentity` throws | Destination string has wrong length or invalid characters | Verify the 60-character uppercase identity string |
+| Transaction not confirmed | Target tick already passed when broadcast was sent | Fetch a fresh tick and try again |

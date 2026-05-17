@@ -3,8 +3,6 @@ title: "@qubic.org/bob"
 description: Live Qubic node client with three transports — JSON-RPC 2.0, REST, and WebSocket subscriptions. All return Result, never throw on network errors.
 ---
 
-[![npm](https://img.shields.io/npm/v/@qubic.org/bob)](https://www.npmjs.com/package/@qubic.org/bob)
-
 `@qubic.org/bob` wraps the Bob indexer with three transport modes that share a consistent `Result<T, E>` error model. Nothing throws on transport failures — errors appear as `Result.err` values you handle explicitly.
 
 <Tabs items={["Bun", "npm", "pnpm"]}>

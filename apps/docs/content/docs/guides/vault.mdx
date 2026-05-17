@@ -1,0 +1,198 @@
+---
+title: Manage a vault
+description: Create, encrypt, unlock, and use a vault for secure seed storage using @qubic.org/wallet.
+---
+
+A vault stores one or more seeds encrypted with AES-256-GCM using a password-derived key (PBKDF2-SHA256, 600,000 iterations). Seeds never leave the vault in plaintext — you get identities out, not seeds.
+
+## Create a vault
+
+```ts
+import { createVault, generateSeed } from "@qubic.org/wallet"
+
+const seed = generateSeed()
+
+const vault = await createVault({
+  password: "my-strong-password",
+  seeds: [seed],
+})
+```
+
+`createVault` returns a `VaultData` object — a serializable blob you can store anywhere (localStorage, a file, a database). It contains no plaintext seed material.
+
+## Export and persist
+
+`VaultData` is a plain object. Serialize it however you prefer:
+
+```ts
+import { exportVault } from "@qubic.org/wallet"
+
+const json = exportVault(vault)
+localStorage.setItem("qubic-vault", json)
+```
+
+## Import and unlock
+
+```ts
+import { importVault, unlockVault } from "@qubic.org/wallet"
+
+const raw = localStorage.getItem("qubic-vault")!
+const vault = importVault(raw)
+
+const unlockedVault = await unlockVault(vault, "my-strong-password")
+```
+
+`unlockVault` throws if the password is wrong or the vault data is corrupt.
+
+## Derive identities
+
+After unlocking, iterate the identities without ever touching raw seed bytes:
+
+```ts
+for (const identity of unlockedVault.identities) {
+  console.log("Identity:", identity)
+}
+```
+
+## Sign transactions
+
+Create a wallet from an unlocked vault identity to sign:
+
+```ts
+import { createWalletFromVault } from "@qubic.org/wallet"
+import { createLiveClient } from "@qubic.org/rpc"
+import { toIdentity } from "@qubic.org/types"
+
+const live = createLiveClient()
+const { tick } = await live.getTickInfo()
+
+const wallet = createWalletFromVault(unlockedVault, unlockedVault.identities[0])
+
+const { encoded, hash } = await wallet.buildTransfer({
+  destination: toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL"),
+  amount: 1_000_000n,
+  targetTick: tick + 5,
+  currentTick: tick,
+})
+
+await live.broadcastTransaction(encoded)
+```
+
+## Add seeds to an existing vault
+
+```ts
+import { addSeedToVault } from "@qubic.org/wallet"
+
+const newSeed = generateSeed()
+const updatedVault = await addSeedToVault(vault, newSeed, "my-strong-password")
+```
+
+Re-export and persist the updated vault data after adding seeds.
+
+## React with VaultProvider
+
+In a React app, `VaultProvider` manages vault lifecycle. The unlocked seed is stored in a `useRef` — it never appears in React state or DevTools.
+
+```tsx
+import { QubicProvider, VaultProvider, useVaultState } from "@qubic.org/react"
+import { createLiveClient } from "@qubic.org/rpc"
+import { importVault } from "@qubic.org/wallet"
+
+const live = createLiveClient()
+const vaultData = importVault(localStorage.getItem("qubic-vault")!)
+
+export function App() {
+  return (
+    <QubicProvider liveClient={live}>
+      <VaultProvider vaultData={vaultData} persistSession autoLockMs={15 * 60_000}>
+        <WalletUI />
+      </VaultProvider>
+    </QubicProvider>
+  )
+}
+
+function WalletUI() {
+  const { isUnlocked, identities, isUnlocking, error, unlock, lock } = useVaultState()
+
+  if (!isUnlocked) {
+    return (
+      <form onSubmit={(e) => {
+        e.preventDefault()
+        const pw = (e.currentTarget.elements.namedItem("password") as HTMLInputElement).value
+        unlock(pw)
+      }}>
+        <input name="password" type="password" placeholder="Password" />
+        <button type="submit" disabled={isUnlocking}>
+          {isUnlocking ? "Unlocking…" : "Unlock"}
+        </button>
+        {error && <p>{error.message}</p>}
+      </form>
+    )
+  }
+
+  return (
+    <div>
+      {identities.map((id) => (
+        <p key={id}>Identity: {id}</p>
+      ))}
+      <button type="button" onClick={lock}>Lock</button>
+    </div>
+  )
+}
+```
+
+### Session persistence
+
+Pass `persistSession` to store the unlocked key in IndexedDB with `extractable: false`. The vault stays unlocked through page reloads within the same browser session:
+
+```tsx
+<VaultProvider vaultData={vaultData} persistSession>
+  {children}
+</VaultProvider>
+```
+
+The raw key bytes can never be read back — it can only sign. Auto-lock clears the key after inactivity:
+
+```tsx
+<VaultProvider vaultData={vaultData} persistSession autoLockMs={10 * 60_000}>
+```
+
+## Complete server-side example
+
+```ts title="vault-example.ts"
+import {
+  generateSeed,
+  createVault,
+  exportVault,
+  importVault,
+  unlockVault,
+  createWalletFromVault,
+} from "@qubic.org/wallet"
+import { createLiveClient } from "@qubic.org/rpc"
+import { toIdentity } from "@qubic.org/types"
+import { writeFileSync, readFileSync } from "node:fs"
+
+// 1. Create and persist vault
+const seed = generateSeed()
+const vault = await createVault({ password: "hunter2", seeds: [seed] })
+writeFileSync("vault.json", exportVault(vault))
+
+// 2. Later: load and unlock
+const loaded = importVault(readFileSync("vault.json", "utf8"))
+const unlocked = await unlockVault(loaded, "hunter2")
+
+// 3. Sign and broadcast a transfer
+const live = createLiveClient()
+const { tick } = await live.getTickInfo()
+const wallet = createWalletFromVault(unlocked, unlocked.identities[0])
+
+const { encoded, hash } = await wallet.buildTransfer({
+  destination: toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL"),
+  amount: 500_000n,
+  targetTick: tick + 5,
+  currentTick: tick,
+})
+
+const result = await live.broadcastTransaction(encoded)
+console.log(`TX ${hash} broadcast to ${result.peersBroadcastedTo} peers`)
+```

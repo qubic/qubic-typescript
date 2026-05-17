@@ -1,0 +1,289 @@
+---
+title: Build a React dApp
+description: Wire up QubicProvider, WalletProvider, wallet connection, live balances, and a transfer form in a complete React app.
+---
+
+This guide builds a minimal but complete Qubic dApp from scratch: wallet connection, balance display, live tick updates, and a transfer form.
+
+## Prerequisites
+
+<Tabs items={["Bun", "npm", "pnpm"]}>
+<Tab value="Bun">
+```bash
+bun add @qubic.org/react @qubic.org/rpc @qubic.org/types @tanstack/react-query
+```
+</Tab>
+<Tab value="npm">
+```bash
+npm install @qubic.org/react @qubic.org/rpc @qubic.org/types @tanstack/react-query
+```
+</Tab>
+<Tab value="pnpm">
+```bash
+pnpm add @qubic.org/react @qubic.org/rpc @qubic.org/types @tanstack/react-query
+```
+</Tab>
+</Tabs>
+
+## Provider hierarchy
+
+Providers should be set up once, outside any component, and nested as shown:
+
+```tsx title="app.tsx"
+import { createLiveClient, createQueryClient } from "@qubic.org/rpc"
+import {
+  QubicProvider,
+  WalletProvider,
+  extensionConnector,
+} from "@qubic.org/react"
+
+// Create clients outside components — they are stable across renders
+const live = createLiveClient()
+const archive = createQueryClient()
+const connectors = [extensionConnector]
+
+export function App() {
+  return (
+    <QubicProvider liveClient={live} archiveClient={archive}>
+      <WalletProvider connectors={connectors}>
+        <Dashboard />
+      </WalletProvider>
+    </QubicProvider>
+  )
+}
+```
+
+`QubicProvider` is required. `WalletProvider` adds extension/WalletConnect wallet flows. `VaultProvider` (not shown here) adds seed-based signing — include it if your app manages seeds directly.
+
+## Wallet connection
+
+```tsx title="connect-button.tsx"
+import { useWallet } from "@qubic.org/react"
+
+export function ConnectButton() {
+  const { isConnected, account, connectors, connect, disconnect, isConnecting, error } = useWallet()
+
+  if (isConnected && account) {
+    return (
+      <div>
+        <span>{account.identity}</span>
+        <button type="button" onClick={disconnect}>Disconnect</button>
+      </div>
+    )
+  }
+
+  const available = connectors.filter((c) => c.isAvailable())
+
+  return (
+    <div>
+      {available.map((c) => (
+        <button
+          key={c.id}
+          type="button"
+          disabled={isConnecting}
+          onClick={() => connect(c.id)}
+        >
+          {isConnecting ? "Connecting…" : `Connect ${c.id}`}
+        </button>
+      ))}
+      {error && <p>{error.message}</p>}
+    </div>
+  )
+}
+```
+
+`extensionConnector.isAvailable()` returns `false` on SSR, so the button only renders when `window.qubic` is detected.
+
+## Live data hooks
+
+```tsx title="account-info.tsx"
+import { useBalance, useTickInfo } from "@qubic.org/react"
+import { useWallet } from "@qubic.org/react"
+import type { Identity } from "@qubic.org/types"
+
+export function AccountInfo() {
+  const { account } = useWallet()
+  const { data: tickData } = useTickInfo(5000)
+  const { data: balanceData } = useBalance(account?.identity as Identity | undefined)
+
+  return (
+    <div>
+      <p>Current tick: {tickData?.tick ?? "—"}</p>
+      <p>Balance: {balanceData?.balance?.toString() ?? "—"} QU</p>
+    </div>
+  )
+}
+```
+
+`useTickInfo(5000)` refetches every 5 seconds. `useBalance` skips the request when the identity is `undefined`.
+
+## Transfer form
+
+```tsx title="transfer-form.tsx"
+import { useSendTransfer } from "@qubic.org/react"
+import { useWallet } from "@qubic.org/react"
+import { toIdentity } from "@qubic.org/types"
+import { useState } from "react"
+
+export function TransferForm() {
+  const { account } = useWallet()
+  const { mutate, isPending, isSuccess, error, reset } = useSendTransfer()
+  const [dest, setDest] = useState("")
+  const [amount, setAmount] = useState("")
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!account) return
+
+    mutate(
+      {
+        from: account.identity,
+        destination: toIdentity(dest),
+        amount: BigInt(amount),
+      },
+      { onSuccess: () => setTimeout(reset, 3000) },
+    )
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        value={dest}
+        onChange={(e) => setDest(e.target.value)}
+        placeholder="Destination identity (60 characters)"
+        required
+      />
+      <input
+        value={amount}
+        onChange={(e) => setAmount(e.target.value)}
+        placeholder="Amount in QU"
+        type="number"
+        min="1"
+        required
+      />
+      <button type="submit" disabled={isPending || !account}>
+        {isPending ? "Sending…" : "Send"}
+      </button>
+      {isSuccess && <p>Transfer broadcast successfully.</p>}
+      {error && <p>Error: {error.message}</p>}
+    </form>
+  )
+}
+```
+
+`useSendTransfer` requires `VaultProvider` or `WalletProvider` as an ancestor to access the signing key.
+
+## Contract call mutation
+
+For a contract call instead of a plain transfer, use `useSendContractCall`:
+
+```tsx
+import { useSendContractCall } from "@qubic.org/react"
+import { qearn } from "@qubic.org/contracts"
+import { useWallet } from "@qubic.org/react"
+
+function LockForm() {
+  const { account } = useWallet()
+  const { mutate, isPending } = useSendContractCall()
+
+  return (
+    <button
+      type="button"
+      disabled={isPending || !account}
+      onClick={() =>
+        mutate({
+          from: account!.identity,
+          inputType: qearn.LOCK_INPUT_TYPE,
+          payload: qearn.buildLockInput({ amount: 10_000_000n }),
+          amount: 10_000_000n,
+        })
+      }
+    >
+      {isPending ? "Locking…" : "Lock 10 MQUSD in Qearn"}
+    </button>
+  )
+}
+```
+
+## Complete app
+
+```tsx title="app.tsx"
+import { createLiveClient, createQueryClient } from "@qubic.org/rpc"
+import {
+  QubicProvider,
+  WalletProvider,
+  extensionConnector,
+  useWallet,
+  useBalance,
+  useTickInfo,
+  useSendTransfer,
+} from "@qubic.org/react"
+import { toIdentity } from "@qubic.org/types"
+import type { Identity } from "@qubic.org/types"
+import { useState } from "react"
+
+const live = createLiveClient()
+const archive = createQueryClient()
+const connectors = [extensionConnector]
+
+export function App() {
+  return (
+    <QubicProvider liveClient={live} archiveClient={archive}>
+      <WalletProvider connectors={connectors}>
+        <Dashboard />
+      </WalletProvider>
+    </QubicProvider>
+  )
+}
+
+function Dashboard() {
+  const { isConnected, account, connect, disconnect, connectors } = useWallet()
+  const { data: tickData } = useTickInfo(5000)
+  const { data: balanceData } = useBalance(account?.identity as Identity | undefined)
+  const { mutate: sendTransfer, isPending } = useSendTransfer()
+  const [dest, setDest] = useState("")
+
+  if (!isConnected) {
+    return (
+      <div>
+        {connectors.filter((c) => c.isAvailable()).map((c) => (
+          <button key={c.id} type="button" onClick={() => connect(c.id)}>
+            Connect {c.id}
+          </button>
+        ))}
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      <p>Identity: {account?.identity}</p>
+      <p>Balance: {balanceData?.balance?.toString() ?? "—"} QU</p>
+      <p>Tick: {tickData?.tick ?? "—"}</p>
+
+      <input value={dest} onChange={(e) => setDest(e.target.value)} placeholder="Destination" />
+      <button
+        type="button"
+        disabled={isPending || !dest}
+        onClick={() =>
+          sendTransfer({
+            from: account!.identity,
+            destination: toIdentity(dest),
+            amount: 100_000n,
+          })
+        }
+      >
+        {isPending ? "Sending…" : "Send 100,000 QU"}
+      </button>
+
+      <button type="button" onClick={disconnect}>Disconnect</button>
+    </div>
+  )
+}
+```
+
+## Next steps
+
+- Add `VaultProvider` for seed-based signing without a browser extension — see the [vault guide](/docs/guides/vault).
+- Subscribe to real-time events with bob — see the [live events guide](/docs/guides/live-events).
+- Call a smart contract read function in a component — see [query a contract function](/docs/guides/contract-query).

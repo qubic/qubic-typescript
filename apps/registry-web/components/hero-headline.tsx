@@ -13,15 +13,18 @@ export function HeroHeadline() {
   const [fading, setFading] = useState(false)
 
   useEffect(() => {
+    let swap: ReturnType<typeof setTimeout>
     const id = setInterval(() => {
       setFading(true)
-      const swap = setTimeout(() => {
+      swap = setTimeout(() => {
         setIdx((i) => (i + 1) % MESSAGES.length)
         setFading(false)
       }, 350)
-      return () => clearTimeout(swap)
     }, 5500)
-    return () => clearInterval(id)
+    return () => {
+      clearInterval(id)
+      clearTimeout(swap)
+    }
   }, [])
 
   const msg = MESSAGES[idx]

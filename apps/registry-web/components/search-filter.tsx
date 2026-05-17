@@ -108,9 +108,14 @@ export function SearchFilter({ contracts }: { contracts: ContractSummary[] }) {
     })
   }, [q, sort, dir, contracts])
 
-  const maxProc = useMemo(() => Math.max(...contracts.map((c) => c.procedureCount), 1), [contracts])
-  const maxFunc = useMemo(() => Math.max(...contracts.map((c) => c.functionCount), 1), [contracts])
-  const maxStruct = useMemo(() => Math.max(...contracts.map((c) => c.structCount), 1), [contracts])
+  const { maxProc, maxFunc, maxStruct } = useMemo(
+    () => ({
+      maxProc: Math.max(...contracts.map((c) => c.procedureCount), 1),
+      maxFunc: Math.max(...contracts.map((c) => c.functionCount), 1),
+      maxStruct: Math.max(...contracts.map((c) => c.structCount), 1),
+    }),
+    [contracts],
+  )
 
   function nav(idx: number) {
     router.push(`/contract/${idx}`)

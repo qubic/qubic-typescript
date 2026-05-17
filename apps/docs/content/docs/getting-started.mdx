@@ -1,0 +1,158 @@
+---
+title: Getting started
+description: Install the SDK and send your first QU transfer in under 5 minutes.
+---
+
+This guide takes you from zero to a working, signed transaction. You only need two packages to get started.
+
+<Callout>
+  The SDK is built for [Bun](https://bun.sh). All examples use `bun` as the runtime. Node.js works too — swap `bun` for `node` and use `npm`/`pnpm` to install.
+</Callout>
+
+## Install
+
+<Tabs items={["Bun", "npm", "pnpm"]}>
+<Tab value="Bun">
+```bash
+bun add @qubic.org/wallet @qubic.org/rpc
+```
+</Tab>
+<Tab value="npm">
+```bash
+npm install @qubic.org/wallet @qubic.org/rpc
+```
+</Tab>
+<Tab value="pnpm">
+```bash
+pnpm add @qubic.org/wallet @qubic.org/rpc
+```
+</Tab>
+</Tabs>
+
+`@qubic.org/wallet` handles seed management and transaction signing. `@qubic.org/rpc` talks to the Qubic RPC gateway.
+
+## Steps
+
+<Steps>
+<Step>
+
+### Generate a seed
+
+A seed is a 55-character lowercase string that acts as your private key. Keep it secret.
+
+```ts title="send-transfer.ts"
+import { generateSeed, createWallet } from "@qubic.org/wallet"
+
+const seed = generateSeed()
+const wallet = createWallet(seed)
+
+console.log("Identity:", wallet.identity)
+// BZBQFLLBNCXEMGLOBHUVGPQVZEJYLRQTCMQCXCMQTQJAZXQCQXQCQXQCQ
+```
+
+<Callout type="warn">
+  Never hard-code a seed in source code or commit it to git. In production, load it from an environment variable or unlock it from an encrypted vault. See the [vault guide](/docs/guides/vault) for details.
+</Callout>
+
+</Step>
+<Step>
+
+### Connect to the network and fetch the current tick
+
+The tick is the Qubic equivalent of a block number. You need it to set a target tick for your transaction.
+
+```ts title="send-transfer.ts"
+import { createLiveClient } from "@qubic.org/rpc"
+
+const live = createLiveClient()
+// Defaults to https://rpc.qubic.org/live/v1
+
+const { tick, epoch } = await live.getTickInfo()
+console.log(`Tick ${tick}, epoch ${epoch}`)
+```
+
+</Step>
+<Step>
+
+### Build and sign a transfer
+
+Set `targetTick` a few ticks ahead of the current tick. The network rejects transactions whose target tick has already passed.
+
+```ts title="send-transfer.ts"
+import { toIdentity } from "@qubic.org/types"
+
+const destination = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
+
+const { encoded, hash } = await wallet.buildTransfer({
+  destination,
+  amount: 1_000_000n,    // QU amount as bigint
+  targetTick: tick + 5,
+  currentTick: tick,
+})
+```
+
+`encoded` is the base64-encoded signed transaction ready for broadcast. `hash` is the 60-character transaction hash you can use to track the transaction later.
+
+</Step>
+<Step>
+
+### Broadcast
+
+```ts title="send-transfer.ts"
+const result = await live.broadcastTransaction(encoded)
+console.log(`Broadcast to ${result.peersBroadcastedTo} peers`)
+console.log(`TX hash: ${hash}`)
+```
+
+</Step>
+</Steps>
+
+## Complete script
+
+```ts title="send-transfer.ts"
+import { generateSeed, createWallet } from "@qubic.org/wallet"
+import { createLiveClient } from "@qubic.org/rpc"
+import { toIdentity } from "@qubic.org/types"
+
+const seed = generateSeed()
+const wallet = createWallet(seed)
+const live = createLiveClient()
+
+const { tick } = await live.getTickInfo()
+
+const destination = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
+
+const { encoded, hash } = await wallet.buildTransfer({
+  destination,
+  amount: 1_000_000n,
+  targetTick: tick + 5,
+  currentTick: tick,
+})
+
+const result = await live.broadcastTransaction(encoded)
+console.log(`Peers: ${result.peersBroadcastedTo}`)
+console.log(`TX hash: ${hash}`)
+```
+
+Run it:
+
+```bash
+bun run send-transfer.ts
+```
+
+## What's next
+
+<Cards>
+  <Card title="Vault" href="/docs/guides/vault">
+    Persist seeds in an encrypted vault so you're not regenerating on every run.
+  </Card>
+  <Card title="Contract call" href="/docs/guides/contract-call">
+    Build and broadcast a smart contract transaction.
+  </Card>
+  <Card title="Wallet reference" href="/docs/packages/wallet">
+    Full API for seed management, vault, and transaction building.
+  </Card>
+  <Card title="RPC reference" href="/docs/packages/rpc">
+    All live and archive client methods.
+  </Card>
+</Cards>

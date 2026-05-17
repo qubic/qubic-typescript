@@ -1,0 +1,93 @@
+---
+title: Wallet and vault
+description: How the Wallet abstraction relates to @qubic.org/tx, and how the AES-256-GCM vault protects seeds.
+---
+
+## The wallet abstraction
+
+A `Wallet` holds a single seed and provides high-level methods for building and signing transactions. Under the hood it calls `buildTransaction` → `signTransaction` → `encodeTransaction` from `@qubic.org/tx`, then wraps the result:
+
+```ts
+import { createWallet, generateSeed } from "@qubic.org/wallet"
+
+const wallet = createWallet(generateSeed())
+
+// wallet exposes:
+wallet.identity   // Identity — the public address
+wallet.publicKey  // Uint8Array (32 bytes) — the FourQ public key
+
+// One-call transaction building:
+const { encoded, hash } = await wallet.buildTransfer({ destination, amount, targetTick, currentTick })
+const { encoded, hash } = await wallet.buildScTransaction({ destination, amount, targetTick, currentTick, inputType, payload })
+```
+
+`encoded` is the base64 string ready for `live.broadcastTransaction`. `hash` is the K12 digest of the transaction header, which you can use to track the transaction in the archive.
+
+### When to use the wallet vs `@qubic.org/tx`
+
+| Use case | Recommended API |
+|---|---|
+| Application-level transaction sending | `@qubic.org/wallet` |
+| Custom transaction formats or binary inspection | `@qubic.org/tx` directly |
+| Hardware wallet integration | `@qubic.org/tx` (sign externally, encode here) |
+| React app | `@qubic.org/react` (`useSendTransfer`, `useSendContractCall`) |
+
+---
+
+## Seed generation
+
+`generateSeed` produces a cryptographically random 55-character lowercase seed using the platform's CSPRNG:
+
+```ts
+import { generateSeed } from "@qubic.org/wallet"
+
+const seed = generateSeed() // Seed — "aaabbbccc..."
+```
+
+Never derive seeds from user-supplied strings (passwords, phrases) without a proper KDF. Qubic seeds are random 55-char strings, not mnemonic phrases — there is no BIP-39 word list.
+
+---
+
+## The vault
+
+A `Vault` stores multiple named seeds, encrypted with AES-256-GCM. The encryption key is derived from a user-supplied password using PBKDF2 with a random salt.
+
+```
+password + salt  →  PBKDF2  →  32-byte AES key
+seeds            →  AES-256-GCM  →  ciphertext + auth tag
+```
+
+The vault never holds plaintext seeds outside of the in-memory structure returned by `createVault` or `unlockVault`. The exported blob contains only the ciphertext, the auth tag, the nonce, and the PBKDF2 salt.
+
+### Vault lifecycle
+
+```ts
+import { createVault, addSeedToVault, exportVault, importVault, unlockVault, createWalletFromVault } from "@qubic.org/wallet"
+
+// 1. Create a new vault
+const vault = await createVault("my-password")
+await addSeedToVault(vault, "main", generateSeed())
+await addSeedToVault(vault, "trading", generateSeed())
+
+// 2. Export to a JSON blob (safe to store in localStorage, a file, etc.)
+const blob = await exportVault(vault)
+
+// 3. Restore from the blob later
+const restored = await importVault(blob, "my-password")
+
+// 4. Create a wallet from a named seed
+const wallet = createWalletFromVault(restored, "main")
+```
+
+### Security properties
+
+- **Password-based** — the vault is only as strong as the password. Use a long, random passphrase.
+- **No plaintext at rest** — the exported blob contains no plaintext seeds.
+- **Authenticated encryption** — AES-256-GCM includes an authentication tag. A tampered or corrupted blob will fail to decrypt rather than silently produce wrong seeds.
+- **No key derivation from seed** — each seed in the vault is a separate entry. There is no master seed or HD derivation.
+
+### What the vault does NOT do
+
+- It does not sync across devices. The blob is a local artifact — copy it yourself if needed.
+- It does not protect against a compromised runtime environment. If your process memory is accessible to an attacker, they can read unlocked seeds.
+- It does not implement multi-signature. Each seed corresponds to exactly one Qubic identity.

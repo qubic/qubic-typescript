@@ -10,11 +10,11 @@ function sigilPlugin(): LoaderPlugin {
   // biome-ignore lint/suspicious/noExplicitAny: fumadocs node types are internal
   function replaceIcon(node: any) {
     if (
-      typeof node.title === "string" &&
-      node.title.startsWith("@qubic.org/") &&
+      typeof node.name === "string" &&
+      node.name.startsWith("@qubic.org/") &&
       (node.icon === undefined || typeof node.icon === "string")
     ) {
-      node.icon = createElement(PackageSigil, { name: node.title, size: 20 });
+      node.icon = createElement(PackageSigil, { name: node.name, size: 20 });
     }
     return node;
   }

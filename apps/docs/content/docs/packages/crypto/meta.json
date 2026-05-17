@@ -2,5 +2,13 @@
   "title": "@qubic.org/crypto",
   "icon": "KeyRound",
   "root": true,
-  "pages": ["index", "key-derivation", "hashing", "signing"]
+  "pages": [
+    "index",
+    "---Concepts---",
+    "cryptography",
+    "---API Reference---",
+    "key-derivation",
+    "hashing",
+    "signing"
+  ]
 }

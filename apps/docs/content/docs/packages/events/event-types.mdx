@@ -1,0 +1,215 @@
+---
+title: Event types
+description: All 17 Qubic log event types — their numeric IDs, data fields, and when they fire.
+---
+
+## Overview
+
+Every event has the same outer structure:
+
+```ts
+{
+  logType: number   // LOG_TYPE constant
+  tick: number      // tick where this event occurred
+  txId: string      // transaction hash that produced this event
+  data: EventData   // type-specific fields (narrowed by logType)
+}
+```
+
+Decode a raw `BobLogEvent` to get this structure:
+
+```ts
+import { decodeEvent } from "@qubic.org/events"
+const typed = decodeEvent(rawEvent)
+```
+
+---
+
+## QU transfer events
+
+### `QU_TRANSFER` (0)
+
+Fires when QU moves from one identity to another.
+
+```ts
+typed.data.source       // Identity — sender
+typed.data.destination  // Identity — recipient
+typed.data.amount       // bigint — QU transferred
+```
+
+---
+
+## Asset events
+
+### `ASSET_ISSUANCE` (1)
+
+Fires when a new asset is issued.
+
+```ts
+typed.data.issuer             // Identity — issuing identity
+typed.data.assetName          // string — asset ticker / name
+typed.data.numberOfShares     // bigint — total supply issued
+typed.data.unitOfMeasurement  // string — unit label
+```
+
+### `ASSET_OWNERSHIP_CHANGE` (2)
+
+Fires when ownership of an asset transfers.
+
+```ts
+typed.data.issuer          // Identity
+typed.data.assetName       // string
+typed.data.owner           // Identity — previous owner
+typed.data.newOwner        // Identity — new owner
+typed.data.numberOfShares  // bigint — shares transferred
+```
+
+### `ASSET_POSSESSION_CHANGE` (3)
+
+Fires when possession (not ownership) of an asset transfers. Qubic distinguishes ownership (long-term) from possession (short-term control).
+
+```ts
+typed.data.issuer           // Identity
+typed.data.assetName        // string
+typed.data.owner            // Identity — the owner
+typed.data.newPossessor     // Identity — new possessor
+typed.data.numberOfShares   // bigint
+```
+
+### `ASSET_OWNERSHIP_MANAGING_CONTRACT_CHANGE` (11)
+
+Fires when the contract managing ownership transfers for an asset changes.
+
+```ts
+typed.data.issuer           // Identity
+typed.data.assetName        // string
+typed.data.managingContract // number — new contract index
+```
+
+### `ASSET_POSSESSION_MANAGING_CONTRACT_CHANGE` (12)
+
+Same as above, but for possession management.
+
+```ts
+typed.data.issuer           // Identity
+typed.data.assetName        // string
+typed.data.managingContract // number
+```
+
+---
+
+## Contract message events
+
+All four contract message types share the same data shape:
+
+### `CONTRACT_ERROR_MESSAGE` (4)
+### `CONTRACT_WARNING_MESSAGE` (5)
+### `CONTRACT_INFORMATION_MESSAGE` (6)
+### `CONTRACT_DEBUG_MESSAGE` (7)
+
+```ts
+typed.data.contractIndex  // number — which contract emitted the log
+typed.data.message        // string — human-readable message from the contract
+```
+
+```ts
+import { LOG_TYPE } from "@qubic.org/events"
+
+if (typed.logType === LOG_TYPE.CONTRACT_ERROR_MESSAGE) {
+  console.error(`Contract ${typed.data.contractIndex}: ${typed.data.message}`)
+}
+```
+
+---
+
+## Burn events
+
+### `BURNING` (8)
+
+Fires when an identity burns QU (sends to the zero address or a designated burn address).
+
+```ts
+typed.data.sourceId  // Identity — who burned
+typed.data.amount    // bigint — QU burned
+```
+
+### `DUST_BURNING` (9)
+
+Fires when the network performs a dust-clearing sweep. Small balances below the dust threshold are burned in bulk.
+
+```ts
+typed.data.numberOfBurns  // number — how many accounts were swept
+typed.data.totalAmount    // bigint — total QU burned
+```
+
+---
+
+## Network stats events
+
+### `SPECTRUM_STATS` (10)
+
+Fires periodically with a snapshot of the network's balance distribution.
+
+```ts
+typed.data.totalAmount       // bigint — total QU in circulation
+typed.data.dustThreshold     // bigint — minimum balance to avoid dust sweep
+typed.data.numberOfEntities  // number — number of accounts above threshold
+```
+
+---
+
+## Other events
+
+### `CONTRACT_RESERVE_DEDUCTION` (13)
+
+Fires when a contract's reserve is reduced.
+
+```ts
+typed.data.contractIndex  // number
+typed.data.amount         // bigint — QU deducted from reserve
+```
+
+### `ORACLE_QUERY_STATUS_CHANGE` (14)
+
+Fires when an oracle query changes status.
+
+```ts
+typed.data.oracleId  // number
+typed.data.status    // number — new status code
+```
+
+### `ORACLE_SUBSCRIBER_LOG_MESSAGE` (15)
+
+Fires when an oracle subscriber emits a log message.
+
+```ts
+typed.data.subscriberId  // number
+typed.data.message       // string
+```
+
+### `CUSTOM_MESSAGE` (255)
+
+Fires for contract-specific events that don't fit any standard type. The `data` field is a raw `Uint8Array` — decode it using the contract's ABI via `@qubic.org/registry`.
+
+```ts
+if (typed.logType === LOG_TYPE.CUSTOM_MESSAGE) {
+  const raw: Uint8Array = typed.data
+  // decode with registry
+}
+```
+
+---
+
+## Filtering by type
+
+Use `eventFilter().ofTypes(...)` to subscribe only to specific log types:
+
+```ts
+import { eventFilter, subscribeAllEvents, LOG_TYPE } from "@qubic.org/events"
+
+const filter = eventFilter()
+  .ofTypes(LOG_TYPE.QU_TRANSFER, LOG_TYPE.ASSET_OWNERSHIP_CHANGE)
+  .build()
+
+subscribeAllEvents(bob, identity, handler, filter)
+```

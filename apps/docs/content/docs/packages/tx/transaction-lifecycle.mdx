@@ -1,0 +1,121 @@
+---
+title: Transaction lifecycle
+description: How a Qubic transaction is assembled, signed, encoded, and broadcast — and what the binary format looks like.
+---
+
+## The four steps
+
+Every Qubic transaction follows the same pipeline:
+
+<Steps>
+<Step>
+**Build** — assemble the binary header from public key, destination, amount, tick, and input type.
+</Step>
+<Step>
+**Sign** — compute a K12 digest of the header bytes and sign it with SchnorrQ.
+</Step>
+<Step>
+**Encode** — convert the signed bytes to base64 for the HTTP broadcast endpoint.
+</Step>
+<Step>
+**Broadcast** — send the base64 string to the network via `live.broadcastTransaction`.
+</Step>
+</Steps>
+
+```ts
+import { buildTransaction, signTransaction, encodeTransaction } from "@qubic.org/tx"
+import { createLiveClient } from "@qubic.org/rpc"
+
+const unsigned = buildTransaction({ sourcePublicKey, destinationPublicKey, amount, targetTick, inputType })
+const signed   = await signTransaction(unsigned, seed)
+const encoded  = encodeTransaction(signed)
+
+await live.broadcastTransaction(encoded)
+```
+
+`@qubic.org/wallet` wraps these four steps into a single `wallet.buildTransfer` or `wallet.buildScTransaction` call. Use `@qubic.org/tx` directly only when you need access to the raw bytes.
+
+---
+
+## Binary format
+
+A Qubic transaction is a fixed-size binary structure:
+
+```
+[sourcePublicKey: 32 bytes]
+[destinationPublicKey: 32 bytes]
+[amount: 8 bytes, little-endian int64]
+[targetTick: 4 bytes, little-endian uint32]
+[inputType: 2 bytes, little-endian uint16]
+[inputSize: 2 bytes, little-endian uint16]
+[signature: 64 bytes]
+[payload: inputSize bytes, optional]
+```
+
+Total header: 144 bytes (without payload).
+
+The signature covers bytes 0–79 (everything up to but not including the signature field). `hashTransaction` returns the K12 digest of those bytes.
+
+---
+
+## QU transfers vs smart contract calls
+
+The format is the same for both. The difference is in how you fill the fields:
+
+| Field | QU transfer | Smart contract call |
+|---|---|---|
+| `destinationPublicKey` | recipient's public key | 32 zero bytes (zero-address) |
+| `amount` | QU to send | QU to attach (can be 0) |
+| `inputType` | `0` | procedure's input type number |
+| `inputSize` | `0` | payload byte length |
+| `payload` | omitted | encoded procedure input |
+
+```ts
+// QU transfer
+const unsigned = buildTransaction({
+  sourcePublicKey,
+  destinationPublicKey: recipientPubKey,
+  amount: 1_000_000n,
+  targetTick: tick + 5,
+  inputType: 0,
+})
+
+// Smart contract call
+const unsigned = buildTransaction({
+  sourcePublicKey,
+  destinationPublicKey: new Uint8Array(32), // zero address
+  amount: 10_000_000n,
+  targetTick: tick + 5,
+  inputType: 6,           // e.g. Qearn lock_input
+  inputSize: payload.length,
+  payload,
+})
+```
+
+---
+
+## Target tick
+
+`targetTick` is the tick by which the transaction must be included. Transactions that miss their target tick are dropped — they are not retried automatically. Choose a target tick that gives the node enough time to include it:
+
+```ts
+const { tick } = await live.getTickInfo()
+const targetTick = tick + 5  // 5 ticks ≈ 5 seconds of buffer
+```
+
+If a transaction is time-sensitive, use a smaller buffer. If the network is congested, use a larger one. If a transaction misses, rebuild it with a new target tick and broadcast again.
+
+---
+
+## Verifying a transaction
+
+`verifyTransaction` re-computes the digest and checks the signature using the public key embedded in the transaction bytes:
+
+```ts
+import { verifyTransaction, hashTransaction } from "@qubic.org/tx"
+
+const isValid = await verifyTransaction(signedTxBytes)
+const hash    = hashTransaction(signedTxBytes) // Uint8Array (32 bytes)
+```
+
+This is useful for auditing received transactions before submitting them, or for building a transaction explorer.

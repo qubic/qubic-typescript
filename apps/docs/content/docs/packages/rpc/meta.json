@@ -2,5 +2,13 @@
   "title": "@qubic.org/rpc",
   "icon": "Globe",
   "root": true,
-  "pages": ["index", "live-client", "archive-client", "errors"]
+  "pages": [
+    "index",
+    "---Concepts---",
+    "clients-and-errors",
+    "---API Reference---",
+    "live-client",
+    "archive-client",
+    "errors"
+  ]
 }

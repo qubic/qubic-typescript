@@ -2,5 +2,12 @@
   "title": "@qubic.org/wallet",
   "icon": "Wallet",
   "root": true,
-  "pages": ["index", "transfers", "vault"]
+  "pages": [
+    "index",
+    "---Concepts---",
+    "wallet-and-vault",
+    "---API Reference---",
+    "transfers",
+    "vault"
+  ]
 }

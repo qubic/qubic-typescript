@@ -2,5 +2,13 @@
   "title": "@qubic.org/registry",
   "icon": "Database",
   "root": true,
-  "pages": ["index", "functions", "codec", "client"]
+  "pages": [
+    "index",
+    "---Concepts---",
+    "abi-and-epochs",
+    "---API Reference---",
+    "functions",
+    "codec",
+    "client"
+  ]
 }

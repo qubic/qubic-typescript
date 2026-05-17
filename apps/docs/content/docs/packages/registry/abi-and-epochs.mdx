@@ -1,0 +1,126 @@
+---
+title: ABI and epochs
+description: How contract ABIs are versioned by epoch, what the ABI structure looks like, and the binary field type system.
+---
+
+## What is an ABI?
+
+An ABI (Application Binary Interface) describes how to communicate with a smart contract in binary. For Qubic, an ABI specifies:
+
+- **Procedures** — write operations, invoked via signed transactions. Each has an `inputType` number, and optionally typed input and output fields.
+- **Functions** — read operations, invoked via `live.querySmartContract`. Each has an `inputType` number and typed output fields.
+- **Structs** — named field groups reused across procedure and function definitions.
+
+Without an ABI, you'd have to hand-craft the binary layout for every contract call — error-prone and fragile to upgrades.
+
+---
+
+## Epoch versioning
+
+Qubic smart contracts can change their binary interface between epochs. `@qubic.org/registry` stores a snapshot per ABI version, keyed by the epoch range where it was active:
+
+```ts
+{
+  effectiveFromEpoch: 150,  // first epoch where this ABI applies
+  effectiveToEpoch: 212,    // last epoch (null = still current)
+  procedures: [...],
+  functions: [...],
+  structs: { ... },
+}
+```
+
+`getAbi(registry, contractIndex, epoch)` finds the version whose `[effectiveFromEpoch, effectiveToEpoch]` range covers the requested epoch:
+
+```ts
+import { getAbi } from "@qubic.org/registry"
+import registry from "@qubic.org/registry/registry.json"
+import type { ContractRegistry } from "@qubic.org/registry"
+
+const reg = registry as ContractRegistry
+
+// Qearn at epoch 180 — finds the version active at that epoch
+const { version, isCurrent } = getAbi(reg, 9, 180)
+```
+
+If `isCurrent` is true, `effectiveToEpoch` is null — the version is still active and there's no newer snapshot.
+
+---
+
+## The registry structure
+
+```
+ContractRegistry
+└── contracts: ContractEntry[]
+    ├── index: number
+    ├── name: string
+    └── versions: ContractAbiVersion[]
+        ├── effectiveFromEpoch: number
+        ├── effectiveToEpoch: number | null
+        ├── procedures: Procedure[]
+        │   ├── name: string
+        │   ├── inputType: number
+        │   ├── inputFields: BinaryField[]
+        │   └── outputFields: BinaryField[]
+        ├── functions: Function[]
+        │   └── (same as Procedure)
+        └── structs: Record<string, NamedStruct>
+```
+
+---
+
+## Field types
+
+Each `BinaryField` has a `type` string and a `byteLength`. The type system maps to JavaScript types as follows:
+
+| ABI type | Byte size | JavaScript / TypeScript type |
+|---|---|---|
+| `uint8` | 1 | `number` |
+| `sint8` | 1 | `number` |
+| `uint16` | 2 (LE) | `number` |
+| `sint16` | 2 (LE) | `number` |
+| `uint32` | 4 (LE) | `number` |
+| `sint32` | 4 (LE) | `number` |
+| `uint64` | 8 (LE) | `bigint` |
+| `sint64` | 8 (LE) | `bigint` |
+| `uint128` | 16 (LE) | `bigint` |
+| `id` | 32 | `Identity` string — `identityToPublicKey` converts on encode |
+| `bytes` | N | `Uint8Array` — fixed-length raw bytes |
+| `array` | N × element | Array of the element type |
+| `struct` | varies | Nested object — resolved by name from `version.structs` |
+
+All multi-byte integers are little-endian. The codec (`buildPayload`, `decodePayload`) handles endianness automatically.
+
+---
+
+## Using the ABI in practice
+
+The typical workflow:
+
+```ts
+import { getAbi, getProcedure, buildPayload } from "@qubic.org/registry"
+import { identityToPublicKey } from "@qubic.org/crypto"
+import registry from "@qubic.org/registry/registry.json"
+import type { ContractRegistry } from "@qubic.org/registry"
+
+const reg = registry as ContractRegistry
+
+// 1. Get the ABI for a contract at a specific epoch
+const { version } = getAbi(reg, 9, 213)   // Qearn at epoch 213
+
+// 2. Find the procedure you want to call
+const proc = getProcedure(version, 6)     // inputType 6 = lock_input
+
+// 3. Encode your input
+const payload = buildPayload(
+  proc.inputFields,
+  version.structs ?? {},
+  { amount: 10_000_000n },
+  identityToPublicKey,
+)
+
+// 4. Use the payload in a transaction
+//    proc.inputType → inputType field in buildTransaction
+//    payload        → payload field in buildTransaction
+```
+
+For most contracts, the generated wrappers in `@qubic.org/contracts` do this automatically. Use `@qubic.org/registry` directly when you need historical epoch support or are working with a contract not yet in the generated package.

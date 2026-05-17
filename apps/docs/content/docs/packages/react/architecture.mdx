@@ -1,0 +1,166 @@
+---
+title: Architecture
+description: Provider hierarchy, TanStack Query integration, mutation model, and the pluggable wallet connector system.
+---
+
+## Provider hierarchy
+
+`@qubic.org/react` uses a three-tier provider structure. Each layer adds capabilities:
+
+```tsx
+<QubicProvider>           {/* RPC clients + TanStack Query instance */}
+  <VaultProvider>         {/* Encrypted seed vault */}
+    <WalletProvider>      {/* Connected wallet + connector system */}
+      <YourApp />
+    </WalletProvider>
+  </VaultProvider>
+</QubicProvider>
+```
+
+`QubicProvider` is always required. `VaultProvider` and `WalletProvider` are optional — add them only if your app needs seed management or wallet connectivity.
+
+### What each provider does
+
+| Provider | Provides | Requires |
+|---|---|---|
+| `QubicProvider` | RPC clients, Query client, `useTickInfo`, `useBalance`, `useContractQuery` | Nothing |
+| `VaultProvider` | Encrypted vault state, `useVaultState` | `QubicProvider` |
+| `WalletProvider` | Connected wallet identity, `useWallet`, `useWalletConnector` | `QubicProvider` |
+
+---
+
+## Data hooks and TanStack Query
+
+All data hooks use TanStack Query under the hood. This means:
+
+- **Caching** — the same query won't be fetched twice if it's still fresh
+- **Deduplication** — concurrent calls from multiple components share one network request
+- **Background refresh** — stale data is refetched automatically when the component re-renders or the window refocuses
+- **Loading/error states** — consistent `{ data, isLoading, error }` shape across all hooks
+
+```tsx
+const { data, isLoading, error } = useTickInfo()
+// data is TickInfo | undefined
+// isLoading is boolean
+// error is QubicRpcError | null
+```
+
+The TanStack Query client is configured automatically by `QubicProvider`. You can access it directly with `useQueryClient()` if you need to manually invalidate or prefetch queries.
+
+### Refresh intervals
+
+Most data hooks poll on a reasonable default interval. You can override:
+
+```tsx
+const { data } = useTickInfo({ refetchInterval: 2000 }) // every 2 seconds
+const { data } = useBalance(identity, { refetchInterval: false }) // no auto-refresh
+```
+
+---
+
+## Mutation hooks
+
+Mutations (`useSendTransfer`, `useSendContractCall`) are for operations that change network state. They follow the TanStack Mutation pattern:
+
+```tsx
+const { send, isPending, isSuccess, error, reset } = useSendTransfer()
+
+async function handleSend() {
+  try {
+    const { hash } = await send({ destination, amount })
+    console.log("TX hash:", hash)
+  } catch (e) {
+    // error is also available as the `error` state
+  }
+}
+```
+
+| State | Type | Description |
+|---|---|---|
+| `isPending` | `boolean` | Transaction is being built, signed, and broadcast |
+| `isSuccess` | `boolean` | Broadcast succeeded |
+| `isError` | `boolean` | An error occurred |
+| `error` | `QubicRpcError \| null` | The error, if any |
+| `reset()` | `() => void` | Reset state back to idle |
+
+Mutations require a connected wallet (via `WalletProvider`). If no wallet is connected, the mutation throws immediately.
+
+---
+
+## Wallet connector system
+
+The connector system is pluggable. Each connector implements the `WalletConnector` interface:
+
+```ts
+interface WalletConnector {
+  id: string
+  name: string
+  icon?: string
+  connect(): Promise<{ identity: Identity }>
+  disconnect(): Promise<void>
+  signTransaction(txBytes: Uint8Array): Promise<Uint8Array>
+}
+```
+
+Three connectors are included:
+
+| Connector | Description |
+|---|---|
+| `extensionConnector()` | Browser extension wallet (e.g. Qubic Wallet browser extension) |
+| `walletConnectConnector(options)` | WalletConnect v2 — QR code or mobile deep link |
+| `metamaskSnapConnector()` | MetaMask Snap for Qubic |
+
+Configure them in `WalletProvider`:
+
+```tsx
+import { extensionConnector, walletConnectConnector } from "@qubic.org/react"
+
+<WalletProvider connectors={[
+  extensionConnector(),
+  walletConnectConnector({ projectId: "your-wc-project-id" }),
+]}>
+  {children}
+</WalletProvider>
+```
+
+### Custom connectors
+
+Implement `WalletConnector` to add any signing source:
+
+```ts
+import type { WalletConnector } from "@qubic.org/react"
+
+const ledgerConnector: WalletConnector = {
+  id: "ledger",
+  name: "Ledger",
+  async connect() {
+    const transport = await LedgerTransport.create()
+    const identity = await getQubicAddress(transport)
+    return { identity }
+  },
+  async disconnect() { /* close transport */ },
+  async signTransaction(txBytes) {
+    return ledgerSign(txBytes)
+  },
+}
+```
+
+---
+
+## useQubic — escape hatch
+
+`useQubic` gives you the raw SDK clients when you need something not covered by a hook:
+
+```tsx
+import { useQubic } from "@qubic.org/react"
+
+function CustomQuery() {
+  const { live, archive } = useQubic()
+
+  useEffect(() => {
+    live.getComputors().then(({ computors }) => {
+      console.log("Computors:", computors)
+    })
+  }, [live])
+}
+```

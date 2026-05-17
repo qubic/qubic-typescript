@@ -1,0 +1,111 @@
+---
+title: Cryptography
+description: FourQ elliptic curve, KangarooTwelve hashing, and SchnorrQ signatures — the three algorithms Qubic uses at the protocol level.
+---
+
+## Overview
+
+Qubic uses three cryptographic primitives:
+
+| Algorithm | Role | Why Qubic chose it |
+|---|---|---|
+| **FourQ** | Elliptic curve key pairs | Faster than Curve25519 at equivalent 128-bit security |
+| **KangarooTwelve (K12)** | Variable-output hash | Faster than SHA-3/Keccak; same sponge construction |
+| **SchnorrQ** | Signatures | Schnorr over FourQ — compact, fast, non-malleable |
+
+---
+
+## FourQ and the key hierarchy
+
+FourQ is the elliptic curve underlying Qubic's key system. A key pair consists of:
+
+- **Private key (seed)** — a 55-character lowercase string that is the secret input to key derivation. Not a raw elliptic curve scalar — it is first hashed to produce one.
+- **Public key** — a 32-byte compressed FourQ point derived from the seed.
+- **Identity** — a 60-character uppercase human-readable encoding of the public key.
+
+```
+seed (55-char string)
+  │
+  ▼ (K12 hash → FourQ scalar multiplication)
+public key (32 bytes)
+  │
+  ▼ (FourQ encoding → alphanumeric)
+identity (60-char uppercase string)
+```
+
+The full derivation pipeline:
+
+```ts
+import { publicKeyFromSeed, identityFromSeed, publicKeyToIdentity } from "@qubic.org/crypto"
+import { toSeed } from "@qubic.org/types"
+
+const seed   = toSeed("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+const pubKey = publicKeyFromSeed(seed)  // 32 bytes
+const id     = identityFromSeed(seed)   // equivalent to publicKeyToIdentity(pubKey)
+```
+
+---
+
+## KangarooTwelve (K12)
+
+K12 is a variant of Keccak (the underlying primitive of SHA-3), tuned for modern hardware with 12 rounds instead of 24. It produces variable-length output:
+
+```ts
+import { K12 } from "@qubic.org/crypto"
+
+const digest32 = K12(data, 32)  // 32-byte output (like SHA-256)
+const digest64 = K12(data, 64)  // 64-byte output (like SHA-512)
+```
+
+Qubic uses K12 for:
+- Deriving the elliptic curve scalar from a seed
+- Computing transaction digests for signing
+- Other internal hashing needs
+
+---
+
+## SchnorrQ signatures
+
+Signatures in Qubic use Schnorr over FourQ. Each transaction requires a signature over the K12 hash of the transaction header bytes.
+
+```ts
+import { sign, verify } from "@qubic.org/crypto"
+
+// Signing (async — may use WebAssembly)
+const signature = await sign(seed, digest)    // Uint8Array (64 bytes)
+
+// Verification
+const isValid = await verify(publicKey, digest, signature) // boolean
+```
+
+### Properties
+
+- **Deterministic** — given the same seed and digest, `sign` always returns the same signature. No random nonce is needed.
+- **Non-malleable** — unlike ECDSA, a Schnorr signature cannot be transformed into another valid signature for the same message.
+- **Fast** — FourQ's efficient arithmetic makes signing and verification faster than secp256k1 or Curve25519.
+
+---
+
+## Seed security
+
+The seed is the root of all key material. Losing it means losing access to all funds associated with the identity. Exposing it means anyone can spend those funds.
+
+`@qubic.org/wallet` provides AES-256-GCM encrypted vault storage for seeds — use it instead of handling raw seeds in application code. See [vault](../wallet/vault) for details.
+
+If you must handle seeds directly:
+- Never log a seed
+- Never transmit a seed over a network
+- Never store a seed in plaintext
+- Prefer `createVault` from `@qubic.org/wallet` for any persistent seed storage
+
+---
+
+## The `sign` and `verify` functions are async
+
+`sign` and `verify` are `async` because the implementation may use WebAssembly for performance. In environments without WebAssembly support they fall back to a pure JavaScript implementation. In either case the API is identical — just `await` the call.
+
+```ts
+// These are the same regardless of whether WASM is available
+const sig   = await sign(seed, digest)
+const valid = await verify(pubKey, digest, sig)
+```

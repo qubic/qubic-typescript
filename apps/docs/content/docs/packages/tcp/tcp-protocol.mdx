@@ -1,0 +1,155 @@
+---
+title: TCP protocol
+description: Qubic's binary frame format, multi-packet response model, and how the connection pool handles failover.
+---
+
+## Why TCP?
+
+The Qubic HTTP RPC gateway (`@qubic.org/rpc`) is the right choice for most applications. TCP is for when you need to go lower:
+
+- **Peer-level access** — you're talking to a specific node, not a gateway
+- **Lower latency** — no HTTP overhead; raw TCP framing
+- **Node discovery** — `exchangePublicPeers` queries a node's known peer list
+- **Direct broadcast** — send signed transactions without going through a gateway
+- **Monitoring tooling** — poll multiple peers simultaneously
+
+---
+
+## Frame format
+
+Every Qubic TCP message is a binary frame with an 8-byte header followed by an optional payload:
+
+```
+┌─────────────────────────────────────────────┐
+│  size    │ type │       dejavu              │
+│  3 bytes │ 1 B  │       4 bytes             │
+├─────────────────────────────────────────────┤
+│  payload (size - 8 bytes)                   │
+└─────────────────────────────────────────────┘
+```
+
+| Field | Size | Description |
+|---|---|---|
+| `size` | 3 bytes LE | Total message length in bytes, including the 8-byte header |
+| `type` | 1 byte | Message type constant (see `MESSAGE_TYPE`) |
+| `dejavu` | 4 bytes LE | Random nonce echoed in the response for request/response pairing |
+| `payload` | N bytes | Message-specific binary data |
+
+The `dejavu` field is how you match a response back to its request when multiple requests are in flight on the same connection.
+
+---
+
+## Multi-packet responses
+
+A single request can produce more than one response packet. The server keeps sending packets until it's done, then sends a terminator:
+
+```
+client → REQUEST packet
+server → RESPONSE packet 1
+server → RESPONSE packet 2
+server → END_RESPONSE (type 35) ← signals end of stream
+```
+
+If the server is temporarily busy, it sends `TRY_AGAIN` (type 36) instead:
+
+```
+client → REQUEST packet
+server → TRY_AGAIN (type 36)
+(client waits 1 second, then resends)
+```
+
+The `conn.request()` method handles both cases automatically — it collects all packets until `END_RESPONSE` and returns them as an array of `Uint8Array` payloads:
+
+```ts
+const packets = await conn.request(MESSAGE_TYPE.REQUEST_CURRENT_TICK_INFO)
+// packets: Uint8Array[] — all response payloads, without the END_RESPONSE frame
+```
+
+---
+
+## Known message types
+
+```ts
+import { MESSAGE_TYPE } from "@qubic.org/tcp"
+
+MESSAGE_TYPE.EXCHANGE_PUBLIC_PEERS     // 0  — peer discovery
+MESSAGE_TYPE.BROADCAST_TRANSACTION     // 24 — transaction broadcast
+MESSAGE_TYPE.REQUEST_CURRENT_TICK_INFO // 27 — tick/epoch query
+MESSAGE_TYPE.RESPOND_CURRENT_TICK_INFO // 28 — tick/epoch response
+MESSAGE_TYPE.REQUEST_ENTITY            // 31 — identity entity query
+MESSAGE_TYPE.RESPOND_ENTITY            // 32 — entity response
+MESSAGE_TYPE.END_RESPONSE              // 35 — end of response stream
+MESSAGE_TYPE.TRY_AGAIN                 // 36 — server busy, retry
+```
+
+---
+
+## Connection pool and failover
+
+`createNodePool` maintains a list of peer addresses and moves to the next peer on failure:
+
+```ts
+const pool = createNodePool(["node1.qubic.org", "node2.qubic.org", "node3.qubic.org"], {
+  port: 21841,      // default
+  timeoutMs: 10000, // default
+  maxRetries: 3,    // default: peers.length
+})
+```
+
+On failure (connection refused, timeout, protocol error), the pool tries the next peer in the list, up to `maxRetries` attempts. If all retries fail, it throws `QubicTcpConnectionError`.
+
+### AbortSignal support
+
+Bound total request time across all retries with `AbortSignal.timeout`:
+
+```ts
+const { tick } = await requestCurrentTickInfo(pool, {
+  signal: AbortSignal.timeout(5000), // fail after 5 seconds total
+})
+```
+
+This is especially useful in server functions and background jobs where a stuck peer should not block indefinitely.
+
+---
+
+## Error types
+
+| Class | When thrown |
+|---|---|
+| `QubicTcpConnectionError` | Could not connect to any peer (all retries exhausted) |
+| `QubicTcpTimeoutError` | Request timed out or AbortSignal fired |
+| `QubicTcpError` | Base class — catch this to handle any TCP error |
+
+```ts
+import { QubicTcpConnectionError, QubicTcpTimeoutError } from "@qubic.org/tcp"
+
+try {
+  const info = await requestCurrentTickInfo(pool)
+} catch (e) {
+  if (e instanceof QubicTcpTimeoutError) {
+    console.error("All nodes timed out")
+  } else if (e instanceof QubicTcpConnectionError) {
+    console.error("Could not connect to any node")
+  } else {
+    throw e
+  }
+}
+```
+
+---
+
+## Always close the pool
+
+TCP connections are stateful. Call `pool.close()` when you're done to release sockets:
+
+```ts
+const pool = createNodePool(["node1.qubic.org"])
+try {
+  const info = await requestCurrentTickInfo(pool)
+  console.log("Tick:", info.tick)
+} finally {
+  pool.close()
+}
+```
+
+In long-running processes (servers, daemons), keep the pool open and reuse it across requests — creating a new pool per request is expensive.

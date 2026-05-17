@@ -1,0 +1,131 @@
+---
+title: Clients and errors
+description: The live/archive split, when to use each client, and how QubicRpcError works.
+---
+
+## Two clients, two data domains
+
+`@qubic.org/rpc` exports two clients that reflect the two layers of Qubic's data infrastructure:
+
+### Live client — real-time gateway
+
+```ts
+import { createLiveClient } from "@qubic.org/rpc"
+const live = createLiveClient() // https://rpc.qubic.org
+```
+
+The live client talks to the Qubic RPC gateway, which proxies requests to a set of live nodes. Data is always current — you get the tick that exists right now, not cached data from 10 minutes ago.
+
+Use it for:
+- Current tick and epoch info
+- Live balances
+- Broadcasting transactions
+- Querying contract read functions
+- Checking node health
+
+### Archive client — historical indexer
+
+```ts
+import { createQueryClient } from "@qubic.org/rpc"
+const archive = createQueryClient() // https://archive.qubic.org
+```
+
+The archive client talks to the Qubic archive indexer, which indexes all historical transaction and event data. Data may be slightly behind the live tip but covers full history.
+
+Use it for:
+- Transaction lookup by hash
+- Transaction history for an identity within a tick range
+- Historical event logs
+- Computor lists for past epochs
+
+### Choosing between them
+
+| Question | Client |
+|---|---|
+| What is the current tick? | Live |
+| What is Alice's current balance? | Live |
+| Did transaction X confirm? | Archive |
+| What transactions happened between ticks A and B? | Archive |
+| What did contract Y emit last month? | Archive |
+| Broadcast a transaction | Live |
+
+---
+
+## The error model
+
+Both clients throw `QubicRpcError` on any failure. The error class has three properties:
+
+```ts
+import { QubicRpcError } from "@qubic.org/rpc"
+
+try {
+  await live.getTickInfo()
+} catch (e) {
+  if (e instanceof QubicRpcError) {
+    e.message  // human-readable description
+    e.status   // HTTP status code, or undefined for network failures
+    e.cause    // the underlying error, if any
+  }
+}
+```
+
+### Common status codes
+
+| Status | Meaning | What to do |
+|---|---|---|
+| `404` | Resource not found (tx hash, identity) | The item doesn't exist or hasn't been indexed yet |
+| `429` | Rate limit exceeded | Back off and retry with exponential delay |
+| `500` | Gateway or node error | Retry; may be transient |
+| `undefined` | Network failure, DNS, timeout | Check connectivity; retry |
+
+### Retry pattern
+
+```ts
+async function withRetry<T>(fn: () => Promise<T>, retries = 3): Promise<T> {
+  for (let i = 0; i < retries; i++) {
+    try {
+      return await fn()
+    } catch (e) {
+      if (e instanceof QubicRpcError && e.status === 429 && i < retries - 1) {
+        await new Promise((r) => setTimeout(r, 1000 * (i + 1)))
+        continue
+      }
+      throw e
+    }
+  }
+  throw new Error("unreachable")
+}
+```
+
+---
+
+## vs `@qubic.org/bob`
+
+`@qubic.org/bob` gives you a persistent WebSocket subscription to live tick events. Use it when you need to react to every new tick without polling.
+
+Use `@qubic.org/rpc` when:
+- You need data on demand, not continuously
+- You're in a server function or edge function that can't maintain a WebSocket
+- You're broadcasting a transaction
+- You're querying historical data from the archive
+
+Use `@qubic.org/bob` when:
+- You need to react to every new tick
+- You're tracking live event logs for an identity
+- You're building a dashboard or monitoring tool
+
+---
+
+## Custom fetch
+
+Both clients accept a `fetch` option for custom HTTP behavior — useful for authentication headers, request logging, or running in environments with a non-standard `fetch` (like Cloudflare Workers):
+
+```ts
+const live = createLiveClient({
+  fetch: (url, init) =>
+    fetch(url, {
+      ...init,
+      headers: { ...init?.headers, "Authorization": `Bearer ${token}` },
+    }),
+})
+```

@@ -2,5 +2,15 @@
   "title": "@qubic.org/contracts",
   "icon": "FileCode",
   "root": true,
-  "pages": ["index", "namespace", "builders", "decoders", "callers", "call-contract-function"]
+  "pages": [
+    "index",
+    "---Concepts---",
+    "generated-wrappers",
+    "---API Reference---",
+    "namespace",
+    "builders",
+    "decoders",
+    "callers",
+    "call-contract-function"
+  ]
 }

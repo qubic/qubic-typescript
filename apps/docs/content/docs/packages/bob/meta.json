@@ -2,5 +2,12 @@
   "title": "@qubic.org/bob",
   "icon": "Radio",
   "root": true,
-  "pages": ["index", "subscriptions", "connection"]
+  "pages": [
+    "index",
+    "---Concepts---",
+    "subscriptions-model",
+    "---API Reference---",
+    "connection",
+    "subscriptions"
+  ]
 }

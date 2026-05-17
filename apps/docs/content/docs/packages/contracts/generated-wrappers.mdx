@@ -1,0 +1,130 @@
+---
+title: Generated wrappers
+description: How the code generator works, what it produces, and the error model for builders vs callers.
+---
+
+## How generation works
+
+`@qubic.org/contracts` is not hand-written. A code generator reads the latest registry snapshot from `@qubic.org/registry` and produces typed TypeScript for every contract, procedure, and function. The generator runs when:
+
+1. A new epoch ships a changed ABI
+2. A new contract is deployed
+3. The SDK team manually triggers a regeneration
+
+The generated code is committed to the repository. Consumers install the package — they never run the generator themselves.
+
+### What gets generated per contract
+
+For each contract, the generator produces:
+
+| Artifact | Example (Qearn) |
+|---|---|
+| `INPUT_TYPE` constant per procedure | `QEARN_LOCK_INPUT_TYPE = 6` |
+| `CONTRACT_INDEX` constant | `QEARN_CONTRACT_INDEX = 9` |
+| Builder function per procedure | `buildQearnLockInput(input)` |
+| Decoder function per procedure | `decodeQearnLockOutput(bytes)` |
+| Caller function per read function | `qearnGetStateOfRound(live, input, converters)` |
+| Namespace object | `qearn.buildLockInput(...)` |
+
+---
+
+## Namespace pattern
+
+Each contract is also exported as a namespace object that groups all three artifact types under one identifier:
+
+```ts
+import { qearn } from "@qubic.org/contracts"
+
+// Constants
+qearn.contractIndex    // 9
+qearn.LOCK_INPUT_TYPE  // 6
+
+// Builder
+qearn.buildLockInput({ amount: 10_000_000n })
+
+// Decoder
+qearn.decodeLockOutput(rawBytes, publicKeyToIdentity)
+
+// Caller (read function)
+await qearn.getStateOfRound(live, { epoch: 213 }, converters)
+```
+
+The namespace is the lowercase contract name. This is the recommended way to use the package for most applications — you get autocomplete for everything on a single object.
+
+---
+
+## Error model
+
+Builders, decoders, and callers use different error strategies:
+
+### Builders throw synchronously
+
+```ts
+import { buildQearnLockInput, PayloadBuildError } from "@qubic.org/contracts"
+
+try {
+  const payload = buildQearnLockInput({ amount: -1n }) // invalid
+} catch (e) {
+  if (e instanceof PayloadBuildError) {
+    console.error("Bad input:", e.message)
+  }
+}
+```
+
+Builders throw `PayloadBuildError` on:
+- Missing required fields
+- Wrong JavaScript type (e.g. `number` where `bigint` expected)
+- Value out of range for the ABI type
+
+### Callers never throw — they return `Result`
+
+```ts
+const result = await qearn.getStateOfRound(live, { epoch: 213 }, converters)
+
+if (!result.ok) {
+  // result.error is QubicRpcError
+  console.error(result.error.status, result.error.message)
+  return
+}
+
+// result.value is typed
+console.log(result.value)
+```
+
+This forces you to handle RPC failures explicitly. You can't accidentally skip error handling by forgetting a try/catch.
+
+### Decoders throw on malformed bytes
+
+```ts
+import { decodeQearnLockOutput, PayloadDecodeError } from "@qubic.org/contracts"
+
+try {
+  const output = decodeQearnLockOutput(rawBytes, publicKeyToIdentity)
+} catch (e) {
+  if (e instanceof PayloadDecodeError) {
+    console.error("Malformed response:", e.message)
+  }
+}
+```
+
+---
+
+## Injected converters
+
+Read functions that involve `id`-type fields require `identityToPublicKey` and `publicKeyToIdentity` from `@qubic.org/crypto`. These are injected as a `converters` argument rather than imported internally, which keeps `@qubic.org/contracts` tree-shakeable when used in environments that don't need the crypto library.
+
+```ts
+import { identityToPublicKey, publicKeyToIdentity } from "@qubic.org/crypto"
+
+const converters = { identityToPublicKey, publicKeyToIdentity }
+
+// Pass the same converters object to all callers
+const r1 = await qearn.getStateOfRound(live, { epoch: 213 }, converters)
+const r2 = await qearn.getUserLockInfo(live, { identity, epoch: 213 }, converters)
+```
+
+---
+
+## Staying up to date
+
+When the SDK publishes a new version of `@qubic.org/contracts`, update your lockfile to pick up new ABIs. If a contract changes its binary interface without a package update, use `@qubic.org/registry` + `callContractFunction` to call it directly until the package catches up.

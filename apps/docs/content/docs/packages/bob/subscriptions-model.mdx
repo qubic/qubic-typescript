@@ -1,0 +1,140 @@
+---
+title: Subscriptions model
+description: How Bob's WebSocket subscriptions work — the push model, reconnection, resubscription, and catch-up buffering.
+---
+
+## Push vs polling
+
+The Qubic network produces a new tick roughly every second. You have two options for tracking ticks:
+
+**Polling** — call `live.getTickInfo()` on a timer:
+- Simple to implement
+- One HTTP round-trip per poll cycle
+- You may miss ticks between polls or poll more often than needed
+
+**Push** — subscribe via Bob's WebSocket:
+- Single connection, zero per-tick overhead
+- Every tick is delivered as it happens
+- Requires connection lifecycle management
+
+Bob implements the push model. Once connected and subscribed, ticks arrive as callbacks without any polling.
+
+---
+
+## The two topics
+
+Bob supports two subscription topics:
+
+### `"tickInfo"` — every new tick
+
+```ts
+bob.subscribe("tickInfo", (tick, meta) => {
+  tick.tick        // current tick number
+  tick.epoch       // current epoch
+  tick.duration    // tick duration in ms
+  tick.initialTick // first tick of the epoch
+
+  meta.isCatchUp   // true for buffered ticks from a reconnect gap
+})
+```
+
+There can be multiple `"tickInfo"` subscribers. Each gets its own unsubscribe function.
+
+### `"eventLogs"` — account event logs
+
+```ts
+bob.subscribe("eventLogs", identity, (events) => {
+  for (const event of events) {
+    event.eventType  // number (see LOG_TYPE constants)
+    event.eventData  // Base64 string — decode with @qubic.org/events
+    event.tick       // tick where this event occurred
+    event.txId       // transaction that produced this event
+  }
+})
+```
+
+Each `subscribe("eventLogs", identity, handler)` creates a separate server-side subscription for that identity. You can subscribe to multiple identities independently.
+
+---
+
+## Reconnection
+
+Bob reconnects automatically after a connection drop. The reconnect delay starts at `reconnectDelayMs` (default: 1000ms) and may increase on repeated failures.
+
+### With `autoResubscribe: true`
+
+All active subscriptions are re-registered on every reconnect. You don't need to call `subscribe` again — just create your subscriptions once:
+
+```ts
+const bob = createBobClient({ autoResubscribe: true })
+await bob.connect()
+
+// These subscriptions persist across reconnects automatically
+bob.subscribe("tickInfo", handleTick)
+bob.subscribe("eventLogs", identity, handleEvents)
+```
+
+### Without `autoResubscribe`
+
+You must re-subscribe manually. Listen to the `"connect"` event to know when a reconnect completes:
+
+```ts
+const bob = createBobClient() // no autoResubscribe
+
+function subscribe() {
+  bob.subscribe("tickInfo", handleTick)
+  bob.subscribe("eventLogs", identity, handleEvents)
+}
+
+bob.on("connect", subscribe)
+await bob.connect()
+await subscribe() // also call immediately after first connect
+```
+
+---
+
+## Catch-up buffering
+
+After a reconnect, the server sends buffered ticks that arrived during the disconnection window. The `meta.isCatchUp` flag identifies these:
+
+```ts
+bob.subscribe("tickInfo", (tick, meta) => {
+  if (meta.isCatchUp) {
+    // This tick arrived during a connection gap
+    // Useful for backfilling state, but skip if you only care about live ticks
+    return
+  }
+  // Live tick — process normally
+  updateDisplay(tick)
+})
+```
+
+Catch-up ticks arrive in order, before any live ticks. Once `meta.isCatchUp` becomes false, the subscription is caught up to the live tip.
+
+---
+
+## Lifecycle events
+
+```ts
+bob.on("connect",    ()             => console.log("Connected"))
+bob.on("disconnect", ({ code, reason }) => console.log("Disconnected:", code, reason))
+bob.on("reconnect",  ({ attempt })  => console.log("Reconnecting, attempt", attempt))
+bob.on("error",      (err)          => console.error("Error:", err.message))
+```
+
+`"reconnect"` fires at the start of each reconnect attempt, before the connection is established. `"connect"` fires when it succeeds.
+
+---
+
+## Unsubscribing
+
+Each `subscribe` call returns an unsubscribe function:
+
+```ts
+const unsub1 = bob.subscribe("tickInfo", handlerA)
+const unsub2 = bob.subscribe("tickInfo", handlerB)
+
+unsub1() // removes only handlerA; handlerB still receives ticks
+```
+
+`bob.unsubscribeAll()` removes all active subscriptions without disconnecting. Useful before re-registering a fresh set after a navigation change.

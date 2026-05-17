@@ -58,7 +58,7 @@ export function PackageSigil({
         width: size,
         height: size,
         background: bg,
-        borderRadius: 10,
+        borderRadius: 3,
         border: `1px solid ${color}22`,
         flexShrink: 0,
       }}

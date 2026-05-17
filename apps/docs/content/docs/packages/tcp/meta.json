@@ -2,5 +2,13 @@
   "title": "@qubic.org/tcp",
   "icon": "Network",
   "root": true,
-  "pages": ["index", "connection", "requests", "frame-utilities"]
+  "pages": [
+    "index",
+    "---Concepts---",
+    "tcp-protocol",
+    "---API Reference---",
+    "connection",
+    "requests",
+    "frame-utilities"
+  ]
 }

@@ -1,0 +1,132 @@
+---
+title: Type safety
+description: How phantom brands eliminate an entire class of runtime bugs — and why the constructor/guard split matters.
+---
+
+## The problem with plain strings
+
+Qubic works with several string-shaped values that are structurally identical at runtime but semantically distinct:
+
+| Value | Format | Example |
+|---|---|---|
+| Identity | 60 uppercase chars | `CFBMEMZOIDEX...` |
+| TxHash | 60 hex chars | `abcdef012345...` |
+| Seed | 55 lowercase chars | `aaabbbcccdddeee...` |
+| Base64 | Base64-encoded bytes | `AAEC/w==` |
+
+All four are `string` in TypeScript. Without additional structure, nothing stops this:
+
+```ts
+// Compiles. Wrong at runtime.
+await live.getBalance(txHash as any)
+await archive.getTransaction(identity as any)
+```
+
+This class of mistake shows up as a confusing RPC error rather than a compile error, and it happens in tests too — the type system doesn't help.
+
+---
+
+## Phantom brands
+
+`@qubic.org/types` fixes this with a phantom type brand — a property that exists only in the type system, never in the emitted JavaScript:
+
+```ts
+type Identity = string & { readonly __brand: "Identity" }
+type TxHash   = string & { readonly __brand: "TxHash" }
+type Seed     = string & { readonly __brand: "Seed" }
+type Base64   = string & { readonly __brand: "Base64" }
+```
+
+At runtime, `Identity`, `TxHash`, `Seed`, and `Base64` are all plain strings. The brand has zero runtime cost. But at type-check time, TypeScript treats them as distinct types:
+
+```ts
+function getBalance(identity: Identity): Promise<BalanceResult> { ... }
+
+const hash = toTxHash("abcdef...")
+getBalance(hash) // TS error: Argument of type 'TxHash' is not assignable to parameter of type 'Identity'
+```
+
+The mistake is caught at compile time, not at runtime.
+
+---
+
+## Constructor vs guard
+
+Two patterns for getting a branded value from a raw string:
+
+### Constructor (throws on bad input)
+
+```ts
+import { toIdentity, QubicIdentityError } from "@qubic.org/types"
+
+const identity = toIdentity(rawString)
+// Returns Identity if valid, throws QubicIdentityError if not
+```
+
+Use constructors at **trust boundaries** — form inputs, API responses, config files, anything that comes from outside your type-safe code. The exception forces you to handle the error explicitly.
+
+### Guard (returns boolean)
+
+```ts
+import { isIdentity } from "@qubic.org/types"
+
+if (isIdentity(rawString)) {
+  // rawString is narrowed to Identity here
+  doSomethingWith(rawString)
+}
+```
+
+Use guards for **filtering and conditional logic** on collections of untrusted data. They don't throw, so you don't need try/catch.
+
+### When to use which
+
+| Situation | Use |
+|---|---|
+| Single value from a form or API | `toIdentity` — forces explicit error handling |
+| Filtering an array of unknown strings | `isIdentity` — clean predicate, no try/catch |
+| Asserting that a value you control is valid | Either — constructor is more explicit |
+| Unknown input in a parsing loop | `isIdentity` — fail-safe |
+
+---
+
+## Type narrowing in practice
+
+Guards are TypeScript type predicates — they narrow the type in the `if` branch:
+
+```ts
+function handle(value: string) {
+  if (isIdentity(value)) {
+    // value: Identity
+    return lookupBalance(value)
+  }
+  if (isTxHash(value)) {
+    // value: TxHash
+    return lookupTransaction(value)
+  }
+  throw new Error("Unknown value format")
+}
+```
+
+This composes with `Array.filter`:
+
+```ts
+const mixedInputs: string[] = getUserInputs()
+
+// Both produce correctly typed arrays
+const identities: Identity[] = mixedInputs.filter(isIdentity)
+const hashes: TxHash[]       = mixedInputs.filter(isTxHash)
+```
+
+---
+
+## Zero runtime overhead
+
+The phantom brand is stripped during TypeScript compilation. The emitted JavaScript is identical to using plain strings. No wrapper object, no class instance, no proxy — just a string with a compile-time label.
+
+This means branded values are safe to:
+- Serialize to JSON
+- Store in localStorage
+- Pass across network boundaries
+- Log to the console
+
+They behave exactly like strings everywhere except the TypeScript type checker.

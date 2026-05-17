@@ -2,5 +2,15 @@
   "title": "@qubic.org/react",
   "icon": "Layers",
   "root": true,
-  "pages": ["index", "providers", "data-hooks", "send-mutations", "wallet-hooks", "connectors"]
+  "pages": [
+    "index",
+    "---Concepts---",
+    "architecture",
+    "---API Reference---",
+    "providers",
+    "data-hooks",
+    "send-mutations",
+    "wallet-hooks",
+    "connectors"
+  ]
 }

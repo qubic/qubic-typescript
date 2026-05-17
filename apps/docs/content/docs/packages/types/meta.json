@@ -2,5 +2,13 @@
   "title": "@qubic.org/types",
   "icon": "Tag",
   "root": true,
-  "pages": ["index", "branded-types", "constants", "errors"]
+  "pages": [
+    "index",
+    "---Concepts---",
+    "type-safety",
+    "---API Reference---",
+    "branded-types",
+    "constants",
+    "errors"
+  ]
 }

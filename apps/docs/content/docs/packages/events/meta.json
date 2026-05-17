@@ -2,5 +2,12 @@
   "title": "@qubic.org/events",
   "icon": "Bell",
   "root": true,
-  "pages": ["index", "decode-event", "event-filter"]
+  "pages": [
+    "index",
+    "---Concepts---",
+    "event-types",
+    "---API Reference---",
+    "decode-event",
+    "event-filter"
+  ]
 }

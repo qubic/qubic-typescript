@@ -2,5 +2,13 @@
   "title": "@qubic.org/tx",
   "icon": "ArrowLeftRight",
   "root": true,
-  "pages": ["index", "build-transaction", "sign-transaction", "payload"]
+  "pages": [
+    "index",
+    "---Concepts---",
+    "transaction-lifecycle",
+    "---API Reference---",
+    "build-transaction",
+    "sign-transaction",
+    "payload"
+  ]
 }

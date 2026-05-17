@@ -1,0 +1,12 @@
+{
+  "title": "Guides",
+  "pages": [
+    "transfer",
+    "contract-call",
+    "contract-query",
+    "live-events",
+    "vault",
+    "react-dapp",
+    "historical-decode"
+  ]
+}

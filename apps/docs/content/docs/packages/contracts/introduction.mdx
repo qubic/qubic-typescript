@@ -1,0 +1,12 @@
+---
+title: Introduction
+description: What @qubic.org/contracts is, why it exists, and when to use it.
+---
+
+`@qubic.org/contracts` is the recommended way to interact with Qubic smart contracts from TypeScript. It provides fully typed, generated wrappers for every deployed contract — payload builders that turn plain objects into binary, output decoders that turn raw bytes into typed values, and live read callers that fetch data from the network and return structured results. No manual binary encoding, no magic input-type numbers, no ABI spelunking.
+
+The wrappers are generated automatically from the latest `@qubic.org/registry` ABI snapshot. When a new epoch ships a changed contract interface, the SDK maintainers run the generator and publish an updated version of this package. Your TypeScript types and function signatures update with it, so breaking interface changes surface as compile errors rather than silent runtime failures.
+
+Every contract is exposed in two ways. The namespace object — `qearn`, `qx`, `qvault`, and so on — groups all operations for a contract under a single import. Individual named exports like `buildQearnLockInput` or `decodeQearnLockOutput` are also available for tree-shaking or when you only need one operation. Both forms are fully typed: inputs are typed to the exact fields the ABI declares, and outputs reflect the decoded field names and their inferred TypeScript types.
+
+`@qubic.org/contracts` covers the current ABI snapshot. If you need to encode or decode payloads for historical epochs — for example, to reconstruct a transaction from a past epoch with a different contract interface — drop down to `@qubic.org/registry` directly, which stores every versioned snapshot and lets you look up the ABI for any epoch.

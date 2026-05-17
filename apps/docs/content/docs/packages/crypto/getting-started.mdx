@@ -1,0 +1,48 @@
+---
+title: Getting started
+description: Derive a key pair from a seed and sign a digest in a few lines.
+---
+
+<Steps>
+<Step>
+**Import what you need**
+
+```ts
+import { publicKeyFromSeed, identityFromSeed, sign } from "@qubic.org/crypto"
+import { toSeed } from "@qubic.org/types"
+```
+</Step>
+<Step>
+**Brand your seed string**
+
+```ts
+const seed = toSeed("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+// seed is now typed as Seed — safe to pass to crypto functions
+```
+</Step>
+<Step>
+**Derive the public key and identity**
+
+```ts
+const publicKey = await publicKeyFromSeed(seed)  // Uint8Array (32 bytes)
+const identity  = await identityFromSeed(seed)   // Identity ("BPFJANADBB...")
+
+console.log("Identity:", identity)
+console.log("Public key:", Buffer.from(publicKey).toString("hex"))
+```
+</Step>
+<Step>
+**Sign a digest**
+
+```ts
+const digest    = new Uint8Array(32) // replace with your actual transaction digest
+const signature = await sign(seed, digest) // Uint8Array (64 bytes)
+
+console.log("Signature:", Buffer.from(signature).toString("hex"))
+```
+</Step>
+</Steps>
+
+<Callout>
+All functions that touch the WASM module — `publicKeyFromSeed`, `identityFromSeed`, `sign`, `verify`, and `K12` — are async. Forgetting `await` is the most common mistake when first using this package.
+</Callout>

@@ -1,0 +1,12 @@
+---
+title: Introduction
+description: What @qubic.org/crypto does, the algorithms it implements, and when to use it directly.
+---
+
+`@qubic.org/crypto` is the cryptographic core of the Qubic TypeScript SDK. It implements the three algorithms that the Qubic protocol uses at the wire level: KangarooTwelve (K12) hashing, FourQ elliptic curve key derivation, and SchnorrQ Schnorr signatures. All heavy work runs inside a compiled WASM module, so the signing and key derivation functions are async.
+
+The package handles the full key lifecycle. A seed — a 55-character lowercase string representing a private key — is used to derive a 32-byte FourQ public key via `publicKeyFromSeed`, or converted directly to the human-readable 60-character uppercase `Identity` format via `identityFromSeed`. The K12 hash function is used throughout the SDK for transaction digests, identity derivation, and message hashing. The `sign` and `verify` functions implement SchnorrQ over the FourQ curve, which Qubic chose for its performance advantage over Curve25519 at equivalent security.
+
+Most applications should reach for `@qubic.org/wallet` instead of this package directly. The wallet abstracts the key derivation and signing steps into a simpler interface. Use `@qubic.org/crypto` directly when you need raw bytes — for example, when building custom transaction formats, integrating with a hardware wallet, implementing a custom signing flow, or working at a level below the wallet abstraction.
+
+The package depends on `@qubic.org/types` for the `Seed` and `Identity` branded types. All other dependencies are bundled — there is nothing else to install.

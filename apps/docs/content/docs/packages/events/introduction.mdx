@@ -1,0 +1,12 @@
+---
+title: Introduction
+description: What @qubic.org/events is, why it exists, and when to reach for it.
+---
+
+`@qubic.org/events` sits on top of `@qubic.org/bob` and turns raw Qubic event log payloads into fully typed TypeScript objects. Every event the Qubic network produces — QU transfers, asset issuances, ownership changes, contract messages, burn events — arrives from the node as a base64-encoded binary blob with a numeric type tag. This package decodes those blobs into discriminated union types so TypeScript can narrow the shape of each event for you.
+
+The core export is `decodeEvent`. Pass it a raw `BobLogEvent` and you get back a typed object where the `logType` field acts as a discriminant. When you narrow on `logType === LOG_TYPE.QU_TRANSFER`, TypeScript knows the `data` field has `source`, `destination`, and `amount` — no casting required. The package covers all 16 Qubic log types and the `CUSTOM_MESSAGE` type used by smart contracts.
+
+Beyond decoding, the package provides an `eventFilter` builder for composing filters by identity, contract index, log type, and tick range. The filters integrate with four subscription helpers — `subscribeAllEvents`, `subscribeQuTransfers`, `subscribeAssetEvents`, and `subscribeContractLogs` — that wrap Bob subscriptions and handle the decode-and-filter loop for you.
+
+Use `@qubic.org/events` any time you need to act on specific types of on-chain activity: watching an identity for incoming transfers, listening for contract log emissions, or auditing asset movement. It requires `@qubic.org/bob` as a peer dependency because the subscription helpers delegate connection management to Bob entirely.

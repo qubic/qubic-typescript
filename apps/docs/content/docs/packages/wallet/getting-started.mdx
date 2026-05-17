@@ -1,0 +1,48 @@
+---
+title: Getting started
+description: Create a wallet, build a transfer, and send it in a few lines.
+---
+
+<Steps>
+<Step>
+**Import the wallet and a client**
+
+```ts
+import { createWallet, generateSeed } from "@qubic.org/wallet"
+import { toIdentity } from "@qubic.org/types"
+```
+</Step>
+<Step>
+**Create a wallet from a new seed**
+
+```ts
+const seed   = generateSeed()       // random 55-char Seed
+const wallet = createWallet(seed)
+
+console.log("Identity:", wallet.identity)   // the 60-char public address
+console.log("Public key:", wallet.publicKey) // Uint8Array (32 bytes)
+```
+</Step>
+<Step>
+**Build and sign a transfer**
+
+```ts
+const destination = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
+
+const { encoded, hash } = await wallet.buildTransfer({
+  destination,
+  amount: 1_000_000n,
+  targetTick: 18500000,  // use live.getTickInfo() for the real tick
+  currentTick: 18499995,
+})
+
+console.log("TX hash:", hash)
+console.log("Encoded:", encoded)
+// Pass `encoded` to live.broadcastTransaction(encoded) from @qubic.org/rpc
+```
+</Step>
+</Steps>
+
+<Callout>
+`generateSeed` produces a cryptographically random seed. Store it securely — anyone with the seed controls the wallet. If you need to store multiple seeds safely, use the [Vault](./create-vault) API with a user password.
+</Callout>

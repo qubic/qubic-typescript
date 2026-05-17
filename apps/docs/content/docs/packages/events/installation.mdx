@@ -1,0 +1,53 @@
+---
+title: Installation
+description: How to install @qubic.org/events and its required peer dependencies.
+---
+
+`@qubic.org/events` is used alongside `@qubic.org/bob`. Install both together:
+
+<Tabs items={["Bun", "npm", "pnpm"]}>
+<Tab value="Bun">
+```bash
+bun add @qubic.org/events @qubic.org/bob
+```
+</Tab>
+<Tab value="npm">
+```bash
+npm install @qubic.org/events @qubic.org/bob
+```
+</Tab>
+<Tab value="pnpm">
+```bash
+pnpm add @qubic.org/events @qubic.org/bob
+```
+</Tab>
+</Tabs>
+
+## Peer dependencies
+
+| Package | Required | Purpose |
+|---|---|---|
+| `@qubic.org/bob` | yes | WebSocket connection and raw event log delivery |
+| `@qubic.org/types` | yes | Branded identity and type primitives |
+
+<Tabs items={["Bun", "npm", "pnpm"]}>
+<Tab value="Bun">
+```bash
+bun add @qubic.org/types
+```
+</Tab>
+<Tab value="npm">
+```bash
+npm install @qubic.org/types
+```
+</Tab>
+<Tab value="pnpm">
+```bash
+pnpm add @qubic.org/types
+```
+</Tab>
+</Tabs>
+
+<Callout type="info">
+The package is published as ESM only. CommonJS (`require`) is not supported. Use `"type": "module"` in your `package.json` or a bundler that handles ESM imports.
+</Callout>

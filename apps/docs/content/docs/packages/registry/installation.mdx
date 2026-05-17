@@ -1,0 +1,53 @@
+---
+title: Installation
+description: How to install @qubic.org/registry and its peer dependencies.
+---
+
+<Tabs items={["Bun", "npm", "pnpm"]}>
+<Tab value="Bun">
+```bash
+bun add @qubic.org/registry
+```
+</Tab>
+<Tab value="npm">
+```bash
+npm install @qubic.org/registry
+```
+</Tab>
+<Tab value="pnpm">
+```bash
+pnpm add @qubic.org/registry
+```
+</Tab>
+</Tabs>
+
+## Peer dependencies
+
+`@qubic.org/registry` requires the following packages to be installed alongside it:
+
+<Tabs items={["Bun", "npm", "pnpm"]}>
+<Tab value="Bun">
+```bash
+bun add @qubic.org/types @qubic.org/crypto
+```
+</Tab>
+<Tab value="npm">
+```bash
+npm install @qubic.org/types @qubic.org/crypto
+```
+</Tab>
+<Tab value="pnpm">
+```bash
+pnpm add @qubic.org/types @qubic.org/crypto
+```
+</Tab>
+</Tabs>
+
+| Package | Purpose |
+|---|---|
+| `@qubic.org/types` | Shared TypeScript types used across the SDK |
+| `@qubic.org/crypto` | Identity conversions (`identityToPublicKey`, `publicKeyToIdentity`) passed to the codec |
+
+<Callout type="info">
+If you are using `@qubic.org/contracts` for most contract interactions, you do not need to install `@qubic.org/registry` directly — it is a transitive dependency and will be installed automatically.
+</Callout>

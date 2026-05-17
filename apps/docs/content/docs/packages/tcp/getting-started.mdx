@@ -1,0 +1,41 @@
+---
+title: Getting Started
+description: Create a node pool and query the current tick over TCP in under fifteen lines.
+---
+
+<Steps>
+<Step>
+**Create a node pool**
+
+Supply one or more peer addresses. The pool fails over automatically if the first node is unreachable.
+
+```ts
+import { createNodePool } from "@qubic.org/tcp"
+
+const pool = createNodePool([
+  "node1.qubic.org",
+  "node2.qubic.org",
+])
+```
+</Step>
+<Step>
+**Request tick info**
+
+Pass an `AbortSignal` to bound the total wait time. Always close the pool when done.
+
+```ts
+import { createNodePool, requestCurrentTickInfo } from "@qubic.org/tcp"
+
+const pool = createNodePool(["node1.qubic.org", "node2.qubic.org"])
+
+try {
+  const { tick, epoch } = await requestCurrentTickInfo(pool, {
+    signal: AbortSignal.timeout(5000),
+  })
+  console.log(`Epoch ${epoch}, tick ${tick}`)
+} finally {
+  pool.close()
+}
+```
+</Step>
+</Steps>

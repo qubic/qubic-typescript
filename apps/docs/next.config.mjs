@@ -6,6 +6,9 @@ const withMDX = createMDX();
 const config = {
   serverExternalPackages: ["@takumi-rs/image-response"],
   reactStrictMode: true,
+  images: {
+    domains: ['img.shields.io']
+  }
 };
 
 export default withMDX(config);

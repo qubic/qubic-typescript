@@ -1,0 +1,12 @@
+---
+title: Introduction
+description: What @qubic.org/types does, why it exists, and when to reach for it.
+---
+
+`@qubic.org/types` is the foundation layer of the Qubic TypeScript SDK. Every other package depends on it. It defines the branded primitive types that represent Qubic network values — `Identity`, `Seed`, `TxHash`, and `Base64` — along with the runtime constructors and guards that get you safely from raw strings to those types.
+
+The core problem it solves is that Qubic works with several string-shaped values that look similar but mean very different things. A 60-character uppercase string is an `Identity`. A 55-character lowercase string is a `Seed`. A 60-character hex string is a `TxHash`. TypeScript has no way to distinguish them without help — and without that distinction, nothing stops you from passing a seed where a destination address is expected. The mistake compiles, passes tests, and surfaces as a confusing runtime error in production.
+
+`@qubic.org/types` uses phantom type branding to fix this. Each branded type intersects `string` with a readonly `__brand` property that exists only at the type-check level and is erased in the emitted JavaScript. At runtime, an `Identity` is just a string. At compile time, TypeScript treats it as a distinct type and rejects it anywhere a different branded type is expected. The safety has zero runtime cost.
+
+The package also exports protocol constants (`PROTOCOL`, `CONTRACT_INDEX`, `LOG_TYPE`) that replace magic numbers in application code, and a typed `QubicError` hierarchy that all other SDK packages use for structured error handling. If you are building anything on top of the Qubic SDK, you will use this package.

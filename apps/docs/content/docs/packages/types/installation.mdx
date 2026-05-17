@@ -1,0 +1,30 @@
+---
+title: Installation
+description: How to add @qubic.org/types to your project.
+---
+
+<Tabs items={["Bun", "npm", "pnpm"]}>
+<Tab value="Bun">
+```bash
+bun add @qubic.org/types
+```
+</Tab>
+<Tab value="npm">
+```bash
+npm install @qubic.org/types
+```
+</Tab>
+<Tab value="pnpm">
+```bash
+pnpm add @qubic.org/types
+```
+</Tab>
+</Tabs>
+
+`@qubic.org/types` has no runtime dependencies. It ships only TypeScript types, constructors, guards, and constants — nothing that adds weight to a bundle.
+
+The package targets ES2020 and requires TypeScript 4.9 or later. If you are using `strict: true` in your tsconfig (recommended), the branded types and type guards will integrate cleanly with TypeScript's control flow analysis.
+
+<Callout>
+This package is a required peer dependency of every other `@qubic.org/*` package. If you are installing `@qubic.org/crypto`, `@qubic.org/tx`, or `@qubic.org/wallet`, add `@qubic.org/types` to your dependencies as well — it is not automatically hoisted.
+</Callout>

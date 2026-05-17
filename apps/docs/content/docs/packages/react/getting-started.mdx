@@ -1,0 +1,54 @@
+---
+title: Getting Started
+description: Wrap your app in QubicProvider and display a live account balance.
+---
+
+This example shows the minimum setup needed to use `@qubic.org/react`: wrapping the app in `QubicProvider` and rendering a balance with the `useBalance` hook.
+
+<Steps>
+<Step>
+
+### Wrap your app in QubicProvider
+
+```tsx
+// app.tsx
+import { QubicProvider } from "@qubic.org/react"
+import { BalanceCard } from "./BalanceCard"
+
+export default function App() {
+  return (
+    <QubicProvider>
+      <BalanceCard />
+    </QubicProvider>
+  )
+}
+```
+
+</Step>
+<Step>
+
+### Fetch and display a balance
+
+```tsx
+// BalanceCard.tsx
+import { useBalance } from "@qubic.org/react"
+import { toIdentity } from "@qubic.org/types"
+
+const IDENTITY = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
+
+export function BalanceCard() {
+  const { data, isLoading, error } = useBalance(IDENTITY)
+
+  if (isLoading) return <div>Loading…</div>
+  if (error)     return <div>Error: {error.message}</div>
+
+  return <div>{data?.balance.toString()} QU</div>
+}
+```
+
+</Step>
+</Steps>
+
+<Callout type="info">
+`useBalance` polls the network automatically and keeps the displayed balance up to date. The default refetch interval is configurable via `QubicProvider` props.
+</Callout>

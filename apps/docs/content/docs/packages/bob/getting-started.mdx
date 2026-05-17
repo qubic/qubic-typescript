@@ -1,0 +1,39 @@
+---
+title: Getting Started
+description: Connect to a Qubic node and receive live tick updates in under fifteen lines.
+---
+
+<Steps>
+<Step>
+**Create and connect a Bob client**
+
+Pass `autoResubscribe: true` so your subscriptions survive reconnects automatically.
+
+```ts
+import { createBobClient } from "@qubic.org/bob"
+
+const bob = createBobClient({ autoResubscribe: true })
+await bob.connect()
+```
+</Step>
+<Step>
+**Subscribe to live tick updates**
+
+```ts
+import { createBobClient } from "@qubic.org/bob"
+
+const bob = createBobClient({ autoResubscribe: true })
+await bob.connect()
+
+bob.subscribe("tickInfo", (tick, meta) => {
+  if (meta.isCatchUp) return // skip buffered ticks from reconnect gap
+  console.log(`Tick ${tick.tick} — epoch ${tick.epoch}`)
+})
+
+process.on("SIGINT", async () => {
+  await bob.disconnect()
+  process.exit(0)
+})
+```
+</Step>
+</Steps>

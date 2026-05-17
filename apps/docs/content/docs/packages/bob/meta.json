@@ -4,6 +4,10 @@
   "root": true,
   "pages": [
     "index",
+    "---Introduction---",
+    "introduction",
+    "installation",
+    "getting-started",
     "---Concepts---",
     "subscriptions-model",
     "---Client---",

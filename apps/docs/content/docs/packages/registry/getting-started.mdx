@@ -1,0 +1,56 @@
+---
+title: Getting Started
+description: Look up a contract ABI and encode a binary payload in a few lines.
+---
+
+This example imports the bundled registry JSON, looks up the Qearn contract ABI at a specific epoch, finds a procedure by input type, and encodes a payload ready to attach to a transaction.
+
+<Steps>
+<Step>
+
+### Import the registry and helpers
+
+```ts
+import { getAbi, getProcedure, buildPayload } from "@qubic.org/registry"
+import { identityToPublicKey } from "@qubic.org/crypto"
+import registry from "@qubic.org/registry/registry.json"
+import type { ContractRegistry } from "@qubic.org/registry"
+```
+
+</Step>
+<Step>
+
+### Look up the ABI for a contract and epoch
+
+```ts
+const reg = registry as ContractRegistry
+
+// Qearn is contract index 9. Look up its ABI at epoch 212.
+const { version } = getAbi(reg, 9, 212)
+```
+
+</Step>
+<Step>
+
+### Get a procedure and encode the payload
+
+```ts
+// Input type 6 is the lock procedure on Qearn.
+const proc = getProcedure(version, 6)
+
+const payload = buildPayload(
+  proc.inputFields,
+  version.structs ?? {},
+  { amount: 10_000_000n },
+  identityToPublicKey,
+)
+
+console.log("Encoded payload:", payload.length, "bytes")
+```
+
+</Step>
+</Steps>
+
+<Callout type="info">
+For most contracts you should use `@qubic.org/contracts` instead — it provides fully typed wrappers like `qearn.buildLockInput({ amount })` that handle the procedure lookup for you. Reach for `@qubic.org/registry` directly when you need historical epoch access or are building tooling.
+</Callout>

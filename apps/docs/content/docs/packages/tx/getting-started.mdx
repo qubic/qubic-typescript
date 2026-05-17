@@ -1,0 +1,51 @@
+---
+title: Getting started
+description: Build, sign, and encode a QU transfer transaction from scratch.
+---
+
+<Steps>
+<Step>
+**Import the transaction pipeline**
+
+```ts
+import { buildTransaction, signTransaction, encodeTransaction } from "@qubic.org/tx"
+import { publicKeyFromSeed, identityToPublicKey } from "@qubic.org/crypto"
+import { toSeed, toIdentity } from "@qubic.org/types"
+```
+</Step>
+<Step>
+**Prepare keys**
+
+```ts
+const seed = toSeed("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+
+const sourcePublicKey      = await publicKeyFromSeed(seed)
+const destinationPublicKey = identityToPublicKey(
+  toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
+)
+```
+</Step>
+<Step>
+**Build, sign, and encode**
+
+```ts
+const unsigned = buildTransaction({
+  sourcePublicKey,
+  destinationPublicKey,
+  amount: 1_000_000n,
+  targetTick: 18500000,  // use live.getTickInfo() for the real tick
+  inputType: 0,
+})
+
+const signed  = await signTransaction(unsigned, seed)
+const encoded = encodeTransaction(signed)
+
+console.log("Encoded transaction:", encoded)
+// Pass `encoded` to live.broadcastTransaction(encoded) from @qubic.org/rpc
+```
+</Step>
+</Steps>
+
+<Callout>
+`buildTransaction` and `encodeTransaction` are synchronous. Only `signTransaction` is async — it calls the SchnorrQ WASM signer internally. Always await it before encoding.
+</Callout>

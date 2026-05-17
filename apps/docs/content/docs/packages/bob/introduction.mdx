@@ -1,0 +1,12 @@
+---
+title: Introduction
+description: What @qubic.org/bob is, why it exists, and when to reach for it.
+---
+
+`@qubic.org/bob` is a WebSocket client for the Qubic node protocol. It maintains a persistent connection to a Qubic node and delivers live tick updates and account event logs as they happen, handling reconnection, resubscription, and catch-up buffering so your application code does not have to.
+
+The Qubic network produces a new tick roughly every second. Polling `getTickInfo` over HTTP is straightforward, but it wastes round-trips and introduces latency that compounds over time. A single WebSocket subscription receives every tick the moment the node broadcasts it. `@qubic.org/bob` manages that connection lifecycle — opening the socket, subscribing to topics, recovering from disconnects, and resubscribing automatically — behind a small, event-driven API.
+
+Bob speaks the Qubic node's native binary protocol directly, not the HTTP REST gateway. This makes it the lowest-latency option for live data, and the right choice for dashboards, monitoring tools, alerting pipelines, and any application that needs to react to the network in real time. For event log data specifically, Bob delivers raw binary payloads that `@qubic.org/events` can decode into fully typed discriminated union objects.
+
+Use `@qubic.org/bob` when you need to stay connected and receive pushes. Use `@qubic.org/rpc` when you need to ask a question and get an answer. The two packages are designed to work side by side: a common pattern is to subscribe to tick updates through Bob and fetch additional context (balances, contract state) through the RPC live client on each new tick.

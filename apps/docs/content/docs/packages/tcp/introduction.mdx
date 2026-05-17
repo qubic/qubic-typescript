@@ -1,0 +1,12 @@
+---
+title: Introduction
+description: What @qubic.org/tcp is, why it exists, and when to reach for it.
+---
+
+`@qubic.org/tcp` provides a direct TCP transport to Qubic peer nodes. Where `@qubic.org/rpc` goes through the HTTP gateway and `@qubic.org/bob` uses the node's WebSocket interface, this package opens a raw TCP socket to a peer, encodes requests using the Qubic binary frame format, and reads typed responses back. It is the lowest-level client in the SDK.
+
+The Qubic binary protocol uses an 8-byte header — three bytes for payload size, one byte for message type, four bytes for a random dejavu nonce that pairs requests to responses — followed by the payload. `@qubic.org/tcp` handles frame encoding and decoding for you and exposes typed request functions (`requestCurrentTickInfo`, `requestEntity`, `broadcastTransaction`, `exchangePublicPeers`) that abstract away the wire format entirely.
+
+A `createNodePool` factory lets you supply a list of peer addresses and a timeout. The pool fails over to the next peer automatically when a connection drops or a request times out, so you get resilience without managing reconnection logic yourself. For lower-level work, `createNodeConnection` gives you a single connection you control directly.
+
+For most applications, `@qubic.org/rpc` is the right starting point — the HTTP gateway handles routing, load balancing, and protocol details. Reach for `@qubic.org/tcp` when you need to query a specific peer node, when the gateway is unavailable, when you are building node monitoring or peer discovery tooling, or when you need the minimum possible latency between your process and the network.

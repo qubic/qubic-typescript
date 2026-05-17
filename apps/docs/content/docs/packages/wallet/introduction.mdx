@@ -1,0 +1,12 @@
+---
+title: Introduction
+description: What @qubic.org/wallet provides, how the wallet and vault APIs relate, and when to use this package.
+---
+
+`@qubic.org/wallet` is the high-level entry point for key management and transaction signing in the Qubic TypeScript SDK. It provides two complementary APIs: a `Wallet` for building and signing transactions, and a `Vault` for storing multiple seeds securely under a user password.
+
+A wallet is created from a single seed and exposes the derived `identity` and `publicKey` directly as properties. Its two main methods — `buildTransfer` and `buildScTransaction` — handle the complete build–sign–encode pipeline internally, returning a base64-encoded transaction string and its hash in one call. Under the hood they use `@qubic.org/tx` and `@qubic.org/crypto`, but you do not need to import or configure those packages directly. For most applications, `createWallet` paired with `generateSeed` is all that is needed to start sending transactions.
+
+The vault addresses a common problem in wallet applications: how to store multiple seeds safely without exposing them in plain text. A `Vault` encrypts its seeds with AES-256-GCM using a key derived from a user password via PBKDF2. The encrypted blob can be exported as a portable string and stored in localStorage, a database, or a file. Restoring it requires the password — the seeds are never accessible in plain form outside an unlocked vault session. `createWalletFromVault` bridges the two APIs, giving you a fully functional wallet from a named seed in an unlocked vault.
+
+If you need raw binary control over the transaction format, a custom signing flow, or hardware wallet integration, use `@qubic.org/tx` and `@qubic.org/crypto` directly. For everything else — sending QU, calling smart contracts, managing user keys — `@qubic.org/wallet` is the right starting point.

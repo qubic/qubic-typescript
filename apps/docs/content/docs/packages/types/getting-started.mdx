@@ -1,0 +1,57 @@
+---
+title: Getting started
+description: Validate user input and work with branded Qubic types in five minutes.
+---
+
+<Steps>
+<Step>
+**Import the constructor and error class**
+
+```ts
+import { toIdentity, QubicIdentityError } from "@qubic.org/types"
+```
+</Step>
+<Step>
+**Validate a raw string at a trust boundary**
+
+```ts
+const raw = "CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL"
+
+try {
+  const identity = toIdentity(raw)
+  console.log(identity) // "CFBMEMZOID..." — typed as Identity
+} catch (e) {
+  if (e instanceof QubicIdentityError) {
+    console.error("Not a valid Qubic address")
+  }
+}
+```
+</Step>
+<Step>
+**Use a guard to filter untrusted input without try/catch**
+
+```ts
+import { isIdentity, isTxHash } from "@qubic.org/types"
+
+const inputs = ["CFBMEMZOID...", "not-valid", "abcdef012345..."]
+
+const identities = inputs.filter(isIdentity) // Identity[]
+const hashes     = inputs.filter(isTxHash)   // TxHash[]
+```
+</Step>
+<Step>
+**Use named constants instead of magic numbers**
+
+```ts
+import { CONTRACT_INDEX, LOG_TYPE } from "@qubic.org/types"
+
+const contractIndex = CONTRACT_INDEX.QEARN // 9
+
+if (event.eventType === LOG_TYPE.QU_TRANSFER) {
+  // handle transfer event
+}
+```
+</Step>
+</Steps>
+
+The branded types flow through the rest of the SDK automatically. Functions in `@qubic.org/crypto`, `@qubic.org/tx`, and `@qubic.org/wallet` accept `Identity` and `Seed` parameters — once you validate at the boundary with `toIdentity` or `toSeed`, you will not need to re-validate downstream.

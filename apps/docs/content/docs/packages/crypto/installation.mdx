@@ -1,0 +1,48 @@
+---
+title: Installation
+description: How to add @qubic.org/crypto to your project.
+---
+
+<Tabs items={["Bun", "npm", "pnpm"]}>
+<Tab value="Bun">
+```bash
+bun add @qubic.org/crypto
+```
+</Tab>
+<Tab value="npm">
+```bash
+npm install @qubic.org/crypto
+```
+</Tab>
+<Tab value="pnpm">
+```bash
+pnpm add @qubic.org/crypto
+```
+</Tab>
+</Tabs>
+
+`@qubic.org/types` is a required peer dependency. Install it alongside `@qubic.org/crypto`:
+
+<Tabs items={["Bun", "npm", "pnpm"]}>
+<Tab value="Bun">
+```bash
+bun add @qubic.org/crypto @qubic.org/types
+```
+</Tab>
+<Tab value="npm">
+```bash
+npm install @qubic.org/crypto @qubic.org/types
+```
+</Tab>
+<Tab value="pnpm">
+```bash
+pnpm add @qubic.org/crypto @qubic.org/types
+```
+</Tab>
+</Tabs>
+
+<Callout type="warn">
+`@qubic.org/crypto` uses a WASM module internally. All key derivation and signing functions (`publicKeyFromSeed`, `identityFromSeed`, `sign`, `verify`) are async and must be awaited. Calling them without `await` returns a `Promise`, not the result.
+</Callout>
+
+The WASM binary is bundled inside the package — there is nothing extra to configure. Bun, Node.js 18+, and all modern browsers load WASM natively. If you are bundling for a browser environment with a custom bundler, ensure your configuration allows `.wasm` imports.

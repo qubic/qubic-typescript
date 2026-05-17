@@ -1,0 +1,54 @@
+---
+title: Installation
+description: How to install @qubic.org/contracts and its peer dependencies.
+---
+
+<Tabs items={["Bun", "npm", "pnpm"]}>
+<Tab value="Bun">
+```bash
+bun add @qubic.org/contracts
+```
+</Tab>
+<Tab value="npm">
+```bash
+npm install @qubic.org/contracts
+```
+</Tab>
+<Tab value="pnpm">
+```bash
+pnpm add @qubic.org/contracts
+```
+</Tab>
+</Tabs>
+
+## Peer dependencies
+
+`@qubic.org/contracts` requires the following packages to be installed alongside it:
+
+<Tabs items={["Bun", "npm", "pnpm"]}>
+<Tab value="Bun">
+```bash
+bun add @qubic.org/types @qubic.org/crypto @qubic.org/rpc
+```
+</Tab>
+<Tab value="npm">
+```bash
+npm install @qubic.org/types @qubic.org/crypto @qubic.org/rpc
+```
+</Tab>
+<Tab value="pnpm">
+```bash
+pnpm add @qubic.org/types @qubic.org/crypto @qubic.org/rpc
+```
+</Tab>
+</Tabs>
+
+| Package | Purpose |
+|---|---|
+| `@qubic.org/types` | Shared TypeScript types used across the SDK |
+| `@qubic.org/crypto` | Identity conversions required by payload builders and decoders |
+| `@qubic.org/rpc` | RPC client used by live read callers (`createLiveClient`, `createQueryClient`) |
+
+<Callout type="info">
+`@qubic.org/contracts` bundles a snapshot of the ABI registry. It does not need a network connection to build or decode payloads — only the live read callers require an active RPC connection.
+</Callout>

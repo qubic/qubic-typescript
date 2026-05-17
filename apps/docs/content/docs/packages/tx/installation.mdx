@@ -1,0 +1,48 @@
+---
+title: Installation
+description: How to add @qubic.org/tx to your project.
+---
+
+<Tabs items={["Bun", "npm", "pnpm"]}>
+<Tab value="Bun">
+```bash
+bun add @qubic.org/tx
+```
+</Tab>
+<Tab value="npm">
+```bash
+npm install @qubic.org/tx
+```
+</Tab>
+<Tab value="pnpm">
+```bash
+pnpm add @qubic.org/tx
+```
+</Tab>
+</Tabs>
+
+`@qubic.org/tx` has two required peer dependencies. Install all three together:
+
+<Tabs items={["Bun", "npm", "pnpm"]}>
+<Tab value="Bun">
+```bash
+bun add @qubic.org/tx @qubic.org/crypto @qubic.org/types
+```
+</Tab>
+<Tab value="npm">
+```bash
+npm install @qubic.org/tx @qubic.org/crypto @qubic.org/types
+```
+</Tab>
+<Tab value="pnpm">
+```bash
+pnpm add @qubic.org/tx @qubic.org/crypto @qubic.org/types
+```
+</Tab>
+</Tabs>
+
+<Callout>
+`signTransaction` is async because it delegates to `@qubic.org/crypto`'s WASM-backed signing functions. `buildTransaction` and `encodeTransaction` are synchronous.
+</Callout>
+
+The package targets ES2020 and has no other runtime dependencies. It works in Bun, Node.js 18+, and browser environments.

@@ -1,0 +1,12 @@
+---
+title: Introduction
+description: What @qubic.org/react is, why it exists, and when to use it.
+---
+
+`@qubic.org/react` brings the Qubic SDK into React applications through a set of providers, data hooks, and mutation hooks that follow idiomatic React patterns. It handles the boilerplate of RPC client setup, TanStack Query configuration, caching, and re-fetch scheduling so that components can focus on rendering data rather than managing network state.
+
+Data hooks like `useBalance`, `useTickInfo`, and `useContractQuery` are backed by TanStack Query. They cache responses, deduplicate concurrent requests from multiple components, and automatically poll the network on a configurable interval. Mutation hooks like `useSendTransfer` and `useSendContractCall` expose loading, success, and error state for operations that write to the network, making it straightforward to build transaction flows with proper user feedback.
+
+The package also ships a pluggable wallet connector system. Three connectors are included out of the box — a browser extension connector for wallets like Qubic Wallet, a WalletConnect v2 connector for QR-code and mobile-link flows, and a MetaMask Snap connector. You can implement the `WalletConnector` interface to add any custom wallet. The `VaultProvider` layer sits beneath wallet connectors and manages encrypted seed storage for applications that hold keys locally.
+
+Use `@qubic.org/react` when building any React or Next.js dApp on Qubic. It is the highest-level package in the SDK stack and covers the vast majority of front-end use cases without requiring direct interaction with the lower-level RPC, crypto, or registry packages.

@@ -1,0 +1,59 @@
+---
+title: Installation
+description: How to install @qubic.org/react and its peer dependencies.
+---
+
+<Tabs items={["Bun", "npm", "pnpm"]}>
+<Tab value="Bun">
+```bash
+bun add @qubic.org/react
+```
+</Tab>
+<Tab value="npm">
+```bash
+npm install @qubic.org/react
+```
+</Tab>
+<Tab value="pnpm">
+```bash
+pnpm add @qubic.org/react
+```
+</Tab>
+</Tabs>
+
+## Peer dependencies
+
+`@qubic.org/react` requires the following packages to be installed alongside it:
+
+<Tabs items={["Bun", "npm", "pnpm"]}>
+<Tab value="Bun">
+```bash
+bun add react react-dom @qubic.org/types @qubic.org/crypto @qubic.org/rpc
+```
+</Tab>
+<Tab value="npm">
+```bash
+npm install react react-dom @qubic.org/types @qubic.org/crypto @qubic.org/rpc
+```
+</Tab>
+<Tab value="pnpm">
+```bash
+pnpm add react react-dom @qubic.org/types @qubic.org/crypto @qubic.org/rpc
+```
+</Tab>
+</Tabs>
+
+| Package | Purpose |
+|---|---|
+| `react` / `react-dom` | React 18 or later |
+| `@qubic.org/types` | Shared TypeScript types used across the SDK |
+| `@qubic.org/crypto` | Identity conversions used internally by hooks |
+| `@qubic.org/rpc` | RPC clients used internally by data hooks |
+
+<Callout type="info">
+`@qubic.org/react` ships its own TanStack Query instance via `QubicProvider`. You do not need to install `@tanstack/react-query` separately unless you want to share a query client with other parts of your application.
+</Callout>
+
+<Callout type="warn">
+React 18 or later is required. The hooks use concurrent-mode features and will not work correctly on React 17.
+</Callout>

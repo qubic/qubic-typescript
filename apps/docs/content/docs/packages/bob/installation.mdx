@@ -1,0 +1,52 @@
+---
+title: Installation
+description: How to install @qubic.org/bob and configure your project.
+---
+
+<Tabs items={["Bun", "npm", "pnpm"]}>
+<Tab value="Bun">
+```bash
+bun add @qubic.org/bob
+```
+</Tab>
+<Tab value="npm">
+```bash
+npm install @qubic.org/bob
+```
+</Tab>
+<Tab value="pnpm">
+```bash
+pnpm add @qubic.org/bob
+```
+</Tab>
+</Tabs>
+
+## Peer dependencies
+
+`@qubic.org/bob` requires `@qubic.org/types` as a peer dependency for branded identity types used in event log subscriptions.
+
+<Tabs items={["Bun", "npm", "pnpm"]}>
+<Tab value="Bun">
+```bash
+bun add @qubic.org/types
+```
+</Tab>
+<Tab value="npm">
+```bash
+npm install @qubic.org/types
+```
+</Tab>
+<Tab value="pnpm">
+```bash
+pnpm add @qubic.org/types
+```
+</Tab>
+</Tabs>
+
+## Runtime requirements
+
+`@qubic.org/bob` uses the `WebSocket` global. This is available natively in Bun, Node.js 22+, and all modern browsers. For older Node.js versions, polyfill with the `ws` package or upgrade your runtime.
+
+<Callout type="info">
+The package is published as ESM only. CommonJS (`require`) is not supported. Use `"type": "module"` in your `package.json` or a bundler that handles ESM imports.
+</Callout>

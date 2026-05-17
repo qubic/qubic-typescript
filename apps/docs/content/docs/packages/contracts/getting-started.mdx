@@ -1,0 +1,50 @@
+---
+title: Getting Started
+description: Call a live Qubic contract read function in a few lines using the qearn namespace.
+---
+
+This example creates an RPC client, calls `qearn.getStateOfRound` to read live data from the Qearn contract, and prints the result.
+
+<Steps>
+<Step>
+
+### Import the contract namespace and RPC client
+
+```ts
+import { qearn } from "@qubic.org/contracts"
+import { createLiveClient } from "@qubic.org/rpc"
+import { identityToPublicKey, publicKeyToIdentity } from "@qubic.org/crypto"
+```
+
+</Step>
+<Step>
+
+### Create a live client and converters
+
+```ts
+const live = createLiveClient()
+const converters = { identityToPublicKey, publicKeyToIdentity }
+```
+
+</Step>
+<Step>
+
+### Call the read function and handle the result
+
+```ts
+const result = await qearn.getStateOfRound(live, { epoch: 213 }, converters)
+
+if (!result.ok) {
+  console.error("RPC error:", result.error.status, result.error.message)
+  process.exit(1)
+}
+
+console.log("Round state:", result.value)
+```
+
+</Step>
+</Steps>
+
+<Callout type="info">
+Read callers always return `Promise<Result<T, QubicRpcError>>` — they never throw. Check `result.ok` before accessing `result.value`.
+</Callout>

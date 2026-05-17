@@ -1,0 +1,12 @@
+---
+title: Introduction
+description: What @qubic.org/registry is, why it exists, and when to use it directly.
+---
+
+`@qubic.org/registry` is the authoritative source of truth for every Qubic smart contract's binary interface. It stores versioned ABI snapshots — one per epoch where a contract's interface changed — so that any application can encode inputs and decode outputs correctly, even for transactions from historical epochs.
+
+Every Qubic smart contract exposes procedures (write operations sent as transactions) and functions (read operations executed as queries). Each operation has a list of typed binary fields that describe how data is packed into bytes on the wire. The registry captures those field definitions per epoch and ships them as a single JSON file that can be imported statically or fetched on demand.
+
+The package ships two complementary tools: an ABI lookup API (`getAbi`, `getCurrentAbi`, `getAbiHistory`, `getProcedure`, `getFunction`) and a binary codec (`buildPayload`, `decodePayload`). Together they let you go from a plain JavaScript object to a raw byte buffer — and back — for any contract operation at any point in Qubic's history.
+
+For most product use cases, you should reach for `@qubic.org/contracts` instead. That package wraps `@qubic.org/registry` with fully generated, fully typed helper functions for every known contract, so you never touch raw field definitions or epoch numbers directly. Use `@qubic.org/registry` when you need access to historical epochs not yet covered by the generated wrappers, or when you are building developer tooling such as block explorers, custom transaction constructors, or ABI migration scripts.

@@ -1,0 +1,48 @@
+---
+title: Installation
+description: How to add @qubic.org/wallet to your project.
+---
+
+<Tabs items={["Bun", "npm", "pnpm"]}>
+<Tab value="Bun">
+```bash
+bun add @qubic.org/wallet
+```
+</Tab>
+<Tab value="npm">
+```bash
+npm install @qubic.org/wallet
+```
+</Tab>
+<Tab value="pnpm">
+```bash
+pnpm add @qubic.org/wallet
+```
+</Tab>
+</Tabs>
+
+`@qubic.org/wallet` has two required peer dependencies. Install all three together:
+
+<Tabs items={["Bun", "npm", "pnpm"]}>
+<Tab value="Bun">
+```bash
+bun add @qubic.org/wallet @qubic.org/crypto @qubic.org/types
+```
+</Tab>
+<Tab value="npm">
+```bash
+npm install @qubic.org/wallet @qubic.org/crypto @qubic.org/types
+```
+</Tab>
+<Tab value="pnpm">
+```bash
+pnpm add @qubic.org/wallet @qubic.org/crypto @qubic.org/types
+```
+</Tab>
+</Tabs>
+
+<Callout type="warn">
+`buildTransfer` and `buildScTransaction` are async — they call into the WASM-backed SchnorrQ signer from `@qubic.org/crypto`. Always await them.
+</Callout>
+
+The vault encryption (`createVault`, `unlockVault`) uses the Web Crypto API (`globalThis.crypto`). This is available natively in Bun, Node.js 19+, and all modern browsers. On Node.js 18, it is available as `globalThis.crypto` without any import.

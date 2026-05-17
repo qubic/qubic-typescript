@@ -1,0 +1,49 @@
+---
+title: Getting Started
+description: Query the current tick and an account balance in under ten lines.
+---
+
+<Steps>
+<Step>
+**Create a live client**
+
+`createLiveClient` connects to `https://rpc.qubic.org` by default. No configuration is required.
+
+```ts
+import { createLiveClient } from "@qubic.org/rpc"
+
+const live = createLiveClient()
+```
+</Step>
+<Step>
+**Query tick info and a balance**
+
+```ts
+import { createLiveClient } from "@qubic.org/rpc"
+import { toIdentity } from "@qubic.org/types"
+
+const live = createLiveClient()
+
+const { tick, epoch } = await live.getTickInfo()
+console.log(`Epoch ${epoch}, tick ${tick}`)
+
+const identity = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
+const { balance } = await live.getBalance(identity)
+console.log(`Balance: ${balance} QU`)
+```
+</Step>
+<Step>
+**Look up a historical transaction**
+
+Switch to `createQueryClient` for archive data.
+
+```ts
+import { createQueryClient } from "@qubic.org/rpc"
+
+const archive = createQueryClient()
+
+const tx = await archive.getTransactionByHash("abcdef1234...")
+console.log(`${tx.sourceId} → ${tx.destId}: ${tx.amount} QU`)
+```
+</Step>
+</Steps>

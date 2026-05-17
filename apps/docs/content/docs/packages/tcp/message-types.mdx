@@ -1,0 +1,60 @@
+---
+title: MESSAGE_TYPE
+description: Numeric constants for all Qubic TCP message types and the default port.
+---
+
+Every TCP frame starts with a 1-byte type field. `MESSAGE_TYPE` provides named constants so you don't hardcode numbers.
+
+```ts
+import { MESSAGE_TYPE, DEFAULT_PORT } from "@qubic.org/tcp"
+```
+
+## Constants
+
+```ts
+MESSAGE_TYPE.EXCHANGE_PUBLIC_PEERS      // 0  — peer discovery
+MESSAGE_TYPE.BROADCAST_TRANSACTION      // 24 — send a signed transaction
+MESSAGE_TYPE.REQUEST_CURRENT_TICK_INFO  // 27 — ask for current tick/epoch
+MESSAGE_TYPE.RESPOND_CURRENT_TICK_INFO  // 28 — response to tick info request
+MESSAGE_TYPE.REQUEST_ENTITY             // 31 — ask for identity balance/nonce
+MESSAGE_TYPE.RESPOND_ENTITY             // 32 — response to entity request
+MESSAGE_TYPE.END_RESPONSE               // 35 — signals end of response stream
+MESSAGE_TYPE.TRY_AGAIN                  // 36 — server busy, retry in 1s
+```
+
+`DEFAULT_PORT` is `21841` — the standard Qubic TCP port.
+
+---
+
+## Which types you need to know
+
+The high-level request helpers (`requestCurrentTickInfo`, `requestEntity`, etc.) handle type framing internally. You only need `MESSAGE_TYPE` directly when:
+
+- Calling `pool.request()` or `conn.request()` manually with a raw type
+- Building a custom message type not covered by a helper
+- Parsing raw frames with `decodeHeader`
+
+---
+
+## Protocol types you won't see directly
+
+`END_RESPONSE` (35) and `TRY_AGAIN` (36) are protocol control frames. `conn.request()` handles both automatically:
+
+- When it sees `END_RESPONSE`, it returns the collected payloads
+- When it sees `TRY_AGAIN`, it waits 1 second and resends the request
+
+You will never receive either of these as part of the `Uint8Array[]` returned by `conn.request()`.
+
+---
+
+## Using MESSAGE_TYPE with pool.request()
+
+```ts
+import { createNodePool, MESSAGE_TYPE, DEFAULT_PORT } from "@qubic.org/tcp"
+
+const pool = createNodePool(["node1.qubic.org"], { port: DEFAULT_PORT })
+
+// Raw request — normally use requestCurrentTickInfo() instead
+const packets = await pool.request(MESSAGE_TYPE.REQUEST_CURRENT_TICK_INFO)
+// packets: Uint8Array[] — raw response payloads before END_RESPONSE
+```

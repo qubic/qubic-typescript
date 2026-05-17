@@ -1,0 +1,115 @@
+---
+title: Type guards
+description: isIdentity, isSeed, isTxHash — runtime type predicates that narrow TypeScript types without throwing.
+---
+
+Type guards let you check whether a string matches a Qubic format and have TypeScript narrow the type in the same step. They return `boolean` and never throw.
+
+## `isIdentity(s)`
+
+Returns `true` if `s` is exactly 60 uppercase characters. TypeScript narrows `s` to `Identity` inside the `if` branch.
+
+```ts
+import { isIdentity } from "@qubic.org/types"
+
+const raw: string = getFromSomewhere()
+
+if (isIdentity(raw)) {
+  // raw is Identity here — the compiler knows
+  renderIdentityCard(raw)
+} else {
+  showValidationError("Not a valid Qubic identity")
+}
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `s` | `string` | String to check |
+
+**Returns** `s is Identity` — a type predicate.
+
+---
+
+## `isSeed(s)`
+
+Returns `true` if `s` is exactly 55 lowercase characters.
+
+```ts
+import { isSeed } from "@qubic.org/types"
+
+function loadSeed(input: string): Seed {
+  if (!isSeed(input)) {
+    throw new Error(`Expected 55-char lowercase seed, got length ${input.length}`)
+  }
+  return input // input: Seed here
+}
+```
+
+**Returns** `s is Seed`
+
+---
+
+## `isTxHash(s)`
+
+Returns `true` if `s` is exactly 60 lowercase characters.
+
+```ts
+import { isTxHash } from "@qubic.org/types"
+
+const candidates: string[] = apiResponse.hashes
+
+const validHashes = candidates.filter(isTxHash)
+// validHashes: TxHash[] — TypeScript infers the narrowed element type
+```
+
+**Returns** `s is TxHash`
+
+---
+
+## TypeScript narrowing in practice
+
+Because each guard is a [type predicate](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates), TypeScript narrows the variable inside any branch where the guard returns `true`:
+
+```ts
+function processInput(s: string) {
+  if (isIdentity(s)) {
+    // s: Identity
+    const pk = identityToPublicKey(s)   // no cast needed
+  } else if (isTxHash(s)) {
+    // s: TxHash
+    const result = await archive.getTransaction(s)
+  } else {
+    // s: string — not narrowed
+  }
+}
+```
+
+Without the guard, passing `s` directly to `identityToPublicKey` would be a compile error because it expects `Identity`, not `string`.
+
+---
+
+## Guards vs constructors — when to use which
+
+| Situation | Use |
+|---|---|
+| Validate at a system boundary and crash on bad input | Constructor (`toIdentity`, `toSeed`, etc.) |
+| Conditional logic — "do X if valid, Y otherwise" | Guard (`isIdentity`, `isSeed`, etc.) |
+| Filter an array of unknowns | Guard — works directly as a `.filter()` predicate |
+| You know the value is valid at compile time | Type assertion (`as Identity`) |
+
+```ts
+// Boundary: throw on invalid input
+const id = toIdentity(req.body.identity)
+
+// Conditional: no exception, just a branch
+if (isIdentity(raw)) {
+  renderIdentity(raw)
+}
+
+// Filter: Array.filter with a type predicate returns a narrowed array
+const identities = rawValues.filter(isIdentity) // TxHash[]
+```
+
+Constructors are stricter at runtime but cost an exception. Guards are quieter — they let the caller decide what to do with an invalid value.

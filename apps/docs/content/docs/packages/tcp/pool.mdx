@@ -1,0 +1,119 @@
+---
+title: createNodePool
+description: Connection pool with round-robin peer selection and automatic failover across multiple Qubic nodes.
+---
+
+For production use, `createNodePool` is what you want over `createNodeConnection`. It manages a set of node addresses, distributes requests across them in round-robin order, and silently moves to the next peer whenever one fails.
+
+## `createNodePool(peers, options?)`
+
+```ts
+import { createNodePool } from "@qubic.org/tcp"
+
+const pool = createNodePool(
+  ["node1.qubic.org", "node2.qubic.org", "node3.qubic.org"],
+  { port: 21841, timeoutMs: 10_000, maxRetries: 3 }
+)
+
+try {
+  const { tick } = await requestCurrentTickInfo(pool)
+  console.log("Tick:", tick)
+} finally {
+  pool.close()
+}
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `peers` | `readonly string[]` | Hostnames or IP addresses of nodes to connect to. Must be non-empty. |
+| `options.port` | `number` | TCP port. Default: `21841` |
+| `options.timeoutMs` | `number` | Per-request timeout in milliseconds. Default: `10000` |
+| `options.maxRetries` | `number` | Maximum peer failures per request before throwing. Default: `peers.length` |
+
+**Returns** `NodePool` — `{ request, close }`
+
+**Throws** `Error` — synchronously, if `peers` is empty.
+
+---
+
+## Failover behavior
+
+On each request, the pool picks the next peer in round-robin order. If that peer fails (connection refused, timeout, or protocol error), it closes the connection to that peer, advances to the next, and retries — up to `maxRetries` times.
+
+With the default `maxRetries = peers.length`, every peer gets exactly one attempt per request. If all fail, the pool throws `QubicTcpConnectionError`.
+
+```ts
+// 3 peers, maxRetries = 3 (default)
+// request 1 → node1 (ok)
+// request 2 → node2 (ok)
+// request 3 → node3 (timeout) → retries node1 (ok)
+// request 4 → all three fail → QubicTcpConnectionError
+```
+
+---
+
+## `pool.request(type, payload?, options?)`
+
+Sends a raw TCP request and returns all response payloads (everything before the `END_RESPONSE` frame).
+
+```ts
+import { MESSAGE_TYPE } from "@qubic.org/tcp"
+
+const packets = await pool.request(
+  MESSAGE_TYPE.REQUEST_CURRENT_TICK_INFO,
+  undefined,
+  { signal: AbortSignal.timeout(5000) }
+)
+// packets: Uint8Array[] — response payloads
+```
+
+| Name | Type | Description |
+|---|---|---|
+| `type` | `number` | Message type constant from `MESSAGE_TYPE` |
+| `payload` | `Uint8Array \| undefined` | Optional request payload |
+| `options.signal` | `AbortSignal \| undefined` | Cancels the request and all retries |
+
+---
+
+## `pool.close()`
+
+Closes all open TCP sockets. Always call this when done — open sockets block process exit.
+
+```ts
+const pool = createNodePool(peers)
+try {
+  // use pool
+} finally {
+  pool.close()
+}
+```
+
+In long-running processes (HTTP servers, daemons), create one pool at startup and reuse it — creating a pool per request is expensive.
+
+```ts
+// Server example: create once, reuse forever
+const pool = createNodePool(["node1.qubic.org", "node2.qubic.org"])
+
+app.get("/tick", async (req, res) => {
+  const info = await requestCurrentTickInfo(pool, { signal: AbortSignal.timeout(5000) })
+  res.json(info)
+})
+
+process.on("SIGTERM", () => pool.close())
+```
+
+---
+
+## AbortSignal for total request budget
+
+`AbortSignal.timeout(ms)` bounds the total time across all retries, not just a single peer attempt.
+
+```ts
+const { tick } = await requestCurrentTickInfo(pool, {
+  signal: AbortSignal.timeout(3000), // give up after 3 seconds total
+})
+```
+
+Without a signal, a hung peer can hold the request until `timeoutMs` expires for each retry.

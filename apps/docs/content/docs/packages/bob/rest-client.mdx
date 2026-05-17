@@ -1,0 +1,207 @@
+---
+title: createBobRestClient
+description: HTTP REST client for the Bob indexer — status, balances, assets, epoch info, transactions, and tick data.
+---
+
+`createBobRestClient` creates an HTTP client for Bob's REST API. Use it for one-shot lookups: current node status, account balances, asset positions, and transaction records.
+
+All methods return `Result<T, BobRpcError>`: `{ ok: true, value }` on success, `{ ok: false, error }` on failure.
+
+## `createBobRestClient(options?)`
+
+```ts
+import { createBobRestClient } from "@qubic.org/bob"
+
+const rest = createBobRestClient({ baseUrl: "http://localhost:40420" })
+```
+
+If you need the REST client alongside the RPC or subscription clients, use `createBobClient` instead — it creates all three from a single options object.
+
+**Options**
+
+| Name | Type | Default | Description |
+|---|---|---|---|
+| `baseUrl` | `string` | `"http://localhost:40420"` | Bob server base URL |
+| `signal` | `AbortSignal` | — | Default signal applied to every request |
+| `fetch` | `(input: Request) => Promise<Response>` | global `fetch` | Custom fetch implementation |
+
+---
+
+### `rest.getStatus(opts?)`
+
+Returns the current node status, including chain ID and tick number.
+
+```ts
+const result = await rest.getStatus()
+if (!result.ok) throw result.error
+
+console.log(result.value)
+```
+
+**Returns** `Result<BobStatus, BobRpcError>`
+
+---
+
+### `rest.getBalance(identity, opts?)`
+
+Returns the QU balance for an identity.
+
+```ts
+import { toIdentity } from "@qubic.org/types"
+
+const result = await rest.getBalance(
+  toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
+)
+if (!result.ok) throw result.error
+
+console.log(result.value)
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `identity` | `string` | 60-character Qubic identity |
+
+**Returns** `Result<BobBalance, BobRpcError>`
+
+---
+
+### `rest.getAsset(identity, issuer, assetName, manageSCIndex, opts?)`
+
+Returns the asset position for a specific identity, issuer, asset name, and managing contract index.
+
+```ts
+const result = await rest.getAsset(
+  identity,
+  issuer,
+  "QWALLET",
+  0,
+)
+if (!result.ok) throw result.error
+
+console.log(result.value)
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `identity` | `string` | The holder identity |
+| `issuer` | `string` | The asset issuer identity |
+| `assetName` | `string` | Asset name (up to 7 characters) |
+| `manageSCIndex` | `number` | Managing smart contract index |
+
+**Returns** `Result<BobAsset, BobRpcError>`
+
+---
+
+### `rest.getEpochInfo(epoch, opts?)`
+
+Returns epoch metadata including tick range boundaries.
+
+```ts
+const result = await rest.getEpochInfo(150)
+if (!result.ok) throw result.error
+
+console.log(result.value)
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `epoch` | `number` | Epoch number |
+
+**Returns** `Result<BobEpochInfo, BobRpcError>`
+
+---
+
+### `rest.getTransaction(txHash, opts?)`
+
+Returns a transaction by its hash.
+
+```ts
+const result = await rest.getTransaction(
+  "abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"
+)
+if (!result.ok) throw result.error
+
+const tx = result.value
+console.log(tx)
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `txHash` | `string` | 60-character hex transaction hash |
+
+**Returns** `Result<BobTx, BobRpcError>`
+
+---
+
+### `rest.getTick(tickNumber, opts?)`
+
+Returns tick data for the given tick number.
+
+```ts
+const result = await rest.getTick(17_000_500)
+if (!result.ok) throw result.error
+
+console.log(result.value)
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `tickNumber` | `number` | The tick to query |
+
+**Returns** `Result<BobTickResponse, BobRpcError>`
+
+---
+
+### `rest.broadcastTransaction(body, opts?)`
+
+Broadcasts a signed transaction.
+
+```ts
+const result = await rest.broadcastTransaction({ data: encodedHex })
+if (!result.ok) throw result.error
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `body.data` | `string` | Hex-encoded signed transaction |
+
+**Returns** `Result<BroadcastResponse, BobRpcError>`
+
+---
+
+### `rest.querySmartContract(body, opts?)`
+
+Calls a smart contract read-only function.
+
+```ts
+const result = await rest.querySmartContract({
+  nonce: 0,
+  scIndex: 9,
+  funcNumber: 1,
+  data: base64EncodedInput,
+})
+if (!result.ok) throw result.error
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `body.nonce` | `number` | Request nonce |
+| `body.scIndex` | `number` | Contract index |
+| `body.funcNumber` | `number` | Function selector |
+| `body.data` | `string` | Base64-encoded function input |
+
+**Returns** `Result<QuerySmartContractResponse, BobRpcError>`

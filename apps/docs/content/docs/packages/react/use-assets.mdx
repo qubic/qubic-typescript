@@ -1,0 +1,74 @@
+---
+title: Asset hooks
+description: useIssuedAssets, useOwnedAssets, and usePossessedAssets — query the three asset relationships for a Qubic identity.
+---
+
+Qubic's asset model has three distinct roles. An **issuer** created the asset. An **owner** holds legal title. A **possessor** currently controls the shares. These roles are often the same identity but can differ — for example, a smart contract may possess assets on behalf of their owner.
+
+The three hooks follow the same signature and differ only in which relationship they query.
+
+## `useIssuedAssets(identity, options?)`
+
+Returns all assets that `identity` issued.
+
+```tsx
+import { useIssuedAssets } from "@qubic.org/react"
+
+function IssuedAssets({ identity }: { identity: string }) {
+  const { data, isLoading, error } = useIssuedAssets(identity)
+
+  if (isLoading) return <p>Loading...</p>
+  if (error) return <p>Error: {error.message}</p>
+
+  return (
+    <ul>
+      {data?.map((asset) => (
+        <li key={asset.assetName}>{asset.assetName}</li>
+      ))}
+    </ul>
+  )
+}
+```
+
+## `useOwnedAssets(identity, options?)`
+
+Returns all assets where `identity` is the recorded owner.
+
+```tsx
+import { useOwnedAssets } from "@qubic.org/react"
+
+function OwnedAssets({ identity }: { identity: string }) {
+  const { data } = useOwnedAssets(identity)
+  return <p>{data?.length ?? 0} asset(s) owned</p>
+}
+```
+
+## `usePossessedAssets(identity, options?)`
+
+Returns all assets currently in `identity`'s possession.
+
+```tsx
+import { usePossessedAssets } from "@qubic.org/react"
+
+function PossessedAssets({ identity }: { identity: string }) {
+  const { data } = usePossessedAssets(identity)
+  return <p>{data?.length ?? 0} asset(s) possessed</p>
+}
+```
+
+## Shared parameters
+
+All three hooks share the same parameter shape:
+
+| Name | Type | Description |
+|---|---|---|
+| `identity` | `Identity \| string \| undefined` | The identity to query. Pass `undefined` to skip the fetch. |
+| `options.refetchInterval` | `number \| false` | Polling interval in milliseconds. Pass `false` to disable. |
+
+**Returns**
+
+| Field | Type | Description |
+|---|---|---|
+| `data` | `Asset[] \| undefined` | List of assets for the given relationship, or `undefined` while loading. |
+| `isLoading` | `boolean` | True while the first fetch is in progress. |
+| `error` | `QubicRpcError \| null` | Network or parse error. |

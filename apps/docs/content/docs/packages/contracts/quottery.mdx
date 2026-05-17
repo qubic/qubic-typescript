@@ -1,0 +1,309 @@
+---
+title: Quottery
+description: Prediction market contract — create binary outcome events, place bets, publish results, and claim rewards.
+---
+
+Quottery (contract index `2`) is an on-chain prediction market. Anyone can create a binary-outcome event. Participants bet by placing ask/bid orders. When an event ends, the game operator publishes the result; winners claim their share of the pool. A dispute mechanism allows challenges via a deposit.
+
+Import the namespace:
+
+```ts
+import { quottery } from "@qubic.org/contracts"
+```
+
+---
+
+## Procedures (write)
+
+### Create event
+
+Creates a new prediction event.
+
+```ts
+const payload = quottery.buildCreateEventInput({
+  qei: {
+    eid: 0n,           // assigned by contract on creation
+    openDate: { value: openDateEncoded },
+    endDate: { value: endDateEncoded },
+    desc: [/* 4 id-encoded 32-byte segments */],
+    option0Desc: [/* 2 id-encoded 32-byte segments */],
+    option1Desc: [/* 2 id-encoded 32-byte segments */],
+  },
+})
+```
+
+---
+
+### Add to ask order
+
+Places a sell order (offering to sell a position at a price) for a given event option.
+
+```ts
+const payload = quottery.buildAddToAskOrderInput({
+  eventId: 42n,
+  option: 0n,     // 0 or 1
+  amount: 100n,
+  price: 500n,
+})
+```
+
+**Input**
+
+| Field | Type | Description |
+|---|---|---|
+| `eventId` | `bigint` | Event to bet on. |
+| `option` | `bigint` | `0` or `1` — which outcome you're betting on. |
+| `amount` | `bigint` | Number of shares. |
+| `price` | `bigint` | Price per share. |
+
+**Output:** `{ status: bigint }` — decode with `quottery.decodeAddToAskOrderOutput(bytes)`
+
+---
+
+### Remove ask order
+
+Cancels an existing ask order.
+
+```ts
+const payload = quottery.buildRemoveAskOrderInput({ eventId, option, amount, price })
+```
+
+**Output:** `{ status: bigint }` — decode with `quottery.decodeRemoveAskOrderOutput(bytes)`
+
+---
+
+### Add to bid order / Remove bid order
+
+Mirror of ask order operations — for buy orders.
+
+```ts
+quottery.buildAddToBidOrderInput({ eventId, option, amount, price })
+quottery.buildRemoveBidOrderInput({ eventId, option, amount, price })
+```
+
+**Output:** `{ status: bigint }` — decode with the matching `decode*Output(bytes)`
+
+---
+
+### Publish result
+
+Game operator publishes the winning option for an ended event.
+
+```ts
+const payload = quottery.buildPublishResultInput({ eventId: 42n, option: 1n })
+```
+
+---
+
+### Try finalize event
+
+Attempts to finalize an event and distribute rewards.
+
+```ts
+const payload = quottery.buildTryFinalizeEventInput({ eventId: 42n })
+```
+
+---
+
+### Dispute
+
+Challenges the published result. Requires a deposit (see `depositAmountForDispute` in `BasicInfo`).
+
+```ts
+const payload = quottery.buildDisputeInput({ eventId: 42n })
+```
+
+---
+
+### Resolve dispute
+
+Computors resolve an active dispute by voting on the outcome.
+
+```ts
+const payload = quottery.buildResolveDisputeInput({ eventId: 42n, vote: 0n })
+```
+
+---
+
+### User claim reward
+
+Claims winnings for an event the caller bet correctly on.
+
+```ts
+const payload = quottery.buildUserClaimRewardInput({ eventId: 42n })
+```
+
+---
+
+### GO force claim reward
+
+Game operator forces reward distribution for a set of beneficiaries.
+
+```ts
+const payload = quottery.buildGOForceClaimRewardInput(
+  { eventId: 42n, pubkeys: [identity1, identity2] },
+  identityToPublicKey,
+)
+```
+
+---
+
+### Transfer QUSD / Transfer QTRYGOV
+
+Governance token transfers.
+
+```ts
+quottery.buildTransferQUSDInput({ receiver: recipientIdentity, amount: 100n }, identityToPublicKey)
+quottery.buildTransferQTRYGOVInput({ receiver: recipientIdentity, amount: 100n }, identityToPublicKey)
+```
+
+---
+
+### Proposal vote
+
+Votes on a governance parameter change.
+
+```ts
+quottery.buildProposalVoteInput({ proposed: { /* QtryGOV fields */ } })
+```
+
+---
+
+## Read functions (callers)
+
+### `BasicInfo`
+
+Returns global contract parameters and statistics.
+
+```ts
+const result = await quottery.BasicInfo(live)
+```
+
+**Output**
+
+| Field | Type | Description |
+|---|---|---|
+| `operationFee` | `bigint` | Fee charged per event creation. |
+| `shareholderFee` | `bigint` | Fee distributed to QTRYGOV holders. |
+| `burnFee` | `bigint` | Fee that gets burned. |
+| `nIssuedEvent` | `bigint` | Total events ever created. |
+| `shareholdersRevenue` | `bigint` | Total revenue distributed to shareholders. |
+| `operationRevenue` | `bigint` | Total revenue to operators. |
+| `burnedAmount` | `bigint` | Total QUSD burned. |
+| `mFeePerDay` | `bigint` | Daily holding fee rate. |
+| `antiSpamAmount` | `bigint` | Anti-spam deposit required per event. |
+| `depositAmountForDispute` | `bigint` | Deposit required to raise a dispute. |
+| `gameOperator` | `string` | Identity of the game operator. |
+
+---
+
+### `GetEventInfo`
+
+Returns full details for a single event.
+
+```ts
+const result = await quottery.GetEventInfo(live, { eventId: 42n })
+```
+
+**Output**
+
+| Field | Type | Description |
+|---|---|---|
+| `qei` | `QtryEventInfoStruct` | Event info including dates and descriptions. |
+| `resultByGO` | `number` | Result published by game operator (`-1` if not yet published). |
+| `publishTickTime` | `number` | Tick when the result was published. |
+| `disputerInfo` | `DepositInfoStruct` | Disputer's public key and deposit. |
+| `computorsVote0` | `number` | Computor votes for option 0. |
+| `computorsVote1` | `number` | Computor votes for option 1. |
+
+---
+
+### `GetOrders`
+
+Returns paginated orders for a specific event, option, and side.
+
+```ts
+const result = await quottery.GetOrders(live, {
+  eventId: 42n,
+  option: 0n,
+  isBid: 1n,  // 1 = bid, 0 = ask
+  offset: 0n,
+})
+```
+
+**Output:** `{ orders: QtryOrderWithPriceStruct[] }` — each item has `{ qo: { entity, amount }, price }`
+
+---
+
+### `GetActiveEvent`
+
+Returns IDs of currently active events.
+
+```ts
+const result = await quottery.GetActiveEvent(live)
+```
+
+**Output:** `{ recentActiveEvent: bigint[] }`
+
+---
+
+### `GetEventInfoBatch`
+
+Returns event info for up to 64 event IDs at once.
+
+```ts
+const result = await quottery.GetEventInfoBatch(live, {
+  eventIds: [1n, 2n, 3n],
+})
+```
+
+**Output:** `{ aqei: QtryEventInfoStruct[] }`
+
+---
+
+### `GetUserPosition`
+
+Returns all open positions for a user.
+
+```ts
+const result = await quottery.GetUserPosition(
+  live,
+  { uid: userIdentity },
+  { identityToPublicKey },
+)
+```
+
+**Output**
+
+| Field | Type | Description |
+|---|---|---|
+| `count` | `bigint` | Number of open positions. |
+| `p` | `PositionInfo[]` | Array of positions, each with `{ eo: bigint, amount: bigint }`. |
+
+---
+
+### `GetApprovedAmount`
+
+Returns the QUSD amount approved for the given identity.
+
+```ts
+const result = await quottery.GetApprovedAmount(
+  live,
+  { pk: identity },
+  { identityToPublicKey },
+)
+```
+
+**Output:** `{ amount: bigint }`
+
+---
+
+### `GetTopProposals`
+
+Returns the top governance proposals by vote count.
+
+```ts
+const result = await quottery.GetTopProposals(live)
+```
+
+**Output:** `{ top: ProposalInfo[], uniqueCount: number }`

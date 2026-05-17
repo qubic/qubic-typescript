@@ -1,96 +1,208 @@
 ---
 title: Subscriptions
-description: bob.subscribe — tick info and account event log subscriptions.
+description: subscribeNewTicks, subscribeLogs, subscribeTransfers, subscribeTickStream — real-time event streams as AsyncIterables.
 ---
 
-## `bob.subscribe(topic, ...args)`
+The subscription client exposes four methods, each returning an `AsyncIterable<SubscriptionEvent<T>>`. Iterate with `for await...of`. Pass an `AbortSignal` to stop the loop.
 
-Registers a callback for a specific data stream. Returns an unsubscribe function that removes the callback.
+Every event has this shape:
 
 ```ts
-const unsub = bob.subscribe("tickInfo", (tick) => {
-  console.log(`Tick ${tick.tick} (epoch ${tick.epoch})`)
-})
-
-// Later — stop receiving updates
-unsub()
+interface SubscriptionEvent<T> {
+  data: T          // the event payload
+  isCatchUp: boolean  // true for historical events delivered after reconnect
+  logId?: bigint   // log ID (present on log and transfer events)
+  tick?: number    // tick number (present on some events)
+}
 ```
+
+When `isCatchUp` is `true`, the event arrived from the server's history buffer to fill a gap. Skip these if you only want live events. Process them if you want a complete history.
 
 ---
 
-## `"tickInfo"` — live tick updates
+## `subscribeNewTicks(opts?)`
 
-Fires on every new tick. The second argument is optional metadata.
+Emits a notification on every new tick. No historical replay.
 
 ```ts
-bob.subscribe("tickInfo", (tick, meta) => {
-  tick.tick        // current tick number
-  tick.epoch       // current epoch
-  tick.duration    // tick duration ms
-  tick.initialTick // first tick of epoch
+import { createBobClient } from "@qubic.org/bob"
 
-  meta.isCatchUp   // true if this is a buffered tick from a gap
-})
+const bob = createBobClient({ baseUrl: "http://localhost:40420" })
+const ac = new AbortController()
+
+for await (const event of bob.subscription.subscribeNewTicks({ signal: ac.signal })) {
+  const { tick, epoch } = event.data
+  console.log(`Tick ${tick} in epoch ${epoch}`)
+}
 ```
+
+**Options**
+
+| Name | Type | Description |
+|---|---|---|
+| `signal` | `AbortSignal` | Stops the iteration when aborted |
+
+**Yields** `SubscriptionEvent<BobTickNotification>`
+
+| Field | Type | Description |
+|---|---|---|
+| `data.tick` | `number` | Current tick number |
+| `data.epoch` | `number` | Current epoch number |
 
 ---
 
-## `"eventLogs"` — account event logs
+## `subscribeLogs(filter?, opts?)`
 
-Fires when new event logs are available for the given identity.
+Emits log events matching the given filter. Resumes from `startLogId` or `startEpoch` if provided.
 
 ```ts
 import { toIdentity } from "@qubic.org/types"
 
 const identity = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
 
-bob.subscribe("eventLogs", identity, (events) => {
-  for (const event of events) {
-    event.eventType  // number
-    event.eventData  // base64-encoded raw data
-    event.tick       // tick where event occurred
-    event.txId       // transaction that produced the event
-  }
-})
-```
+for await (const event of bob.subscription.subscribeLogs(
+  { identity, logType: 0 },  // logType 0 = QU_TRANSFER
+  { startEpoch: 150 },
+)) {
+  if (event.isCatchUp) continue  // skip historical events
 
-Decode `eventData` with `decodeEvent` from `@qubic.org/events`.
-
----
-
-## Multiple subscriptions
-
-You can subscribe to the same topic multiple times — each call returns an independent unsubscribe function:
-
-```ts
-const unsub1 = bob.subscribe("tickInfo", handlerA)
-const unsub2 = bob.subscribe("tickInfo", handlerB)
-
-unsub1() // only removes handlerA
-```
-
----
-
-## Subscribing to multiple identities
-
-```ts
-for (const identity of watchedIdentities) {
-  bob.subscribe("eventLogs", identity, (events) => {
-    handleEvents(identity, events)
-  })
+  const { logType, tick, data } = event.data
+  console.log("Log type:", logType, "at tick:", tick)
+  // Decode data with decodeEvent from @qubic.org/events
 }
 ```
 
-Each `subscribe("eventLogs", identity, handler)` call creates a separate server-side subscription for that identity.
+**Filter** (`BobLogFilter`)
+
+| Name | Type | Description |
+|---|---|---|
+| `contractIndex` | `number` | Filter by contract |
+| `logType` | `number` | Filter by log type |
+| `identity` | `Identity` | Filter by identity |
+| `fromTick` | `number` | Start tick (inclusive) |
+| `toTick` | `number` | End tick (inclusive) |
+
+**Options**
+
+| Name | Type | Description |
+|---|---|---|
+| `startLogId` | `bigint` | Resume from this log ID |
+| `startEpoch` | `number` | Start from the beginning of this epoch |
+| `signal` | `AbortSignal` | Stops the iteration when aborted |
+
+**Yields** `SubscriptionEvent<BobLogEvent>`
+
+| Field | Type | Description |
+|---|---|---|
+| `data.tick` | `number` | Tick the event occurred in |
+| `data.logId` | `bigint` | Unique log ID |
+| `data.contractIndex` | `number` | Emitting contract |
+| `data.logType` | `number` | Log type identifier |
+| `data.data` | `Base64` | Raw payload — decode with `decodeEvent` from `@qubic.org/events` |
 
 ---
 
-## `bob.unsubscribeAll()`
+## `subscribeTransfers(filter?, opts?)`
 
-Removes all active subscriptions without disconnecting.
+Emits QU transfer events as structured objects, without needing to decode raw log payloads.
 
 ```ts
-bob.unsubscribeAll()
+for await (const event of bob.subscription.subscribeTransfers({ identity })) {
+  if (event.isCatchUp) continue
+
+  const { source, destination, amount, tick } = event.data
+  const dir = source === identity ? "OUT" : "IN"
+  console.log(`[${dir}] ${amount}n QU at tick ${tick}`)
+}
 ```
 
-Useful before re-registering a fresh set of subscriptions after a navigation change.
+**Filter** (`BobTransferFilter`)
+
+| Name | Type | Description |
+|---|---|---|
+| `identity` | `Identity` | Filter by sender or recipient |
+| `fromTick` | `number` | Start tick (inclusive) |
+| `toTick` | `number` | End tick (inclusive) |
+
+**Options**
+
+| Name | Type | Description |
+|---|---|---|
+| `startLogId` | `bigint` | Resume from this log ID |
+| `signal` | `AbortSignal` | Stops the iteration when aborted |
+
+**Yields** `SubscriptionEvent<BobTransferEvent>`
+
+| Field | Type | Description |
+|---|---|---|
+| `data.tick` | `number` | Tick the transfer occurred in |
+| `data.logId` | `bigint` | Unique log ID |
+| `data.source` | `Identity` | Sender |
+| `data.destination` | `Identity` | Recipient |
+| `data.amount` | `bigint` | QU amount |
+
+---
+
+## `subscribeTickStream(opts?)`
+
+Emits full tick data including the list of transaction hashes for each tick.
+
+```ts
+for await (const event of bob.subscription.subscribeTickStream()) {
+  const { tick, epoch, transactions } = event.data
+  console.log(`Tick ${tick}: ${transactions.length} transactions`)
+}
+```
+
+**Options**
+
+| Name | Type | Description |
+|---|---|---|
+| `signal` | `AbortSignal` | Stops the iteration when aborted |
+
+**Yields** `SubscriptionEvent<BobTickData>`
+
+| Field | Type | Description |
+|---|---|---|
+| `data.tick` | `number` | Tick number |
+| `data.epoch` | `number` | Epoch number |
+| `data.transactions` | `TxHash[]` | Transaction hashes included in this tick |
+
+---
+
+## Catch-up behavior
+
+When a subscription starts (or reconnects after a gap), the server delivers buffered historical events before switching to live events. These have `isCatchUp: true`.
+
+The subscription client tracks the last received `logId` across reconnects. After reconnecting, it sends the last known `logId` back to the server, so the history replay picks up exactly where it left off rather than replaying from the beginning.
+
+```ts
+for await (const event of bob.subscription.subscribeLogs(filter)) {
+  if (event.isCatchUp) {
+    // Historical events filling the gap — process or skip
+    processHistoricalEvent(event.data)
+    continue
+  }
+  // Live event
+  processLiveEvent(event.data)
+}
+```
+
+---
+
+## Stopping a subscription
+
+Pass an `AbortSignal` to stop an individual subscription without closing the entire client.
+
+```ts
+const ac = new AbortController()
+
+setTimeout(() => ac.abort(), 30_000) // stop after 30 seconds
+
+for await (const event of bob.subscription.subscribeNewTicks({ signal: ac.signal })) {
+  console.log(event.data.tick)
+}
+// loop ends when signal is aborted
+```
+
+To stop all subscriptions at once, call `bob.subscription.close()`.

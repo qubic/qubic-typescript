@@ -1,56 +1,21 @@
 ---
-title: Connection
-description: createNodeConnection, createNodePool — open direct TCP connections to Qubic nodes with automatic failover.
+title: createNodeConnection
+description: Open a direct TCP connection to a single Qubic node.
 ---
+
+`createNodeConnection` opens a raw TCP socket to one node. For most production use, [createNodePool](./pool) is a better choice — it handles failover automatically. Use a direct connection when you're targeting a specific peer or building monitoring tooling.
 
 ## `createNodeConnection(host, options?)`
 
-Opens a single TCP connection to a Qubic node.
-
 ```ts
-import { createNodeConnection } from "@qubic.org/tcp"
+import { createNodeConnection, requestCurrentTickInfo } from "@qubic.org/tcp"
 
 const conn = await createNodeConnection("node1.qubic.org")
-```
-
-**Parameters**
-
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `host` | `string` | — | Node hostname or IP address. |
-| `options.port` | `number` | `21841` | TCP port. |
-| `options.timeoutMs` | `number` | `10000` | Connection timeout in milliseconds. |
-
-**Returns** `Promise<NodeConnection>`
-
-**Throws** `QubicTcpConnectionError` — if the connection cannot be established within the timeout.
-
-### `NodeConnection` methods
-
-| Method | Description |
-|---|---|
-| `conn.request(messageType, payload?)` | Send a request and receive all response packets. Returns `Promise<Uint8Array[]>`. |
-| `conn.close()` | Close the TCP socket. |
-
----
-
-## `createNodePool(peers, options?)`
-
-Creates a connection pool across multiple peer addresses. On failure it automatically moves to the next peer.
-
-```ts
-import { createNodePool } from "@qubic.org/tcp"
-
-const pool = createNodePool([
-  "node1.qubic.org",
-  "node2.qubic.org",
-  "node3.qubic.org",
-])
-
 try {
-  // use pool...
+  const { tick, epoch } = await requestCurrentTickInfo(conn)
+  console.log(`Epoch ${epoch}, tick ${tick}`)
 } finally {
-  pool.close()
+  conn.close()
 }
 ```
 
@@ -58,28 +23,42 @@ try {
 
 | Name | Type | Default | Description |
 |---|---|---|---|
-| `peers` | `string[]` | — | Array of hostnames or IP addresses. |
-| `options.port` | `number` | `21841` | TCP port for all peers. |
-| `options.timeoutMs` | `number` | `10000` | Per-connection timeout in milliseconds. |
-| `options.maxRetries` | `number` | `peers.length` | Max failover attempts before throwing. |
+| `host` | `string` | — | Node hostname or IP address |
+| `options.port` | `number` | `21841` | TCP port |
+| `options.timeoutMs` | `number` | `10000` | Connection and request timeout in milliseconds |
 
-**Returns** `NodePool`
+**Returns** `Promise<NodeConnection>`
 
-`NodePool` exposes the same `request` method as `NodeConnection`, plus `pool.close()` to release all open sockets.
+**Throws** `QubicTcpConnectionError` — if the connection cannot be established within the timeout.
 
 ---
 
-## Abort signal
+## `conn.request(type, payload?, options?)`
 
-Pass `AbortSignal.timeout(ms)` to bound the total wait time for any request:
+Sends a raw TCP frame and collects all response packets until `END_RESPONSE`. Handles `TRY_AGAIN` (server busy) automatically — waits 1 second and resends.
 
 ```ts
-const result = await requestCurrentTickInfo(pool, {
-  signal: AbortSignal.timeout(5000),
-})
+import { MESSAGE_TYPE } from "@qubic.org/tcp"
+
+const packets = await conn.request(MESSAGE_TYPE.REQUEST_CURRENT_TICK_INFO)
+// packets: Uint8Array[] — all response payloads
 ```
 
-The request throws `QubicTcpTimeoutError` if the signal fires before a response arrives.
+| Name | Type | Description |
+|---|---|---|
+| `type` | `number` | Message type constant from `MESSAGE_TYPE` |
+| `payload` | `Uint8Array \| undefined` | Optional request payload |
+| `options.signal` | `AbortSignal \| undefined` | Cancels the request |
+
+**Returns** `Promise<Uint8Array[]>`
+
+**Throws** `QubicTcpTimeoutError` — if the signal fires or the timeout is exceeded.
+
+---
+
+## `conn.close()`
+
+Closes the TCP socket. Always call this when done — open sockets block process exit.
 
 ---
 
@@ -87,28 +66,6 @@ The request throws `QubicTcpTimeoutError` if the signal fires before a response 
 
 | Class | When thrown |
 |---|---|
-| `QubicTcpError` | Base class for all TCP errors. |
-| `QubicTcpConnectionError` | Could not connect to any peer (all retries exhausted). |
-| `QubicTcpTimeoutError` | Request exceeded the timeout or the abort signal fired. |
-
----
-
-## Connection vs pool
-
-Use `createNodeConnection` when you control which node you're talking to and want a dedicated socket. Use `createNodePool` when you want automatic failover across a list of peers — the pool picks the first available peer and retries on failure.
-
-```ts
-// Single connection — you manage failover yourself
-const conn = await createNodeConnection("node1.qubic.org")
-
-// Pool — automatic failover
-const pool = createNodePool(["node1.qubic.org", "node2.qubic.org"])
-```
-
----
-
-## Multi-packet responses
-
-A single request can produce multiple response packets. The node sends `END_RESPONSE` (type 35) to signal the end of the stream. If the node is temporarily busy it sends `TRY_AGAIN` (type 36), and the client retries automatically after 1 second.
-
-The `request` method waits for all packets and returns them as an array of `Uint8Array` payloads.
+| `QubicTcpError` | Base class |
+| `QubicTcpConnectionError` | Could not connect within timeout |
+| `QubicTcpTimeoutError` | Request timed out or AbortSignal fired |

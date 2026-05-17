@@ -1,0 +1,270 @@
+---
+title: QVault
+description: Governance and treasury contract — stake QCAP to vote on proposals that control protocol fund allocation.
+---
+
+QVault (contract index `10`) is Qubic's governance and treasury contract. QCAP holders stake their tokens to gain voting power, then submit and vote on proposals that direct how protocol funds are deployed — including investments in QEarn, market-making, and IPO participation.
+
+Import the namespace:
+
+```ts
+import { qVAULT } from "@qubic.org/contracts"
+```
+
+---
+
+## Procedures (write)
+
+### Stake
+
+Stakes QCAP to earn voting power.
+
+```ts
+const payload = qVAULT.buildStakeInput({ amount: 100 })
+```
+
+**Input:** `{ amount: number }` — QCAP units to stake.
+
+**Output:** `{ returnCode: number }` — decode with `qVAULT.decodeStakeOutput(bytes)`
+
+---
+
+### UnStake
+
+Returns staked QCAP.
+
+```ts
+const payload = qVAULT.buildUnStakeInput({ amount: 100 })
+```
+
+**Input:** `{ amount: number }` — QCAP units to unstake.
+
+**Output:** `{ returnCode: number }` — decode with `qVAULT.decodeUnStakeOutput(bytes)`
+
+---
+
+### Submit GP (General Proposal)
+
+Submits a general governance proposal.
+
+```ts
+const payload = qVAULT.buildSubmitGPInput({
+  url: [/* 256 bytes of URL data */],
+})
+```
+
+**Output:** `{ returnCode: number }` — decode with `qVAULT.decodeSubmitGPOutput(bytes)`
+
+---
+
+### Submit QCP (Quorum Change Proposal)
+
+Proposes a change to the quorum percentage threshold.
+
+```ts
+const payload = qVAULT.buildSubmitQCPInput({
+  newQuorumPercent: 51,
+  url: [/* 256 bytes */],
+})
+```
+
+**Output:** `{ returnCode: number }` — decode with `qVAULT.decodeSubmitQCPOutput(bytes)`
+
+---
+
+### Submit IPOP (IPO Participation Proposal)
+
+Proposes allocating funds to participate in an IPO.
+
+```ts
+const payload = qVAULT.buildSubmitIPOPInput({
+  totalWeight: 1000n,
+  assignedFund: 5_000_000n,
+  ipoContractIndex: 7,
+  url: [/* 256 bytes */],
+})
+```
+
+**Output:** `{ returnCode: number }` — decode with `qVAULT.decodeSubmitIPOPOutput(bytes)`
+
+---
+
+### Submit QEarnP (QEarn Investment Proposal)
+
+Proposes a recurring QEarn investment.
+
+```ts
+const payload = qVAULT.buildSubmitQEarnPInput({
+  amountOfInvestPerEpoch: 1_000_000n,
+  assignedFundPerEpoch: 500_000n,
+  numberOfEpoch: 4,
+  url: [/* 256 bytes */],
+})
+```
+
+**Output:** `{ returnCode: number }` — decode with `qVAULT.decodeSubmitQEarnPOutput(bytes)`
+
+---
+
+### Submit FundP (Fund Proposal)
+
+Proposes selling QCAP at a fixed price to raise funds.
+
+```ts
+const payload = qVAULT.buildSubmitFundPInput({
+  pricePerOneQcap: 1000n,
+  amountOfQcap: 10_000,
+  url: [/* 256 bytes */],
+})
+```
+
+**Output:** `{ returnCode: number }` — decode with `qVAULT.decodeSubmitFundPOutput(bytes)`
+
+---
+
+### Submit MKTP (Market-Making Proposal)
+
+Proposes deploying funds for market-making.
+
+```ts
+const payload = qVAULT.buildSubmitMKTPInput({
+  amountOfQubic: 10_000_000n,
+  shareName: assetNameEncoded,
+  amountOfQcap: 5_000,
+  shareIndex: 1,
+  amountOfShare: 1000,
+  url: [/* 256 bytes */],
+})
+```
+
+**Output:** `{ returnCode: number }` — decode with `qVAULT.decodeSubmitMKTPOutput(bytes)`
+
+---
+
+### Submit AlloP (Allocation Proposal)
+
+Proposes a revenue allocation distribution.
+
+```ts
+const payload = qVAULT.buildSubmitAlloPInput({
+  reinvested: 40,   // percentage
+  distributed: 50,
+  burnQcap: 10,
+  url: [/* 256 bytes */],
+})
+```
+
+**Output:** `{ returnCode: number }` — decode with `qVAULT.decodeSubmitAlloPOutput(bytes)`
+
+---
+
+### Vote in proposal
+
+Casts a vote on an active proposal.
+
+```ts
+const payload = qVAULT.buildVoteInProposalInput({
+  proposalIndex: 0,
+  proposalType: 1, // 1 = GP, 2 = QCP, etc.
+  vote: 1,         // 1 = yes, 0 = no
+})
+```
+
+**Output:** `{ returnCode: number }` — decode with `qVAULT.decodeVoteInProposalOutput(bytes)`
+
+---
+
+### Buy QCAP
+
+Purchases QCAP via an active FundP proposal.
+
+```ts
+const payload = qVAULT.buildBuyQcapInput({ amount: 100 })
+```
+
+**Output:** `{ returnCode: number }` — decode with `qVAULT.decodeBuyQcapOutput(bytes)`
+
+---
+
+## Read functions (callers)
+
+### `getData`
+
+Returns all current governance data — stake amounts, proposal lists, and treasury info.
+
+```ts
+const result = await qVAULT.getData(live)
+```
+
+Returns a large struct covering staking totals, all proposal states, and protocol parameters.
+
+---
+
+### `getStakedAmountAndVotingPower`
+
+Returns the stake and voting power for a specific identity.
+
+```ts
+const result = await qVAULT.getStakedAmountAndVotingPower(
+  live,
+  { voter: identity },
+  { identityToPublicKey },
+)
+```
+
+**Output**
+
+| Field | Type | Description |
+|---|---|---|
+| `stakedAmount` | `bigint` | QCAP staked by this identity. |
+| `votingPower` | `bigint` | Voting power derived from the stake. |
+
+---
+
+### `getGP` / `getQCP` / `getIPOP` / `getQEarnP` / `getFundP` / `getMKTP` / `getAlloP`
+
+Returns the current state of a specific proposal type by index.
+
+```ts
+const result = await qVAULT.getGP(live, { index: 0 })
+const result = await qVAULT.getQCP(live, { index: 0 })
+// same pattern for all proposal types
+```
+
+Each returns the corresponding `*PInfo` struct with `proposer`, vote tallies, `proposedEpoch`, `result`, and proposal-specific fields.
+
+---
+
+### `getIdentitiesHvVtPw`
+
+Returns identities that have voting power.
+
+```ts
+const result = await qVAULT.getIdentitiesHvVtPw(live)
+```
+
+---
+
+### `ppCreationPower`
+
+Returns the proposal creation power for the caller.
+
+```ts
+const result = await qVAULT.ppCreationPower(live, { voter: identity }, { identityToPublicKey })
+```
+
+---
+
+### Other read functions
+
+| Caller | Description |
+|---|---|
+| `getQcapBurntAmountInLastEpoches` | QCAP burned across recent epochs. |
+| `getAmountToBeSoldPerYear` | Projected QCAP sale volume. |
+| `getTotalRevenueInQcap` | Lifetime revenue in QCAP. |
+| `getRevenueInQcapPerEpoch` | Revenue per epoch. |
+| `getRevenuePerShare` | Revenue per QCAP share. |
+| `getAmountOfShareQvaultHold` | Total shares held by QVault. |
+| `getNumberOfHolderAndAvgAm` | Holder count and average stake. |
+| `getAmountForQearnInUpcomingEpoch` | QEarn allocation for the next epoch. |
+| `getVoteInProposal` | Whether an identity voted in a proposal. |

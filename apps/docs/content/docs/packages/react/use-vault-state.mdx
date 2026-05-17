@@ -1,0 +1,73 @@
+---
+title: useVaultState
+description: Access the encrypted in-memory vault — lock, unlock, and manage identities.
+---
+
+`useVaultState` provides access to the vault managed by `VaultProvider`. The vault holds seeds encrypted at rest. After unlocking, signing is available but the raw seed bytes are never exposed to component state.
+
+## `useVaultState()`
+
+```tsx
+import { useVaultState } from "@qubic.org/react"
+
+function VaultStatus() {
+  const { isLocked, identities, lock, unlock } = useVaultState()
+  const [passphrase, setPassphrase] = useState("")
+
+  if (!isLocked) {
+    return (
+      <div>
+        <p>Vault open — {identities.length} identity(ies) available</p>
+        <button onClick={lock}>Lock vault</button>
+      </div>
+    )
+  }
+
+  return (
+    <form onSubmit={(e) => { e.preventDefault(); unlock(passphrase) }}>
+      <input
+        type="password"
+        value={passphrase}
+        onChange={(e) => setPassphrase(e.target.value)}
+        placeholder="Passphrase"
+      />
+      <button type="submit">Unlock</button>
+    </form>
+  )
+}
+```
+
+**Returns**
+
+| Field | Type | Description |
+|---|---|---|
+| `isLocked` | `boolean` | True when the vault is locked. |
+| `identities` | `Identity[]` | Identities available after unlocking. Empty when locked. |
+| `unlock` | `(passphrase: string) => Promise<void>` | Decrypt the vault with the given passphrase. Throws if the passphrase is wrong. |
+| `lock` | `() => void` | Re-encrypt and clear the in-memory key. |
+| `addSeed` | `(seed: Seed) => Promise<void>` | Add a new seed to the vault. The vault must be unlocked. |
+
+## Unlock flow
+
+`unlock` throws on a bad passphrase. Catch and display the error:
+
+```tsx
+async function handleUnlock(passphrase: string) {
+  try {
+    await unlock(passphrase)
+  } catch (e) {
+    setError("Wrong passphrase")
+  }
+}
+```
+
+## Auto-lock
+
+When `VaultProvider` is configured with `autoLockMs`, the vault locks automatically after the specified period of inactivity. `isLocked` updates reactively, so any component reading it will re-render.
+
+```tsx
+// In VaultProvider:
+<VaultProvider vaultData={vaultData} autoLockMs={15 * 60_000}>
+  {children}
+</VaultProvider>
+```

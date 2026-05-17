@@ -1,7 +1,11 @@
 ---
 title: Archive client
-description: createQueryClient — historical transaction lookup, event logs, and computor history.
+description: createQueryClient — historical transaction lookup, tick data, event logs, and computor history.
 ---
+
+`createQueryClient` targets the Qubic archive API at `https://rpc.qubic.org/query/v1`. Use it for historical queries: looking up past transactions, fetching tick data, reading event logs, and checking indexer state.
+
+Every method returns `Result<T, QubicRpcError>`: `{ ok: true, value }` on success, `{ ok: false, error }` on failure.
 
 ## `createQueryClient(options?)`
 
@@ -9,53 +13,150 @@ description: createQueryClient — historical transaction lookup, event logs, an
 import { createQueryClient } from "@qubic.org/rpc"
 
 const archive = createQueryClient()
-// defaults to archive.qubic.org
 ```
+
+If you also need the live client, use `createQubicClient` instead.
 
 **Options**
 
 | Name | Type | Default | Description |
 |---|---|---|---|
-| `baseUrl` | `string` | `"https://archive.qubic.org"` | Archive indexer URL |
-| `fetch` | `typeof fetch` | global `fetch` | Custom fetch implementation |
+| `baseUrl` | `string` | `"https://rpc.qubic.org/query/v1"` | Archive API base URL |
+| `signal` | `AbortSignal` | — | Default signal applied to every request |
+| `fetch` | `(input: Request) => Promise<Response>` | global `fetch` | Custom fetch implementation |
 
 ---
 
-## `archive.getTransaction(hash)`
+### `archive.getTransactionByHash(hash, opts?)`
 
-Fetches a single transaction by hash. Throws if the transaction is not found or not yet indexed.
+Fetches a single transaction by its 60-character lowercase hash.
 
 ```ts
-import { toTxHash } from "@qubic.org/types"
+const result = await archive.getTransactionByHash(
+  "abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"
+)
+if (!result.ok) throw result.error
 
-const tx = await archive.getTransaction(toTxHash("abcdef..."))
-
-tx.sourceId           // sender Identity
-tx.destId             // recipient Identity
-tx.amount             // bigint
-tx.tickNumber         // number
-tx.transactionStatus  // "executed" | "pending" | ...
-tx.inputType          // number
-tx.inputHex           // raw payload as hex
+const tx = result.value
+console.log(tx.sourceId, "->", tx.destId, tx.amount)
 ```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `hash` | `string` | 60-character hex transaction hash |
+
+**Returns** `Result<QueryTransaction, QubicRpcError>`
+
+| Field | Type | Description |
+|---|---|---|
+| `sourceId` | `string` | Sender identity |
+| `destId` | `string` | Recipient identity |
+| `amount` | `string` | Transfer amount (string; parse as `BigInt` if needed) |
+| `tickNumber` | `number` | Tick the transaction was included in |
+| `inputType` | `number` | Contract function selector, or `0` for a QU transfer |
+| `inputHex` | `string` | Raw payload as hex |
 
 ---
 
-## `archive.getTransactionsForIdentity(params)`
+### `archive.getTickData(tickNumber, opts?)`
 
-Returns the transaction history for an identity within a tick range.
+Returns full tick data including the transaction hashes included in that tick and computor info.
+
+```ts
+const result = await archive.getTickData(17_000_500)
+if (!result.ok) throw result.error
+
+const { tickNumber, epoch, transactionIds } = result.value
+console.log(`Tick ${tickNumber} had ${transactionIds?.length} transactions`)
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `tickNumber` | `number` | The tick to query |
+
+**Returns** `Result<QueryTickData, QubicRpcError>`
+
+---
+
+### `archive.getEventLogs(request, opts?)`
+
+Queries event logs with filtering by identity, log type, tick range, and pagination. Returns the matching logs along with hit count and validity tick.
 
 ```ts
 import { toIdentity } from "@qubic.org/types"
 
-const result = await archive.getTransactionsForIdentity({
-  identity: toIdentity("CFBMEMZOI..."),
+const result = await archive.getEventLogs({
+  identity: toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL"),
   startTick: 17_000_000,
   endTick: 17_001_000,
 })
+if (!result.ok) throw result.error
 
-for (const tx of result.transactions) {
-  console.log(tx.txId, tx.amount)
+for (const event of result.value.eventLogs) {
+  console.log(event.logType, event.tick)
+}
+```
+
+Decode the `data` field of each event with `decodeEvent` from `@qubic.org/events`.
+
+**Parameters** (`GetEventLogsRequest`)
+
+| Name | Type | Description |
+|---|---|---|
+| `identity` | `string` | Filter to events involving this identity |
+| `startTick` | `number` | First tick of the range (inclusive) |
+| `endTick` | `number` | Last tick of the range (inclusive) |
+| `logType` | `number` | Filter to a specific log type |
+| `pageSize` | `number` | Number of results per page |
+| `pageNumber` | `number` | Page index (zero-based) |
+
+**Returns** `Result<{ eventLogs: QueryEvent[], hits: Hits, validForTick: number }, QubicRpcError>`
+
+---
+
+### `archive.getTransactionsForIdentity(request, opts?)`
+
+Returns transactions involving an identity, filtered by tick range and optionally by direction or type.
+
+```ts
+const result = await archive.getTransactionsForIdentity({
+  identity: toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL"),
+  startTick: 17_000_000,
+  endTick: 17_001_000,
+})
+if (!result.ok) throw result.error
+
+for (const tx of result.value.transactions) {
+  console.log(tx.sourceId, tx.amount, "at tick", tx.tickNumber)
+}
+```
+
+**Parameters** (`GetTransactionsForIdentityRequest`)
+
+| Name | Type | Description |
+|---|---|---|
+| `identity` | `string` | The identity to query |
+| `startTick` | `number` | First tick of the range (inclusive) |
+| `endTick` | `number` | Last tick of the range (inclusive) |
+
+**Returns** `Result<{ transactions: QueryTransaction[], hits: Hits, validForTick: number }, QubicRpcError>`
+
+---
+
+### `archive.getComputorListsForEpoch(epoch, opts?)`
+
+Returns the computor lists recorded for the given epoch. Multiple lists may exist if there were leadership changes during the epoch.
+
+```ts
+const result = await archive.getComputorListsForEpoch(150)
+if (!result.ok) throw result.error
+
+for (const list of result.value) {
+  console.log(`Epoch ${list.epoch}: ${list.identities.length} computors`)
 }
 ```
 
@@ -63,48 +164,44 @@ for (const tx of result.transactions) {
 
 | Name | Type | Description |
 |---|---|---|
-| `identity` | `Identity` | The identity to query |
-| `startTick` | `number` | First tick of the range (inclusive) |
-| `endTick` | `number` | Last tick of the range (inclusive) |
+| `epoch` | `number` | Epoch number to query |
+
+**Returns** `Result<QueryComputorList[], QubicRpcError>`
 
 ---
 
-## `archive.getEventLogs(params)`
+### `archive.getLastProcessedTick(opts?)`
 
-Returns event logs for an identity within a tick range.
+Returns the most recent tick the archive has fully indexed. Use this to check indexer lag before making historical queries.
 
 ```ts
-const result = await archive.getEventLogs({
-  identity: toIdentity("CFBMEMZOI..."),
-  startTick: 17_000_000,
-  endTick: 17_001_000,
-})
+const result = await archive.getLastProcessedTick()
+if (!result.ok) throw result.error
 
-for (const event of result.events) {
-  console.log(event.eventType, event.eventData)
-}
+console.log("Archive indexed up to tick:", result.value.tickNumber)
 ```
 
-Each event has `eventType` (number), `eventData` (base64 encoded), `tick`, and `txId`.
-
-Decode `eventData` with `decodeEvent` from `@qubic.org/events`.
+**Returns** `Result<{ tickNumber: number, epoch: number, intervalInitialTick: number, logTickNumber: number }, QubicRpcError>`
 
 ---
 
-## `archive.getTickTransactions(tick)`
+### `archive.getTransactionsForTick(tickNumber, opts?)`
 
 Returns all transactions included in a specific tick.
 
 ```ts
-const { transactions } = await archive.getTickTransactions(17_000_500)
+const result = await archive.getTransactionsForTick(17_000_500)
+if (!result.ok) throw result.error
+
+for (const tx of result.value) {
+  console.log(tx.sourceId, "->", tx.destId)
+}
 ```
 
----
+**Parameters**
 
-## `archive.getComputors(epoch?)`
+| Name | Type | Description |
+|---|---|---|
+| `tickNumber` | `number` | The tick to query |
 
-Returns the computor list for the given epoch (or current epoch if omitted). Same as the live client method, but served from the archive.
-
-```ts
-const { computors } = await archive.getComputors(150)
-```
+**Returns** `Result<QueryTransaction[], QubicRpcError>`

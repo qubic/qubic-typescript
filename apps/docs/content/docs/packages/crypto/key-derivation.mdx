@@ -11,9 +11,11 @@ seed (55 chars) → public key (32 bytes) → identity (60 chars)
 
 Each step is deterministic. The same seed always produces the same public key and identity.
 
+Qubic uses the **FourQ** curve for key pairs — a twisted Edwards curve over a 128-bit prime field, chosen for its speed on 64-bit hardware. The derivation from seed to key uses **KangarooTwelve (K12)** as the hash function.
+
 ## `publicKeyFromSeed(seed)`
 
-Derives the 32-byte FourQ public key from a `Seed`.
+Derives the 32-byte FourQ public key from a `Seed`. The seed is hashed with K12 to produce the private scalar, then the public key is computed as a scalar multiplication on the FourQ curve.
 
 ```ts
 import { publicKeyFromSeed } from "@qubic.org/crypto"
@@ -36,14 +38,14 @@ const publicKey: Uint8Array = publicKeyFromSeed(seed)
 
 ## `identityFromSeed(seed)`
 
-Derives the Qubic identity string directly from a `Seed`. Equivalent to `publicKeyToIdentity(publicKeyFromSeed(seed))`.
+Derives the Qubic identity string directly from a `Seed`. Equivalent to calling `publicKeyToIdentity(publicKeyFromSeed(seed))`, but in one step.
 
 ```ts
 import { identityFromSeed } from "@qubic.org/crypto"
 import { toSeed } from "@qubic.org/types"
 
 const identity = identityFromSeed(toSeed("aaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"))
-// identity is a 60-character uppercase string
+// identity: Identity — 60-character uppercase string
 ```
 
 **Returns** `Identity`
@@ -52,14 +54,14 @@ const identity = identityFromSeed(toSeed("aaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
 
 ## `identityToPublicKey(identity)`
 
-Converts an `Identity` string back to a 32-byte public key. Used when you need to pass a public key to a TCP request or a contract function.
+Converts an `Identity` string to a 32-byte public key. Use this when you need to pass a public key to a TCP request or a contract function — those APIs work with raw bytes, not the string encoding.
 
 ```ts
 import { identityToPublicKey } from "@qubic.org/crypto"
 import { toIdentity } from "@qubic.org/types"
 
 const pk = identityToPublicKey(toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL"))
-// pk is Uint8Array (32 bytes)
+// pk: Uint8Array (32 bytes)
 ```
 
 **Throws** `InvalidIdentityError` — if the identity string is not 60 uppercase characters.
@@ -68,13 +70,13 @@ const pk = identityToPublicKey(toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQS
 
 ## `publicKeyToIdentity(publicKey)`
 
-Encodes a 32-byte public key as an `Identity` string. The inverse of `identityToPublicKey`.
+Encodes a 32-byte FourQ public key as an `Identity` string. The inverse of `identityToPublicKey`.
 
 ```ts
 import { publicKeyToIdentity } from "@qubic.org/crypto"
 
 const identity = publicKeyToIdentity(publicKey)
-// identity is a 60-character uppercase string
+// identity: Identity — 60-character uppercase string
 ```
 
 **Parameters**

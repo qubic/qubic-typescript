@@ -6,9 +6,13 @@
     "index",
     "---Concepts---",
     "transaction-lifecycle",
-    "---API Reference---",
+    "---Building---",
     "build-transaction",
+    "payload",
+    "---Signing & encoding---",
     "sign-transaction",
-    "payload"
+    "encode-decode",
+    "---Low-level---",
+    "binary-reader-writer"
   ]
 }

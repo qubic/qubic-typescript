@@ -1,11 +1,13 @@
 ---
 title: Event filter
-description: eventFilter() — chainable filter builder and subscription helpers for Qubic log events.
+description: eventFilter() — chainable builder for filtering Qubic log events by identity, contract, log type, and tick range.
 ---
 
-## `eventFilter()`
+`eventFilter()` returns a chainable builder for constructing `EventFilter` objects. Pass the result to subscription helpers or archive queries to narrow the event stream.
 
-Creates a new chainable filter builder. Each method returns a new builder instance — the builder is immutable.
+The builder is immutable: each method call returns the same builder instance after mutating internal state, so you can chain calls freely.
+
+## `eventFilter()`
 
 ```ts
 import { eventFilter, LOG_TYPE } from "@qubic.org/events"
@@ -20,143 +22,154 @@ const filter = eventFilter()
   .build()
 ```
 
+**Returns** `EventFilterBuilder` — see builder methods below.
+
 ---
 
 ## Builder methods
 
-| Method | Description |
-|---|---|
-| `.forIdentity(identity)` | Filter to events involving this identity (source or destination). |
-| `.forContract(index)` | Filter to events from a specific contract index. |
-| `.ofTypes(...logTypes)` | Filter to specific log type IDs. Pass multiple to match any. |
-| `.fromTick(n)` | Only events at or after tick `n`. |
-| `.toTick(n)` | Only events up to and including tick `n`. |
-| `.build()` | Returns an `EventFilter` object. |
-| `.toBobFilter()` | Returns a `BobLogFilter` for direct use with Bob. |
+### `.forIdentity(identity)`
+
+Restricts events to those involving the given identity (as source, destination, or owner, depending on the log type).
+
+```ts
+eventFilter().forIdentity(identity)
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `identity` | `Identity` | Qubic identity to filter by |
 
 ---
 
-## Subscription helpers
+### `.forContract(contractIndex)`
 
-Each helper wraps `bob.subscribe("eventLogs", ...)`, applies a type-appropriate filter, and decodes every event automatically.
-
-### `subscribeQuTransfers(bob, identity, callback, filter?)`
-
-Subscribes to QU transfer events for an identity.
+Restricts events to those emitted by the given contract.
 
 ```ts
+eventFilter().forContract(9)  // Qearn contract
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `contractIndex` | `number` | Contract index on the Qubic network |
+
+---
+
+### `.ofTypes(...logTypes)`
+
+Restricts events to the specified log types. Pass multiple types to match any of them.
+
+```ts
+import { LOG_TYPE } from "@qubic.org/events"
+
+eventFilter().ofTypes(LOG_TYPE.QU_TRANSFER, LOG_TYPE.BURNING)
+```
+
+When building a Bob subscription filter with `.toBobFilter()`, only the first log type is forwarded (Bob's WebSocket API supports one type per subscription). Use `subscribeAllEvents` with a broader filter when you need multiple types in a single stream.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `...logTypes` | `LogType[]` | One or more `LOG_TYPE` values |
+
+---
+
+### `.fromTick(tick)`
+
+Restricts to events at or after the given tick.
+
+```ts
+eventFilter().fromTick(25_000_000)
+```
+
+---
+
+### `.toTick(tick)`
+
+Restricts to events up to and including the given tick.
+
+```ts
+eventFilter().toTick(26_000_000)
+```
+
+---
+
+### `.build()`
+
+Returns the `EventFilter` object. Use this with subscription helpers from `@qubic.org/events`.
+
+```ts
+const filter = eventFilter().forIdentity(identity).build()
+
+for await (const event of subscribeAllEvents(bob.subscription, filter)) {
+  // ...
+}
+```
+
+**Returns** `EventFilter`
+
+| Field | Type | Description |
+|---|---|---|
+| `identity` | `Identity` | Set by `.forIdentity()` |
+| `contractIndex` | `number` | Set by `.forContract()` |
+| `logTypes` | `LogType[]` | Set by `.ofTypes()` |
+| `fromTick` | `number` | Set by `.fromTick()` |
+| `toTick` | `number` | Set by `.toTick()` |
+
+---
+
+### `.toBobFilter()`
+
+Returns a `BobLogFilter` for direct use with `bob.subscription.subscribeLogs`. Only the first `logType` from `.ofTypes()` is included, since Bob's WebSocket API supports one log type per subscription filter.
+
+```ts
+const bobFilter = eventFilter()
+  .forIdentity(identity)
+  .ofTypes(LOG_TYPE.QU_TRANSFER)
+  .toBobFilter()
+
+for await (const event of bob.subscription.subscribeLogs(bobFilter)) {
+  // raw BobLogEvent — call decodeEvent if you need typed data
+}
+```
+
+**Returns** `BobLogFilter`
+
+---
+
+## Composing a filter
+
+```ts
+import { eventFilter, LOG_TYPE, subscribeAllEvents } from "@qubic.org/events"
 import { createBobClient } from "@qubic.org/bob"
-import { subscribeQuTransfers, eventFilter } from "@qubic.org/events"
 import { toIdentity } from "@qubic.org/types"
 
-const bob = createBobClient({ autoResubscribe: true })
-await bob.connect()
+const bob = createBobClient({ baseUrl: "http://localhost:40420" })
 
 const identity = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
 
-const unsub = subscribeQuTransfers(bob, identity, (transfer, meta) => {
-  if (meta.isCatchUp) return
-  const { source, destination, amount } = transfer.data
-  const direction = source === identity ? "OUT" : "IN"
-  console.log(`[${direction}] ${amount}n QU at tick ${transfer.tick}`)
-})
-
-// Later — stop listening
-unsub()
-```
-
----
-
-### `subscribeAssetEvents(bob, identity, callback, filter?)`
-
-Subscribes to all asset-related log types: issuance, ownership change, and possession change.
-
-```ts
-import { subscribeAssetEvents } from "@qubic.org/events"
-
-const unsub = subscribeAssetEvents(bob, identity, (event, meta) => {
-  console.log("Asset event type:", event.logType)
-})
-```
-
----
-
-### `subscribeContractLogs(bob, identity, callback, filter?)`
-
-Subscribes to contract message log types: error, warning, information, and debug.
-
-```ts
-import { subscribeContractLogs, LOG_TYPE } from "@qubic.org/events"
-
-const unsub = subscribeContractLogs(bob, identity, (event, meta) => {
-  if (event.logType === LOG_TYPE.CONTRACT_ERROR_MESSAGE) {
-    console.error(`Contract ${event.data.contractIndex}: ${event.data.message}`)
-  }
-})
-```
-
----
-
-### `subscribeAllEvents(bob, identity, callback, filter?)`
-
-Subscribes to all log types. Apply a filter to narrow the stream.
-
-```ts
-import { subscribeAllEvents, eventFilter, LOG_TYPE } from "@qubic.org/events"
-
+// Watch all transfers and burns for an identity, starting from a specific tick
 const filter = eventFilter()
-  .ofTypes(LOG_TYPE.BURNING, LOG_TYPE.DUST_BURNING)
+  .forIdentity(identity)
+  .ofTypes(LOG_TYPE.QU_TRANSFER, LOG_TYPE.BURNING)
+  .fromTick(25_000_000)
   .build()
 
-const unsub = subscribeAllEvents(bob, identity, (event, meta) => {
-  console.log("Event:", event.logType, event.data)
-}, filter)
-```
+for await (const event of subscribeAllEvents(bob.subscription, filter)) {
+  if (event.isCatchUp) continue
 
----
+  const typed = event.data
 
-## Watching multiple identities
-
-```ts
-const identities = [identity1, identity2, identity3]
-
-const unsubs = identities.map((id) =>
-  subscribeQuTransfers(bob, id, (transfer) => {
-    handleTransfer(id, transfer)
-  })
-)
-
-// Unsubscribe all
-unsubs.forEach((fn) => fn())
-```
-
----
-
-## Complete example
-
-Track QU transfers for an identity, skip catch-up ticks, and log each one:
-
-```ts title="track-transfers.ts"
-import { createBobClient } from "@qubic.org/bob"
-import { subscribeQuTransfers } from "@qubic.org/events"
-import { toIdentity } from "@qubic.org/types"
-
-const identity = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
-
-const bob = createBobClient({ autoResubscribe: true })
-await bob.connect()
-
-process.on("SIGINT", async () => {
-  await bob.disconnect()
-  process.exit(0)
-})
-
-const unsub = subscribeQuTransfers(bob, identity, (transfer, meta) => {
-  if (meta.isCatchUp) return
-
-  const { source, destination, amount } = transfer.data
-  const direction = source === identity ? "OUT" : "IN"
-  console.log(`[tick ${transfer.tick}] [${direction}] ${amount}n QU`)
-  console.log(`  ${source} → ${destination}`)
-})
+  if (typed.logType === LOG_TYPE.QU_TRANSFER) {
+    console.log("Transfer:", typed.data.amount)
+  } else if (typed.logType === LOG_TYPE.BURNING) {
+    console.log("Burn:", typed.data.amount, "from", typed.data.source)
+  }
+}
 ```

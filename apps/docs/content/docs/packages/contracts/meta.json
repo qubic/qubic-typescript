@@ -6,11 +6,14 @@
     "index",
     "---Concepts---",
     "generated-wrappers",
-    "---API Reference---",
+    "---API---",
     "namespace",
     "builders",
     "decoders",
     "callers",
-    "call-contract-function"
+    "call-contract-function",
+    "---Contracts---",
+    "qearn",
+    "qx"
   ]
 }

@@ -1,0 +1,116 @@
+---
+title: ABI lookup
+description: Look up contract ABI versions by epoch — getAbi, getCurrentAbi, getAbiHistory.
+---
+
+`@qubic.org/registry` stores every historical ABI snapshot keyed by epoch range. These functions let you find the right version for any epoch — past or present.
+
+```ts
+import { getAbi, getCurrentAbi, getAbiHistory } from "@qubic.org/registry"
+import registry from "@qubic.org/registry/registry.json"
+import type { ContractRegistry } from "@qubic.org/registry"
+
+const reg = registry as ContractRegistry
+```
+
+---
+
+## `getAbi(registry, contractIndex, epoch)`
+
+Returns the ABI version active at the given epoch. Use this when decoding historical data from a specific epoch.
+
+```ts
+import { getAbi } from "@qubic.org/registry"
+
+const { version, isCurrent, isRegistryPossiblyStale } = getAbi(reg, 9, 213)
+// version: ContractAbiVersion
+// isCurrent: true if effectiveToEpoch === null (still active)
+// isRegistryPossiblyStale: true if isCurrent and epoch > the known-active range
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `registry` | `ContractRegistry` | The imported registry JSON |
+| `contractIndex` | `number` | Contract index (e.g. `9` for Qearn, `1` for Qx) — or use `CONTRACT_INDEX` from `@qubic.org/types` |
+| `epoch` | `number` | The epoch to look up |
+
+**Returns**
+
+| Field | Type | Description |
+|---|---|---|
+| `version` | `ContractAbiVersion` | The ABI version covering this epoch |
+| `isCurrent` | `boolean` | `true` if this is the currently-active version |
+| `isRegistryPossiblyStale` | `boolean` | `true` if `isCurrent` and the registry may be out of date |
+
+**Throws** `AbiNotFoundError` — if no version covers the requested epoch.
+
+---
+
+## `getCurrentAbi(registry, contractIndex)`
+
+Returns the currently-active ABI version (the one with `effectiveToEpoch === null`). Use this for live calls.
+
+```ts
+import { getCurrentAbi } from "@qubic.org/registry"
+
+const version = getCurrentAbi(reg, 9)  // Qearn's current ABI
+```
+
+**Throws** `AbiNotFoundError` — if no current version exists for this contract.
+
+---
+
+## `getAbiHistory(registry, contractIndex)`
+
+Returns all ABI versions for a contract, sorted from oldest to newest. Useful for migration audits.
+
+```ts
+import { getAbiHistory } from "@qubic.org/registry"
+
+const history = getAbiHistory(reg, 9)
+// history[0] — oldest version
+// history[history.length - 1] — newest version
+
+for (const v of history) {
+  console.log(`Epoch ${v.effectiveFromEpoch}–${v.effectiveToEpoch ?? "current"}`)
+}
+```
+
+**Returns** `ContractAbiVersion[]` — sorted by `effectiveFromEpoch` ascending.
+
+---
+
+## Error types
+
+```ts
+import { AbiNotFoundError, EntryNotFoundError } from "@qubic.org/registry"
+
+try {
+  const { version } = getAbi(reg, 9, 50)  // epoch 50 predates Qearn
+} catch (e) {
+  if (e instanceof AbiNotFoundError) {
+    console.error(`No ABI for contract ${e.contractIndex} at epoch ${e.epoch}`)
+  }
+}
+```
+
+`EntryNotFoundError` extends `AbiNotFoundError` — thrown by `getProcedure` and `getFunction` when the requested input type doesn't exist in a version.
+
+| Class | `code` | When |
+|---|---|---|
+| `AbiNotFoundError` | — | No version covers the requested epoch |
+| `EntryNotFoundError` | — | Procedure or function input type not found in version |
+
+---
+
+## Working with `CONTRACT_INDEX`
+
+```ts
+import { CONTRACT_INDEX } from "@qubic.org/types"
+
+const { version } = getAbi(reg, CONTRACT_INDEX.QEARN, 213)
+```
+
+`CONTRACT_INDEX` maps well-known contract names to their numeric index. Prefer it over hardcoding numbers.

@@ -1,7 +1,11 @@
 ---
 title: Live client
-description: createLiveClient — real-time node data, balance queries, transaction broadcast, and contract queries.
+description: createLiveClient — real-time tick data, balance queries, transaction broadcast, asset lookups, and contract calls.
 ---
+
+`createLiveClient` targets the Qubic live API at `https://rpc.qubic.org/live/v1`. Use it for current state: the active tick, account balances, broadcasting transactions, and querying smart contracts.
+
+Every method returns `Result<T, QubicRpcError>`: `{ ok: true, value }` on success, `{ ok: false, error }` on failure. There are no thrown exceptions.
 
 ## `createLiveClient(options?)`
 
@@ -9,25 +13,33 @@ description: createLiveClient — real-time node data, balance queries, transact
 import { createLiveClient } from "@qubic.org/rpc"
 
 const live = createLiveClient()
-// defaults to rpc.qubic.org
 ```
+
+If you also need the archive client, use `createQubicClient` instead — it creates both from a single options object.
 
 **Options**
 
 | Name | Type | Default | Description |
 |---|---|---|---|
-| `baseUrl` | `string` | `"https://rpc.qubic.org"` | RPC gateway URL |
-| `fetch` | `typeof fetch` | global `fetch` | Custom fetch implementation |
+| `baseUrl` | `string` | `"https://rpc.qubic.org/live/v1"` | Live API base URL |
+| `signal` | `AbortSignal` | — | Default signal applied to every request |
+| `fetch` | `(input: Request) => Promise<Response>` | global `fetch` | Custom fetch implementation |
 
 ---
 
-## `live.getTickInfo()`
+### `live.getTickInfo(opts?)`
 
-Returns the current tick, epoch, and tick timing data.
+Returns current tick, epoch, and tick timing data.
 
 ```ts
-const { tick, epoch, duration, initialTick } = await live.getTickInfo()
+const result = await live.getTickInfo()
+if (!result.ok) throw result.error
+
+const { tick, epoch, duration, initialTick } = result.value
+console.log(`Tick ${tick} in epoch ${epoch}`)
 ```
+
+**Returns** `Result<LiveTickInfo, QubicRpcError>`
 
 | Field | Type | Description |
 |---|---|---|
@@ -38,91 +50,156 @@ const { tick, epoch, duration, initialTick } = await live.getTickInfo()
 
 ---
 
-## `live.getBalance(identity)`
+### `live.getBalance(identity, opts?)`
 
-Returns the QU balance of an identity.
+Returns the QU balance and transfer history for an identity. Numeric fields from the wire format are converted to `bigint`.
 
 ```ts
 import { toIdentity } from "@qubic.org/types"
 
-const { balance } = await live.getBalance(
+const result = await live.getBalance(
   toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
 )
-// balance is bigint
+if (!result.ok) throw result.error
+
+console.log(result.value.balance)           // bigint QU amount
+console.log(result.value.validForTick)      // tick at which the balance was valid
 ```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `identity` | `string` | 60-character Qubic identity |
+
+**Returns** `Result<QubicBalance, QubicRpcError>`
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | `string` | The identity |
+| `balance` | `bigint` | Current QU balance |
+| `validForTick` | `number` | Tick at which this balance was computed |
+| `latestIncomingTransferTick` | `number` | Most recent incoming transfer tick |
+| `latestOutgoingTransferTick` | `number` | Most recent outgoing transfer tick |
+| `incomingAmount` | `bigint` | Total QU received in this epoch |
+| `outgoingAmount` | `bigint` | Total QU sent in this epoch |
+| `numberOfIncomingTransfers` | `number` | Count of incoming transfers |
+| `numberOfOutgoingTransfers` | `number` | Count of outgoing transfers |
 
 ---
 
-## `live.getBalances(identities)`
-
-Returns balances for multiple identities in one request.
-
-```ts
-const result = await live.getBalances([id1, id2, id3])
-// result is BalancesResult
-```
-
----
-
-## `live.broadcastTransaction(encoded)`
+### `live.broadcastTransaction(encodedTransaction, opts?)`
 
 Broadcasts a signed, base64-encoded transaction to the network.
 
 ```ts
-const result = await live.broadcastTransaction(encoded)
-console.log(`Broadcast to ${result.peersBroadcastedTo} peers`)
+const result = await live.broadcastTransaction(encodedTransaction)
+if (!result.ok) throw result.error
+
+console.log(`Broadcast to ${result.value.peersBroadcastedTo} peers`)
 ```
 
-**Returns** `{ peersBroadcastedTo: number }`
+Use `buildTransaction` and `signTransaction` from `@qubic.org/tx` to produce the encoded transaction.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `encodedTransaction` | `string` | Base64-encoded signed transaction |
+
+**Returns** `Result<BroadcastTransactionResponse, QubicRpcError>` — contains `peersBroadcastedTo: number`.
 
 ---
 
-## `live.querySmartContract(params)`
+### `live.querySmartContract(request, opts?)`
 
-Calls a contract read function and returns raw response bytes.
+Calls a contract read-only function and returns raw base64-encoded response bytes.
 
 ```ts
-const response = await live.querySmartContract({
-  contractIndex: 9,      // Qearn
-  inputType: 1,          // getStateOfRound
+const result = await live.querySmartContract({
+  contractIndex: 9,   // Qearn contract
+  inputType: 1,       // getStateOfRound function
   inputSize: 4,
   requestData: encodedInput,
 })
+if (!result.ok) throw result.error
+// result.value.responseData is base64-encoded
 ```
 
-The `@qubic.org/contracts` generated callers wrap this method — use those instead of calling directly.
+The generated callers in `@qubic.org/contracts` wrap this method and handle encoding and decoding automatically. Prefer those over calling `querySmartContract` directly.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `contractIndex` | `number` | Contract index on the Qubic network |
+| `inputType` | `number` | Function selector |
+| `inputSize` | `number` | Byte length of the encoded input |
+| `requestData` | `string` | Base64-encoded input payload |
+
+**Returns** `Result<QuerySmartContractResponse, QubicRpcError>` — contains `responseData: string` (base64).
 
 ---
 
-## `live.getIssuedAssets(identity)` / `getOwnedAssets(identity)` / `getPossessedAssets(identity)`
+### `live.getIssuedAssets(identity, opts?)`
 
-Returns issued, owned, or possessed assets for an identity.
+Returns all assets issued by the given identity.
 
 ```ts
-const assets = await live.getIssuedAssets(identity)
-// assets is Asset[]
+const result = await live.getIssuedAssets(identity)
+if (!result.ok) throw result.error
+
+for (const asset of result.value) {
+  console.log(asset.data?.issuerInfo.assetName)
+}
 ```
 
-Each `Asset` includes `assetName`, `issuerIdentity`, `numberOfUnits`, `numberOfDecimalPlaces`.
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `identity` | `string` | The issuer identity |
+
+**Returns** `Result<IssuedAsset[], QubicRpcError>`
 
 ---
 
-## `live.getComputors(epoch?)`
+### `live.getOwnedAssets(identity, opts?)`
 
-Returns the computor list for the given epoch (or current epoch if omitted).
+Returns all assets owned by the given identity.
 
 ```ts
-const { computors } = await live.getComputors()
-// computors is an array of identity strings
+const result = await live.getOwnedAssets(identity)
+if (!result.ok) throw result.error
+
+for (const asset of result.value) {
+  console.log(asset.data?.ownershipInfo.assetName, asset.data?.ownershipInfo.numberOfUnits)
+}
 ```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `identity` | `string` | The owner identity |
+
+**Returns** `Result<OwnedAsset[], QubicRpcError>`
 
 ---
 
-## `live.getHealthCheck()`
+### `live.getPossessedAssets(identity, opts?)`
 
-Checks whether the RPC gateway is healthy.
+Returns all assets possessed by the given identity. Possession differs from ownership when a managing contract holds custody.
 
 ```ts
-const ok = await live.getHealthCheck()
-// true if the gateway responds
+const result = await live.getPossessedAssets(identity)
+if (!result.ok) throw result.error
 ```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `identity` | `string` | The possessor identity |
+
+**Returns** `Result<PossessedAsset[], QubicRpcError>`

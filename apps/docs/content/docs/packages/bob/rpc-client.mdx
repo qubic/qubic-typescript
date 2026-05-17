@@ -1,0 +1,349 @@
+---
+title: createBobRpcClient
+description: JSON-RPC 2.0 client for Bob — balances, transfers, event logs, computors, epoch info, and more.
+---
+
+`createBobRpcClient` creates a JSON-RPC 2.0 client targeting Bob's compute-intensive queries. Use it when you need structured log queries, QU transfer history, asset transfer history, or computor lists.
+
+All methods return `Result<T, BobRpcError>`: `{ ok: true, value }` on success, `{ ok: false, error }` on failure. The client retries failed requests up to `options.retries` times before returning an error.
+
+## `createBobRpcClient(options)`
+
+```ts
+import { createBobRpcClient } from "@qubic.org/bob"
+
+const rpc = createBobRpcClient({ endpoint: "http://localhost:40420" })
+```
+
+If you need the RPC client alongside the REST or subscription clients, use `createBobClient` instead.
+
+**Options**
+
+| Name | Type | Default | Description |
+|---|---|---|---|
+| `endpoint` | `string` | — | Bob server URL (required) |
+| `retries` | `number` | `2` | Number of retry attempts on failure |
+| `timeoutMs` | `number` | `10000` | Request timeout in milliseconds |
+| `fetch` | `typeof fetch` | global `fetch` | Custom fetch implementation |
+
+---
+
+### `rpc.getChainId(opts?)`
+
+Returns the chain identifier string.
+
+```ts
+const result = await rpc.getChainId()
+if (!result.ok) throw result.error
+console.log(result.value) // e.g. "0x1"
+```
+
+**Returns** `Result<string, BobRpcError>`
+
+---
+
+### `rpc.getTickNumber(opts?)`
+
+Returns the current tick number.
+
+```ts
+const result = await rpc.getTickNumber()
+if (!result.ok) throw result.error
+console.log("Current tick:", result.value)
+```
+
+**Returns** `Result<number, BobRpcError>`
+
+---
+
+### `rpc.getCurrentEpoch(opts?)`
+
+Returns the current epoch number.
+
+```ts
+const result = await rpc.getCurrentEpoch()
+if (!result.ok) throw result.error
+```
+
+**Returns** `Result<number, BobRpcError>`
+
+---
+
+### `rpc.getBalance(identity, opts?)`
+
+Returns the QU balance for an identity as a `bigint`.
+
+```ts
+import { toIdentity } from "@qubic.org/types"
+
+const result = await rpc.getBalance(
+  toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
+)
+if (!result.ok) throw result.error
+
+console.log("Balance:", result.value) // bigint
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `identity` | `Identity` | 60-character Qubic identity |
+
+**Returns** `Result<bigint, BobRpcError>`
+
+---
+
+### `rpc.getTransactionByHash(hash, opts?)`
+
+Returns a transaction by its hash.
+
+```ts
+import { toTxHash } from "@qubic.org/types"
+
+const result = await rpc.getTransactionByHash(toTxHash("abcdef..."))
+if (!result.ok) throw result.error
+
+const { source, destination, amount, tick } = result.value
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `hash` | `TxHash` | 60-character hex transaction hash |
+
+**Returns** `Result<BobTransaction, BobRpcError>`
+
+| Field | Type | Description |
+|---|---|---|
+| `hash` | `TxHash` | Transaction hash |
+| `tick` | `number` | Tick the transaction was included in |
+| `source` | `Identity` | Sender |
+| `destination` | `Identity` | Recipient |
+| `amount` | `bigint` | QU amount |
+
+---
+
+### `rpc.getTickByNumber(tick, includeTx, opts?)`
+
+Returns tick data. Set `includeTx` to `true` to include full transaction objects.
+
+```ts
+const result = await rpc.getTickByNumber(17_000_500, false)
+if (!result.ok) throw result.error
+
+const { tick, epoch, transactions } = result.value
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `tick` | `number` | Tick number |
+| `includeTx` | `boolean` | Whether to include full transaction data |
+
+**Returns** `Result<BobTickData, BobRpcError>`
+
+| Field | Type | Description |
+|---|---|---|
+| `tick` | `number` | Tick number |
+| `epoch` | `number` | Epoch number |
+| `transactions` | `TxHash[]` | Transaction hashes included in this tick |
+
+---
+
+### `rpc.getEpochInfo(epoch, opts?)`
+
+Returns epoch metadata including tick range and log ID boundaries.
+
+```ts
+const result = await rpc.getEpochInfo(150)
+if (!result.ok) throw result.error
+
+const { initialTick, endTick, latestLogId } = result.value
+```
+
+**Returns** `Result<BobRpcEpochInfo, BobRpcError>`
+
+| Field | Type | Description |
+|---|---|---|
+| `epoch` | `number` | Epoch number |
+| `initialTick` | `number` | First tick of the epoch |
+| `endTick` | `number` | Last tick of the epoch |
+| `endTickStartLogId` | `bigint` | First log ID of the end-of-epoch tick |
+| `endTickEndLogId` | `bigint` | Last log ID of the end-of-epoch tick |
+| `lastIndexedTick` | `number` | Most recently indexed tick |
+| `latestLogId` | `bigint` | Latest log ID in this epoch |
+
+---
+
+### `rpc.getComputors(epoch?, opts?)`
+
+Returns the computor list for the given epoch. Omit `epoch` to get the current epoch's list.
+
+```ts
+const result = await rpc.getComputors()
+if (!result.ok) throw result.error
+
+const { epoch, identities } = result.value
+console.log(`${identities.length} computors in epoch ${epoch}`)
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `epoch` | `number` | Epoch number. Default: current epoch |
+
+**Returns** `Result<BobComputorList, BobRpcError>`
+
+| Field | Type | Description |
+|---|---|---|
+| `epoch` | `number` | Epoch number |
+| `identities` | `Identity[]` | Computor identity list (675 entries) |
+
+---
+
+### `rpc.getLogs(filter, opts?)`
+
+Returns log events matching a filter. This is the low-level method. The subscription helpers in `@qubic.org/events` wrap it with decoding.
+
+```ts
+const result = await rpc.getLogs({
+  logType: 0,       // QU_TRANSFER
+  identity: identity,
+  fromTick: 17_000_000,
+  toTick: 17_001_000,
+})
+if (!result.ok) throw result.error
+
+for (const event of result.value) {
+  console.log(event.logType, event.tick, event.logId)
+}
+```
+
+**Parameters** (`BobLogFilter`)
+
+| Name | Type | Description |
+|---|---|---|
+| `contractIndex` | `number` | Filter by contract |
+| `logType` | `number` | Filter by log type |
+| `identity` | `Identity` | Filter by identity |
+| `fromTick` | `number` | Start tick (inclusive) |
+| `toTick` | `number` | End tick (inclusive) |
+
+**Returns** `Result<BobLogEvent[], BobRpcError>`
+
+---
+
+### `rpc.getQuTransfers(filter, opts?)`
+
+Returns QU transfer history for an identity in a tick range.
+
+```ts
+const result = await rpc.getQuTransfers({
+  identity: toIdentity("CFBMEMZOI..."),
+  fromTick: 17_000_000,
+  toTick: 17_001_000,
+})
+if (!result.ok) throw result.error
+```
+
+**Parameters** (`BobQuTransferFilter`)
+
+| Name | Type | Description |
+|---|---|---|
+| `identity` | `Identity` | The identity to query |
+| `fromTick` | `number` | Start tick (inclusive) |
+| `toTick` | `number` | End tick (inclusive) |
+
+**Returns** `Result<BobRestLogEvent[], BobRpcError>`
+
+---
+
+### `rpc.getAssetTransfers(filter, opts?)`
+
+Returns asset transfer history for an identity and specific asset in a tick range.
+
+```ts
+const result = await rpc.getAssetTransfers({
+  identity: toIdentity("CFBMEMZOI..."),
+  issuer: toIdentity("ISSUERIDEN..."),
+  assetName: "QWALLET",
+  fromTick: 17_000_000,
+  toTick: 17_001_000,
+})
+if (!result.ok) throw result.error
+```
+
+**Parameters** (`BobAssetTransferFilter`)
+
+| Name | Type | Description |
+|---|---|---|
+| `identity` | `Identity` | The holder identity |
+| `issuer` | `Identity` | Asset issuer |
+| `assetName` | `string` | Asset name |
+| `fromTick` | `number` | Start tick |
+| `toTick` | `number` | End tick |
+
+**Returns** `Result<BobRestLogEvent[], BobRpcError>`
+
+---
+
+### `rpc.getAssets(identity, opts?)`
+
+Returns all assets held by an identity.
+
+```ts
+const result = await rpc.getAssets(identity)
+if (!result.ok) throw result.error
+
+for (const asset of result.value) {
+  console.log(asset.assetName, asset.amount)
+}
+```
+
+**Returns** `Result<Array<{ identity: Identity, issuer: Identity, assetName: string, amount: bigint }>, BobRpcError>`
+
+---
+
+### `rpc.broadcastTransaction(signedTxHex, opts?)`
+
+Broadcasts a signed transaction. Returns the transaction hash.
+
+```ts
+const result = await rpc.broadcastTransaction(signedTxHex)
+if (!result.ok) throw result.error
+console.log("TX hash:", result.value)
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `signedTxHex` | `string` | Hex-encoded signed transaction |
+
+**Returns** `Result<TxHash, BobRpcError>`
+
+---
+
+### `rpc.querySmartContract(contractIndex, funcNumber, data, opts?)`
+
+Calls a smart contract read-only function.
+
+```ts
+const result = await rpc.querySmartContract(9, 1, base64Input)
+if (!result.ok) throw result.error
+// result.value is a Base64 string
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `contractIndex` | `number` | Contract index |
+| `funcNumber` | `number` | Function selector |
+| `data` | `Base64` | Base64-encoded input |
+
+**Returns** `Result<Base64, BobRpcError>`

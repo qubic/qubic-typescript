@@ -1,0 +1,52 @@
+---
+title: useEventLogs
+description: Fetches historical event logs from the archive API for a tick range or contract.
+---
+
+`useEventLogs` queries the archive API for events emitted by smart contracts. Filter by contract index, tick range, or both. Pass `undefined` as the request to skip the fetch.
+
+## `useEventLogs(request, options?)`
+
+```tsx
+import { useEventLogs } from "@qubic.org/react"
+import { QEARN_CONTRACT_INDEX } from "@qubic.org/contracts"
+
+function QearnEvents({ fromTick, toTick }: { fromTick: number; toTick: number }) {
+  const { data, isLoading, error } = useEventLogs({
+    contractIndex: QEARN_CONTRACT_INDEX,
+    fromTick,
+    toTick,
+  })
+
+  if (isLoading) return <p>Loading events...</p>
+  if (error) return <p>Error: {error.message}</p>
+
+  return (
+    <ul>
+      {data?.map((event, i) => (
+        <li key={i}>
+          Tick {event.tick} — type {event.eventType}
+        </li>
+      ))}
+    </ul>
+  )
+}
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `request` | `GetEventLogsRequest \| undefined` | Query parameters. Pass `undefined` to skip the fetch. |
+| `request.contractIndex` | `number` | Filter by contract index. Optional. |
+| `request.fromTick` | `number` | Start of the tick range (inclusive). Optional. |
+| `request.toTick` | `number` | End of the tick range (inclusive). Optional. |
+| `options.refetchInterval` | `number \| false` | Polling interval in milliseconds. Pass `false` to disable. |
+
+**Returns**
+
+| Field | Type | Description |
+|---|---|---|
+| `data` | `QueryEvent[] \| undefined` | List of matching events, or `undefined` while loading. |
+| `isLoading` | `boolean` | True while the first fetch is in progress. |
+| `error` | `QubicRpcError \| null` | Network or parse error. |

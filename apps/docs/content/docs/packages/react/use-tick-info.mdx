@@ -1,0 +1,73 @@
+---
+title: useTickInfo
+description: Fetches the current tick and epoch from the live RPC, with automatic polling.
+---
+
+Most apps need the current tick to set `targetTick` when building transactions. `useTickInfo` polls the live API and keeps that value fresh.
+
+## `useTickInfo(options?)`
+
+```tsx
+import { useTickInfo } from "@qubic.org/react"
+
+function TickDisplay() {
+  const { data, isLoading, error } = useTickInfo({ refetchInterval: 2000 })
+
+  if (isLoading) return <span>Loading...</span>
+  if (error) return <span>Error: {error.message}</span>
+
+  return (
+    <div>
+      <p>Tick: {data.tick}</p>
+      <p>Epoch: {data.epoch}</p>
+    </div>
+  )
+}
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `options.refetchInterval` | `number \| false` | Polling interval in milliseconds. Defaults to `5000`. Pass `false` to disable polling. |
+
+**Returns**
+
+| Field | Type | Description |
+|---|---|---|
+| `data` | `TickInfo \| undefined` | Current tick info, or `undefined` while loading. |
+| `data.tick` | `number` | Current tick number. |
+| `data.epoch` | `number` | Current epoch number. |
+| `data.duration` | `number` | Tick duration in milliseconds. |
+| `data.initialTick` | `number` | First tick of the current epoch. |
+| `isLoading` | `boolean` | True while the first fetch is in progress. |
+| `error` | `QubicRpcError \| null` | Network or parse error. |
+
+## Using tick for transactions
+
+The standard pattern is to add a small buffer to the current tick when building a transaction:
+
+```tsx
+import { useTickInfo } from "@qubic.org/react"
+import { useSendTransaction } from "@qubic.org/react"
+
+function SendButton() {
+  const { data: tickInfo } = useTickInfo()
+  const { send, isPending } = useSendTransaction()
+
+  function handleSend() {
+    if (!tickInfo) return
+    send({
+      destination: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      amount: 1_000_000n,
+      targetTick: tickInfo.tick + 5,
+    })
+  }
+
+  return (
+    <button onClick={handleSend} disabled={isPending || !tickInfo}>
+      Send
+    </button>
+  )
+}
+```

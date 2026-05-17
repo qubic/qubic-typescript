@@ -6,9 +6,13 @@
     "index",
     "---Concepts---",
     "cryptography",
-    "---API Reference---",
+    "---Key derivation---",
     "key-derivation",
+    "---Signing---",
+    "signing",
+    "---Hashing---",
     "hashing",
-    "signing"
+    "---Random---",
+    "random"
   ]
 }

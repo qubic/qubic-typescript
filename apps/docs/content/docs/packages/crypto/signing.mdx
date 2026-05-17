@@ -3,7 +3,9 @@ title: Signing
 description: sign and verify — SchnorrQ signatures over the FourQ curve.
 ---
 
-Qubic uses **SchnorrQ** signatures over the **FourQ** elliptic curve. This is not secp256k1 (Bitcoin/Ethereum) and not Ed25519. Keys and signatures are not interchangeable with other blockchain systems.
+Qubic uses **SchnorrQ** signatures over the **FourQ** elliptic curve. This is not secp256k1 (Bitcoin/Ethereum) and not Ed25519. Keys and signatures produced here are not compatible with other blockchain systems.
+
+Both `sign` and `verify` are async. The underlying SchnorrQ implementation runs in a WASM module that may need to initialize on first call — always `await` them.
 
 ## `sign(data, seed)`
 
@@ -20,10 +22,6 @@ const signature: Uint8Array = await sign(message, seed)
 // signature.length === 64
 ```
 
-<Callout>
-  `sign` is **async** — it calls into the WASM runtime. Always `await` it.
-</Callout>
-
 **Parameters**
 
 | Name | Type | Description |
@@ -31,13 +29,13 @@ const signature: Uint8Array = await sign(message, seed)
 | `data` | `Uint8Array` | The bytes to sign |
 | `seed` | `Seed` | 55-character lowercase seed |
 
-**Returns** `Promise<Uint8Array>` — 64-byte signature.
+**Returns** `Promise<Uint8Array>` — 64-byte SchnorrQ signature.
 
 ---
 
 ## `verify(data, signature, publicKey)`
 
-Verifies a SchnorrQ signature against a public key and message. Returns `true` if valid.
+Verifies a SchnorrQ signature against a public key and message. Returns `true` if the signature is valid for the given data and key.
 
 ```ts
 import { sign, verify, publicKeyFromSeed } from "@qubic.org/crypto"
@@ -66,7 +64,7 @@ const valid = await verify(message, sig, publicKey)
 
 ## Transaction signing
 
-In practice you rarely call `sign` directly — use `signTransaction` from `@qubic.org/tx` instead, which handles the transaction serialization before signing:
+For signing Qubic transactions, use `signTransaction` from `@qubic.org/tx` instead. It serializes the transaction header before signing, appends the signature, and returns the complete signed bytes ready for broadcast.
 
 ```ts
 import { buildTransaction, signTransaction } from "@qubic.org/tx"
@@ -77,4 +75,4 @@ const unsigned = buildTransaction({ ... })
 const signed: Uint8Array = await signTransaction(unsigned, seed)
 ```
 
-`sign` is useful when you need to sign an arbitrary message outside of the transaction format, for example to prove ownership of an identity off-chain.
+`sign` is useful when you need to sign an arbitrary message outside of the transaction format, for example to prove ownership of an identity off-chain or to sign a custom data structure for a protocol extension.

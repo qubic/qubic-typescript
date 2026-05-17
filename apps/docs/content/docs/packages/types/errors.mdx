@@ -1,9 +1,9 @@
 ---
 title: Error classes
-description: The QubicError hierarchy — base class and typed subclasses thrown by SDK constructors and API calls.
+description: QubicError and its subclasses — typed errors thrown by SDK constructors and validators.
 ---
 
-All SDK errors extend the abstract `QubicError` base class. This lets you catch at any level of specificity.
+All SDK errors extend the abstract `QubicError` base class. Catching at `QubicError` handles any SDK error. Catching at a subclass handles one specific failure.
 
 ## Hierarchy
 
@@ -16,6 +16,37 @@ Error
     └── InvalidBase64Error
 ```
 
+## `QubicError`
+
+Abstract base class. Never thrown directly. All SDK errors carry these fields:
+
+| Property | Type | Description |
+|---|---|---|
+| `message` | `string` | Human-readable description of what went wrong |
+| `code` | `string` | Machine-readable error code — matches the class name (e.g. `"InvalidIdentityError"`) |
+| `context` | `unknown` | The value that caused the error — the string that failed validation |
+| `name` | `string` | Same as `code` |
+| `stack` | `string \| undefined` | Standard JS stack trace |
+
+The `code` and `context` fields let you handle errors programmatically without `instanceof`:
+
+```ts
+} catch (e) {
+  if (e instanceof Error && e.name === "InvalidIdentityError") {
+    // Safe even across bundler module boundaries
+  }
+}
+```
+
+## Error reference
+
+| Class | Thrown by | Condition |
+|---|---|---|
+| `InvalidIdentityError` | `toIdentity`, `identityToPublicKey` | String is not exactly 60 uppercase characters |
+| `InvalidSeedError` | `toSeed`, `publicKeyFromSeed` | String is not exactly 55 lowercase characters |
+| `InvalidTxHashError` | `toTxHash` | String is not exactly 60 lowercase characters |
+| `InvalidBase64Error` | `toBase64` | String is not valid standard base64 |
+
 ## Catching errors
 
 ```ts
@@ -25,45 +56,28 @@ try {
   const id = toIdentity(input)
 } catch (e) {
   if (e instanceof InvalidIdentityError) {
-    // input was not a valid 60-char uppercase identity
-    console.error("Bad identity:", e.message)
+    // e.context holds the original invalid string
+    console.error(`Rejected identity: ${e.context}`)
+    showFieldError("destination", e.message)
   } else if (e instanceof QubicError) {
-    // any other SDK error
-    console.error("SDK error:", e.message)
+    // Any other SDK error — log and surface generically
+    console.error(`SDK error [${e.code}]:`, e.message)
   } else {
-    throw e // re-throw unknown errors
+    throw e
   }
 }
 ```
 
-## Error reference
+## Using `error.code` without `instanceof`
 
-| Class | Thrown by | Condition |
-|---|---|---|
-| `QubicError` | — | Abstract base. Never thrown directly. |
-| `InvalidIdentityError` | `toIdentity`, `identityToPublicKey` | String is not 60 uppercase characters |
-| `InvalidSeedError` | `toSeed`, `publicKeyFromSeed` | String is not 55 lowercase characters |
-| `InvalidTxHashError` | `toTxHash` | String is not 60 lowercase characters |
-| `InvalidBase64Error` | `toBase64` | String is not valid standard base64 |
-
-## `QubicError` properties
-
-All SDK errors include:
-
-| Property | Type | Description |
-|---|---|---|
-| `message` | `string` | Human-readable error description |
-| `name` | `string` | The class name (e.g. `"InvalidIdentityError"`) |
-| `stack` | `string \| undefined` | Standard JS stack trace |
-
-## Narrowing without `instanceof`
-
-If you're using a bundler that may break `instanceof` across module boundaries, check `error.name` instead:
+Some bundlers produce multiple module instances, which breaks `instanceof` checks across boundaries. Use `error.name` (or `error.code`) as a string comparison instead:
 
 ```ts
 } catch (e) {
-  if (e instanceof Error && e.name === "InvalidIdentityError") {
-    // handle
+  if (e instanceof Error && e.name === "InvalidSeedError") {
+    return { error: "bad_seed", detail: (e as any).context }
   }
 }
 ```
+
+Both `name` and `code` are the class name as a string, so they are safe to compare across module instances.

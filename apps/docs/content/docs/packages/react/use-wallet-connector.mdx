@@ -1,0 +1,54 @@
+---
+title: useWalletConnector
+description: Returns the registered connectors and the current connection status — use it to build a connect wallet modal.
+---
+
+`useWalletConnector` gives you the list of connectors registered in `WalletProvider`. Use it to render a connection picker.
+
+## `useWalletConnector()`
+
+```tsx
+import { useWalletConnector, useWallet } from "@qubic.org/react"
+
+function WalletPicker() {
+  const { connectors, pending, error } = useWalletConnector()
+  const { connect } = useWallet()
+
+  const available = connectors.filter((c) => c.isAvailable())
+
+  if (available.length === 0) {
+    return <p>No wallets detected. Install the Qubic browser extension.</p>
+  }
+
+  return (
+    <ul>
+      {available.map((connector) => (
+        <li key={connector.id}>
+          <button onClick={() => connect(connector)} disabled={pending}>
+            {connector.id}
+          </button>
+        </li>
+      ))}
+      {error && <p>Error: {error.message}</p>}
+    </ul>
+  )
+}
+```
+
+**Returns**
+
+| Field | Type | Description |
+|---|---|---|
+| `connectors` | `WalletConnector[]` | All connectors passed to `WalletProvider`. Includes unavailable ones — filter with `c.isAvailable()` before rendering. |
+| `pending` | `boolean` | True while a connection is in progress. |
+| `error` | `Error \| null` | Error from the most recent failed connection attempt. |
+
+## Filtering for the current environment
+
+`isAvailable()` returns `false` during SSR and when the required browser extension or provider is absent. Always filter before rendering connect options:
+
+```tsx
+const available = connectors.filter((c) => c.isAvailable())
+```
+
+The full connector list is still useful if you want to show grayed-out buttons with install links for connectors that aren't available yet.

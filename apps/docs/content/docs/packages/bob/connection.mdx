@@ -1,118 +1,127 @@
 ---
 title: Connection
-description: createBobClient, connect, disconnect — connection lifecycle and automatic reconnection.
+description: createBobClient, createBobSubscriptionClient — composite client setup and WebSocket connection lifecycle.
 ---
 
 ## `createBobClient(options?)`
 
-Creates a new bob client. Does not connect automatically — call `await bob.connect()` to open the WebSocket.
+Creates a composite Bob client with three sub-clients: `rest`, `rpc`, and `subscription`. All three share the same base URL by default, but each can be overridden independently.
 
 ```ts
 import { createBobClient } from "@qubic.org/bob"
 
 const bob = createBobClient({
-  autoResubscribe: true,
+  baseUrl: "http://bob.example.com",
+  wsUrl: "ws://bob.example.com",
 })
 
-await bob.connect()
+// REST: one-shot HTTP lookups
+const status = await bob.rest.getStatus()
+
+// RPC: JSON-RPC 2.0 queries
+const balance = await bob.rpc.getBalance(identity)
+
+// Subscription: real-time streams
+for await (const event of bob.subscription.subscribeNewTicks()) {
+  console.log("Tick:", event.data.tick)
+}
 ```
 
 **Options**
 
 | Name | Type | Default | Description |
 |---|---|---|---|
-| `url` | `string` | Qubic live node URL | WebSocket endpoint |
-| `autoResubscribe` | `boolean` | `false` | Re-register all subscriptions after each reconnect |
-| `reconnectDelayMs` | `number` | `1000` | Base delay before reconnect attempt |
-| `maxReconnectAttempts` | `number` | unlimited | Maximum reconnect attempts before giving up |
+| `baseUrl` | `string` | `"http://localhost:40420"` | HTTP base URL for REST and RPC clients |
+| `wsUrl` | `string` | Derived from `baseUrl` (`http` replaced with `ws`) | WebSocket URL for subscription client |
+| `rest` | `Partial<BobRestClientOptions>` | — | Override options for the REST client |
+| `rpc` | `Partial<BobRpcClientOptions>` | — | Override options for the RPC client |
+| `subscription` | `Partial<BobSubscriptionClientOptions>` | — | Override options for the subscription client |
 
 ---
 
-## `bob.connect()`
+## `createBobSubscriptionClient(options)`
 
-Opens the WebSocket connection. Returns a Promise that resolves when connected.
+Creates a WebSocket subscription client directly, without the REST and RPC clients. Use this when you only need real-time streams.
 
 ```ts
-await bob.connect()
+import { createBobSubscriptionClient } from "@qubic.org/bob"
+
+const sub = createBobSubscriptionClient({
+  wsUrl: "ws://bob.example.com",
+  autoReconnect: true,
+})
+```
+
+**Options**
+
+| Name | Type | Default | Description |
+|---|---|---|---|
+| `wsUrl` | `string` | — | WebSocket endpoint URL (required) |
+| `autoReconnect` | `boolean` | `true` | Reconnect automatically after a connection drop |
+| `maxReconnects` | `number` | `Infinity` | Maximum reconnect attempts before stopping |
+| `bufferSize` | `number` | `1000` | Maximum queued events for slow consumers |
+| `onBufferOverflow` | `"drop" \| "error"` | `"error"` | Behavior when the event buffer fills up |
+| `onReconnect` | `(attempt, lastLogId) => void` | — | Called before each reconnect attempt |
+
+---
+
+## WebSocket reconnection
+
+The subscription client reconnects automatically when the WebSocket closes unexpectedly. Each reconnect attempt uses exponential backoff: 1s, 2s, 4s, 8s, up to 30s.
+
+When a subscription reconnects, it resumes from the last received `logId`. Events that arrived during the gap are delivered with `isCatchUp: true`. Once the client reaches live state, events arrive with `isCatchUp: false`.
+
+```ts
+const sub = createBobSubscriptionClient({
+  wsUrl: "ws://bob.example.com",
+  autoReconnect: true,
+  maxReconnects: 10,
+  onReconnect(attempt, lastLogId) {
+    console.log(`Reconnect attempt ${attempt}, resuming from log ${lastLogId}`)
+  },
+})
+```
+
+To disable automatic reconnection:
+
+```ts
+const sub = createBobSubscriptionClient({
+  wsUrl: "ws://bob.example.com",
+  autoReconnect: false,
+})
 ```
 
 ---
 
-## `bob.disconnect()`
+## Connection status stream
 
-Closes the WebSocket connection. Resolves when the socket is fully closed.
-
-```ts
-await bob.disconnect()
-```
-
----
-
-## Auto-reconnect
-
-Bob reconnects automatically after a connection drop. With `autoResubscribe: true`, all active subscriptions are re-registered after each reconnect — you don't need to call `subscribe` again.
-
-Without `autoResubscribe`, you must re-subscribe manually by listening to the `"connect"` event:
+The `connectionStatus` property is a `ReadableStream<"connected" | "disconnected" | "reconnecting">`. Read it to observe state changes.
 
 ```ts
-const bob = createBobClient() // no autoResubscribe
+const reader = sub.connectionStatus.getReader()
 
-async function startSubscriptions() {
-  bob.subscribe("tickInfo", onTick)
-  bob.subscribe("eventLogs", identity, onEvents)
+async function watchStatus() {
+  while (true) {
+    const { done, value } = await reader.read()
+    if (done) break
+    console.log("Connection status:", value)
+  }
 }
 
-bob.on("connect", startSubscriptions)
-await bob.connect()
-await startSubscriptions() // also call immediately after first connect
+watchStatus()
 ```
 
 ---
 
-## Events
+## Closing the client
 
-Bob emits lifecycle events you can listen to with `bob.on`:
-
-| Event | Payload | Description |
-|---|---|---|
-| `"connect"` | none | WebSocket connected |
-| `"disconnect"` | `{ code, reason }` | WebSocket closed |
-| `"error"` | `Error` | Connection error |
-| `"reconnect"` | `{ attempt }` | Reconnect attempt started |
+Call `sub.close()` (or `bob.subscription.close()`) to stop all active subscriptions and close all WebSocket connections.
 
 ```ts
-bob.on("error", (err) => {
-  console.error("Bob error:", err.message)
-})
-
-bob.on("disconnect", ({ code }) => {
-  console.log("Disconnected with code:", code)
-})
-```
-
----
-
-## Catch-up buffering
-
-When bob reconnects after a gap, the server may send buffered tick data for ticks that arrived during the disconnection. The `meta.isCatchUp` flag in the `"tickInfo"` callback identifies these:
-
-```ts
-bob.subscribe("tickInfo", (tick, meta) => {
-  if (meta.isCatchUp) {
-    // Process historical gap tick
-  } else {
-    // Live tick — process in real-time
-  }
-})
-```
-
----
-
-## Graceful shutdown
-
-```ts
-process.on("SIGINT", async () => {
-  await bob.disconnect()
+process.on("SIGINT", () => {
+  bob.subscription.close()
   process.exit(0)
 })
 ```
+
+After calling `close()`, all active `for await` loops will end and `connectionStatus` will emit `"disconnected"` before closing.

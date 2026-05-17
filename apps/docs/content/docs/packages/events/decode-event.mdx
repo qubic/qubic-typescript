@@ -1,120 +1,227 @@
 ---
 title: Decode event
-description: decodeEvent — parse a raw BobLogEvent into a fully typed discriminated union.
+description: decodeEvent — parse a raw BobLogEvent into a typed discriminated union.
 ---
 
-## `decodeEvent(bobLogEvent)`
+`decodeEvent` takes a raw `BobLogEvent` from `bob.subscription.subscribeLogs`, decodes its binary `data` field, and returns a `TypedEvent` discriminated on `logType`.
 
-Parses the binary `data` field of a raw log event and returns a typed discriminated union keyed on `logType`.
+## `decodeEvent(event)`
 
 ```ts
-import { decodeEvent, LOG_TYPE } from "@qubic.org/events"
+import { decodeEvent } from "@qubic.org/events"
 
 const typed = decodeEvent(rawEvent)
-
-if (typed.logType === LOG_TYPE.QU_TRANSFER) {
-  const { source, destination, amount } = typed.data
-  console.log(`${source} → ${destination}: ${amount}n QU`)
-}
+// typed.logType narrows typed.data to the matching shape
 ```
 
 **Parameters**
 
 | Name | Type | Description |
 |---|---|---|
-| `bobLogEvent` | `BobLogEvent` | Raw log event from `bob.subscribe("eventLogs", ...)`. |
+| `event` | `BobLogEvent` | Raw log event from `subscribeLogs` or the archive client |
 
-**Returns** `TypedEvent` — a discriminated union with `logType` and `data` fields matching the event type.
+**Returns** `TypedEvent` — a discriminated union with `logType`, `tick`, and `data` fields.
 
-**Throws** `EventDecodeError` — if the payload is malformed or too short. Wrap in `try/catch` in subscription loops.
+**Throws** `EventDecodeError` — when `event.data` is not a valid base64 string, the payload is too short for the declared `logType`, or the `logType` is unknown.
+
+---
+
+## Narrowing with a switch
+
+Switch on `typed.logType` to access the correctly typed `data` field. TypeScript narrows `data` in each branch.
+
+```ts
+import { decodeEvent, LOG_TYPE } from "@qubic.org/events"
+import { EventDecodeError } from "@qubic.org/events"
+
+for await (const event of bob.subscription.subscribeLogs({ identity })) {
+  if (event.isCatchUp) continue
+
+  let typed
+  try {
+    typed = decodeEvent(event.data)
+  } catch (e) {
+    if (e instanceof EventDecodeError) {
+      console.warn("Malformed event at tick", event.data.tick, e.message)
+      continue
+    }
+    throw e
+  }
+
+  switch (typed.logType) {
+    case LOG_TYPE.QU_TRANSFER: {
+      const { source, destination, amount } = typed.data
+      console.log(`${source} -> ${destination}: ${amount}n QU`)
+      break
+    }
+    case LOG_TYPE.ASSET_ISSUANCE: {
+      const { issuer, assetName, numberOfShares } = typed.data
+      console.log(`Issued ${numberOfShares} shares of ${assetName} by ${issuer}`)
+      break
+    }
+    case LOG_TYPE.ASSET_OWNERSHIP_CHANGE: {
+      const { assetName, source, destination, numberOfShares } = typed.data
+      console.log(`${assetName}: ${numberOfShares} shares ${source} -> ${destination}`)
+      break
+    }
+    case LOG_TYPE.CONTRACT_ERROR_MESSAGE: {
+      console.error(`Contract ${typed.data.contractIndex} error, type ${typed.data.contractMessageType}`)
+      break
+    }
+    case LOG_TYPE.BURNING: {
+      console.log(`${typed.data.amount}n QU burned from ${typed.data.source}`)
+      break
+    }
+    default:
+      console.log("Unhandled log type:", typed.logType)
+  }
+}
+```
 
 ---
 
 ## `TypedEvent` shape
 
-Every `TypedEvent` has this structure:
+All variants share `logType` and `tick`. The `data` field varies by type.
 
 ```ts
-type TypedEvent = {
-  logType: number
-  tick: number
-  txId: string
-  data: EventData  // specific to the logType
-}
+type TypedEvent =
+  | { logType: 0;   tick: number; data: QuTransferData }
+  | { logType: 1;   tick: number; data: AssetIssuanceData }
+  | { logType: 2;   tick: number; data: AssetOwnershipChangeData }
+  | { logType: 3;   tick: number; data: AssetPossessionChangeData }
+  | { logType: 4;   tick: number; data: SmartContractMessageData }  // error
+  | { logType: 5;   tick: number; data: SmartContractMessageData }  // warning
+  | { logType: 6;   tick: number; data: SmartContractMessageData }  // info
+  | { logType: 7;   tick: number; data: SmartContractMessageData }  // debug
+  | { logType: 8;   tick: number; data: BurningData }
+  | { logType: 9;   tick: number; data: DustBurningData }
+  | { logType: 10;  tick: number; data: SpectrumStatsData }
+  | { logType: 11;  tick: number; data: AssetOwnershipManagingContractChangeData }
+  | { logType: 12;  tick: number; data: AssetPossessionManagingContractChangeData }
+  | { logType: 13;  tick: number; data: ContractReserveDeductionData }
+  | { logType: 14;  tick: number; data: OracleQueryStatusData }
+  | { logType: 15;  tick: number; data: OracleSubscriberLogMessageData }
+  | { logType: 255; tick: number; data: Uint8Array }  // CUSTOM_MESSAGE
 ```
-
-Switch on `logType` to narrow `data` to the correct type.
 
 ---
 
-## Event data by log type
+## Data shapes by log type
 
 ### `QU_TRANSFER` (0)
 
 ```ts
 typed.data.source       // Identity — sender
 typed.data.destination  // Identity — recipient
-typed.data.amount       // bigint — amount in QU
+typed.data.amount       // bigint — QU amount
 ```
 
 ### `ASSET_ISSUANCE` (1)
 
 ```ts
-typed.data.issuer              // Identity
-typed.data.assetName           // string
-typed.data.numberOfShares      // bigint
-typed.data.unitOfMeasurement   // string
+typed.data.issuer                // Identity
+typed.data.assetName             // string
+typed.data.numberOfShares        // bigint
+typed.data.managingContractIndex // number
+typed.data.numberOfDecimalPlaces // number
+typed.data.unitOfMeasurement     // string
 ```
 
-### `ASSET_OWNERSHIP_CHANGE` (2)
+### `ASSET_OWNERSHIP_CHANGE` (2) / `ASSET_POSSESSION_CHANGE` (3)
 
 ```ts
-typed.data.issuer          // Identity
-typed.data.assetName       // string
-typed.data.owner           // Identity — previous owner
-typed.data.newOwner        // Identity
-typed.data.numberOfShares  // bigint
-```
-
-### `ASSET_POSSESSION_CHANGE` (3)
-
-```ts
-typed.data.issuer            // Identity
-typed.data.assetName         // string
-typed.data.owner             // Identity
-typed.data.newPossessor      // Identity
-typed.data.numberOfShares    // bigint
+typed.data.source                // Identity — previous holder
+typed.data.destination           // Identity — new holder
+typed.data.issuer                // Identity
+typed.data.assetName             // string
+typed.data.numberOfShares        // bigint
+typed.data.managingContractIndex // number
+typed.data.numberOfDecimalPlaces // number
+typed.data.unitOfMeasurement     // string
 ```
 
 ### Contract messages (4–7)
 
-`CONTRACT_ERROR_MESSAGE`, `CONTRACT_WARNING_MESSAGE`, `CONTRACT_INFORMATION_MESSAGE`, `CONTRACT_DEBUG_MESSAGE` all have the same shape:
+`CONTRACT_ERROR_MESSAGE`, `CONTRACT_WARNING_MESSAGE`, `CONTRACT_INFORMATION_MESSAGE`, `CONTRACT_DEBUG_MESSAGE` share the same shape:
 
 ```ts
-typed.data.contractIndex  // number
-typed.data.message        // string
+typed.data.contractIndex        // number — which contract emitted this
+typed.data.contractMessageType  // number — message subtype defined by the contract
 ```
 
 ### `BURNING` (8)
 
 ```ts
-typed.data.sourceId  // Identity
-typed.data.amount    // bigint
+typed.data.source        // Identity — whose QU was burned
+typed.data.amount        // bigint — amount burned
+typed.data.contractIndex // number — contract that triggered the burn
 ```
 
 ### `DUST_BURNING` (9)
 
 ```ts
-typed.data.numberOfBurns  // number
-typed.data.totalAmount    // bigint
+typed.data.burns  // Array<{ source: Identity; amount: bigint }>
 ```
 
 ### `SPECTRUM_STATS` (10)
 
 ```ts
-typed.data.totalAmount      // bigint
-typed.data.dustThreshold    // bigint
-typed.data.numberOfEntities // number
+typed.data.totalAmount           // bigint
+typed.data.dustThresholdBurnAll  // bigint
+typed.data.dustThresholdBurnHalf // bigint
+typed.data.numberOfEntities      // number
+```
+
+### `ASSET_OWNERSHIP_MANAGING_CONTRACT_CHANGE` (11)
+
+```ts
+typed.data.owner                      // Identity
+typed.data.issuer                     // Identity
+typed.data.sourceContractIndex        // number
+typed.data.destinationContractIndex   // number
+typed.data.numberOfShares             // bigint
+typed.data.assetName                  // string
+```
+
+### `ASSET_POSSESSION_MANAGING_CONTRACT_CHANGE` (12)
+
+```ts
+typed.data.possessor                  // Identity
+typed.data.owner                      // Identity
+typed.data.issuer                     // Identity
+typed.data.sourceContractIndex        // number
+typed.data.destinationContractIndex   // number
+typed.data.numberOfShares             // bigint
+typed.data.assetName                  // string
+```
+
+### `CONTRACT_RESERVE_DEDUCTION` (13)
+
+```ts
+typed.data.deductedAmount  // bigint
+typed.data.remainingAmount // bigint
+typed.data.contractIndex   // number
+```
+
+### `ORACLE_QUERY_STATUS_CHANGE` (14)
+
+```ts
+typed.data.queryingEntity  // Identity
+typed.data.queryId         // bigint
+typed.data.interfaceIndex  // number
+typed.data.queryType       // number
+typed.data.queryStatus     // number
+```
+
+### `ORACLE_SUBSCRIBER_LOG_MESSAGE` (15)
+
+```ts
+typed.data.subscriptionId        // number
+typed.data.interfaceIndex        // number
+typed.data.contractIndex         // number
+typed.data.periodMillis          // number
+typed.data.firstQueryTimestamp   // bigint
 ```
 
 ### `CUSTOM_MESSAGE` (255)
@@ -127,26 +234,30 @@ Decode `CUSTOM_MESSAGE` payloads with `decodePayload` from `@qubic.org/registry`
 
 ---
 
-## Error handling
+## `EventDecodeError`
+
+Thrown when a payload cannot be decoded.
 
 ```ts
-import { decodeEvent, EventDecodeError } from "@qubic.org/events"
+import { EventDecodeError } from "@qubic.org/events"
 
-bob.subscribe("eventLogs", identity, (events) => {
-  for (const raw of events) {
-    try {
-      const typed = decodeEvent(raw)
-      handleEvent(typed)
-    } catch (e) {
-      if (e instanceof EventDecodeError) {
-        console.warn("Malformed event at tick", raw.tick, e.message)
-      } else {
-        throw e
-      }
-    }
+try {
+  const typed = decodeEvent(rawEvent)
+} catch (e) {
+  if (e instanceof EventDecodeError) {
+    console.warn(`logType ${e.logType}: ${e.message}`)
+  } else {
+    throw e
   }
-})
+}
 ```
+
+**Properties**
+
+| Property | Type | Description |
+|---|---|---|
+| `logType` | `number` | The log type that failed to decode |
+| `message` | `string` | Description of the failure |
 
 ---
 
@@ -155,21 +266,21 @@ bob.subscribe("eventLogs", identity, (events) => {
 ```ts
 import { LOG_TYPE } from "@qubic.org/events"
 
-LOG_TYPE.QU_TRANSFER                              // 0
-LOG_TYPE.ASSET_ISSUANCE                           // 1
-LOG_TYPE.ASSET_OWNERSHIP_CHANGE                   // 2
-LOG_TYPE.ASSET_POSSESSION_CHANGE                  // 3
-LOG_TYPE.CONTRACT_ERROR_MESSAGE                   // 4
-LOG_TYPE.CONTRACT_WARNING_MESSAGE                 // 5
-LOG_TYPE.CONTRACT_INFORMATION_MESSAGE             // 6
-LOG_TYPE.CONTRACT_DEBUG_MESSAGE                   // 7
-LOG_TYPE.BURNING                                  // 8
-LOG_TYPE.DUST_BURNING                             // 9
-LOG_TYPE.SPECTRUM_STATS                           // 10
-LOG_TYPE.ASSET_OWNERSHIP_MANAGING_CONTRACT_CHANGE // 11
-LOG_TYPE.ASSET_POSSESSION_MANAGING_CONTRACT_CHANGE// 12
-LOG_TYPE.CONTRACT_RESERVE_DEDUCTION               // 13
-LOG_TYPE.ORACLE_QUERY_STATUS_CHANGE               // 14
-LOG_TYPE.ORACLE_SUBSCRIBER_LOG_MESSAGE            // 15
-LOG_TYPE.CUSTOM_MESSAGE                           // 255
+LOG_TYPE.QU_TRANSFER                               // 0
+LOG_TYPE.ASSET_ISSUANCE                            // 1
+LOG_TYPE.ASSET_OWNERSHIP_CHANGE                    // 2
+LOG_TYPE.ASSET_POSSESSION_CHANGE                   // 3
+LOG_TYPE.CONTRACT_ERROR_MESSAGE                    // 4
+LOG_TYPE.CONTRACT_WARNING_MESSAGE                  // 5
+LOG_TYPE.CONTRACT_INFORMATION_MESSAGE              // 6
+LOG_TYPE.CONTRACT_DEBUG_MESSAGE                    // 7
+LOG_TYPE.BURNING                                   // 8
+LOG_TYPE.DUST_BURNING                              // 9
+LOG_TYPE.SPECTRUM_STATS                            // 10
+LOG_TYPE.ASSET_OWNERSHIP_MANAGING_CONTRACT_CHANGE  // 11
+LOG_TYPE.ASSET_POSSESSION_MANAGING_CONTRACT_CHANGE // 12
+LOG_TYPE.CONTRACT_RESERVE_DEDUCTION                // 13
+LOG_TYPE.ORACLE_QUERY_STATUS_CHANGE                // 14
+LOG_TYPE.ORACLE_SUBSCRIBER_LOG_MESSAGE             // 15
+LOG_TYPE.CUSTOM_MESSAGE                            // 255
 ```

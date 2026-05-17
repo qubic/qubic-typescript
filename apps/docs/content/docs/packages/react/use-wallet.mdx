@@ -1,0 +1,94 @@
+---
+title: useWallet
+description: Access the connected wallet account, trigger connections and disconnections, and sign transactions.
+---
+
+`useWallet` exposes the active wallet state and all connection actions. It requires `WalletProvider` in the component tree.
+
+## `useWallet()`
+
+```tsx
+import { useWallet, extensionConnector } from "@qubic.org/react"
+
+function ConnectButton() {
+  const { account, isConnected, connect, disconnect } = useWallet()
+
+  if (isConnected) {
+    return (
+      <div>
+        <p>Connected: {account?.identity}</p>
+        <button onClick={disconnect}>Disconnect</button>
+      </div>
+    )
+  }
+
+  return (
+    <button onClick={() => connect(extensionConnector)}>
+      Connect extension wallet
+    </button>
+  )
+}
+```
+
+**Returns**
+
+| Field | Type | Description |
+|---|---|---|
+| `account` | `WalletAccount \| null` | The connected account, or `null` when no wallet is connected. |
+| `account.identity` | `string` | The Qubic identity of the connected account. |
+| `account.name` | `string \| undefined` | Optional display name from the connector. |
+| `connector` | `WalletConnector \| null` | The active connector, or `null` when disconnected. |
+| `isConnected` | `boolean` | True when an account is available. |
+| `connect` | `(connector, options?) => Promise<void>` | Connect with the given connector. |
+| `disconnect` | `() => Promise<void>` | Disconnect the current wallet. |
+| `signTransaction` | `(txBytes: Uint8Array) => Promise<Uint8Array>` | Sign a transaction and return the signed bytes. |
+
+## Connect modal pattern
+
+Render a list of available connectors so the user can choose:
+
+```tsx
+import { useWallet, useWalletConnector } from "@qubic.org/react"
+
+function ConnectModal() {
+  const { connect } = useWallet()
+  const { connectors, pending, error } = useWalletConnector()
+
+  return (
+    <div>
+      <h2>Connect wallet</h2>
+      {connectors.filter((c) => c.isAvailable()).map((connector) => (
+        <button
+          key={connector.id}
+          onClick={() => connect(connector)}
+          disabled={pending}
+        >
+          {connector.id}
+        </button>
+      ))}
+      {error && <p>Connection failed: {error.message}</p>}
+    </div>
+  )
+}
+```
+
+## Signing a transaction
+
+`signTransaction` signs bytes in place and returns the signed `Uint8Array`. Build the unsigned bytes first with `@qubic.org/tx`, then pass them to the wallet:
+
+```tsx
+import { useWallet } from "@qubic.org/react"
+import { buildTransaction } from "@qubic.org/tx"
+
+function SendForm() {
+  const { signTransaction, account } = useWallet()
+
+  async function handleSend() {
+    const txBytes = buildTransaction({ /* ... */ })
+    const signed = await signTransaction(txBytes)
+    // broadcast `signed` with the RPC client
+  }
+
+  return <button onClick={handleSend}>Send</button>
+}
+```

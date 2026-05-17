@@ -1,18 +1,33 @@
 ---
 title: Namespace
-description: Per-contract namespace objects — qearn, qx, qvault, and others — that group builders, decoders, and callers under one identifier.
+description: Per-contract namespace objects that group constants, builders, and callers under one identifier.
 ---
 
-Each contract is exported as a **namespace object** that groups every builder, decoder, and caller under one identifier. The namespace name is the lowercase contract name.
+Each contract ships as a **namespace object** that groups every artifact under one import. The namespace name is the lowercase contract name.
 
 ```ts
 import { qearn } from "@qubic.org/contracts"
 
-qearn.contractIndex          // 9
-qearn.buildLockInput(...)    // payload builder
-qearn.decodeLockOutput(...)  // output decoder
-qearn.getStateOfRound(...)   // live read function
+// Constants
+qearn.contractIndex           // 9
+
+// Builders — encode inputs into binary
+const payload = qearn.buildUnlockInput({ amount: 10_000_000n, lockedEpoch: 213 })
+
+// Decoders — decode raw output bytes
+const output = qearn.decodeUnlockOutput(rawBytes)
+
+// Callers — live read functions, return Result<T, QubicRpcError>
+const result = await qearn.getStateOfRound(live, { epoch: 213 })
 ```
+
+The three artifact types map directly to the three contract operation patterns:
+
+| Artifact | Used for | How |
+|---|---|---|
+| **Constants** | Identifying contract and input types in transaction headers | `qearn.contractIndex`, `QEARN_LOCK_INPUT_TYPE` |
+| **Builders** | Write operations (transactions) | Build a payload, pass it + the constant to your wallet |
+| **Callers** | Read operations | Call directly with the `live` client, get back `Result<T>` |
 
 ---
 
@@ -22,13 +37,13 @@ qearn.getStateOfRound(...)   // live read function
 |---|---|---|
 | `random` | Random | 0 |
 | `qx` | Qx | 1 |
-| `quottery` | Quottery | 4 |
+| `quottery` | Quottery | 2 |
 | `qutil` | QUtil | 5 |
 | `supplyWatcher` | SupplyWatcher | — |
 | `computorControlledFund` | ComputorControlledFund | — |
 | `qearn` | Qearn | 9 |
-| `qvault` | QVault | 10 |
-| `msvault` | MsVault | 11 |
+| `qVAULT` | QVault | 10 |
+| `msVault` | MsVault | 11 |
 | `qbay` | Qbay | 12 |
 | `qswap` | Qswap | — |
 | `nostromo` | Nostromo | — |
@@ -52,82 +67,88 @@ qearn.getStateOfRound(...)   // live read function
 
 ## Namespace members
 
-Using **Qearn** as a representative example:
-
 ### Constants
 
+Every procedure has a corresponding `INPUT_TYPE` constant on the namespace:
+
 ```ts
-qearn.contractIndex      // 9
-qearn.LOCK_INPUT_TYPE    // 6
-qearn.UNLOCK_INPUT_TYPE  // 7
-// ...one constant per procedure input type
+qearn.contractIndex       // 9  — use in the transaction destination logic
+// LOCK has no input fields — no builder constant needed
+// UNLOCK input type is 2
+```
+
+Constants can also be imported directly:
+
+```ts
+import { QEARN_CONTRACT_INDEX, QEARN_UNLOCK_INPUT_TYPE } from "@qubic.org/contracts"
 ```
 
 ### Builders
 
+Builders encode a JavaScript object into a `Uint8Array` ready to pass as the transaction payload:
+
 ```ts
-qearn.buildLockInput({ amount: 10_000_000n })    // Uint8Array
-qearn.buildUnlockInput({ lockedEpoch: 212 })     // Uint8Array
+qearn.buildUnlockInput({ amount: 10_000_000n, lockedEpoch: 213 })
+// → ContractCall { contractIndex, inputType, payload: Uint8Array }
 ```
 
-See [Builders](./builders) for full parameter reference.
+See [Builders](./builders) for input type mapping and error handling.
 
 ### Decoders
 
+Decoders parse raw response bytes from a transaction receipt into a typed object:
+
 ```ts
-qearn.decodeLockOutput(rawBytes, publicKeyToIdentity)
-qearn.decodeUnlockOutput(rawBytes, publicKeyToIdentity)
+qearn.decodeLockOutput(rawBytes)
+qearn.decodeUnlockOutput(rawBytes)
 ```
 
-See [Decoders](./decoders) for full parameter reference.
+See [Decoders](./decoders) for details.
 
 ### Callers
 
+Callers call contract read functions directly and return `Promise<Result<T, QubicRpcError>>`:
+
 ```ts
-await qearn.getStateOfRound(live, { epoch: 213 }, { identityToPublicKey, publicKeyToIdentity })
-await qearn.getUserLockInfo(live, { identity, epoch }, { identityToPublicKey, publicKeyToIdentity })
+await qearn.getStateOfRound(live, { epoch: 213 })
+await qearn.getUserLockedInfo(live, { user: identity, epoch: 213 }, { identityToPublicKey })
 ```
 
-See [Callers](./callers) for full parameter reference.
+See [Callers](./callers) for the full error-handling pattern.
 
 ---
 
-## Qearn example
+## End-to-end example
 
 ```ts
-import { qearn } from "@qubic.org/contracts"
+import { qearn, QEARN_LOCK_INPUT_TYPE } from "@qubic.org/contracts"
 import { createLiveClient } from "@qubic.org/rpc"
-import { createWallet, generateSeed } from "@qubic.org/wallet"
-import { identityToPublicKey, publicKeyToIdentity } from "@qubic.org/crypto"
-import { toIdentity } from "@qubic.org/types"
+import { identityToPublicKey } from "@qubic.org/crypto"
 
 const live = createLiveClient()
-const wallet = createWallet(generateSeed())
-const { tick } = await live.getTickInfo()
 
-// Read round state
-const state = await qearn.getStateOfRound(
-  live,
-  { epoch: 213 },
-  { identityToPublicKey, publicKeyToIdentity },
-)
-
+// Read current epoch state
+const state = await qearn.getStateOfRound(live, { epoch: 213 })
 if (!state.ok) throw new Error(state.error.message)
-console.log("Round state:", state.value)
+console.log("Round state:", state.value.state)
 
-// Build lock transaction
-const payload = qearn.buildLockInput({ amount: 10_000_000n })
-const destination = toIdentity("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+// Check user's existing locks
+const lockStatus = await qearn.getUserLockStatus(
+  live,
+  { user: "YOUR_IDENTITY" },
+  { identityToPublicKey },
+)
+if (lockStatus.ok) {
+  console.log("Lock bitmask:", lockStatus.value.status.toString(2))
+}
 
-const { encoded } = await wallet.buildScTransaction({
-  destination,
-  amount: 10_000_000n,
-  targetTick: tick + 5,
-  currentTick: tick,
-  inputType: qearn.LOCK_INPUT_TYPE,
-  payload,
-})
+// Lock has no payload — amount is passed in the transaction amount field
 
-const result = await live.broadcastTransaction(encoded)
-console.log(`Broadcast to ${result.peersBroadcastedTo} peers`)
+// wallet.buildScTransaction({
+//   destination: QEARN_CONTRACT_ADDRESS,
+//   amount: 10_000_000n,
+//   targetTick: currentTick + 5,
+//   inputType: QEARN_LOCK_INPUT_TYPE,
+//   payload: lockPayload.payload,
+// })
 ```

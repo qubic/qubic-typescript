@@ -1,0 +1,270 @@
+---
+title: Qx
+description: Qubic's native DEX — issue assets, transfer shares, and manage bid/ask orders.
+---
+
+Qx (contract index `1`) is Qubic's on-chain decentralized exchange. It handles asset issuance, share transfers, and order book management for bid/ask trading.
+
+Import the namespace:
+
+```ts
+import { qx } from "@qubic.org/contracts"
+```
+
+---
+
+## Procedures (write)
+
+### Issue asset
+
+Creates a new asset with the caller as issuer.
+
+```ts
+const payload = qx.buildIssueAssetInput({
+  assetName: 0x515542494300000n, // "QUBIC" as uint64
+  numberOfShares: 1_000_000_000n,
+  unitOfMeasurement: 0n,
+  numberOfDecimalPlaces: 0,
+})
+```
+
+**Input**
+
+| Field | Type | Description |
+|---|---|---|
+| `assetName` | `bigint` | Asset name encoded as uint64 (ASCII bytes). |
+| `numberOfShares` | `bigint` | Total shares to issue. |
+| `unitOfMeasurement` | `bigint` | Unit encoding (contract-defined). |
+| `numberOfDecimalPlaces` | `number` | Decimal places for display. |
+
+**Output**
+
+| Field | Type | Description |
+|---|---|---|
+| `issuedNumberOfShares` | `bigint` | Actual number of shares created. |
+
+Decode with: `qx.decodeIssueAssetOutput(bytes)`
+
+---
+
+### Transfer share ownership and possession
+
+Transfers both ownership and possession of shares to a new holder.
+
+```ts
+const payload = qx.buildTransferShareOwnershipAndPossessionInput(
+  {
+    issuer: issuerIdentity,
+    newOwnerAndPossessor: recipientIdentity,
+    assetName: assetNameEncoded,
+    numberOfShares: 1000n,
+  },
+  identityToPublicKey,
+)
+```
+
+**Input**
+
+| Field | Type | Description |
+|---|---|---|
+| `issuer` | `string` | Identity of the asset issuer. |
+| `newOwnerAndPossessor` | `string` | Recipient identity. |
+| `assetName` | `bigint` | Asset name as uint64. |
+| `numberOfShares` | `bigint` | Number of shares to transfer. |
+
+**Output**
+
+| Field | Type | Description |
+|---|---|---|
+| `transferredNumberOfShares` | `bigint` | Shares actually transferred. |
+
+Decode with: `qx.decodeTransferShareOwnershipAndPossessionOutput(bytes)`
+
+---
+
+### Add to ask order
+
+Places a sell order on the order book.
+
+```ts
+const payload = qx.buildAddToAskOrderInput(
+  {
+    issuer: issuerIdentity,
+    assetName: assetNameEncoded,
+    price: 1000n,
+    numberOfShares: 500n,
+  },
+  identityToPublicKey,
+)
+```
+
+**Input**
+
+| Field | Type | Description |
+|---|---|---|
+| `issuer` | `string` | Asset issuer identity. |
+| `assetName` | `bigint` | Asset name as uint64. |
+| `price` | `bigint` | Price per share in QUBIC. |
+| `numberOfShares` | `bigint` | Shares to offer. |
+
+**Output:** `{ addedNumberOfShares: bigint }` — decode with `qx.decodeAddToAskOrderOutput(bytes)`
+
+---
+
+### Add to bid order
+
+Places a buy order on the order book.
+
+```ts
+const payload = qx.buildAddToBidOrderInput(
+  { issuer, assetName, price: 950n, numberOfShares: 500n },
+  identityToPublicKey,
+)
+```
+
+Same fields as `AddToAskOrder`. **Output:** `{ addedNumberOfShares: bigint }` — decode with `qx.decodeAddToBidOrderOutput(bytes)`
+
+---
+
+### Remove from ask order / Remove from bid order
+
+Cancels an existing sell or buy order.
+
+```ts
+qx.buildRemoveFromAskOrderInput({ issuer, assetName, price, numberOfShares }, identityToPublicKey)
+qx.buildRemoveFromBidOrderInput({ issuer, assetName, price, numberOfShares }, identityToPublicKey)
+```
+
+**Output:** `{ removedNumberOfShares: bigint }` — decode with the matching `decodeRemoveFrom*Output(bytes)`.
+
+---
+
+### Transfer share management rights
+
+Delegates management rights to a contract.
+
+```ts
+const payload = qx.buildTransferShareManagementRightsInput({
+  asset: { issuer: issuerIdentity, assetName: assetNameEncoded },
+  numberOfShares: 1000n,
+  newManagingContractIndex: 5,
+})
+```
+
+**Output:** `{ transferredNumberOfShares: bigint }` — decode with `qx.decodeTransferShareManagementRightsOutput(bytes)`
+
+---
+
+## Read functions (callers)
+
+### `Fees`
+
+Returns the current fee schedule.
+
+```ts
+const result = await qx.Fees(live)
+```
+
+**Output**
+
+| Field | Type | Description |
+|---|---|---|
+| `assetIssuanceFee` | `number` | Fee in QUBIC to issue a new asset. |
+| `transferFee` | `number` | Fee per share transfer. |
+| `tradeFee` | `number` | Fee per trade execution. |
+
+---
+
+### `AssetAskOrders`
+
+Returns up to 256 ask orders for a specific asset, paginated by `offset`.
+
+```ts
+const result = await qx.AssetAskOrders(
+  live,
+  { issuer: issuerIdentity, assetName: assetNameEncoded, offset: 0n },
+  { identityToPublicKey },
+)
+```
+
+**Input**
+
+| Field | Type | Description |
+|---|---|---|
+| `issuer` | `string` | Asset issuer identity. |
+| `assetName` | `bigint` | Asset name as uint64. |
+| `offset` | `bigint` | Pagination offset (number of orders to skip). |
+
+**Output:** `{ orders: QxOrderStruct[] }` where each order has `{ entity: string, price: bigint, numberOfShares: bigint }`
+
+---
+
+### `AssetBidOrders`
+
+Same as `AssetAskOrders` but returns buy orders. Same input and output shape.
+
+```ts
+const result = await qx.AssetBidOrders(live, { issuer, assetName, offset: 0n }, { identityToPublicKey })
+```
+
+---
+
+### `EntityAskOrders`
+
+Returns all ask orders placed by a specific entity.
+
+```ts
+const result = await qx.EntityAskOrders(
+  live,
+  { entity: traderIdentity, offset: 0n },
+  { identityToPublicKey },
+)
+```
+
+**Input:** `{ entity: string, offset: bigint }`
+
+**Output:** `{ orders: QxOrderStruct[] }`
+
+---
+
+### `EntityBidOrders`
+
+Returns all bid orders placed by a specific entity. Same input shape as `EntityAskOrders`.
+
+```ts
+const result = await qx.EntityBidOrders(live, { entity: traderIdentity, offset: 0n }, { identityToPublicKey })
+```
+
+---
+
+## Example: read the order book
+
+```ts
+import { qx } from "@qubic.org/contracts"
+import { createLiveClient } from "@qubic.org/rpc"
+import { identityToPublicKey } from "@qubic.org/crypto"
+
+const live = createLiveClient()
+
+// Fetch current fees
+const fees = await qx.Fees(live)
+if (!fees.ok) throw fees.error
+console.log("Trade fee:", fees.value.tradeFee)
+
+// Fetch ask orders for an asset
+const asks = await qx.AssetAskOrders(
+  live,
+  {
+    issuer: "ISSUER_IDENTITY_HERE",
+    assetName: 0x515542494300000n,
+    offset: 0n,
+  },
+  { identityToPublicKey },
+)
+
+if (asks.ok) {
+  for (const order of asks.value.orders) {
+    console.log(`Ask: ${order.numberOfShares} shares at ${order.price} each`)
+  }
+}
+```

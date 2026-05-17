@@ -1,0 +1,53 @@
+---
+title: useBalance
+description: Fetches the QUBIC balance for a single identity, with optional polling.
+---
+
+`useBalance` queries the live API for the balance of one identity. Pass `undefined` as the identity to skip the fetch (useful when the address isn't known yet, such as before a wallet connects).
+
+## `useBalance(identity, options?)`
+
+```tsx
+import { useBalance } from "@qubic.org/react"
+import { useWallet } from "@qubic.org/react"
+
+function WalletBalance() {
+  const { account } = useWallet()
+  const { data, isLoading, error } = useBalance(account?.identity, {
+    refetchInterval: 10_000,
+  })
+
+  if (!account) return <p>Not connected</p>
+  if (isLoading) return <p>Loading...</p>
+  if (error) return <p>Error: {error.message}</p>
+
+  // QubicBalance.balance is a bigint — format it for display
+  const formatted = (data.balance / 1_000_000n).toLocaleString()
+
+  return <p>Balance: {formatted} QUBIC</p>
+}
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `identity` | `Identity \| string \| undefined` | The Qubic identity to query. Pass `undefined` to skip the fetch. |
+| `options.refetchInterval` | `number \| false` | Polling interval in milliseconds. Pass `false` to disable. |
+
+**Returns**
+
+| Field | Type | Description |
+|---|---|---|
+| `data` | `QubicBalance \| undefined` | Balance data, or `undefined` while loading. |
+| `data.id` | `string` | The queried identity. |
+| `data.balance` | `bigint` | Current balance in raw units. |
+| `data.validForTick` | `number` | The tick at which this balance snapshot was taken. |
+| `data.latestIncomingTransferTick` | `number` | Tick of the most recent incoming transfer. |
+| `data.latestOutgoingTransferTick` | `number` | Tick of the most recent outgoing transfer. |
+| `data.incomingAmount` | `bigint` | Total amount received. |
+| `data.outgoingAmount` | `bigint` | Total amount sent. |
+| `data.numberOfIncomingTransfers` | `number` | Total incoming transfer count. |
+| `data.numberOfOutgoingTransfers` | `number` | Total outgoing transfer count. |
+| `isLoading` | `boolean` | True while the first fetch is in progress. |
+| `error` | `QubicRpcError \| null` | Network or parse error. |

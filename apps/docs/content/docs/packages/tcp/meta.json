@@ -6,9 +6,13 @@
     "index",
     "---Concepts---",
     "tcp-protocol",
-    "---API Reference---",
+    "---Connections---",
     "connection",
+    "pool",
+    "---Requests---",
     "requests",
-    "frame-utilities"
+    "---Low-level---",
+    "frame-utilities",
+    "message-types"
   ]
 }

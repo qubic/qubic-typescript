@@ -1,100 +1,105 @@
 ---
 title: Vault
-description: createVault, exportVault, importVault, unlockVault — AES-256-GCM encrypted seed storage with PBKDF2 key derivation.
+description: createVault, unlockVault, addToVault, exportVault, importVault — AES-256-GCM encrypted seed storage with PBKDF2 key derivation.
 ---
 
-The vault encrypts seeds with AES-256-GCM using a password-derived key (PBKDF2-SHA256, 600,000 iterations). Seeds never leave the vault in plaintext — you get identities and signing capability, never raw seed bytes.
+The vault encrypts seeds at rest using AES-256-GCM with a PBKDF2-SHA256 derived key (600,000 iterations). The result is a plain JSON object you can store anywhere — localStorage, a database, a file.
 
-## `createVault(params)`
+```ts
+import {
+  createVault, unlockVault, addToVault,
+  exportVault, importVault,
+} from "@qubic.org/wallet"
+```
 
-Creates a new encrypted vault containing one or more seeds.
+---
+
+## `createVault(password, seeds)`
+
+Creates a new encrypted vault from a password and one or more seeds.
 
 ```ts
 import { createVault, generateSeed } from "@qubic.org/wallet"
 
 const seed = generateSeed()
-
-const vault = await createVault({
-  password: "hunter2",
-  seeds: [seed],
-})
+const vault = await createVault("my-strong-passphrase", [seed])
+// vault: VaultData — safe to store anywhere
 ```
 
 **Parameters**
 
 | Name | Type | Description |
 |---|---|---|
-| `password` | `string` | Encryption password. Use a strong random passphrase. |
-| `seeds` | `Seed[]` | One or more seeds to encrypt. |
+| `password` | `string` | The encryption passphrase. Not stored anywhere. |
+| `seeds` | `Seed[]` | Seeds to encrypt. At least one required. |
 
-**Returns** `Promise<VaultData>` — a serializable object with no plaintext seed material.
+**Returns** `Promise<VaultData>` — `{ version, iterations, salt, iv, ciphertext }` — all hex-encoded binary. Contains no plaintext.
 
 ---
 
-## `exportVault(vault)` / `importVault(json)`
+## `unlockVault(vaultData, password)`
 
-Serialize and deserialize `VaultData` for storage.
+Decrypts the vault and returns all stored seeds.
 
 ```ts
-import { exportVault, importVault } from "@qubic.org/wallet"
+const seeds = await unlockVault(vault, "my-strong-passphrase")
+// seeds: Seed[] — one per account stored in the vault
 
-// Persist
+const wallet = createWallet(seeds[0])
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `vaultData` | `VaultData` | The vault to decrypt |
+| `password` | `string` | The passphrase used when `createVault` was called |
+
+**Returns** `Promise<Seed[]>`
+
+**Throws** `VaultDecryptionError` — if the password is wrong or the ciphertext is corrupt.
+
+**Throws** `InvalidVaultError` — if `vaultData.version` is unsupported or the structure is malformed.
+
+The passphrase is never stored. If lost, the vault cannot be decrypted.
+
+---
+
+## `addToVault(vaultData, password, seed)`
+
+Adds a seed to an existing vault. Internally decrypts, appends the seed, then re-encrypts with a fresh IV and salt.
+
+```ts
+import { addToVault, generateSeed } from "@qubic.org/wallet"
+
+const newSeed = generateSeed()
+const updatedVault = await addToVault(vault, "my-strong-passphrase", newSeed)
+
+// Persist the updated vault (replaces the old one)
+localStorage.setItem("vault", exportVault(updatedVault))
+```
+
+**Throws** `VaultDecryptionError` — if the password is wrong.
+
+---
+
+## `exportVault(vaultData)` / `importVault(json)`
+
+Serialize and deserialize a vault for storage.
+
+```ts
+// Save
 const json = exportVault(vault)
 localStorage.setItem("qubic-vault", json)
 
-// Later — load
+// Load
 const loaded = importVault(localStorage.getItem("qubic-vault")!)
+const seeds = await unlockVault(loaded, passphrase)
 ```
 
-`exportVault` returns a JSON string. `importVault` parses it back to `VaultData`. Both are synchronous.
+`exportVault` returns a JSON string. `importVault` parses it back to `VaultData` and validates the required fields.
 
----
-
-## `unlockVault(vault, password)`
-
-Decrypts the vault with the given password. Returns an `UnlockedVault` that exposes identities and signing without exposing raw seed bytes.
-
-```ts
-import { unlockVault } from "@qubic.org/wallet"
-
-const unlocked = await unlockVault(loaded, "hunter2")
-
-for (const identity of unlocked.identities) {
-  console.log("Identity:", identity)
-}
-```
-
-**Throws** — if the password is wrong or the vault data is corrupt. Check `e instanceof InvalidPasswordError`.
-
----
-
-## `createWalletFromVault(unlocked, identity)`
-
-Creates a signing wallet from an unlocked vault for a specific identity.
-
-```ts
-import { createWalletFromVault } from "@qubic.org/wallet"
-
-const wallet = createWalletFromVault(unlocked, unlocked.identities[0])
-
-const { encoded, hash } = await wallet.buildTransfer({ ... })
-```
-
----
-
-## `addSeedToVault(vault, seed, password)`
-
-Adds a new seed to an existing vault (requires re-encryption).
-
-```ts
-import { addSeedToVault, generateSeed } from "@qubic.org/wallet"
-
-const newSeed = generateSeed()
-const updatedVault = await addSeedToVault(vault, newSeed, "hunter2")
-
-// Persist the updated vault
-localStorage.setItem("qubic-vault", exportVault(updatedVault))
-```
+**`importVault` throws** `InvalidVaultError` — if the JSON is malformed or missing required fields.
 
 ---
 
@@ -104,8 +109,7 @@ localStorage.setItem("qubic-vault", exportVault(updatedVault))
 |---|---|
 | Encryption | AES-256-GCM with a random 12-byte IV per encryption |
 | Key derivation | PBKDF2-SHA256, 600,000 iterations |
-| Stored material | Ciphertext + IV + salt. No plaintext. |
-| Seeds | Never accessible as plaintext after vault creation |
-| Identities | Derived and stored in plaintext for display (public data) |
+| Salt | 16 random bytes, unique per vault creation |
+| Stored material | Ciphertext + IV + salt — no plaintext seed material |
 
-The 600,000-iteration PBKDF2 makes brute-force attacks expensive. Choose a strong password regardless — dictionary words are vulnerable even with high iterations.
+The 600,000-iteration PBKDF2 makes brute-force attacks expensive. Choose a strong passphrase regardless — dictionary words are vulnerable even with high iterations.

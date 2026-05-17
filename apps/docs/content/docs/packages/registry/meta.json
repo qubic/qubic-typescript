@@ -6,9 +6,12 @@
     "index",
     "---Concepts---",
     "abi-and-epochs",
-    "---API Reference---",
+    "---ABI lookup---",
+    "get-abi",
     "functions",
+    "---Codec---",
     "codec",
+    "---Client---",
     "client"
   ]
 }

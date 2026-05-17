@@ -1,0 +1,70 @@
+---
+title: useTransaction
+description: Looks up a past transaction by ID from the archive API.
+---
+
+`useTransaction` queries the archive API for a historical transaction. Pass `undefined` as the ID to skip the fetch until you have one — for example, after a broadcast completes.
+
+## `useTransaction(txId, options?)`
+
+```tsx
+import { useTransaction } from "@qubic.org/react"
+
+function TransactionDetail({ txId }: { txId: string }) {
+  const { data, isLoading, error } = useTransaction(txId)
+
+  if (isLoading) return <p>Loading...</p>
+  if (error) return <p>Not found or error: {error.message}</p>
+
+  return (
+    <dl>
+      <dt>From</dt><dd>{data.sourceId}</dd>
+      <dt>To</dt><dd>{data.destId}</dd>
+      <dt>Amount</dt><dd>{data.amount.toString()} QUBIC</dd>
+      <dt>Target tick</dt><dd>{data.targetTick}</dd>
+    </dl>
+  )
+}
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `txId` | `TxHash \| string \| undefined` | Transaction ID to look up. Pass `undefined` to skip the fetch. |
+| `options.refetchInterval` | `number \| false` | Polling interval in milliseconds. Pass `false` to disable. |
+
+**Returns**
+
+| Field | Type | Description |
+|---|---|---|
+| `data` | `QueryTransaction \| undefined` | Transaction data, or `undefined` while loading. |
+| `data.id` | `string` | Transaction hash. |
+| `data.sourceId` | `string` | Sender identity. |
+| `data.destId` | `string` | Recipient identity. |
+| `data.amount` | `bigint` | Transfer amount in raw units. |
+| `data.targetTick` | `number` | The tick at which the transaction was targeted. |
+| `data.inputType` | `number` | Smart contract input type, or `0` for plain transfers. |
+| `data.inputSize` | `number` | Payload byte length. |
+| `data.signature` | `string` | Transaction signature. |
+| `isLoading` | `boolean` | True while the first fetch is in progress. |
+| `error` | `QubicRpcError \| null` | Network or parse error, including 404 when not found. |
+
+## Polling for confirmation
+
+After broadcasting a transaction, poll with a short interval until the transaction appears:
+
+```tsx
+import { useTransaction } from "@qubic.org/react"
+
+function ConfirmationPoller({ txId }: { txId: string | undefined }) {
+  const { data, isLoading } = useTransaction(txId, {
+    refetchInterval: txId && !data ? 3000 : false,
+  })
+
+  if (!txId) return null
+  if (isLoading || !data) return <p>Waiting for confirmation...</p>
+
+  return <p>Confirmed in tick {data.targetTick}</p>
+}
+```

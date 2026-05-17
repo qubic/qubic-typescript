@@ -1,98 +1,110 @@
 ---
 title: Builders
-description: build{Contract}{Procedure}Input — encode procedure inputs into binary payloads.
+description: build{Contract}{Procedure}Input — encode procedure inputs into binary transaction payloads.
 ---
 
-Payload builders encode a JavaScript object into binary using the field layout defined in the contract's ABI. The result is a `Uint8Array` ready to pass as the `payload` argument of a smart contract transaction.
+Builders serialize a JavaScript object into the binary format expected by a smart contract procedure. The result is either a raw `Uint8Array` (for function payloads) or a `ContractCall` object that bundles the contract index, input type, and payload together.
+
+```ts
+import { buildQearnUnlockInput } from "@qubic.org/contracts"
+
+const call = buildQearnUnlockInput({ amount: 10_000_000n, lockedEpoch: 213 })
+// → { contractIndex: 9, inputType: 2, payload: Uint8Array }
+```
+
+Or via the [namespace object](./namespace):
+
+```ts
+import { qearn } from "@qubic.org/contracts"
+
+const call = qearn.buildUnlockInput({ amount: 10_000_000n, lockedEpoch: 213 })
+```
 
 ---
 
 ## Naming convention
 
 ```
-build{ContractName}{ProcedureName}Input(input)
+build{ContractName}{ProcedureName}Input(input, identityToPublicKey?)
 ```
 
-Examples:
+The `identityToPublicKey` argument is required only when the input contains `id`-type fields (Qubic identities). It's injected rather than imported directly to keep the package tree-shakeable in environments without crypto.
 
 ```ts
-import {
-  buildQearnLockInput,
-  buildQearnUnlockInput,
-  buildQxTransferShareInput,
-  buildMsvaultAddSignerInput,
-} from "@qubic.org/contracts"
-```
+import { buildQxTransferShareOwnershipAndPossessionInput } from "@qubic.org/contracts"
+import { identityToPublicKey } from "@qubic.org/crypto"
 
-Or use the [namespace object](./namespace):
-
-```ts
-import { qearn } from "@qubic.org/contracts"
-
-qearn.buildLockInput({ amount: 10_000_000n })
+const call = buildQxTransferShareOwnershipAndPossessionInput(
+  { issuer, newOwnerAndPossessor, assetName, numberOfShares },
+  identityToPublicKey,
+)
 ```
 
 ---
 
-## Usage
+## Using the payload
+
+Pass the builder result to `wallet.buildScTransaction`:
 
 ```ts
-import { buildQearnLockInput } from "@qubic.org/contracts"
+const call = qearn.buildUnlockInput({ amount: 10_000_000n, lockedEpoch: 213 })
 
-const payload = buildQearnLockInput({ amount: 10_000_000n })
-// Returns Uint8Array
-
-// Pass to wallet.buildScTransaction
 const { encoded } = await wallet.buildScTransaction({
-  destination,
-  amount: 10_000_000n,
+  destination: QEARN_CONTRACT_ADDRESS,
+  amount: 0n,
   targetTick: tick + 5,
   currentTick: tick,
-  inputType: QEARN_LOCK_INPUT_TYPE,
-  payload,
+  inputType: call.inputType,
+  payload: call.payload,
 })
 ```
 
 ---
 
-## Input types
-
-Input types match the field layout from the ABI. Field types map to JavaScript types as follows:
+## Field type mapping
 
 | ABI type | JavaScript type |
 |---|---|
-| `uint8` / `uint16` / `uint32` | `number` |
+| `uint8` / `uint16` / `uint32` / `sint8` / `sint32` | `number` |
 | `uint64` / `sint64` / `uint128` | `bigint` |
-| `id` | `Identity` (from `@qubic.org/types`) |
+| `id` | `string` (Qubic identity, 60 chars) |
 | `bytes` | `Uint8Array` |
-| `array` | Array of the element type |
+| `array` | `T[]` where T matches the element type |
 | `struct` | Object with nested fields |
 
 ---
 
 ## Error handling
 
-Builders throw `PayloadBuildError` synchronously on bad input:
+Builders throw `PayloadBuildError` synchronously when the input is invalid. This is a programming error — not a network failure.
 
 ```ts
-import { buildQearnLockInput, PayloadBuildError } from "@qubic.org/contracts"
+import { buildQearnUnlockInput } from "@qubic.org/contracts"
 
 try {
-  const payload = buildQearnLockInput({ amount: -1n }) // invalid
+  buildQearnUnlockInput({ amount: -1n, lockedEpoch: 213 })
 } catch (e) {
   if (e instanceof PayloadBuildError) {
-    console.error("Bad input:", e.message)
+    console.error("Build error:", e.message)
+    // e.field — which field failed
+    // e.value — the bad value
   }
 }
 ```
 
-Common causes: missing required fields, wrong JavaScript type, value out of range for the ABI type.
+Three categories of build errors:
+
+| Category | Example | Cause |
+|---|---|---|
+| Wrong JS type | Passing `number` for a `uint64` field | Field expects `bigint` |
+| Value out of range | `-1n` for `uint64` | Unsigned types must be non-negative |
+| Missing required field | Omitting `lockedEpoch` from an unlock input | Required field absent from the input object |
 
 ---
 
 ## Constants
 
-Each procedure has an associated `INPUT_TYPE` constant:
+Each procedure has a corresponding `INPUT_TYPE` constant. Use it to set the transaction's input type field:
 
 ```ts
 import {
@@ -101,17 +113,9 @@ import {
   QEARN_UNLOCK_INPUT_TYPE,
 } from "@qubic.org/contracts"
 
-console.log(QEARN_CONTRACT_INDEX)   // 9
-console.log(QEARN_LOCK_INPUT_TYPE)  // 6
-```
-
-Or via namespace:
-
-```ts
+// or via namespace:
 import { qearn } from "@qubic.org/contracts"
-
-qearn.contractIndex      // 9
-qearn.LOCK_INPUT_TYPE    // 6
+qearn.contractIndex  // 9
 ```
 
-Use `contractIndex` and the input type constant when constructing the transaction header.
+These match the values in `ContractCall.inputType` returned by builder functions.

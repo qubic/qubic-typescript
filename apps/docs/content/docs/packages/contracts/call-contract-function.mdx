@@ -1,28 +1,35 @@
 ---
 title: callContractFunction
-description: Low-level primitive for calling contract read functions not yet covered by generated wrappers.
+description: The underlying primitive for calling contract read functions — use it when no generated caller covers what you need.
 ---
 
 ## `callContractFunction(options)`
 
-The internal primitive used by all generated [callers](./callers). Call it directly only when you need to query a contract function that isn't yet in the generated package.
+All generated [callers](./callers) are thin wrappers around `callContractFunction`. Call it directly when you need to query a contract that isn't in the generated package yet — for example, a freshly deployed contract whose ABI hasn't been added to the registry snapshot.
 
 ```ts
 import { callContractFunction } from "@qubic.org/contracts"
+import { buildPayload, decodePayload } from "@qubic.org/registry"
+import { identityToPublicKey, publicKeyToIdentity } from "@qubic.org/crypto"
 import { createLiveClient } from "@qubic.org/rpc"
 
 const live = createLiveClient()
 
 const result = await callContractFunction({
   live,
-  contractIndex: 9,
+  contractIndex: 42,
   inputType: 1,
-  inputPayload: encodedInput,
-  outputDecoder: (bytes) => decodeMyOutput(bytes),
+  inputSize: 4,
+  inputFields: [{ name: "epoch", type: "uint32", offset: 0, byteLength: 4 }],
+  outputFields: [{ name: "state", type: "uint32", offset: 0, byteLength: 4 }],
+  structs: {},
+  input: { epoch: 213 },
 })
 
 if (result.ok) {
-  console.log("Output:", result.value)
+  console.log("State:", result.value.state)
+} else {
+  console.error("Error:", result.error.status, result.error.message)
 }
 ```
 
@@ -30,35 +37,40 @@ if (result.ok) {
 
 | Name | Type | Description |
 |---|---|---|
-| `live` | `SmartContractCaller` | Any object with `querySmartContract` — typically `createLiveClient()`. |
-| `contractIndex` | `number` | Contract index. |
-| `inputType` | `number` | Function input type number. |
-| `inputPayload` | `Uint8Array` | Optional. Encoded input bytes. Omit for functions with no input. |
-| `outputDecoder` | `(bytes: Uint8Array) => T` | Decodes the raw response bytes into your output type. |
+| `live` | `SmartContractCaller` | Any object with `querySmartContract`. Typically from `createLiveClient()`. |
+| `contractIndex` | `number` | Contract index on-chain. |
+| `inputType` | `number` | Function input type number from the ABI. |
+| `inputSize` | `number` | Total byte length of the encoded input. |
+| `inputFields` | `BinaryField[]` | Field definitions for encoding the input. From `@qubic.org/registry`. |
+| `outputFields` | `BinaryField[]` | Field definitions for decoding the response. From `@qubic.org/registry`. |
+| `structs` | `Record<string, NamedStruct>` | Named struct definitions referenced by fields. Pass `{}` if none. |
+| `input` | `Record<string, unknown>` | Input values — must match the field names in `inputFields`. |
+| `identityToPublicKey` | `(id: string) => Uint8Array` | Required when input contains `id`-type fields. |
+| `publicKeyToIdentity` | `(pk: Uint8Array) => string` | Required when output contains `id`-type fields. |
 
-**Returns** `Promise<Result<T, QubicRpcError>>`
+**Returns** `Promise<Result<TOutput, QubicRpcError>>`
 
 ---
 
 ## When to use this
 
-The generated wrappers cover all contracts in the current ABI snapshot. Use `callContractFunction` when:
+Use `callContractFunction` when:
 
-- A new contract has been deployed but the package hasn't been updated yet.
-- You need to call a function from a very old ABI version that no longer has a generated wrapper.
-- You're building your own code generator and need the underlying primitive.
+- A contract was deployed after the last registry snapshot, so no generated wrapper exists yet.
+- You need a function from an older ABI version that has since been replaced.
+- You're writing your own code generator and need the underlying primitive to test it.
 
-For most applications, use the generated callers directly instead.
+For all contracts in the current generated package, use the [namespace callers](./callers) directly — they handle field definitions internally.
 
 ---
 
-## Complete example
+## Using the registry for field definitions
 
-Call a hypothetical contract index 99 function type 2, using the registry to get field definitions:
+When the contract ABI is available in `@qubic.org/registry`, use `getAbi` and `getFunction` to retrieve field definitions rather than writing them by hand:
 
-```ts title="custom-caller.ts"
+```ts
 import { callContractFunction } from "@qubic.org/contracts"
-import { getAbi, getFunction, buildPayload, decodePayload } from "@qubic.org/registry"
+import { getAbi, getFunction } from "@qubic.org/registry"
 import { identityToPublicKey, publicKeyToIdentity } from "@qubic.org/crypto"
 import { createLiveClient } from "@qubic.org/rpc"
 import registry from "@qubic.org/registry/registry.json"
@@ -67,27 +79,25 @@ import type { ContractRegistry } from "@qubic.org/registry"
 const reg = registry as ContractRegistry
 const live = createLiveClient()
 
-const { version } = getAbi(reg, 99, 213)
-const fn = getFunction(version, 2)
-
-const inputPayload = buildPayload(
-  fn.inputFields,
-  version.structs ?? {},
-  { someField: 42 },
-  identityToPublicKey,
-)
+// Look up field definitions from the registry
+const { version } = getAbi(reg, 42, 213)  // contractIndex, epoch
+const fn = getFunction(version, 1)          // inputType
 
 const result = await callContractFunction({
   live,
-  contractIndex: 99,
+  contractIndex: 42,
   inputType: fn.inputType,
-  inputPayload,
-  outputDecoder: (bytes) =>
-    decodePayload(bytes, fn.outputFields, version.structs ?? {}, publicKeyToIdentity),
+  inputSize: fn.inputSize,
+  inputFields: fn.inputFields,
+  outputFields: fn.outputFields,
+  structs: version.structs ?? {},
+  input: { someField: 42 },
+  identityToPublicKey,
+  publicKeyToIdentity,
 })
 
 if (result.ok) {
-  console.log("Custom contract output:", result.value)
+  console.log("Output:", result.value)
 } else {
   console.error("Error:", result.error.status, result.error.message)
 }

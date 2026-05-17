@@ -1,0 +1,55 @@
+---
+title: useQubic
+description: Access the raw RPC clients directly — use when no hook covers what you need.
+---
+
+`useQubic` is an escape hatch. It returns the `live` and `archive` clients configured in `QubicProvider`. Use it inside `useEffect` or event handlers when a built-in data hook doesn't fit your use case.
+
+For most reads, use the data hooks instead — they handle caching, deduplication, and background refetching automatically.
+
+## `useQubic()`
+
+```tsx
+import { useQubic } from "@qubic.org/react"
+import { useEffect, useState } from "react"
+
+function TickPoller() {
+  const { live } = useQubic()
+  const [tick, setTick] = useState<number | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+
+    async function poll() {
+      const result = await live.getTickInfo()
+      if (result.ok && !cancelled) {
+        setTick(result.value.tick)
+      }
+    }
+
+    poll()
+    const id = setInterval(poll, 5000)
+    return () => {
+      cancelled = true
+      clearInterval(id)
+    }
+  }, [live])
+
+  return <p>Current tick: {tick ?? "—"}</p>
+}
+```
+
+**Returns**
+
+| Field | Type | Description |
+|---|---|---|
+| `live` | `LiveClient` | The live RPC client. Use for current-state queries and broadcasting transactions. |
+| `archive` | `QueryClient` | The archive RPC client. Use for historical queries. |
+
+## When to use this
+
+- You need a client method that no hook wraps yet.
+- You're building a custom hook on top of the SDK.
+- You need imperative access in an event handler, not declarative data fetching.
+
+For contract reads, prefer `useContractQuery` over calling `live.querySmartContract` directly.

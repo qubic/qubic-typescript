@@ -10,7 +10,7 @@ description: Construct the unsigned binary header for a Qubic transaction.
 ```ts
 import { buildTransaction } from "@qubic.org/tx"
 import { publicKeyFromSeed } from "@qubic.org/crypto"
-import { toSeed, toIdentity } from "@qubic.org/types"
+import { toSeed } from "@qubic.org/types"
 
 const seed = toSeed("...")
 const sourcePublicKey = publicKeyFromSeed(seed)
@@ -39,20 +39,20 @@ const unsigned = buildTransaction({
 | `inputSize` | `number` | Payload byte length (0 for plain transfers) |
 | `payload` | `Uint8Array \| undefined` | Optional payload bytes for contract calls |
 
-**Returns** `Uint8Array` — 80 bytes header (+ `inputSize` payload bytes).
+**Returns** `Uint8Array` — 80-byte header (+ `inputSize` payload bytes).
 
 ---
 
 ## Target tick
 
-The network rejects transactions whose target tick has already passed. The standard convention:
+`targetTick` is a deadline, not a schedule. The network rejects the transaction if the current tick has already passed `targetTick` when the node processes it. If `targetTick` is in the future, the node will process the transaction when it reaches that tick — or drop it after a grace period.
 
 ```ts
 const { tick } = await live.getTickInfo()
-const targetTick = tick + 5  // process within the next 5 ticks
+const targetTick = tick + 5  // deadline: process within the next 5 ticks
 ```
 
-Increase the offset on congested networks. The `PROTOCOL.TICKS_TO_EXPIRY` constant from `@qubic.org/types` defaults to `5`.
+Setting `targetTick` too low (e.g. `tick + 1`) risks rejection if the network is even slightly ahead of your clock. Setting it higher (e.g. `tick + 20`) gives more leeway but means the transaction sits pending longer before expiring if something goes wrong. The `PROTOCOL.TICKS_TO_EXPIRY` constant from `@qubic.org/types` defaults to `5` — a reasonable default for most conditions.
 
 ---
 

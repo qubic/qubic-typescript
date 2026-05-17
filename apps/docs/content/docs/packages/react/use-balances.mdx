@@ -1,0 +1,65 @@
+---
+title: useBalances
+description: Fetches balances for multiple identities in parallel, tolerating partial failures.
+---
+
+`useBalances` runs concurrent balance lookups for a list of identities. Successful results go into `data`; per-identity errors go into `errors`. A failure for one identity does not block the rest.
+
+## `useBalances(identities, options?)`
+
+```tsx
+import { useBalances } from "@qubic.org/react"
+
+const WATCHED = [
+  "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+  "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+]
+
+function BalanceList() {
+  const { data, isLoading, errors } = useBalances(WATCHED)
+
+  if (isLoading) return <p>Loading...</p>
+
+  return (
+    <ul>
+      {WATCHED.map((id) => {
+        if (errors[id]) return <li key={id}>{id}: error — {errors[id].message}</li>
+        const balance = data?.get(id)
+        return <li key={id}>{id}: {balance ? balance.balance.toString() : "—"}</li>
+      })}
+    </ul>
+  )
+}
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `identities` | `(Identity \| string)[]` | List of Qubic identities to query. An empty array performs no fetches. |
+| `options.refetchInterval` | `number \| false` | Polling interval in milliseconds. Pass `false` to disable. |
+
+**Returns**
+
+| Field | Type | Description |
+|---|---|---|
+| `data` | `Map<string, QubicBalance> \| undefined` | Successful balance results keyed by identity string. |
+| `isLoading` | `boolean` | True while any identity's first fetch is in progress. |
+| `errors` | `Record<string, QubicRpcError>` | Per-identity errors. An identity is absent from this map when its fetch succeeded. |
+
+## Partial failure handling
+
+When one identity returns an error, others are still returned in `data`. Always check `errors[identity]` before reading `data.get(identity)`:
+
+```tsx
+const { data, errors } = useBalances(identities)
+
+for (const id of identities) {
+  if (errors[id]) {
+    console.warn(`Failed to fetch balance for ${id}:`, errors[id].message)
+    continue
+  }
+  const balance = data?.get(id)
+  console.log(`${id}: ${balance?.balance}`)
+}
+```

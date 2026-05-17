@@ -1,131 +1,151 @@
 ---
 title: Callers
-description: "{contract}{Function} — typed live read functions that call contract query endpoints and return Result<T, QubicRpcError>."
+description: Typed async functions that query contract read endpoints and return Result<T, QubicRpcError> — they never throw.
 ---
 
-Callers are typed async functions that query a contract's read-only functions via the RPC gateway. They never throw — failures come back as `{ ok: false, error }`.
+Callers are generated async functions for calling contract read (query) functions. They handle payload encoding, RPC dispatch, and response decoding internally. Failures come back as `{ ok: false, error }` — callers never throw.
+
+```ts
+import { qearn } from "@qubic.org/contracts"
+import { createLiveClient } from "@qubic.org/rpc"
+
+const live = createLiveClient()
+
+const result = await qearn.getStateOfRound(live, { epoch: 213 })
+
+if (result.ok) {
+  console.log("State:", result.value.state)
+} else {
+  console.error("RPC error:", result.error.status, result.error.message)
+}
+```
 
 ---
 
 ## Naming convention
 
 ```
-{contractName}{FunctionName}(live, input, converters)
+{contractName}{FunctionName}(live, input?, options?)
 ```
 
-Examples:
+Via namespace (recommended):
 
 ```ts
-import {
-  qearnGetStateOfRound,
-  qearnGetUserLockInfo,
-  qxGetAssetIssuanceInfo,
-} from "@qubic.org/contracts"
+await qearn.getStateOfRound(live, { epoch: 213 })
+await qearn.getUserLockedInfo(live, { user: identity, epoch: 213 }, { identityToPublicKey })
 ```
 
-Or via the [namespace object](./namespace):
+Or via named export:
 
 ```ts
-import { qearn } from "@qubic.org/contracts"
-
-await qearn.getStateOfRound(live, { epoch: 213 }, converters)
+import { qearnGetStateOfRound } from "@qubic.org/contracts"
+await qearnGetStateOfRound(live, { epoch: 213 })
 ```
 
 ---
 
-## Usage
-
-```ts
-import { qearnGetStateOfRound } from "@qubic.org/contracts"
-import { createLiveClient } from "@qubic.org/rpc"
-import { identityToPublicKey, publicKeyToIdentity } from "@qubic.org/crypto"
-
-const live = createLiveClient()
-
-const result = await qearnGetStateOfRound(
-  live,
-  { epoch: 213 },
-  { identityToPublicKey, publicKeyToIdentity },
-)
-
-if (result.ok) {
-  console.log("State:", result.value)
-} else {
-  console.error("RPC error:", result.error.status, result.error.message)
-}
-```
-
-**Parameters**
+## Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| `live` | `SmartContractCaller` | Any object with `querySmartContract` — typically `createLiveClient()`. |
-| `input` | object | Input fields for the function. May be `undefined` if the function takes no input. |
-| `converters` | `{ identityToPublicKey, publicKeyToIdentity }` | From `@qubic.org/crypto`. Required when input or output contains `id`-type fields. |
+| `live` | `SmartContractCaller` | Any object with `querySmartContract`. Typically `createLiveClient()` from `@qubic.org/rpc`. |
+| `input` | object | Input fields for the function. Omit or pass `undefined` for zero-input functions. |
+| `options` | `ContractCallOptions` | Converters for identity-encoding. Required when input or output has `id`-type fields. |
+| `options.identityToPublicKey` | `(id: string) => Uint8Array` | Converts a 60-char identity string to 32 raw bytes. |
+| `options.publicKeyToIdentity` | `(pk: Uint8Array) => string` | Converts 32 raw bytes to a 60-char identity string. |
 
-**Returns** `Promise<Result<Output, QubicRpcError>>`
+Import converters from `@qubic.org/crypto`:
+
+```ts
+import { identityToPublicKey, publicKeyToIdentity } from "@qubic.org/crypto"
+const converters = { identityToPublicKey, publicKeyToIdentity }
+```
+
+---
+
+## Return type
+
+All callers return `Promise<Result<Output, QubicRpcError>>`.
+
+```ts
+type Result<T, E> =
+  | { ok: true; value: T }
+  | { ok: false; error: E }
+```
 
 ---
 
 ## Error handling
 
-Callers never throw. Check `result.ok` before using `result.value`:
+Check `result.ok` before accessing `result.value`. Never assume success:
 
 ```ts
-const result = await qearn.getStateOfRound(live, { epoch: 213 }, converters)
+const result = await qearn.getUserLockedInfo(
+  live,
+  { user: identity, epoch: 213 },
+  { identityToPublicKey },
+)
 
 if (!result.ok) {
   if (result.error.status === 404) {
-    console.log("No data for this epoch")
+    console.log("No lock found for this user and epoch")
   } else {
+    // Re-throw or surface to the user
     throw result.error
   }
   return
 }
 
-// result.value is typed
-console.log(result.value)
+console.log("Locked amount:", result.value.lockedAmount.toString())
 ```
+
+`QubicRpcError` has two useful fields:
+- `status: number` — HTTP-like status code (`404`, `500`, etc.)
+- `message: string` — Human-readable description
 
 ---
 
-## Converters
+## Converters and tree-shaking
 
-Converters are injected rather than imported internally, keeping `@qubic.org/contracts` tree-shakeable when used in environments that don't need crypto:
+Converters are injected as options rather than imported internally. This keeps `@qubic.org/contracts` from bundling `@qubic.org/crypto` in environments that don't need it. Share one converters object across all calls:
 
 ```ts
 import { identityToPublicKey, publicKeyToIdentity } from "@qubic.org/crypto"
 
 const converters = { identityToPublicKey, publicKeyToIdentity }
 
-const result = await qearn.getStateOfRound(live, { epoch: 213 }, converters)
+const [roundState, lockedInfo] = await Promise.all([
+  qearn.getStateOfRound(live, { epoch: 213 }, converters),
+  qearn.getUserLockedInfo(live, { user: identity, epoch: 213 }, converters),
+])
 ```
-
-You can share one `converters` object across all caller invocations.
 
 ---
 
-## All Qearn read functions
+## Qearn callers reference
 
 ```ts
-// State of a lock round
-await qearn.getStateOfRound(live, { epoch: 213 }, converters)
+// Round state for an epoch (no id fields — no converters needed)
+await qearn.getStateOfRound(live, { epoch: 213 })
 
-// Lock info for a specific identity and epoch
-await qearn.getUserLockInfo(live, { identity, epoch: 213 }, converters)
+// Lock info totals for an epoch
+await qearn.getLockInfoPerEpoch(live, { Epoch: 213 })
 
-// All lock info for an identity across epochs
-await qearn.getUserAllLockInfo(live, { identity }, converters)
+// A specific user's locked amount
+await qearn.getUserLockedInfo(live, { user: identity, epoch: 213 }, converters)
 
-// Endurance score for an identity
-await qearn.getUserEnduranceScore(live, { identity, epoch: 213 }, converters)
+// All epoch bitmask for a user
+await qearn.getUserLockStatus(live, { user: identity }, converters)
 
-// All endurance scores
-await qearn.getAllEnduranceScores(live, undefined, converters)
+// Post-epoch unlock summary
+await qearn.getEndedStatus(live, { user: identity }, converters)
 
-// Average APY for an epoch
-await qearn.getAverageApy(live, { epoch: 213 }, converters)
+// Epoch-level statistics
+await qearn.getStatsPerEpoch(live, { epoch: 213 })
 
-// Unlocking stats
-await qearn.getUnlockingTable(live, undefined, converters)
+// Lifetime burn/boost stats
+await qearn.getBurnedAndBoostedStats(live)
+
+// Per-epoch burn/boost stats
+await qearn.getBurnedAndBoostedStatsPerEpoch(live, { epoch: 213 })
 ```

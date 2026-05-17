@@ -1,23 +1,23 @@
 ---
 title: Errors
-description: QubicRpcError — structure, properties, and handling patterns for RPC client errors.
+description: QubicRpcError and QubicError — structure, properties, and handling patterns.
 ---
 
-Both the live and archive clients throw `QubicRpcError` on any failure — network error, HTTP error response, or malformed payload.
+The live and archive clients use the `Result<T, E>` pattern rather than exceptions. Methods return `{ ok: false, error: QubicRpcError }` on failure. Check `result.ok` before accessing `result.value`.
+
+`QubicRpcError` is thrown directly only when you call `unwrap()` on an `Err` result yourself, or in unexpected situations like JSON parse failures.
 
 ## `QubicRpcError`
+
+Extends `QubicError`. Carries the HTTP status code and the endpoint path that failed.
 
 ```ts
 import { QubicRpcError } from "@qubic.org/rpc"
 
-try {
-  await live.getTickInfo()
-} catch (e) {
-  if (e instanceof QubicRpcError) {
-    console.error("RPC error:", e.status, e.message)
-  } else {
-    throw e // re-throw unknown errors
-  }
+const result = await live.getTickInfo()
+if (!result.ok) {
+  const e = result.error
+  console.error(`RPC error ${e.status} on ${e.endpoint}: ${e.message}`)
 }
 ```
 
@@ -25,39 +25,59 @@ try {
 
 | Property | Type | Description |
 |---|---|---|
-| `message` | `string` | Human-readable error description |
-| `status` | `number \| undefined` | HTTP status code (undefined for network failures) |
-| `cause` | `unknown` | The underlying error, if any |
+| `message` | `string` | Human-readable description of the failure |
+| `status` | `number` | HTTP status code. `-1` for network errors and timeouts |
+| `endpoint` | `string` | The request path that failed (e.g. `/tick-info`) |
+| `code` | `"RPC_ERROR"` | Discriminant for narrowing the error type |
 
 ---
 
-## Common errors
+## `QubicError`
 
-| Status | Cause |
+Base class for all errors in the Qubic SDK. Exported from `@qubic.org/types` and re-exported from `@qubic.org/rpc`.
+
+```ts
+import { QubicError } from "@qubic.org/rpc"
+
+if (e instanceof QubicError) {
+  // Covers QubicRpcError and any other SDK error
+}
+```
+
+Use `instanceof QubicError` when you want to catch any SDK error. Use `instanceof QubicRpcError` when you need the `status` and `endpoint` fields.
+
+---
+
+## Common status codes
+
+| Status | Meaning |
 |---|---|
-| `404` | Transaction or identity not found |
+| `404` | Transaction or identity not found in the archive |
 | `429` | Rate limit exceeded |
 | `500` | Gateway or node error |
-| `undefined` | Network unreachable, DNS failure, timeout |
+| `-1` | Network unreachable, DNS failure, request timeout, or aborted |
 
 ---
 
 ## Retry pattern
 
 ```ts
-import { QubicRpcError } from "@qubic.org/rpc"
+import { createLiveClient, QubicRpcError } from "@qubic.org/rpc"
 
-async function withRetry<T>(fn: () => Promise<T>, retries = 3): Promise<T> {
+const live = createLiveClient()
+
+async function withRetry<T>(
+  fn: () => Promise<{ ok: true; value: T } | { ok: false; error: QubicRpcError }>,
+  retries = 3,
+): Promise<T> {
   for (let i = 0; i < retries; i++) {
-    try {
-      return await fn()
-    } catch (e) {
-      if (e instanceof QubicRpcError && e.status === 429 && i < retries - 1) {
-        await new Promise((r) => setTimeout(r, 1000 * (i + 1)))
-        continue
-      }
-      throw e
+    const result = await fn()
+    if (result.ok) return result.value
+    if (result.error.status === 429 && i < retries - 1) {
+      await new Promise((r) => setTimeout(r, 1000 * (i + 1)))
+      continue
     }
+    throw result.error
   }
   throw new Error("unreachable")
 }
@@ -67,13 +87,13 @@ const info = await withRetry(() => live.getTickInfo())
 
 ---
 
-## RPC errors vs Result errors
+## Error models by package
 
-`@qubic.org/rpc` uses **exceptions** (throw/catch). `@qubic.org/contracts` read functions use the **Result pattern** (`{ ok: true, value } | { ok: false, error }`). Be aware of which style each package uses:
+Different packages in the Qubic SDK use different error conventions:
 
 | Package | Error model |
 |---|---|
-| `@qubic.org/rpc` | throws `QubicRpcError` |
-| `@qubic.org/bob` | `onError` callback / event |
-| `@qubic.org/contracts` (read fns) | `Result<T, QubicRpcError>` |
+| `@qubic.org/rpc` | `Result<T, QubicRpcError>` — check `result.ok` |
+| `@qubic.org/bob` | `Result<T, BobRpcError>` — check `result.ok` |
+| `@qubic.org/events` | throws `EventDecodeError` |
 | `@qubic.org/types` constructors | throws typed `QubicError` subclass |

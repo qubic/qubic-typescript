@@ -1,6 +1,6 @@
 # qubic-typescript
 
-TypeScript SDK for the [Qubic](https://qubic.org) network. Modular, tree-shakeable packages covering cryptography, transaction building, RPC access, smart contract ABI encoding/decoding, and live node subscriptions. Built for [Bun](https://bun.com) with full Node.js compatibility.
+TypeScript SDK for the [Qubic](https://qubic.org) network, split into focused packages for crypto, transaction building, RPC, ABI codec, and live node subscriptions. Built for [Bun](https://bun.com), works with Node.js.
 
 ## Packages
 
@@ -270,7 +270,7 @@ const decoded = decodePayload(payloadBytes, lockProc.inputFields, version.struct
 
 `@qubic.org/registry` stores per-epoch ABI snapshots as JSON for every Qubic smart contract. Each snapshot records the exact binary field layout (`inputFields`, `outputFields`, nested structs) active in that epoch. The codec engine (`buildPayload` / `decodePayload`) handles all Qubic primitive types including `uint128` and FourQ identity fields.
 
-**Coverage**: epochs 122–213 (all epochs with deployed contracts since early mainnet)
+Covers epochs 122–213 — every epoch with deployed contracts since early mainnet.
 
 ```
 packages/registry/data/
@@ -294,13 +294,13 @@ bun run packages/contracts/scripts/generate.ts
 
 ## Contract wrappers
 
-`@qubic.org/contracts` provides fully typed wrappers generated from the latest epoch snapshot. Every contract exports:
+`@qubic.org/contracts` has typed wrappers generated from the latest epoch snapshot. Each contract exports:
 
-- **Constants**: `CONTRACT_INDEX`, per-procedure `INPUT_TYPE` constants
-- **Payload builders**: `build{Contract}{Procedure}Input(input) → Uint8Array` — for use in transaction construction
-- **Output decoders**: `decode{Contract}{Procedure}Output(data) → Output` — for decoding SC responses
-- **Async callers**: `{contract}{Function}(live, input?, options?) → Promise<Result<Output, QubicRpcError>>` — for read-only queries
-- **Namespace object**: `export const {contract} = { contractIndex, ...callers, ...builders, ...decoders }`
+- Constants: `CONTRACT_INDEX` and per-procedure `INPUT_TYPE`
+- Payload builders: `build{Contract}{Procedure}Input(input) → Uint8Array`
+- Output decoders: `decode{Contract}{Procedure}Output(data) → Output`
+- Async read callers: `{contract}{Function}(live, input?, options?) → Promise<Result<Output, QubicRpcError>>`
+- A namespace object: `export const {contract} = { contractIndex, ...callers, ...builders, ...decoders }`
 
 ```ts
 import { qearn, qx, quottery } from '@qubic.org/contracts'
@@ -348,10 +348,10 @@ graph LR
 
 ## Tooling
 
-- **Runtime**: [Bun](https://bun.com) v1.3+
-- **Formatter/linter**: [Biome](https://biomejs.dev) — run `bun run lint`
-- **Type checker**: TypeScript 5.7+ — run `bun run typecheck`
-- **Test runner**: `bun test` (built-in)
-- **Docs**: [TypeDoc](https://typedoc.org) — `bunx typedoc`
-- **Releases**: [Changesets](https://github.com/changesets/changesets) — `bun run changeset`
-- **Commit format**: Conventional commits enforced by commitlint
+- [Bun](https://bun.com) v1.3+ (runtime)
+- [Biome](https://biomejs.dev) for formatting and linting — `bun run lint`
+- TypeScript 5.7+ for type checking — `bun run typecheck`
+- `bun test` for tests (no config needed)
+- [TypeDoc](https://typedoc.org) for docs — `bunx typedoc`
+- [Changesets](https://github.com/changesets/changesets) for releases — `bun run changeset`
+- Conventional commits enforced by commitlint

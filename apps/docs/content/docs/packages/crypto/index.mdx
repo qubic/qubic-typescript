@@ -3,7 +3,33 @@ title: "@qubic.org/crypto"
 description: KangarooTwelve hashing, SchnorrQ signatures, FourQ key derivation, and identity encoding.
 ---
 
-`@qubic.org/crypto` implements Qubic's cryptographic primitives: KangarooTwelve hashing, SchnorrQ signatures over the FourQ curve, and the complete seed → public key → identity derivation chain.
+<PackageHeader name="@qubic.org/crypto" label="Hashing, key derivation, signing, and identity encoding" />
+
+`@qubic.org/crypto` is the cryptographic core of the SDK. It implements the three algorithms Qubic uses at the protocol level: KangarooTwelve (K12) hashing, FourQ elliptic curve key derivation, and SchnorrQ Schnorr signatures.
+
+---
+
+## Introduction
+
+### Algorithms
+
+| Algorithm | Role |
+|---|---|
+| **KangarooTwelve (K12)** | Hashing — used for transaction hashes, identity derivation, and message digests |
+| **FourQ** | Elliptic curve — Qubic's choice of curve for key pairs; faster than Curve25519 at equivalent security |
+| **SchnorrQ** | Signature scheme — Schnorr variant over FourQ; used to sign transactions |
+
+### Key concepts
+
+- A **seed** is a 55-char lowercase string that represents a private key. It is the master secret — never expose it.
+- A **public key** is the 32-byte FourQ point derived from the seed via `publicKeyFromSeed`.
+- An **identity** is the 60-char uppercase human-readable encoding of the public key, derived via `identityFromSeed` or `publicKeyToIdentity`.
+
+`@qubic.org/wallet` wraps all of this into a higher-level API. Use `@qubic.org/crypto` directly only when you need raw bytes — e.g., for building custom transaction formats or integrating with hardware wallets.
+
+---
+
+## Installation
 
 <Tabs items={["Bun", "npm", "pnpm"]}>
 <Tab value="Bun">
@@ -23,212 +49,80 @@ pnpm add @qubic.org/crypto
 </Tab>
 </Tabs>
 
-## Concepts
-
-### Seed → public key → identity
-
-Derivation is one-way. You cannot go backwards from an identity to a seed.
-
-```
-seed (55 chars)
-  → publicKeyFromSeed()
-    → 32-byte FourQ public key
-      → publicKeyToIdentity()
-        → 60-char identity string
-```
-
-`deriveIdentityFromSeed` combines both steps for convenience.
-
-### KangarooTwelve (K12)
-
-Qubic uses the KangarooTwelve extendable-output function as its hash primitive — not SHA-3 or Keccak-256. Outputs from `k12` are not interchangeable with Ethereum or Bitcoin hashes.
-
-### SchnorrQ signatures
-
-`sign()` produces 64-byte SchnorrQ signatures on the FourQ curve. The function is `async` for forward compatibility with WASM or hardware signer backends, but currently resolves synchronously.
-
-### `verify()` never throws
-
-`verify` returns `false` for malformed inputs rather than throwing. This makes it safe to call in hot paths like event stream filtering where some payloads may be corrupt.
+---
 
 ## API reference
 
-### `k12(data, outputLength?)`
+| Page | What's covered |
+|---|---|
+| [Key derivation](./key-derivation) | `publicKeyFromSeed`, `identityFromSeed`, `identityToPublicKey`, `publicKeyToIdentity` |
+| [Hashing](./hashing) | `K12` — KangarooTwelve variable-output hash |
+| [Signing](./signing) | `sign`, `verify` — SchnorrQ transaction signing |
 
-Computes a KangarooTwelve hash.
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `data` | `Uint8Array` | Input bytes to hash. |
-| `outputLength` | `number` | Optional. Output length in bytes. Default: `32`. |
-
-**Returns** `Uint8Array`
+### All exports
 
 ```ts
-import { k12 } from "@qubic.org/crypto"
-
-const hash = k12(new TextEncoder().encode("hello"))
-// 32-byte Uint8Array
-```
-
----
-
-### `generateRandomSeed()`
-
-Generates a cryptographically secure random seed.
-
-**Returns** `Seed` — a 55-character lowercase string.
-
-```ts
-import { generateRandomSeed } from "@qubic.org/crypto"
-
-const seed = generateRandomSeed()
-// "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabc"
-```
-
----
-
-### `publicKeyFromSeed(seed)`
-
-Derives the 32-byte FourQ public key from a seed.
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `seed` | `Seed` | A valid 55-character lowercase seed. |
-
-**Returns** `Uint8Array` — 32 bytes.
-
-**Throws** `InvalidSeedError` — if the seed format is invalid.
-
----
-
-### `deriveIdentityFromSeed(seed)`
-
-Derives the 60-character Qubic identity directly from a seed. Equivalent to `publicKeyToIdentity(publicKeyFromSeed(seed))`.
-
-**Returns** `Identity`
-
-**Throws** `InvalidSeedError`
-
-```ts
-import { deriveIdentityFromSeed, generateRandomSeed } from "@qubic.org/crypto"
-
-const seed = generateRandomSeed()
-const identity = deriveIdentityFromSeed(seed)
-```
-
----
-
-### `publicKeyToIdentity(publicKey)`
-
-Encodes a 32-byte public key as a 60-character Qubic identity string (base-26 with 4-char K12 checksum).
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `publicKey` | `Uint8Array` | 32-byte FourQ public key. |
-
-**Returns** `Identity`
-
----
-
-### `identityToPublicKey(identity)`
-
-Decodes an identity string back to the 32-byte public key. Validates the embedded 4-character checksum.
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `identity` | `Identity` | A valid 60-character Qubic identity. |
-
-**Returns** `Uint8Array` — 32 bytes.
-
-**Throws** `InvalidIdentityError` — if the identity is malformed or the checksum does not match.
-
----
-
-### `sign(message, seed)`
-
-Signs a message with SchnorrQ.
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `message` | `Uint8Array` | The bytes to sign. |
-| `seed` | `Seed` | The signing seed. |
-
-**Returns** `Promise<Uint8Array>` — 64-byte signature.
-
-**Throws** `InvalidSeedError`
-
-```ts
-import { sign, generateRandomSeed } from "@qubic.org/crypto"
-
-const seed = generateRandomSeed()
-const message = new TextEncoder().encode("hello")
-const signature = await sign(message, seed)
-// 64-byte Uint8Array
-```
-
----
-
-### `verify(message, signature, publicKey)`
-
-Verifies a SchnorrQ signature.
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `message` | `Uint8Array` | The original message bytes. |
-| `signature` | `Uint8Array` | The 64-byte signature to verify. |
-| `publicKey` | `Uint8Array` | The 32-byte signer's public key. |
-
-**Returns** `boolean`
-
-Never throws. Returns `false` for malformed inputs.
-
----
-
-### `getRandomBytes(n)`
-
-Returns `n` cryptographically secure random bytes.
-
-**Returns** `Uint8Array`
-
-## Complete example
-
-Derive an identity, sign a message, and verify the signature:
-
-```ts title="sign-verify.ts"
 import {
-  generateRandomSeed,
+  // Key derivation
   publicKeyFromSeed,
-  deriveIdentityFromSeed,
+  identityFromSeed,
+  identityToPublicKey,
+  publicKeyToIdentity,
+
+  // Hashing
+  K12,
+
+  // Signing
   sign,
   verify,
 } from "@qubic.org/crypto"
+```
 
-const seed = generateRandomSeed()
-const publicKey = publicKeyFromSeed(seed)
-const identity = deriveIdentityFromSeed(seed)
+---
 
-console.log("Identity:", identity)
+## Examples
 
-const message = new TextEncoder().encode("hello qubic")
-const signature = await sign(message, seed)
+### Derive a key pair from a seed
 
-const valid = verify(message, signature, publicKey)
-console.log("Signature valid:", valid) // true
+```ts
+import { publicKeyFromSeed, identityFromSeed } from "@qubic.org/crypto"
+import { toSeed } from "@qubic.org/types"
 
-// Tampered message → false, no throw
-const tampered = new TextEncoder().encode("hello qubic!")
-console.log("Tampered valid:", verify(tampered, signature, publicKey)) // false
+const seed = toSeed("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+
+const publicKey = publicKeyFromSeed(seed)  // Uint8Array (32 bytes)
+const identity  = identityFromSeed(seed)   // Identity ("BPFJANADBBEOEHGEAGBPJCH...")
+```
+
+### Hash arbitrary data
+
+```ts
+import { K12 } from "@qubic.org/crypto"
+
+const data = new TextEncoder().encode("hello qubic")
+const hash = K12(data, 32)  // Uint8Array (32 bytes)
+```
+
+### Sign a transaction digest
+
+```ts
+import { sign, verify } from "@qubic.org/crypto"
+import { toSeed } from "@qubic.org/types"
+
+const seed   = toSeed("aaaa...") // 55-char seed
+const digest = new Uint8Array(32) // transaction digest bytes
+
+const signature = await sign(seed, digest)   // Uint8Array (64 bytes)
+const valid     = await verify(publicKey, digest, signature) // boolean
+```
+
+### Convert between identity and public key
+
+```ts
+import { identityToPublicKey, publicKeyToIdentity } from "@qubic.org/crypto"
+import { toIdentity } from "@qubic.org/types"
+
+const identity  = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
+const publicKey = identityToPublicKey(identity)  // Uint8Array (32 bytes)
+const recovered = publicKeyToIdentity(publicKey) // Identity — same as input
 ```

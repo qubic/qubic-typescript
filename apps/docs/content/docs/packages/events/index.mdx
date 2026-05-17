@@ -3,7 +3,47 @@ title: "@qubic.org/events"
 description: Typed event decoding and chainable filter builder for Qubic smart contract log events.
 ---
 
-`@qubic.org/events` turns raw Bob log events (base64 blobs with a type number) into fully typed TypeScript objects. It also provides a fluent filter builder and subscription helpers.
+<PackageHeader name="@qubic.org/events" label="Typed event decoding and filter builder" />
+
+`@qubic.org/events` sits above the raw Bob event log API. It decodes base64-encoded binary blobs into fully typed discriminated union events, and provides a fluent filter builder to narrow which events you receive.
+
+---
+
+## Introduction
+
+### Raw logs vs typed events
+
+A Bob event log (`"eventLogs"` subscription) delivers `BobLogEvent` objects with a numeric `eventType` and a base64-encoded binary `eventData`. You have to know the format of each type to do anything useful with it.
+
+`decodeEvent` handles that decoding:
+
+```ts
+// Before: raw
+event.eventType   // 0
+event.eventData   // "AAAAAAAAAA..." (base64)
+
+// After: typed
+const typed = decodeEvent(event)
+if (typed.logType === LOG_TYPE.QU_TRANSFER) {
+  typed.data.source       // Identity
+  typed.data.destination  // Identity
+  typed.data.amount       // bigint
+}
+```
+
+TypeScript narrows `typed.data` based on `logType` — no manual casting.
+
+### 16 event types
+
+`@qubic.org/events` covers all 16 Qubic log types plus `CUSTOM_MESSAGE` (255): QU transfers, asset events, contract messages, burn events, spectrum stats, oracle events, and more.
+
+### Filter builder
+
+The `eventFilter()` builder is immutable and chainable — compose filters by identity, contract index, log type, and tick range, then pass the result to a subscription helper or use it manually.
+
+---
+
+## Installation
 
 <Tabs items={["Bun", "npm", "pnpm"]}>
 <Tab value="Bun">
@@ -23,40 +63,53 @@ pnpm add @qubic.org/events
 </Tab>
 </Tabs>
 
-## What's inside
+---
 
-| Page | Description |
+## API reference
+
+| Page | What's covered |
 |---|---|
-| [Decode event](./decode-event) | `decodeEvent` — parse raw log events into typed discriminated unions |
-| [Event filter](./event-filter) | `eventFilter()` builder and subscription helpers |
+| [Decode event](./decode-event) | `decodeEvent`, `LOG_TYPE` constants, all typed event shapes |
+| [Event filter](./event-filter) | `eventFilter()` builder, `subscribeQuTransfers`, `subscribeAssetEvents`, `subscribeContractLogs`, `subscribeAllEvents` |
 
-## Log types
+### All exports
 
-| ID | Name | Data fields |
+```ts
+import {
+  decodeEvent,
+  eventFilter,
+  subscribeQuTransfers,
+  subscribeAssetEvents,
+  subscribeContractLogs,
+  subscribeAllEvents,
+  LOG_TYPE,
+  EventDecodeError,
+} from "@qubic.org/events"
+```
+
+---
+
+## Log types at a glance
+
+| ID | Name | Key data fields |
 |---|---|---|
 | `0` | `QU_TRANSFER` | `source`, `destination`, `amount` |
-| `1` | `ASSET_ISSUANCE` | `issuer`, `assetName`, `numberOfShares`, `unitOfMeasurement` |
-| `2` | `ASSET_OWNERSHIP_CHANGE` | `issuer`, `assetName`, `owner`, `newOwner`, `numberOfShares` |
-| `3` | `ASSET_POSSESSION_CHANGE` | `issuer`, `assetName`, `owner`, `newPossessor`, `numberOfShares` |
-| `4` | `CONTRACT_ERROR_MESSAGE` | `contractIndex`, `message` |
-| `5` | `CONTRACT_WARNING_MESSAGE` | `contractIndex`, `message` |
-| `6` | `CONTRACT_INFORMATION_MESSAGE` | `contractIndex`, `message` |
-| `7` | `CONTRACT_DEBUG_MESSAGE` | `contractIndex`, `message` |
+| `1` | `ASSET_ISSUANCE` | `issuer`, `assetName`, `numberOfShares` |
+| `2` | `ASSET_OWNERSHIP_CHANGE` | `issuer`, `assetName`, `owner`, `newOwner` |
+| `3` | `ASSET_POSSESSION_CHANGE` | `issuer`, `assetName`, `owner`, `newPossessor` |
+| `4–7` | Contract messages | `contractIndex`, `message` |
 | `8` | `BURNING` | `sourceId`, `amount` |
-| `9` | `DUST_BURNING` | `numberOfBurns`, `totalAmount` |
-| `10` | `SPECTRUM_STATS` | `totalAmount`, `dustThreshold`, `numberOfEntities` |
-| `11` | `ASSET_OWNERSHIP_MANAGING_CONTRACT_CHANGE` | `issuer`, `assetName`, `managingContract` |
-| `12` | `ASSET_POSSESSION_MANAGING_CONTRACT_CHANGE` | `issuer`, `assetName`, `managingContract` |
-| `13` | `CONTRACT_RESERVE_DEDUCTION` | `contractIndex`, `amount` |
-| `14` | `ORACLE_QUERY_STATUS_CHANGE` | `oracleId`, `status` |
-| `15` | `ORACLE_SUBSCRIBER_LOG_MESSAGE` | `subscriberId`, `message` |
-| `255` | `CUSTOM_MESSAGE` | `Uint8Array` (contract-specific) |
+| `255` | `CUSTOM_MESSAGE` | `Uint8Array` |
 
-## Quick start
+---
+
+## Examples
+
+### Decode and handle events inline
 
 ```ts
 import { createBobClient } from "@qubic.org/bob"
-import { decodeEvent, eventFilter } from "@qubic.org/events"
+import { decodeEvent, LOG_TYPE, EventDecodeError } from "@qubic.org/events"
 import { toIdentity } from "@qubic.org/types"
 
 const bob = createBobClient({ autoResubscribe: true })
@@ -66,8 +119,53 @@ const identity = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKK
 
 bob.subscribe("eventLogs", identity, (events) => {
   for (const raw of events) {
-    const typed = decodeEvent(raw)
-    console.log(typed.logType, typed.data)
+    try {
+      const typed = decodeEvent(raw)
+      if (typed.logType === LOG_TYPE.QU_TRANSFER) {
+        const { source, destination, amount } = typed.data
+        console.log(`Transfer: ${amount}n QU from ${source} to ${destination}`)
+      }
+    } catch (e) {
+      if (e instanceof EventDecodeError) console.warn("Skipping malformed event")
+      else throw e
+    }
   }
 })
+```
+
+### Use a subscription helper with a filter
+
+```ts
+import { createBobClient } from "@qubic.org/bob"
+import { subscribeQuTransfers, eventFilter } from "@qubic.org/events"
+import { toIdentity } from "@qubic.org/types"
+
+const bob = createBobClient({ autoResubscribe: true })
+await bob.connect()
+
+const identity = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
+const filter   = eventFilter().fromTick(25_000_000).build()
+
+const unsub = subscribeQuTransfers(bob, identity, (transfer, meta) => {
+  if (meta.isCatchUp) return
+  const direction = transfer.data.source === identity ? "OUT" : "IN"
+  console.log(`[${direction}] ${transfer.data.amount}n QU at tick ${transfer.tick}`)
+}, filter)
+
+// Later
+unsub()
+```
+
+### Compose a multi-criteria filter
+
+```ts
+import { eventFilter, LOG_TYPE } from "@qubic.org/events"
+import { toIdentity } from "@qubic.org/types"
+
+const filter = eventFilter()
+  .forIdentity(toIdentity("CFBMEMZOIDEX..."))
+  .ofTypes(LOG_TYPE.QU_TRANSFER, LOG_TYPE.BURNING)
+  .fromTick(25_000_000)
+  .toTick(26_000_000)
+  .build()
 ```

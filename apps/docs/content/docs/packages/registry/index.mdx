@@ -3,7 +3,38 @@ title: "@qubic.org/registry"
 description: Versioned ABI registry and binary payload codec for Qubic smart contracts.
 ---
 
-`@qubic.org/registry` stores per-epoch snapshots of every deployed Qubic smart contract's binary interface. The codec engine lets you encode inputs and decode outputs for any contract at any epoch — including historical transactions.
+<PackageHeader name="@qubic.org/registry" label="Versioned ABI registry and binary payload codec" />
+
+`@qubic.org/registry` stores per-epoch snapshots of every deployed Qubic smart contract's binary interface. Its codec engine encodes structured JavaScript objects into binary payloads and decodes binary responses back — at any epoch, including historical ones.
+
+---
+
+## Introduction
+
+### What is an ABI?
+
+A Qubic smart contract exposes **procedures** (write functions, called via transactions) and **functions** (read functions, called via queries). Each has a list of typed binary fields — the ABI. The ABI describes how to pack inputs into bytes and unpack output bytes into named values.
+
+`@qubic.org/registry` stores a snapshot of each contract's ABI for every epoch where it changed, so you can encode/decode correctly even for historical transactions.
+
+### Epoch versioning
+
+An ABI version is valid from `effectiveFromEpoch` until `effectiveToEpoch` (or indefinitely if `effectiveToEpoch` is null). `getAbi(registry, contractIndex, epoch)` finds the version whose range covers the requested epoch.
+
+### Static import vs HTTP client
+
+Two ways to load the registry:
+
+- **Static import** — bundle the JSON with your app. No network, works offline, always consistent. Best for production apps.
+- **Registry client** (`createRegistryClient()`) — fetch ABIs on demand from a remote API. Smaller bundle, always up-to-date, works well in browsers where bundle size matters.
+
+### For most use cases, use `@qubic.org/contracts`
+
+`@qubic.org/contracts` wraps this package with generated TypeScript for every contract. You only need `@qubic.org/registry` directly when working with historical epochs not covered by the generated wrappers, or when building tooling.
+
+---
+
+## Installation
 
 <Tabs items={["Bun", "npm", "pnpm"]}>
 <Tab value="Bun">
@@ -23,41 +54,56 @@ pnpm add @qubic.org/registry
 </Tab>
 </Tabs>
 
-## What's inside
+---
 
-| Page | Description |
+## API reference
+
+| Page | What's covered |
 |---|---|
-| [Functions](./functions) | `getAbi`, `getCurrentAbi`, `getProcedure`, `getFunction`, `findContractByIndex` |
+| [Functions](./functions) | `getAbi`, `getCurrentAbi`, `getAbiHistory`, `getProcedure`, `getFunction`, `findContractByIndex`, `findContractByName` |
 | [Codec](./codec) | `buildPayload`, `decodePayload` — binary encoding and decoding |
-| [Client](./client) | `createRegistryClient` — HTTP registry client with caching |
+| [Client](./client) | `createRegistryClient` — HTTP client with session/persistent caching |
 
-## Concepts
-
-### Epoch versioning
-
-An ABI version is valid for a range of epochs. `effectiveFromEpoch` marks when it became active. `effectiveToEpoch: null` means the ABI is still current.
-
-`getAbi(registry, contractIndex, epoch)` finds the version whose range covers the requested epoch.
-
-### Static import vs registry client
-
-Two ways to access the registry:
-
-- **Static import** — ships with the package, no network required. Best for production apps that only need current ABIs.
-- **Registry client** (`createRegistryClient()`) — fetches from a remote API. Useful when you need historical lookups from a browser without bundling the full registry JSON.
-
-## Quick start
+### Key exports
 
 ```ts
-import { getAbi, getProcedure, buildPayload, decodePayload } from "@qubic.org/registry"
-import { identityToPublicKey, publicKeyToIdentity } from "@qubic.org/crypto"
+import {
+  // ABI lookup
+  getAbi,
+  getCurrentAbi,
+  getAbiHistory,
+  getProcedure,
+  getFunction,
+  findContractByIndex,
+  findContractByName,
+  validateRegistry,
+
+  // Codec
+  buildPayload,
+  decodePayload,
+
+  // HTTP client
+  createRegistryClient,
+} from "@qubic.org/registry"
+```
+
+---
+
+## Examples
+
+### Look up a contract ABI and encode a payload
+
+```ts
+import { getAbi, getProcedure, buildPayload } from "@qubic.org/registry"
+import { identityToPublicKey } from "@qubic.org/crypto"
 import registry from "@qubic.org/registry/registry.json"
 import type { ContractRegistry } from "@qubic.org/registry"
 
 const reg = registry as ContractRegistry
 
-const { version } = getAbi(reg, 9, 212) // Qearn at epoch 212
-const proc = getProcedure(version, 6)   // lock_input procedure
+// Qearn (index 9) at epoch 212
+const { version, isCurrent } = getAbi(reg, 9, 212)
+const proc = getProcedure(version, 6) // lock_input (inputType 6)
 
 const payload = buildPayload(
   proc.inputFields,
@@ -65,4 +111,58 @@ const payload = buildPayload(
   { amount: 10_000_000n },
   identityToPublicKey,
 )
+console.log("Encoded payload:", payload.length, "bytes")
+```
+
+### Decode a response
+
+```ts
+import { getAbi, getFunction, decodePayload } from "@qubic.org/registry"
+import { publicKeyToIdentity } from "@qubic.org/crypto"
+import registry from "@qubic.org/registry/registry.json"
+import type { ContractRegistry } from "@qubic.org/registry"
+
+const reg = registry as ContractRegistry
+const { version } = getAbi(reg, 9, 212)
+const fn = getFunction(version, 1) // getStateOfRound
+
+const result = decodePayload(
+  responseBytes,
+  fn.outputFields,
+  version.structs ?? {},
+  publicKeyToIdentity,
+)
+console.log("State:", result)
+```
+
+### Browse ABI history for a contract
+
+```ts
+import { getAbiHistory, findContractByName } from "@qubic.org/registry"
+import registry from "@qubic.org/registry/registry.json"
+import type { ContractRegistry } from "@qubic.org/registry"
+
+const reg   = registry as ContractRegistry
+const index = findContractByName(reg, "Qearn")
+
+for (const version of getAbiHistory(reg, index)) {
+  console.log(
+    `Epoch ${version.effectiveFromEpoch} – ${version.effectiveToEpoch ?? "current"}:`,
+    version.procedures?.length ?? 0, "procedures,",
+    version.functions?.length ?? 0, "functions",
+  )
+}
+```
+
+### Use the HTTP client in a browser app
+
+```ts
+import { createRegistryClient, getProcedure, buildPayload } from "@qubic.org/registry"
+import { identityToPublicKey } from "@qubic.org/crypto"
+
+const client = createRegistryClient({ cache: "session" })
+const { version } = await client.getCurrentAbi(9) // Qearn
+const proc = getProcedure(version, 6)
+
+const payload = buildPayload(proc.inputFields, version.structs ?? {}, { amount: 5_000_000n }, identityToPublicKey)
 ```

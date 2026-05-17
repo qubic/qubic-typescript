@@ -3,58 +3,172 @@ title: "@qubic.org/react"
 description: React hooks and providers for the Qubic SDK — TanStack Query data fetching, encrypted vault, and pluggable wallet connectors.
 ---
 
-`@qubic.org/react` integrates the entire Qubic SDK into React 18+. Data hooks are powered by TanStack Query. Seeds never appear in React state or DevTools. Wallet connectors are pluggable.
+<PackageHeader name="@qubic.org/react" label="React hooks, providers, and wallet connectors" />
+
+`@qubic.org/react` wraps the Qubic SDK in idiomatic React. It provides TanStack Query-backed data hooks, an encrypted vault for seed management, mutation hooks for sending transactions, and a pluggable wallet connector system.
+
+---
+
+## Introduction
+
+### Provider setup
+
+Wrap your app in `QubicProvider` to make all hooks available. The provider configures the RPC clients, TanStack Query instance, and optional vault:
+
+```tsx
+import { QubicProvider } from "@qubic.org/react"
+
+export default function App({ children }: { children: React.ReactNode }) {
+  return (
+    <QubicProvider>
+      {children}
+    </QubicProvider>
+  )
+}
+```
+
+For wallet functionality, add `VaultProvider` and `WalletProvider` inside:
+
+```tsx
+<QubicProvider>
+  <VaultProvider>
+    <WalletProvider connectors={[extensionConnector()]}>
+      {children}
+    </WalletProvider>
+  </VaultProvider>
+</QubicProvider>
+```
+
+### Data hooks vs mutation hooks
+
+- **Data hooks** (`useTickInfo`, `useBalance`, …) use TanStack Query under the hood — they cache results, deduplicate parallel requests, and re-fetch on a configurable interval.
+- **Mutation hooks** (`useSendTransfer`, `useSendContractCall`) manage loading/error/success state for operations that change network state.
+
+### Wallet connectors
+
+The connector system is pluggable. Three connectors are included:
+
+| Connector | Description |
+|---|---|
+| `extensionConnector()` | Browser extension wallet (e.g. Qubic Wallet) |
+| `walletConnectConnector()` | WalletConnect v2 — QR code / mobile link |
+| `metamaskSnapConnector()` | MetaMask Snap for Qubic |
+
+You can implement `WalletConnector` to add custom connectors.
+
+---
+
+## Installation
 
 <Tabs items={["Bun", "npm", "pnpm"]}>
 <Tab value="Bun">
 ```bash
-bun add @qubic.org/react @qubic.org/rpc @tanstack/react-query
+bun add @qubic.org/react
 ```
 </Tab>
 <Tab value="npm">
 ```bash
-npm install @qubic.org/react @qubic.org/rpc @tanstack/react-query
+npm install @qubic.org/react
 ```
 </Tab>
 <Tab value="pnpm">
 ```bash
-pnpm add @qubic.org/react @qubic.org/rpc @tanstack/react-query
+pnpm add @qubic.org/react
 ```
 </Tab>
 </Tabs>
 
-**Peer dependency:** React 18 or later.
+---
 
-## Provider hierarchy
+## API reference
 
-Wrap your app with providers in this order:
+| Page | What's covered |
+|---|---|
+| [Providers](./providers) | `QubicProvider`, `VaultProvider`, `WalletProvider` — setup and configuration |
+| [Data hooks](./data-hooks) | `useTickInfo`, `useBalance`, `useBalances`, `useContractQuery`, asset hooks, archive hooks |
+| [Send mutations](./send-mutations) | `useSendTransfer`, `useSendContractCall` |
+| [Wallet hooks](./wallet-hooks) | `useWallet`, `useWalletConnector`, `useVaultState` |
+| [Connectors](./connectors) | `extensionConnector`, `walletConnectConnector`, `metamaskSnapConnector`, custom connectors |
+
+---
+
+## Examples
+
+### Display live tick info
 
 ```tsx
-<QubicProvider liveClient={live} archiveClient={archive}>
-  <WalletProvider connectors={connectors}>      {/* optional */}
-    <VaultProvider vaultData={vault}>           {/* optional */}
-      <App />
-    </VaultProvider>
-  </WalletProvider>
-</QubicProvider>
+import { useTickInfo } from "@qubic.org/react"
+
+export function TickDisplay() {
+  const { data, isLoading } = useTickInfo()
+
+  if (isLoading) return <span>Loading…</span>
+  return (
+    <div>
+      <span>Tick: {data?.tick}</span>
+      <span>Epoch: {data?.epoch}</span>
+    </div>
+  )
+}
 ```
 
-`QubicProvider` is required. `WalletProvider` and `VaultProvider` are independent — include only what your app needs.
+### Fetch a balance
 
-## Key concepts
+```tsx
+import { useBalance } from "@qubic.org/react"
+import { toIdentity } from "@qubic.org/types"
 
-**Seeds never in React state** — `VaultProvider` stores the unlocked seed in a `useRef`. It's never in Redux, Zustand, TanStack Query's cache, or React DevTools.
+const IDENTITY = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
 
-**Session persistence** — when `persistSession` is enabled, the decrypted key is stored in IndexedDB with `extractable: false`. It survives page reload but cannot be read back as raw bytes.
+export function BalanceCard() {
+  const { data, isLoading, error } = useBalance(IDENTITY)
 
-**Pluggable connectors** — `WalletConnector` is an interface. Three built-in connectors ship with the package; you can write your own.
+  if (isLoading) return <div>Loading…</div>
+  if (error)     return <div>Error: {error.message}</div>
+  return <div>{data?.balance.toString()} QU</div>
+}
+```
 
-## Reference
+### Send a transfer
 
-| Section | What's in it |
-|---|---|
-| [Providers](/docs/packages/react/providers) | `QubicProvider`, `VaultProvider`, `WalletProvider` props |
-| [Data hooks](/docs/packages/react/data-hooks) | `useTickInfo`, `useBalance`, `useContractQuery`, archive hooks |
-| [Send mutations](/docs/packages/react/send-mutations) | `useSendTransfer`, `useSendContractCall` |
-| [Wallet hooks](/docs/packages/react/wallet-hooks) | `useWallet`, `useWalletConnector`, `useQubic` |
-| [Connectors](/docs/packages/react/connectors) | Extension, WalletConnect, MetaMask Snap, custom |
+```tsx
+import { useSendTransfer } from "@qubic.org/react"
+import { toIdentity } from "@qubic.org/types"
+
+export function SendButton() {
+  const { send, isPending, isSuccess, error } = useSendTransfer()
+
+  async function handleSend() {
+    await send({
+      destination: toIdentity("CFBMEMZOIDEX..."),
+      amount: 1_000_000n,
+    })
+  }
+
+  return (
+    <button onClick={handleSend} disabled={isPending}>
+      {isPending ? "Sending…" : "Send"}
+    </button>
+  )
+}
+```
+
+### Connect a wallet
+
+```tsx
+import { useWalletConnector } from "@qubic.org/react"
+
+export function ConnectButton() {
+  const { connect, disconnect, isConnected, identity } = useWalletConnector()
+
+  if (isConnected) {
+    return (
+      <div>
+        <span>{identity}</span>
+        <button onClick={disconnect}>Disconnect</button>
+      </div>
+    )
+  }
+  return <button onClick={connect}>Connect Wallet</button>
+}
+```

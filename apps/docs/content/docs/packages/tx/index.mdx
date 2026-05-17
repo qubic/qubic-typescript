@@ -1,50 +1,171 @@
 ---
 title: "@qubic.org/tx"
-description: Binary transaction builder, signer, verifier, and payload codec. The low-level layer beneath @qubic.org/wallet.
+description: Binary transaction builder, signer, verifier, and payload codec for Qubic transactions.
 ---
 
-`@qubic.org/tx` handles the full transaction lifecycle at the binary level: header serialization, SchnorrQ signing, base64 encoding for broadcast, and hash computation.
+<PackageHeader name="@qubic.org/tx" label="Transaction builder, signer, and payload codec" />
 
-Most apps should use [`@qubic.org/wallet`](/docs/packages/wallet) — it wraps this package with a friendlier API. Use `@qubic.org/tx` directly when you need fine-grained control or are building tooling.
+`@qubic.org/tx` is the low-level transaction layer. It builds the binary wire format for Qubic transactions, signs them with SchnorrQ, and encodes them to base64 for broadcast. It also provides a typed payload builder for structured smart contract inputs.
+
+---
+
+## Introduction
+
+### Transaction lifecycle
+
+A Qubic transaction goes through four steps before it can be broadcast:
+
+<Steps>
+<Step>
+**Build** — `buildTransaction` assembles the binary header from source key, destination, amount, tick, and input type.
+</Step>
+<Step>
+**Sign** — `signTransaction` computes a K12 digest of the header and signs it with the source seed via SchnorrQ.
+</Step>
+<Step>
+**Encode** — `encodeTransaction` converts the signed binary to a base64 string for the HTTP broadcast endpoint.
+</Step>
+<Step>
+**Broadcast** — pass the base64 string to `live.broadcastTransaction` from `@qubic.org/rpc`.
+</Step>
+</Steps>
+
+### Smart contract payloads
+
+For smart contract calls, you attach a binary payload to the transaction. `buildPayload` and `readField` in this package let you construct and inspect those payloads by field — without needing the full ABI registry. For ABI-driven encoding, use `@qubic.org/registry` or the generated wrappers in `@qubic.org/contracts`.
+
+### vs `@qubic.org/wallet`
+
+`@qubic.org/wallet` wraps `buildTransaction` + `signTransaction` + `encodeTransaction` into a single `wallet.buildTransfer` call. Use `@qubic.org/tx` directly when you need fine-grained control over the binary format or are building tooling outside the wallet abstraction.
+
+---
+
+## Installation
 
 <Tabs items={["Bun", "npm", "pnpm"]}>
 <Tab value="Bun">
 ```bash
-bun add @qubic.org/tx @qubic.org/crypto @qubic.org/types
+bun add @qubic.org/tx
 ```
 </Tab>
 <Tab value="npm">
 ```bash
-npm install @qubic.org/tx @qubic.org/crypto @qubic.org/types
+npm install @qubic.org/tx
 ```
 </Tab>
 <Tab value="pnpm">
 ```bash
-pnpm add @qubic.org/tx @qubic.org/crypto @qubic.org/types
+pnpm add @qubic.org/tx
 ```
 </Tab>
 </Tabs>
 
-## Transaction anatomy
+---
 
-```
-[  header: 80 bytes  ][  payload: 0–1024 bytes  ][  signature: 64 bytes  ]
-```
+## API reference
 
-The 80-byte header encodes source key, destination, amount, target tick, input type, and payload size.
-
-## Three forms of a transaction
-
-| Form | Produced by | Contents |
-|---|---|---|
-| **Unsigned bytes** | `buildTransaction` | Header + payload, no signature |
-| **Signed bytes** | `signTransaction` | Header + payload + 64-byte SchnorrQ signature |
-| **Encoded** | `encodeTransaction` | Base64 string, ready for `broadcastTransaction` |
-
-## Reference
-
-| Section | What's in it |
+| Page | What's covered |
 |---|---|
-| [buildTransaction](/docs/packages/tx/build-transaction) | Construct the unsigned binary |
-| [signTransaction](/docs/packages/tx/sign-transaction) | Sign, encode, and hash transactions |
-| [Payload codec](/docs/packages/tx/payload) | `buildPayload`, `readField` — typed struct encoding |
+| [Build transaction](./build-transaction) | `buildTransaction` — assemble the binary transaction header |
+| [Sign transaction](./sign-transaction) | `signTransaction`, `encodeTransaction`, `hashTransaction`, `verifyTransaction` |
+| [Payload](./payload) | `buildPayload`, `readField`, `PayloadField` — structured contract input encoding |
+
+### All exports
+
+```ts
+import {
+  // Core transaction lifecycle
+  buildTransaction,
+  signTransaction,
+  encodeTransaction,
+
+  // Utilities
+  hashTransaction,
+  verifyTransaction,
+
+  // Payload codec
+  buildPayload,
+  readField,
+  type PayloadField,
+} from "@qubic.org/tx"
+```
+
+---
+
+## Examples
+
+### Simple QU transfer
+
+```ts
+import { buildTransaction, signTransaction, encodeTransaction } from "@qubic.org/tx"
+import { publicKeyFromSeed, identityToPublicKey } from "@qubic.org/crypto"
+import { createLiveClient } from "@qubic.org/rpc"
+import { toSeed, toIdentity } from "@qubic.org/types"
+
+const live = createLiveClient()
+const { tick } = await live.getTickInfo()
+
+const seed = toSeed("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+const sourcePublicKey      = publicKeyFromSeed(seed)
+const destinationPublicKey = identityToPublicKey(
+  toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
+)
+
+const unsigned = buildTransaction({
+  sourcePublicKey,
+  destinationPublicKey,
+  amount: 1_000_000n,
+  targetTick: tick + 5,
+  inputType: 0,
+})
+
+const signed  = await signTransaction(unsigned, seed)
+const encoded = encodeTransaction(signed)
+
+const result = await live.broadcastTransaction(encoded)
+console.log(`Broadcast to ${result.peersBroadcastedTo} peers`)
+```
+
+### Smart contract call with payload
+
+```ts
+import { buildTransaction, signTransaction, encodeTransaction, buildPayload } from "@qubic.org/tx"
+import { publicKeyFromSeed, identityToPublicKey } from "@qubic.org/crypto"
+import { toSeed, toIdentity } from "@qubic.org/types"
+
+const seed = toSeed("aaaa...")
+const sourcePublicKey = publicKeyFromSeed(seed)
+
+// Zero-address destination for SC calls
+const destinationPublicKey = new Uint8Array(32)
+
+// Build a simple payload manually (use @qubic.org/contracts for ABI-typed encoding)
+const payload = buildPayload([
+  { name: "amount", type: "uint64" },
+], { amount: 10_000_000n })
+
+const unsigned = buildTransaction({
+  sourcePublicKey,
+  destinationPublicKey,
+  amount: 10_000_000n,
+  targetTick: tick + 5,
+  inputType: 6,     // Qearn LOCK_INPUT_TYPE
+  inputSize: payload.length,
+  payload,
+})
+
+const signed  = await signTransaction(unsigned, seed)
+const encoded = encodeTransaction(signed)
+```
+
+### Verify a transaction you received
+
+```ts
+import { hashTransaction, verifyTransaction } from "@qubic.org/tx"
+
+const hash  = hashTransaction(signedTxBytes)
+const valid = await verifyTransaction(signedTxBytes)
+
+console.log("Hash:", Buffer.from(hash).toString("hex"))
+console.log("Signature valid:", valid)
+```

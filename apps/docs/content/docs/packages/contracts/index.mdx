@@ -3,7 +3,48 @@ title: "@qubic.org/contracts"
 description: Generated typed wrappers for every deployed Qubic smart contract. Zero manual payload construction required.
 ---
 
-`@qubic.org/contracts` provides ready-to-use TypeScript wrappers generated from the latest ABI snapshot in `@qubic.org/registry`. You get fully typed payload builders, output decoders, and live read callers for every deployed contract.
+<PackageHeader name="@qubic.org/contracts" label="Generated typed wrappers for all Qubic smart contracts" />
+
+`@qubic.org/contracts` provides ready-to-use TypeScript wrappers generated from the latest ABI snapshot. You get fully typed payload builders, output decoders, and live read callers for every deployed contract — no manual binary encoding, no magic numbers.
+
+---
+
+## Introduction
+
+### Generated, not hand-written
+
+The wrappers in this package are output from a code generator that reads the latest `@qubic.org/registry` snapshot and produces typed functions for every contract, procedure, and read function. When a new epoch ships a changed ABI, the SDK maintainers run the generator and publish an updated version.
+
+### Three things per procedure/function
+
+For each contract operation you get:
+
+1. **Builder** — encodes a JS object to binary: `buildQearnLockInput({ amount })`
+2. **Decoder** — decodes binary response bytes to a typed object: `decodeQearnLockOutput(bytes)`
+3. **Caller** (read functions only) — calls the RPC gateway and returns `Result<T, QubicRpcError>`: `qearnGetStateOfRound(live, input, converters)`
+
+### Namespace pattern
+
+Every contract is also exported as a namespace object that groups all three:
+
+```ts
+import { qearn } from "@qubic.org/contracts"
+
+qearn.contractIndex          // 9
+qearn.buildLockInput(...)    // payload builder
+qearn.decodeLockOutput(...)  // output decoder
+qearn.getStateOfRound(...)   // live read caller
+```
+
+### Error model
+
+- **Read callers** — return `Promise<Result<T, QubicRpcError>>`. Never throw.
+- **Builders** — throw `PayloadBuildError` synchronously on bad input.
+- **Decoders** — throw `PayloadDecodeError` on malformed bytes.
+
+---
+
+## Installation
 
 <Tabs items={["Bun", "npm", "pnpm"]}>
 <Tab value="Bun">
@@ -23,30 +64,38 @@ pnpm add @qubic.org/contracts
 </Tab>
 </Tabs>
 
-## What's inside
+---
 
-| Page | Description |
+## API reference
+
+| Page | What's covered |
 |---|---|
 | [Namespace](./namespace) | Per-contract namespace objects — `qearn`, `qx`, `qvault`, etc. |
-| [Builders](./builders) | `build{Contract}{Procedure}Input` — encode procedure inputs |
-| [Decoders](./decoders) | `decode{Contract}{Procedure}Output` — decode binary responses |
+| [Builders](./builders) | `build{Contract}{Procedure}Input` — encode inputs to binary |
+| [Decoders](./decoders) | `decode{Contract}{Procedure}Output` — decode response bytes |
 | [Callers](./callers) | `{contract}{Function}` — typed live read functions |
-| [callContractFunction](./call-contract-function) | Low-level primitive for calling unlisted contract functions |
+| [callContractFunction](./call-contract-function) | Low-level primitive for unlisted contracts |
 
-## Supported contracts
+---
 
-28 contracts are covered. A few commonly used ones:
+## Supported contracts (28 total)
 
-| # | Name | Index | Procedures | Functions |
-|---|---|---|---|---|
-| 1 | Qx | 1 | 6 | 5 |
-| 2 | Quottery | 4 | 6 | 4 |
-| 3 | QUtil | 5 | 2 | 1 |
-| 4 | **Qearn** | **9** | 2 | 7 |
-| 5 | QVault | 10 | 3 | 4 |
-| 6 | MsVault | 11 | 5 | 2 |
+| Name | Index | Procedures | Functions |
+|---|---|---|---|
+| Qx | 1 | 6 | 5 |
+| Quottery | 4 | 6 | 4 |
+| QUtil | 5 | 2 | 1 |
+| **Qearn** | **9** | 2 | 7 |
+| QVault | 10 | 3 | 4 |
+| MsVault | 11 | 5 | 2 |
+| Qbay | 12 | varies | varies |
+| + 21 more | — | — | — |
 
-## Quick start
+---
+
+## Examples
+
+### Read a contract function
 
 ```ts
 import { qearn } from "@qubic.org/contracts"
@@ -54,23 +103,59 @@ import { createLiveClient } from "@qubic.org/rpc"
 import { identityToPublicKey, publicKeyToIdentity } from "@qubic.org/crypto"
 
 const live = createLiveClient()
+const converters = { identityToPublicKey, publicKeyToIdentity }
 
-// Read current round state
-const result = await qearn.getStateOfRound(
-  live,
-  { epoch: 213 },
-  { identityToPublicKey, publicKeyToIdentity },
-)
+const result = await qearn.getStateOfRound(live, { epoch: 213 }, converters)
 
-if (result.ok) {
-  console.log("Round state:", result.value)
+if (!result.ok) {
+  console.error("RPC error:", result.error.status, result.error.message)
+  process.exit(1)
 }
-
-// Build a procedure payload
-const payload = qearn.buildLockInput({ amount: 10_000_000n })
+console.log("Round state:", result.value)
 ```
 
-## Error model
+### Build a smart contract transaction
 
-- **Read functions** return `Promise<Result<Output, QubicRpcError>>` — network failures are in the `Result`, not thrown.
-- **Payload builders** throw `PayloadBuildError` synchronously on malformed input.
+```ts
+import { qearn } from "@qubic.org/contracts"
+import { createWallet, generateSeed } from "@qubic.org/wallet"
+import { createLiveClient } from "@qubic.org/rpc"
+import { toIdentity } from "@qubic.org/types"
+
+const live   = createLiveClient()
+const wallet = createWallet(generateSeed())
+const { tick } = await live.getTickInfo()
+
+const payload     = qearn.buildLockInput({ amount: 10_000_000n })
+const destination = toIdentity("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+
+const { encoded, hash } = await wallet.buildScTransaction({
+  destination,
+  amount: 10_000_000n,
+  targetTick: tick + 5,
+  currentTick: tick,
+  inputType: qearn.LOCK_INPUT_TYPE,
+  payload,
+})
+
+const result = await live.broadcastTransaction(encoded)
+console.log(`TX ${hash} broadcast to ${result.peersBroadcastedTo} peers`)
+```
+
+### Decode historical output from archive
+
+```ts
+import { decodeQearnLockOutput } from "@qubic.org/contracts"
+import { publicKeyToIdentity } from "@qubic.org/crypto"
+import { createQueryClient } from "@qubic.org/rpc"
+import { toTxHash } from "@qubic.org/types"
+
+const archive = createQueryClient()
+const tx = await archive.getTransaction(toTxHash("abcdef..."))
+
+const output = decodeQearnLockOutput(
+  Buffer.from(tx.responseData ?? "", "base64"),
+  publicKeyToIdentity,
+)
+console.log("Lock output:", output)
+```

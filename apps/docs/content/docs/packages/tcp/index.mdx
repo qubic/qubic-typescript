@@ -3,11 +3,48 @@ title: "@qubic.org/tcp"
 description: Direct TCP transport for Qubic nodes — binary framing, connection pool with automatic failover, and typed request helpers.
 ---
 
-`@qubic.org/tcp` lets you talk directly to Qubic peer nodes over TCP. Use it when you need the lowest possible latency, when the HTTP gateway is unavailable, or when building node monitoring tooling.
+<PackageHeader name="@qubic.org/tcp" label="Direct TCP transport with connection pooling and failover" />
 
-<Callout>
-  For most applications, [`@qubic.org/rpc`](/docs/packages/rpc) is simpler and requires no TCP connection management. Reach for `@qubic.org/tcp` when you specifically need peer-level access.
-</Callout>
+`@qubic.org/tcp` connects directly to Qubic peer nodes over TCP. Use it for the lowest latency data access, when the HTTP gateway is unavailable, or when building node monitoring tooling.
+
+---
+
+## Introduction
+
+### Why TCP instead of HTTP?
+
+The Qubic HTTP RPC gateway (`@qubic.org/rpc`) is simpler and covers most application needs. Go to TCP when:
+
+- You need to query a **specific peer** rather than through a gateway
+- You want to **broadcast a transaction** without going through the gateway
+- You're building **node monitoring or peer discovery** tooling
+- You need the **lowest possible latency** and can manage connection state
+
+### Frame format
+
+Every Qubic TCP message uses an 8-byte frame header:
+
+```
+[size: 3 bytes LE][type: 1 byte][dejavu: 4 bytes LE][payload: N bytes]
+```
+
+`dejavu` is a random nonce echoed in the response to pair requests and responses. The client sends one frame; the server may respond with multiple packets terminated by `END_RESPONSE` (type 35).
+
+### Connection pool
+
+`createNodePool` maintains a list of peer addresses and fails over automatically. On connection failure or timeout it moves to the next peer, up to `maxRetries` attempts.
+
+```ts
+const pool = createNodePool(["node1.qubic.org", "node2.qubic.org"], {
+  timeoutMs: 5000,
+})
+```
+
+Pass `AbortSignal.timeout(ms)` to any request to bound total wait time.
+
+---
+
+## Installation
 
 <Tabs items={["Bun", "npm", "pnpm"]}>
 <Tab value="Bun">
@@ -27,40 +64,141 @@ pnpm add @qubic.org/tcp
 </Tab>
 </Tabs>
 
-## What's inside
+---
 
-| Page | Description |
+## API reference
+
+| Page | What's covered |
 |---|---|
-| [Connection](./connection) | `createNodeConnection`, `createNodePool` — open TCP connections and manage failover |
+| [Connection](./connection) | `createNodeConnection`, `createNodePool` — open and manage TCP connections |
 | [Requests](./requests) | `requestCurrentTickInfo`, `requestEntity`, `broadcastTransaction`, `exchangePublicPeers` |
-| [Frame utilities](./frame-utilities) | Low-level header encoder/decoder, message type constants, payload decoders |
+| [Frame utilities](./frame-utilities) | `encodeHeader`, `decodeHeader`, `MESSAGE_TYPE`, payload decoders |
 
-## Frame format
+### All exports
 
-Every Qubic TCP message uses an 8-byte frame header:
+```ts
+import {
+  // Connections
+  createNodeConnection,
+  createNodePool,
 
+  // Requests
+  requestCurrentTickInfo,
+  requestEntity,
+  broadcastTransaction,
+  exchangePublicPeers,
+
+  // Frame utilities
+  encodeHeader,
+  decodeHeader,
+  HEADER_SIZE,
+  DEFAULT_PORT,
+  MESSAGE_TYPE,
+
+  // Payload decoders
+  decodeCurrentTickInfo,
+  decodeExchangePublicPeers,
+  decodeRespondEntity,
+
+  // Error classes
+  QubicTcpError,
+  QubicTcpConnectionError,
+  QubicTcpTimeoutError,
+} from "@qubic.org/tcp"
 ```
-[size: 3 bytes LE][type: 1 byte][dejavu: 4 bytes LE][payload: N bytes]
-```
 
-`size` is the total message length including the 8-byte header. `dejavu` is a random nonce echoed in the response to pair requests and responses.
+---
 
-## Quick start
+## Examples
+
+### Query tick and entity balance from a pool
 
 ```ts
 import { createNodePool, requestCurrentTickInfo, requestEntity } from "@qubic.org/tcp"
 import { identityToPublicKey } from "@qubic.org/crypto"
 import { toIdentity } from "@qubic.org/types"
 
+const pool = createNodePool([
+  "node1.qubic.org",
+  "node2.qubic.org",
+  "node3.qubic.org",
+])
+
+try {
+  const { tick, epoch } = await requestCurrentTickInfo(pool, {
+    signal: AbortSignal.timeout(5000),
+  })
+  console.log(`Epoch ${epoch}, tick ${tick}`)
+
+  const pk = identityToPublicKey(
+    toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
+  )
+  const { entity, identity } = await requestEntity(pool, pk)
+  const balance = entity.incomingAmount - entity.outgoingAmount
+  console.log(`${identity}: ${balance} QU`)
+} finally {
+  pool.close()
+}
+```
+
+### Discover peers
+
+```ts
+import { createNodeConnection, exchangePublicPeers } from "@qubic.org/tcp"
+
+const conn = await createNodeConnection("node1.qubic.org")
+const { peers } = await exchangePublicPeers(conn)
+console.log("Known peers:", peers)
+conn.close()
+```
+
+### Broadcast a transaction directly over TCP
+
+```ts
+import { createNodePool, broadcastTransaction } from "@qubic.org/tcp"
+import { buildTransaction, signTransaction } from "@qubic.org/tx"
+import { publicKeyFromSeed } from "@qubic.org/crypto"
+import { toSeed } from "@qubic.org/types"
+
+const pool = createNodePool(["node1.qubic.org"])
+
+const seed            = toSeed("aaaa...")
+const sourcePublicKey = publicKeyFromSeed(seed)
+const destinationPk   = new Uint8Array(32)
+
+const unsigned = buildTransaction({
+  sourcePublicKey,
+  destinationPublicKey: destinationPk,
+  amount: 0n,
+  targetTick: tick + 5,
+  inputType: 0,
+})
+const signed = await signTransaction(unsigned, seed)
+
+// Raw bytes — not base64
+await broadcastTransaction(pool, signed)
+console.log("Broadcast via TCP")
+pool.close()
+```
+
+### Handle connection errors
+
+```ts
+import { createNodePool, requestCurrentTickInfo, QubicTcpConnectionError, QubicTcpTimeoutError } from "@qubic.org/tcp"
+
 const pool = createNodePool(["node1.qubic.org", "node2.qubic.org"])
 
 try {
-  const { tick, epoch } = await requestCurrentTickInfo(pool)
-  console.log(`Epoch ${epoch}, tick ${tick}`)
-
-  const pk = identityToPublicKey(toIdentity("CFBMEMZOI..."))
-  const { entity } = await requestEntity(pool, pk)
-  console.log("Balance:", entity.incomingAmount - entity.outgoingAmount)
+  const info = await requestCurrentTickInfo(pool, { signal: AbortSignal.timeout(3000) })
+  console.log("Tick:", info.tick)
+} catch (e) {
+  if (e instanceof QubicTcpTimeoutError) {
+    console.error("Request timed out — all nodes busy or unreachable")
+  } else if (e instanceof QubicTcpConnectionError) {
+    console.error("Could not connect to any node")
+  } else {
+    throw e
+  }
 } finally {
   pool.close()
 }

@@ -1,9 +1,48 @@
 ---
 title: "@qubic.org/rpc"
-description: Type-safe HTTP clients for the Qubic live RPC gateway and archive indexer. Types generated from OpenAPI schemas.
+description: Type-safe HTTP clients for the Qubic live RPC gateway and archive indexer.
 ---
 
-`@qubic.org/rpc` provides two HTTP clients: one for real-time chain state and one for indexed historical data. All types are generated from the official Qubic OpenAPI schemas.
+<PackageHeader name="@qubic.org/rpc" label="Live node and archive HTTP clients" />
+
+`@qubic.org/rpc` provides two HTTP clients: a **live client** for real-time node data and transaction broadcast, and an **archive client** for historical queries. Both are fully typed from OpenAPI schemas — no manual casting required.
+
+---
+
+## Introduction
+
+### Two clients, two data domains
+
+| Client | Created with | Default endpoint | Use for |
+|---|---|---|---|
+| Live | `createLiveClient()` | `https://rpc.qubic.org` | Current tick, balances, broadcast, contract queries |
+| Archive | `createQueryClient()` | `https://archive.qubic.org` | Historical transactions, event logs, computor history |
+
+Both clients accept a custom `fetch` implementation for environments that need it (Cloudflare Workers, test mocks, custom proxies).
+
+### Error model
+
+Both clients throw `QubicRpcError` on any failure — network errors, HTTP error responses, and malformed payloads all surface as the same class. Check `error.status` for the HTTP code, or `undefined` for network-level failures.
+
+```ts
+import { QubicRpcError } from "@qubic.org/rpc"
+
+try {
+  await live.getTickInfo()
+} catch (e) {
+  if (e instanceof QubicRpcError) {
+    console.error(e.status, e.message) // e.g. 429 "Rate limit exceeded"
+  }
+}
+```
+
+### When to use `@qubic.org/bob` instead
+
+`@qubic.org/bob` gives you a WebSocket subscription to live tick updates — ideal for dashboards and monitoring. `@qubic.org/rpc` is the right choice for one-shot queries, transaction broadcast, and anything that doesn't need a persistent connection.
+
+---
+
+## Installation
 
 <Tabs items={["Bun", "npm", "pnpm"]}>
 <Tab value="Bun">
@@ -23,31 +62,95 @@ pnpm add @qubic.org/rpc
 </Tab>
 </Tabs>
 
-## Live vs archive
+---
 
-| Client | Factory | Use for |
-|---|---|---|
-| **Live** | `createLiveClient()` | Current tick, balances, broadcasting, contract queries |
-| **Archive** | `createQueryClient()` | Historical transactions, event logs, computor lists |
+## API reference
 
-## Error model
+| Page | What's covered |
+|---|---|
+| [Live client](./live-client) | `getTickInfo`, `getBalance`, `broadcastTransaction`, `querySmartContract`, assets, computors |
+| [Archive client](./archive-client) | `getTransaction`, `getTransactionsForIdentity`, `getEventLogs`, `getTickTransactions` |
+| [Errors](./errors) | `QubicRpcError` — properties, common codes, retry pattern |
 
-Both clients **throw** `QubicRpcError` on network failure or non-2xx responses. There is no `Result` wrapper — use `try/catch`.
+### All exports
 
 ```ts
-try {
-  const info = await live.getTickInfo()
-} catch (e) {
-  if (e instanceof QubicRpcError) {
-    console.error(e.status, e.message)
-  }
-}
+import {
+  createLiveClient,
+  createQueryClient,
+  QubicRpcError,
+} from "@qubic.org/rpc"
 ```
 
-## Reference
+---
 
-| Section | What's in it |
-|---|---|
-| [Live client](/docs/packages/rpc/live-client) | `getTickInfo`, `getBalance`, `broadcastTransaction`, `querySmartContract`, … |
-| [Archive client](/docs/packages/rpc/archive-client) | `getTransaction`, `getEventLogs`, `getTransactionsForIdentity`, … |
-| [Errors](/docs/packages/rpc/errors) | `QubicRpcError` — structure and handling |
+## Examples
+
+### Query current tick and balance
+
+```ts
+import { createLiveClient } from "@qubic.org/rpc"
+import { toIdentity } from "@qubic.org/types"
+
+const live = createLiveClient()
+
+const { tick, epoch } = await live.getTickInfo()
+console.log(`Epoch ${epoch}, tick ${tick}`)
+
+const { balance } = await live.getBalance(
+  toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
+)
+console.log("Balance:", balance, "QU")
+```
+
+### Look up a historical transaction
+
+```ts
+import { createQueryClient } from "@qubic.org/rpc"
+import { toTxHash } from "@qubic.org/types"
+
+const archive = createQueryClient()
+
+const tx = await archive.getTransaction(toTxHash("abcdef..."))
+console.log(tx.sourceId, "→", tx.destId, ":", tx.amount, "QU")
+console.log("Status:", tx.transactionStatus)
+```
+
+### Retry on rate limit
+
+```ts
+import { createLiveClient, QubicRpcError } from "@qubic.org/rpc"
+
+const live = createLiveClient()
+
+async function withRetry<T>(fn: () => Promise<T>, retries = 3): Promise<T> {
+  for (let i = 0; i < retries; i++) {
+    try {
+      return await fn()
+    } catch (e) {
+      if (e instanceof QubicRpcError && e.status === 429 && i < retries - 1) {
+        await new Promise((r) => setTimeout(r, 1000 * (i + 1)))
+        continue
+      }
+      throw e
+    }
+  }
+  throw new Error("unreachable")
+}
+
+const info = await withRetry(() => live.getTickInfo())
+```
+
+### Custom fetch (e.g. Cloudflare Workers)
+
+```ts
+import { createLiveClient } from "@qubic.org/rpc"
+
+const live = createLiveClient({
+  baseUrl: "https://rpc.qubic.org",
+  fetch: (url, init) => {
+    // custom fetch with auth headers, logging, etc.
+    return fetch(url, { ...init, headers: { ...init?.headers, "X-API-Key": MY_KEY } })
+  },
+})
+```

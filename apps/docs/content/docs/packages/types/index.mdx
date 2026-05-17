@@ -1,9 +1,48 @@
 ---
 title: "@qubic.org/types"
-description: Branded primitives, protocol constants, contract indexes, and shared error types. The foundation every other SDK package depends on.
+description: Branded primitive types, runtime constructors, and validation guards for Qubic network values.
 ---
 
-`@qubic.org/types` has no runtime dependencies. It exports the branded types, constants, and error classes shared across the entire SDK.
+<PackageHeader name="@qubic.org/types" label="Branded types, runtime constructors, and constants" />
+
+`@qubic.org/types` is the foundation layer of the SDK. Every other package depends on it. It exports branded TypeScript types that make it impossible to accidentally pass a raw string where an `Identity` is required, plus the constructors and guards that get you safely from raw user input to those types.
+
+---
+
+## Introduction
+
+### The problem with plain strings
+
+Qubic uses several string-shaped values that look similar but mean very different things:
+
+- **Identity** — 60-char uppercase public key string (e.g. `CFBMEMZOIDEX...`)
+- **TxHash** — 60-char hex transaction hash
+- **Seed** — 55-char lowercase private key seed
+- **Base64** — base64-encoded binary payload
+
+Without branding, nothing stops you from passing a `Seed` where an `Identity` is expected. The mistake compiles, ships, and shows up as a subtle bug in production.
+
+### Branded types to the rescue
+
+`@qubic.org/types` attaches a phantom type brand to each:
+
+```ts
+type Identity = string & { readonly __brand: "Identity" }
+type TxHash   = string & { readonly __brand: "TxHash" }
+type Seed     = string & { readonly __brand: "Seed" }
+type Base64   = string & { readonly __brand: "Base64" }
+```
+
+TypeScript rejects `seed` where `Identity` is expected — at zero runtime cost. The brands exist only at type-check time and are erased in the emitted JavaScript.
+
+### Constructor vs guard
+
+- **Constructors** (`toIdentity`, `toTxHash`, …) validate the format at runtime and throw a typed `QubicError` subclass on bad input. Use these at trust boundaries (form submissions, API responses).
+- **Guards** (`isIdentity`, `isTxHash`, …) return `true` or `false` without throwing. Use these for filtering or conditional logic on untrusted data.
+
+---
+
+## Installation
 
 <Tabs items={["Bun", "npm", "pnpm"]}>
 <Tab value="Bun">
@@ -23,20 +62,105 @@ pnpm add @qubic.org/types
 </Tab>
 </Tabs>
 
-## What's in this package
+---
 
-**Branded types** — `Identity`, `Seed`, `TxHash`, `Base64` with phantom type brands for compile-time safety.
+## API reference
 
-**Constructors and guards** — `toIdentity`, `isIdentity`, `toSeed`, `isSeed`, `toTxHash`, `isTxHash` for safe parsing.
-
-**Protocol constants** — `PROTOCOL`, `CONTRACT_INDEX`, `LOG_TYPE`.
-
-**Error classes** — `QubicError`, `InvalidIdentityError`, `InvalidSeedError`, `InvalidTxHashError`.
-
-## Reference
-
-| Section | What's in it |
+| Page | What's covered |
 |---|---|
-| [Branded types](/docs/packages/types/branded-types) | Identity, Seed, TxHash, Base64 — constructors and guards |
-| [Constants](/docs/packages/types/constants) | PROTOCOL, CONTRACT_INDEX, LOG_TYPE tables |
-| [Errors](/docs/packages/types/errors) | Error class hierarchy |
+| [Branded types](./branded-types) | `Identity`, `Seed`, `TxHash`, `Base64` — constructors and guards |
+| [Constants](./constants) | `PROTOCOL`, `CONTRACT_INDEX`, `LOG_TYPE` |
+| [Errors](./errors) | `QubicError` hierarchy — base class and subclasses |
+
+### All exports
+
+```ts
+import {
+  // Branded types (TypeScript types only, no runtime value)
+  type Identity, type Seed, type TxHash, type Base64,
+
+  // Constructors — validate, brand, and return
+  toIdentity, toSeed, toTxHash, toBase64,
+
+  // Guards — return boolean, never throw
+  isIdentity, isSeed, isTxHash, isBase64,
+
+  // Constants
+  PROTOCOL, CONTRACT_INDEX, LOG_TYPE,
+
+  // Error classes
+  QubicError,
+  QubicIdentityError,
+  QubicSeedError,
+  QubicHashError,
+  QubicBase64Error,
+} from "@qubic.org/types"
+```
+
+---
+
+## Examples
+
+### Validate user input at a form boundary
+
+```ts
+import { toIdentity, QubicIdentityError } from "@qubic.org/types"
+
+function parseAddressInput(raw: string) {
+  try {
+    return toIdentity(raw.trim().toUpperCase())
+  } catch (e) {
+    if (e instanceof QubicIdentityError) {
+      return { error: "Invalid Qubic address — must be 60 uppercase characters." }
+    }
+    throw e
+  }
+}
+
+const result = parseAddressInput(formValues.destination)
+if ("error" in result) showFieldError(result.error)
+else submitTransfer(result) // result is typed as Identity here
+```
+
+### Filter an untrusted list
+
+```ts
+import { isIdentity, isTxHash } from "@qubic.org/types"
+
+// User might paste anything — filter safely without try/catch
+const maybeIdentities = rawInputs.filter(isIdentity)
+const maybeTxHashes   = rawInputs.filter(isTxHash)
+```
+
+### Use named constants instead of magic numbers
+
+```ts
+import { CONTRACT_INDEX, LOG_TYPE } from "@qubic.org/types"
+
+// Readable contract references
+const contractIndex = CONTRACT_INDEX.QEARN // 9
+
+// Readable log type checks
+bob.subscribe("eventLogs", identity, (events) => {
+  for (const event of events) {
+    if (event.eventType === LOG_TYPE.QU_TRANSFER) {
+      // handle transfer
+    }
+  }
+})
+```
+
+### Type narrowing in a union handler
+
+```ts
+import { type Identity, type TxHash, isIdentity } from "@qubic.org/types"
+
+function handle(value: Identity | TxHash) {
+  if (isIdentity(value)) {
+    // value: Identity
+    return lookupBalance(value)
+  }
+  // value: TxHash
+  return lookupTransaction(value)
+}
+```

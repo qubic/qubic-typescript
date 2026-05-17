@@ -3,42 +3,159 @@ title: "@qubic.org/wallet"
 description: High-level wallet for building and signing transactions, plus AES-256-GCM encrypted seed vault management.
 ---
 
-`@qubic.org/wallet` is the recommended signing layer for most applications. It wraps `@qubic.org/tx` and `@qubic.org/crypto` with a friendlier API and adds an encrypted vault for secure seed storage.
+<PackageHeader name="@qubic.org/wallet" label="Transaction signer and encrypted seed vault" />
 
-<Tabs items={["Bun", "npm", "pnpm"]}>
-<Tab value="Bun">
-```bash
-bun add @qubic.org/wallet @qubic.org/rpc @qubic.org/types
-```
-</Tab>
-<Tab value="npm">
-```bash
-npm install @qubic.org/wallet @qubic.org/rpc @qubic.org/types
-```
-</Tab>
-<Tab value="pnpm">
-```bash
-pnpm add @qubic.org/wallet @qubic.org/rpc @qubic.org/types
-```
-</Tab>
-</Tabs>
+`@qubic.org/wallet` provides two things: a high-level API for building and signing Qubic transactions, and an AES-256-GCM encrypted vault for storing multiple seeds securely.
 
-## `createWallet(seed)`
+---
 
-Creates a wallet from a seed. The wallet derives the public key and identity from the seed and exposes methods for building and signing transactions.
+## Introduction
+
+### Wallet
+
+A `Wallet` holds a single seed and exposes methods to build, sign, and encode transactions in one call. It abstracts the `buildTransaction` → `signTransaction` → `encodeTransaction` pipeline from `@qubic.org/tx`.
 
 ```ts
 import { createWallet, generateSeed } from "@qubic.org/wallet"
 
 const wallet = createWallet(generateSeed())
-console.log(wallet.identity) // 60-char uppercase Identity
+wallet.identity   // the Identity derived from the seed
+wallet.publicKey  // the 32-byte public key
 ```
 
-`generateSeed()` produces a cryptographically random 55-character lowercase seed.
+### Vault
 
-## Reference
+A `Vault` stores multiple labeled seeds, encrypted with a user password using AES-256-GCM + PBKDF2. Seeds never leave the vault in plain form — you export only the encrypted blob and decrypt at runtime with the password.
 
-| Section | What's in it |
+```ts
+const vault = await createVault("my-password")
+await vault.addSeed("main", seed)
+const walletFromVault = createWalletFromVault(vault, "main")
+```
+
+### When to use this vs `@qubic.org/tx`
+
+`@qubic.org/wallet` is the right choice for applications — it handles the full transaction lifecycle and key management. Use `@qubic.org/tx` directly only if you need raw binary control, custom signing flows, or hardware wallet integration.
+
+---
+
+## Installation
+
+<Tabs items={["Bun", "npm", "pnpm"]}>
+<Tab value="Bun">
+```bash
+bun add @qubic.org/wallet
+```
+</Tab>
+<Tab value="npm">
+```bash
+npm install @qubic.org/wallet
+```
+</Tab>
+<Tab value="pnpm">
+```bash
+pnpm add @qubic.org/wallet
+```
+</Tab>
+</Tabs>
+
+---
+
+## API reference
+
+| Page | What's covered |
 |---|---|
-| [Transfers & contract calls](/docs/packages/wallet/transfers) | `buildTransfer`, `buildScTransaction`, `buildTransaction` |
-| [Vault](/docs/packages/wallet/vault) | `createVault`, `exportVault`, `importVault`, `unlockVault`, `addSeedToVault` |
+| [Transfers](./transfers) | `createWallet`, `generateSeed`, `buildTransfer`, `buildScTransaction` |
+| [Vault](./vault) | `createVault`, `exportVault`, `importVault`, `unlockVault`, `createWalletFromVault`, `addSeedToVault` |
+
+### All exports
+
+```ts
+import {
+  // Wallet
+  createWallet,
+  generateSeed,
+
+  // Vault
+  createVault,
+  exportVault,
+  importVault,
+  unlockVault,
+  addSeedToVault,
+  createWalletFromVault,
+} from "@qubic.org/wallet"
+```
+
+---
+
+## Examples
+
+### Send a QU transfer
+
+```ts
+import { createWallet, generateSeed } from "@qubic.org/wallet"
+import { createLiveClient } from "@qubic.org/rpc"
+import { toIdentity } from "@qubic.org/types"
+
+const live   = createLiveClient()
+const wallet = createWallet(generateSeed())
+const { tick } = await live.getTickInfo()
+
+const { encoded, hash } = await wallet.buildTransfer({
+  destination: toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL"),
+  amount: 1_000_000n,
+  targetTick: tick + 5,
+  currentTick: tick,
+})
+
+const result = await live.broadcastTransaction(encoded)
+console.log(`TX ${hash} broadcast to ${result.peersBroadcastedTo} peers`)
+```
+
+### Store seeds in an encrypted vault
+
+```ts
+import { createVault, addSeedToVault, exportVault, importVault, createWalletFromVault } from "@qubic.org/wallet"
+import { createWallet, generateSeed } from "@qubic.org/wallet"
+
+// Create and populate a vault
+const vault = await createVault("my-strong-password")
+const seed  = generateSeed()
+await addSeedToVault(vault, "trading", seed)
+
+// Export to a portable encrypted blob (store in localStorage, file, etc.)
+const blob = await exportVault(vault)
+
+// Later: restore and use
+const restored = await importVault(blob, "my-strong-password")
+const wallet   = createWalletFromVault(restored, "trading")
+console.log("Wallet identity:", wallet.identity)
+```
+
+### Call a smart contract
+
+```ts
+import { createWallet, generateSeed } from "@qubic.org/wallet"
+import { qearn } from "@qubic.org/contracts"
+import { createLiveClient } from "@qubic.org/rpc"
+import { toIdentity } from "@qubic.org/types"
+
+const live   = createLiveClient()
+const wallet = createWallet(generateSeed())
+const { tick } = await live.getTickInfo()
+
+const payload     = qearn.buildLockInput({ amount: 10_000_000n })
+const destination = toIdentity("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+
+const { encoded, hash } = await wallet.buildScTransaction({
+  destination,
+  amount: 10_000_000n,
+  targetTick: tick + 5,
+  currentTick: tick,
+  inputType: qearn.LOCK_INPUT_TYPE,
+  payload,
+})
+
+await live.broadcastTransaction(encoded)
+console.log("SC TX hash:", hash)
+```

@@ -3,7 +3,38 @@ title: "@qubic.org/bob"
 description: Live Qubic node client with WebSocket subscriptions, automatic reconnection, and catch-up buffering.
 ---
 
-`@qubic.org/bob` maintains a persistent WebSocket connection to the Qubic live node and streams tick data and account event logs in real time.
+<PackageHeader name="@qubic.org/bob" label="WebSocket client for live tick and event log subscriptions" />
+
+`@qubic.org/bob` keeps a persistent WebSocket connection to a Qubic node and delivers live tick updates and account event logs to your callbacks. It handles reconnection, resubscription, and catch-up buffering automatically.
+
+---
+
+## Introduction
+
+### Why a persistent connection?
+
+The Qubic network produces a new tick roughly every second. Polling `getTickInfo` over HTTP works, but a WebSocket subscription is more efficient — one round-trip to subscribe, then zero-overhead push for every tick. `@qubic.org/bob` manages that connection lifecycle for you.
+
+### Topics
+
+Bob supports two subscription topics:
+
+| Topic | What it delivers |
+|---|---|
+| `"tickInfo"` | Every new tick — number, epoch, duration, and initial tick |
+| `"eventLogs"` | Account event logs for a specific identity — transfers, asset changes, contract messages |
+
+### Automatic reconnection and resubscription
+
+Bob reconnects automatically after a connection drop. With `autoResubscribe: true`, all active subscriptions are re-registered on reconnect — you don't call `subscribe` again. Without it, listen to the `"connect"` event and re-subscribe manually.
+
+### Catch-up buffering
+
+After a reconnect, the server may send buffered ticks that arrived during the gap. The `meta.isCatchUp` flag in the `"tickInfo"` callback identifies these so you can skip or process them separately.
+
+---
+
+## Installation
 
 <Tabs items={["Bun", "npm", "pnpm"]}>
 <Tab value="Bun">
@@ -23,17 +54,105 @@ pnpm add @qubic.org/bob
 </Tab>
 </Tabs>
 
-## Key concepts
+---
 
-**Subscriptions** — call `bob.subscribe(topic, handler)` to receive a callback each time new data arrives. The call returns an unsubscribe function.
+## API reference
 
-**Auto-reconnect** — bob reconnects automatically on disconnect. Pass `autoResubscribe: true` to restore all active subscriptions after each reconnect.
-
-**Catch-up buffer** — after reconnecting, bob may deliver buffered ticks that arrived during the gap. The `isCatchUp` flag in the callback metadata distinguishes buffered from live delivery.
-
-## Reference
-
-| Section | What's in it |
+| Page | What's covered |
 |---|---|
-| [Subscriptions](/docs/packages/bob/subscriptions) | `subscribe`, `unsubscribe`, topic reference |
-| [Connection](/docs/packages/bob/connection) | `connect`, `disconnect`, `autoResubscribe`, catch-up behavior |
+| [Connection](./connection) | `createBobClient`, `connect`, `disconnect`, `autoResubscribe`, events |
+| [Subscriptions](./subscriptions) | `subscribe("tickInfo")`, `subscribe("eventLogs")`, `unsubscribeAll` |
+
+### All exports
+
+```ts
+import {
+  createBobClient,
+} from "@qubic.org/bob"
+
+const bob = createBobClient({
+  autoResubscribe: true,
+  reconnectDelayMs: 1000,
+})
+
+await bob.connect()
+```
+
+---
+
+## Examples
+
+### Subscribe to live tick updates
+
+```ts
+import { createBobClient } from "@qubic.org/bob"
+
+const bob = createBobClient({ autoResubscribe: true })
+await bob.connect()
+
+bob.subscribe("tickInfo", (tick, meta) => {
+  if (meta.isCatchUp) return // skip buffered ticks from reconnect gap
+
+  console.log(`Tick ${tick.tick} (epoch ${tick.epoch}, ${tick.duration}ms)`)
+})
+
+process.on("SIGINT", async () => {
+  await bob.disconnect()
+  process.exit(0)
+})
+```
+
+### Subscribe to account event logs
+
+```ts
+import { createBobClient } from "@qubic.org/bob"
+import { toIdentity } from "@qubic.org/types"
+
+const bob = createBobClient({ autoResubscribe: true })
+await bob.connect()
+
+const identity = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
+
+bob.subscribe("eventLogs", identity, (events) => {
+  for (const event of events) {
+    console.log(`Event type ${event.eventType} at tick ${event.tick}`)
+    console.log(`TX: ${event.txId}`)
+  }
+})
+```
+
+### React to lifecycle events
+
+```ts
+import { createBobClient } from "@qubic.org/bob"
+
+const bob = createBobClient()
+
+bob.on("connect",    ()         => console.log("Connected"))
+bob.on("disconnect", ({ code }) => console.log("Disconnected:", code))
+bob.on("reconnect",  ({ attempt }) => console.log("Reconnecting, attempt", attempt))
+bob.on("error",      (err)     => console.error("Error:", err.message))
+
+await bob.connect()
+```
+
+### Watch multiple identities
+
+```ts
+import { createBobClient } from "@qubic.org/bob"
+import { toIdentity } from "@qubic.org/types"
+
+const bob = createBobClient({ autoResubscribe: true })
+await bob.connect()
+
+const watchlist = [
+  toIdentity("CFBMEMZOIDEX..."),
+  toIdentity("ANOTHERIDENT..."),
+]
+
+for (const identity of watchlist) {
+  bob.subscribe("eventLogs", identity, (events) => {
+    handleEvents(identity, events)
+  })
+}
+```

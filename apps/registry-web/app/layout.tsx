@@ -17,8 +17,6 @@ const jetbrainsMono = JetBrains_Mono({
   display: 'swap',
 })
 
-const OG_DEFAULT = '/api/og?title=Qubic+Registry&sub=Contract+ABIs+pinned+per+epoch'
-
 export const metadata: Metadata = {
   metadataBase: new URL('https://registry.qubickit.dev'),
   title: {
@@ -30,7 +28,6 @@ export const metadata: Metadata = {
   openGraph: {
     siteName: 'Qubic Registry',
     type: 'website',
-    images: [OG_DEFAULT],
   },
   twitter: {
     card: 'summary_large_image',

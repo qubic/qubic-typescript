@@ -5,6 +5,7 @@ import defaultMdxComponents from "fumadocs-ui/mdx";
 import type { MDXComponents } from "mdx/types";
 import { ChangelogContent } from "./changelog-content";
 import { ContractTable } from "./contract-table";
+import { PackageList } from "./package-list";
 import { PackageHeader, PackageSigil } from "./package-sigil";
 
 export function getMDXComponents(components?: MDXComponents) {
@@ -17,6 +18,7 @@ export function getMDXComponents(components?: MDXComponents) {
     TypeTable,
     PackageSigil,
     PackageHeader,
+    PackageList,
     ContractTable,
     ChangelogContent,
     ...components,

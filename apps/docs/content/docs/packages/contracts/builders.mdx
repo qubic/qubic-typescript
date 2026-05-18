@@ -65,8 +65,8 @@ const { encoded } = await wallet.buildScTransaction({
 
 | ABI type | JavaScript type |
 |---|---|
-| `uint8` / `uint16` / `uint32` / `sint8` / `sint32` | `number` |
-| `uint64` / `sint64` / `uint128` | `bigint` |
+| `uint8` / `uint16` / `uint32` | `number` |
+| `uint64` / `sint64` | `bigint` |
 | `id` | `string` (Qubic identity, 60 chars) |
 | `bytes` | `Uint8Array` |
 | `array` | `T[]` where T matches the element type |

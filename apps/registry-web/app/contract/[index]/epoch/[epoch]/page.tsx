@@ -9,11 +9,12 @@ import { api, BACKEND_URL } from '../../../../../lib/api'
 export async function generateStaticParams() {
   const contracts = await api.contracts().catch(() => [])
   const all = await Promise.all(
-    contracts.map((c) =>
-      api.contractHistory(c.contractIndex).catch(() => []).then((history) =>
-        history.map((v) => ({ index: String(c.contractIndex), epoch: String(v.effectiveFromEpoch) }))
-      )
-    )
+    contracts.map(async (c) => {
+      const history = await api.contractHistory(c.contractIndex).catch(() => [])
+      const epochs = new Set(history.map((v) => v.effectiveFromEpoch))
+      epochs.add(c.currentFromEpoch)
+      return [...epochs].map((ep) => ({ index: String(c.contractIndex), epoch: String(ep) }))
+    })
   )
   return all.flat()
 }

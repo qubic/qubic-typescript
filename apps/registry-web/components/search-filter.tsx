@@ -3,6 +3,8 @@ import { ArrowUpRight, Download, Search } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { ContractSummary } from '../lib/api'
+
+const BACKEND = process.env.NEXT_PUBLIC_REGISTRY_API_URL ?? 'https://registry.qubickit.dev'
 import { Sigil } from './sigil'
 
 type SortKey = 'idx' | 'name' | 'procs' | 'funcs' | 'structs'
@@ -248,7 +250,7 @@ export function SearchFilter({ contracts }: { contracts: ContractSummary[] }) {
                     </a>
                     <a
                       className="btn sm ghost icon"
-                      href={`/download/epoch/${c.currentFromEpoch}/${c.contractName}.json`}
+                      href={`${BACKEND}/download/epoch/${c.currentFromEpoch}/${c.contractName}.json`}
                       download
                       title={`Download ${c.contractName}.json`}
                       aria-label={`Download ${c.contractName}.json`}

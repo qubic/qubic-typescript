@@ -2,6 +2,8 @@
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
+const BACKEND = process.env.NEXT_PUBLIC_REGISTRY_API_URL ?? 'https://registry.qubickit.dev'
+
 export function EpochNav({
   epoch,
   min,
@@ -76,7 +78,7 @@ export function EpochNav({
       </span>
       <span style={{ flex: 1 }} />
       {contractCount !== undefined && (
-        <a className="btn sm" href={`/download/epoch/${epoch}/all.zip`} download>
+        <a className="btn sm" href={`${BACKEND}/download/epoch/${epoch}/all.zip`} download>
           ↓ epoch-{epoch}.zip · {contractCount} contracts
         </a>
       )}

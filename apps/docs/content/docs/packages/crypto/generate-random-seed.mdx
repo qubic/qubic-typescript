@@ -14,12 +14,12 @@ generateRandomSeed(): Seed
 Generates a new random 55-character lowercase `Seed`. This is the correct way to create a Qubic wallet seed. Uses `crypto.getRandomValues` under the hood — never substitute `Math.random()`.
 
 ```ts
-import { generateRandomSeed, identityFromSeed } from "@qubic.org/crypto"
+import { generateRandomSeed, deriveIdentityFromSeed } from "@qubic.org/crypto"
 
 const seed = generateRandomSeed()
 // seed: Seed — 55-char lowercase string, ready for key derivation
 
-const identity = identityFromSeed(seed)
+const identity = deriveIdentityFromSeed(seed)
 // identity: Identity — the public address for this seed
 ```
 

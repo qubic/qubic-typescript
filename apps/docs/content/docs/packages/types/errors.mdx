@@ -23,12 +23,12 @@ Abstract base class. Never thrown directly. All SDK errors carry these fields:
 | Property | Type | Description |
 |---|---|---|
 | `message` | `string` | Human-readable description of what went wrong |
-| `code` | `string` | Machine-readable error code — matches the class name (e.g. `"InvalidIdentityError"`) |
-| `context` | `unknown` | The value that caused the error — the string that failed validation |
-| `name` | `string` | Same as `code` |
+| `code` | `string` | Machine-readable error code constant (e.g. `"INVALID_IDENTITY"`, `"INVALID_SEED"`) |
+| `context` | `Record<string, unknown> \| undefined` | Additional context about the error |
+| `name` | `string` | The class name (e.g. `"InvalidIdentityError"`) |
 | `stack` | `string \| undefined` | Standard JS stack trace |
 
-The `code` and `context` fields let you handle errors programmatically without `instanceof`:
+The `name` field lets you handle errors programmatically without `instanceof`:
 
 ```ts
 } catch (e) {
@@ -80,4 +80,4 @@ Some bundlers produce multiple module instances, which breaks `instanceof` check
 }
 ```
 
-Both `name` and `code` are the class name as a string, so they are safe to compare across module instances.
+The `name` property equals the class name (e.g. `"InvalidIdentityError"`). The `code` property is a constant string (e.g. `"INVALID_IDENTITY"`). Use `name` for cross-module `instanceof`-safe checks.

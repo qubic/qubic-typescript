@@ -8,7 +8,7 @@ Qubic uses **KangarooTwelve (K12)** as its hash function. K12 is derived from th
 ## Signature
 
 ```ts
-K12(input: Uint8Array, outputLength?: number): Uint8Array
+k12(input: Uint8Array, outputLength?: number): Uint8Array
 ```
 
 ## Purpose
@@ -16,11 +16,11 @@ K12(input: Uint8Array, outputLength?: number): Uint8Array
 Computes a K12 hash of arbitrary input bytes.
 
 ```ts
-import { K12 } from "@qubic.org/crypto"
+import { k12 } from "@qubic.org/crypto"
 
 const input = new TextEncoder().encode("hello qubic")
-const hash = K12(input)         // Uint8Array, 32 bytes (default)
-const longHash = K12(input, 64) // Uint8Array, 64 bytes
+const hash = k12(input)         // Uint8Array, 32 bytes (default)
+const longHash = k12(input, 64) // Uint8Array, 64 bytes
 ```
 
 ## Parameters

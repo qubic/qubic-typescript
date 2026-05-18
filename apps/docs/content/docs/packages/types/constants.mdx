@@ -20,7 +20,7 @@ import { PROTOCOL } from "@qubic.org/types"
 | `IDENTITY_LENGTH` | `60` | Identity string character count |
 | `SEED_LENGTH` | `55` | Seed string character count |
 | `TX_HASH_LENGTH` | `60` | Transaction hash character count |
-| `TICKS_TO_EXPIRY` | `5` | Default ticks ahead used for `targetTick` |
+| `TICKS_TO_EXPIRY` | `20` | Default ticks ahead used for `targetTick` |
 
 ---
 
@@ -33,21 +33,38 @@ import { CONTRACT_INDEX } from "@qubic.org/types"
 
 console.log(CONTRACT_INDEX.QEARN)     // 9
 console.log(CONTRACT_INDEX.QX)        // 1
-console.log(CONTRACT_INDEX.QUOTTERY)  // 4
+console.log(CONTRACT_INDEX.QUOTTERY)  // 2
 ```
 
 | Name | Index |
 |---|---|
-| `RANDOM` | 0 |
 | `QX` | 1 |
-| `QUOTTERY` | 4 |
-| `QUTIL` | 5 |
-| `SUPPLY_WATCHER` | — |
-| `COMPUTOR_CONTROLLED_FUND` | — |
+| `QUOTTERY` | 2 |
+| `RANDOM` | 3 |
+| `QUTIL` | 4 |
+| `MY_LAST_MATCH` | 5 |
+| `GENERAL_QUORUM_PROPOSAL` | 6 |
+| `SUPPLY_WATCHER` | 7 |
+| `COMPUTOR_CONTROLLED_FUND` | 8 |
 | `QEARN` | 9 |
 | `QVAULT` | 10 |
-| `MSVAULT` | 11 |
+| `MS_VAULT` | 11 |
 | `QBAY` | 12 |
+| `QSWAP` | 13 |
+| `NOSTROMO` | 14 |
+| `QDRAW` | 15 |
+| `RANDOM_LOTTERY` | 16 |
+| `QBOND` | 17 |
+| `QIP` | 18 |
+| `QRAFFLE` | 19 |
+| `QRWA` | 20 |
+| `QRESERVE_POOL` | 21 |
+| `QTHIRTYFOUR` | 22 |
+| `QDUEL` | 23 |
+| `PULSE` | 24 |
+| `VOTTUN_BRIDGE` | 25 |
+| `QUSINO` | 26 |
+| `ESCROW` | 27 |
 
 ---
 
@@ -58,13 +75,13 @@ Maps event log type names to their numeric IDs used in the live event stream and
 ```ts
 import { LOG_TYPE } from "@qubic.org/types"
 
-console.log(LOG_TYPE.QU_TRANSFER)    // 14
+console.log(LOG_TYPE.QU_TRANSFER)    // 0
 console.log(LOG_TYPE.ASSET_ISSUANCE) // 1
 ```
 
 | ID | Name | Description |
 |---|---|---|
-| `0` | `QU_TRANSFER_IN_REGISTRATION` | QU transfer during identity registration |
+| `0` | `QU_TRANSFER` | Standard QU transfer |
 | `1` | `ASSET_ISSUANCE` | New asset issued |
 | `2` | `ASSET_OWNERSHIP_CHANGE` | Asset ownership transferred |
 | `3` | `ASSET_POSSESSION_CHANGE` | Asset possession transferred |
@@ -78,9 +95,8 @@ console.log(LOG_TYPE.ASSET_ISSUANCE) // 1
 | `11` | `ASSET_OWNERSHIP_MANAGING_CONTRACT_CHANGE` | Asset management contract changed |
 | `12` | `ASSET_POSSESSION_MANAGING_CONTRACT_CHANGE` | Asset possession manager changed |
 | `13` | `CONTRACT_RESERVE_DEDUCTION` | Contract reserve deducted |
-| `14` | `QU_TRANSFER` | Standard QU transfer |
-| `15` | `ORACLE_QUERY_STATUS_CHANGE` | Oracle query status update |
-| `16` | `ORACLE_SUBSCRIBER_LOG_MESSAGE` | Oracle subscriber log |
+| `14` | `ORACLE_QUERY_STATUS_CHANGE` | Oracle query status update |
+| `15` | `ORACLE_SUBSCRIBER_LOG_MESSAGE` | Oracle subscriber log |
 | `255` | `CUSTOM_MESSAGE` | Custom contract message |
 
 `LOG_TYPE` IDs correspond to `eventType` values in event log responses from `@qubic.org/bob` and `@qubic.org/rpc`.

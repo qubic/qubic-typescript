@@ -57,10 +57,10 @@ Two patterns for getting a branded value from a raw string:
 ### Constructor (throws on bad input)
 
 ```ts
-import { toIdentity, QubicIdentityError } from "@qubic.org/types"
+import { toIdentity, InvalidIdentityError } from "@qubic.org/types"
 
 const identity = toIdentity(rawString)
-// Returns Identity if valid, throws QubicIdentityError if not
+// Returns Identity if valid, throws InvalidIdentityError if not
 ```
 
 Use constructors at **trust boundaries** — form inputs, API responses, config files, anything that comes from outside your type-safe code. The exception forces you to handle the error explicitly.

@@ -1,12 +1,12 @@
 ---
-title: identityFromSeed
+title: deriveIdentityFromSeed
 description: Derives the Qubic identity string directly from a seed in one step, equivalent to publicKeyToIdentity(publicKeyFromSeed(seed)).
 ---
 
 ## Signature
 
 ```ts
-identityFromSeed(seed: Seed): Identity
+deriveIdentityFromSeed(seed: Seed): Identity
 ```
 
 ## Purpose
@@ -14,10 +14,10 @@ identityFromSeed(seed: Seed): Identity
 Derives the Qubic identity string directly from a `Seed`. Equivalent to calling `publicKeyToIdentity(publicKeyFromSeed(seed))`, but in one step. Use this when you only need the identity and don't need the intermediate public key.
 
 ```ts
-import { identityFromSeed } from "@qubic.org/crypto"
+import { deriveIdentityFromSeed } from "@qubic.org/crypto"
 import { toSeed } from "@qubic.org/types"
 
-const identity = identityFromSeed(toSeed("aaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"))
+const identity = deriveIdentityFromSeed(toSeed("aaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"))
 // identity: Identity — 60-character uppercase string
 ```
 

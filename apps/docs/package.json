@@ -20,6 +20,7 @@
     "@radix-ui/react-presence": "^1.1.5",
     "@radix-ui/react-scroll-area": "^1.2.10",
     "class-variance-authority": "^0.7.1",
+    "esbuild": "^0.28.0",
     "flexsearch": "^0.8.212",
     "fumadocs-core": "16.8.11",
     "fumadocs-mdx": "15.0.6",

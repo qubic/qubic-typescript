@@ -1,0 +1,11 @@
+/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/contract/*
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+
+/epoch/*
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+
+/*
+  Cache-Control: public, max-age=60, stale-while-revalidate=3600

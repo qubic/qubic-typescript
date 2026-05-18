@@ -7,8 +7,9 @@ const config = {
   serverExternalPackages: ["@takumi-rs/image-response"],
   reactStrictMode: true,
   images: {
-    domains: ['img.shields.io']
-  }
+    dangerouslyAllowSVG: true,
+    domains: ["img.shields.io"],
+  },
 };
 
 export default withMDX(config);

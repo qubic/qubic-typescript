@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "next build",
+    "build:cf": "opennextjs-cloudflare build",
     "dev": "next dev",
     "start": "next start",
     "types:check": "fumadocs-mdx && next typegen && tsc --noEmit",
@@ -44,7 +45,10 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.4.15",
+    "@opennextjs/cloudflare": "^1.19.10",
     "@tailwindcss/postcss": "^4.3.0",
+    "@types/hast": "^3.0.4",
     "@types/mdx": "^2.0.13",
     "@types/node": "^25.7.0",
     "@types/react": "^19.2.14",
@@ -52,7 +56,6 @@
     "postcss": "^8.5.14",
     "tailwindcss": "^4.3.0",
     "typescript": "^6.0.3",
-    "@biomejs/biome": "^2.4.15",
-    "@types/hast": "^3.0.4"
+    "wrangler": "^4.92.0"
   }
 }

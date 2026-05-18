@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:cf": "opennextjs-cloudflare build",
     "start": "next start",
     "typecheck": "tsc --noEmit"
   },
@@ -19,9 +20,11 @@
     "react-dom": "^19.2.6"
   },
   "devDependencies": {
+    "@opennextjs/cloudflare": "^1.19.10",
     "@types/node": "latest",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "typescript": "*"
+    "typescript": "*",
+    "wrangler": "^4.92.0"
   }
 }

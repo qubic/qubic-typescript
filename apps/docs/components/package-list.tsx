@@ -1,17 +1,17 @@
 import Link from "next/link";
 
 const packages = [
-  { name: "@qubic.org/types",     href: "/docs/packages/types",     desc: "Branded primitives, protocol constants, shared error types",    color: "94a3b8" },
-  { name: "@qubic.org/crypto",    href: "/docs/packages/crypto",    desc: "K12 hash, SchnorrQ signatures, FourQ key derivation",           color: "a855f7" },
-  { name: "@qubic.org/tx",        href: "/docs/packages/tx",        desc: "Binary transaction builder, signer, and verifier",              color: "3b82f6" },
-  { name: "@qubic.org/wallet",    href: "/docs/packages/wallet",    desc: "Wallet, encrypted vault, and seed utilities",                   color: "10b981" },
-  { name: "@qubic.org/rpc",       href: "/docs/packages/rpc",       desc: "Type-safe REST client for the Qubic RPC gateway",               color: "f97316" },
-  { name: "@qubic.org/bob",       href: "/docs/packages/bob",       desc: "Live node client — JSON-RPC 2.0, REST, WebSocket subscriptions", color: "06b6d4" },
-  { name: "@qubic.org/events",    href: "/docs/packages/events",    desc: "Binary event decoder, filter builder, typed subscription helpers", color: "f59e0b" },
-  { name: "@qubic.org/registry",  href: "/docs/packages/registry",  desc: "Versioned ABI registry for all Qubic smart contracts",          color: "ef4444" },
-  { name: "@qubic.org/contracts", href: "/docs/packages/contracts", desc: "Generated typed wrappers for every deployed contract",           color: "6366f1" },
-  { name: "@qubic.org/tcp",       href: "/docs/packages/tcp",       desc: "Direct TCP transport — framing, connection pool, typed requests", color: "14b8a6" },
-  { name: "@qubic.org/react",     href: "/docs/packages/react",     desc: "React hooks and providers — TanStack Query, VaultProvider",      color: "38bdf8" },
+  { name: "@qubic.org/types",     href: "/packages/types",     desc: "Branded primitives, protocol constants, shared error types",    color: "94a3b8" },
+  { name: "@qubic.org/crypto",    href: "/packages/crypto",    desc: "K12 hash, SchnorrQ signatures, FourQ key derivation",           color: "a855f7" },
+  { name: "@qubic.org/tx",        href: "/packages/tx",        desc: "Binary transaction builder, signer, and verifier",              color: "3b82f6" },
+  { name: "@qubic.org/wallet",    href: "/packages/wallet",    desc: "Wallet, encrypted vault, and seed utilities",                   color: "10b981" },
+  { name: "@qubic.org/rpc",       href: "/packages/rpc",       desc: "Type-safe REST client for the Qubic RPC gateway",               color: "f97316" },
+  { name: "@qubic.org/bob",       href: "/packages/bob",       desc: "Live node client — JSON-RPC 2.0, REST, WebSocket subscriptions", color: "06b6d4" },
+  { name: "@qubic.org/events",    href: "/packages/events",    desc: "Binary event decoder, filter builder, typed subscription helpers", color: "f59e0b" },
+  { name: "@qubic.org/registry",  href: "/packages/registry",  desc: "Versioned ABI registry for all Qubic smart contracts",          color: "ef4444" },
+  { name: "@qubic.org/contracts", href: "/packages/contracts", desc: "Generated typed wrappers for every deployed contract",           color: "6366f1" },
+  { name: "@qubic.org/tcp",       href: "/packages/tcp",       desc: "Direct TCP transport — framing, connection pool, typed requests", color: "14b8a6" },
+  { name: "@qubic.org/react",     href: "/packages/react",     desc: "React hooks and providers — TanStack Query, VaultProvider",      color: "38bdf8" },
 ];
 
 export function PackageList() {

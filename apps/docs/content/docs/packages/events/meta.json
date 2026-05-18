@@ -4,9 +4,6 @@
   "root": true,
   "collapsible": false,
   "pages": [
-    "index",
-    "---Introduction---",
-    "introduction",
     "installation",
     "getting-started",
     "---Concepts---",

@@ -2,6 +2,7 @@
   "title": "@qubic.org/wallet",
   "icon": "Wallet",
   "root": true,
+  "collapsible": false,
   "pages": [
     "index",
     "---Introduction---",

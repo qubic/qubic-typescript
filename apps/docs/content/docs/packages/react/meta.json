@@ -2,6 +2,7 @@
   "title": "@qubic.org/react",
   "icon": "Layers",
   "root": true,
+  "collapsible": false,
   "pages": [
     "index",
     "---Introduction---",

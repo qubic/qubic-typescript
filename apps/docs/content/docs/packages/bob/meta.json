@@ -2,6 +2,7 @@
   "title": "@qubic.org/bob",
   "icon": "Radio",
   "root": true,
+  "collapsible": false,
   "pages": [
     "index",
     "---Introduction---",

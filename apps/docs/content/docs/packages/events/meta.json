@@ -2,6 +2,7 @@
   "title": "@qubic.org/events",
   "icon": "Bell",
   "root": true,
+  "collapsible": false,
   "pages": [
     "index",
     "---Introduction---",

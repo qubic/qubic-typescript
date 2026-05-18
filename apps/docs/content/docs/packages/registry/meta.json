@@ -2,6 +2,7 @@
   "title": "@qubic.org/registry",
   "icon": "Database",
   "root": true,
+  "collapsible": false,
   "pages": [
     "index",
     "---Introduction---",

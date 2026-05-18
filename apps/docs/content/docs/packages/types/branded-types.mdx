@@ -5,10 +5,12 @@ description: Identity, Seed, TxHash, Base64, HexPublicKey — compile-time brand
 
 TypeScript treats all strings as structurally equivalent. Without branding, the compiler happily accepts `buildTransaction({ destination: seedString })` — the wrong type in the wrong slot, and there's no error until runtime.
 
-Branded types fix this by attaching a phantom property that only exists in the type system:
+Branded types fix this by using a unique symbol as a phantom property that only exists in the type system:
 
 ```ts
-type Identity = string & { readonly __brand: "Identity" }
+declare const _brand: unique symbol
+type Brand<T, B extends string> = T & { readonly [_brand]: B }
+type Identity = Brand<string, 'Identity'>
 ```
 
 The brand has zero runtime cost. It only affects the compiler. The value itself is still a plain string — but now `Seed` and `Identity` are distinct types, and swapping them is a compile error.

@@ -31,10 +31,11 @@ This class of mistake shows up as a confusing RPC error rather than a compile er
 `@qubic.org/types` fixes this with a phantom type brand — a property that exists only in the type system, never in the emitted JavaScript:
 
 ```ts
-type Identity = string & { readonly __brand: "Identity" }
-type TxHash   = string & { readonly __brand: "TxHash" }
-type Seed     = string & { readonly __brand: "Seed" }
-type Base64   = string & { readonly __brand: "Base64" }
+// Actual implementation uses a unique symbol so brands are nominal, not structural
+type Identity = Brand<string, 'Identity'>
+type TxHash   = Brand<string, 'TxHash'>
+type Seed     = Brand<string, 'Seed'>
+type Base64   = Brand<string, 'Base64'>
 ```
 
 At runtime, `Identity`, `TxHash`, `Seed`, and `Base64` are all plain strings. The brand has zero runtime cost. But at type-check time, TypeScript treats them as distinct types:

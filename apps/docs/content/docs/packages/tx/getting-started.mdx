@@ -19,7 +19,7 @@ import { toSeed, toIdentity } from "@qubic.org/types"
 ```ts
 const seed = toSeed("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 
-const sourcePublicKey      = await publicKeyFromSeed(seed)
+const sourcePublicKey      = publicKeyFromSeed(seed)  // synchronous
 const destinationPublicKey = identityToPublicKey(
   toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
 )

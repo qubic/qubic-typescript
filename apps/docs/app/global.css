@@ -5,6 +5,7 @@
 html {
   scrollbar-gutter: stable;
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: 0.0060rem;
 }
 
 code,

@@ -6,16 +6,20 @@ import { AbiView } from '../../../components/abi-view'
 import { CopyButton } from '../../../components/copy-button'
 import { Crumbs } from '../../../components/crumbs'
 import { Sigil } from '../../../components/sigil'
-import { api } from '../../../lib/api'
+import { api, BACKEND_URL } from '../../../lib/api'
+
+export async function generateStaticParams() {
+  const contracts = await api.contracts().catch(() => [])
+  return contracts.map((c) => ({ index: String(c.contractIndex) }))
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ index: string }> }) {
   const { index } = await params
   const contract = await api.contract(Number(index)).catch(() => null)
   const title = contract?.contractName ?? `Contract #${index}`
-  const img = `/api/og?title=${encodeURIComponent(title)}&sub=${encodeURIComponent(`Contract #${index}`)}`
   return {
     title,
-    openGraph: { title, images: [img] },
+    openGraph: { title },
     twitter: { title },
   }
 }
@@ -64,7 +68,7 @@ export default async function ContractPage({ params }: { params: Promise<{ index
         <div className="actions">
           <a
             className="btn sm"
-            href={`/download/epoch/${current.effectiveFromEpoch}/${current.contractName}.json`}
+            href={`${BACKEND_URL}/download/epoch/${current.effectiveFromEpoch}/${current.contractName}.json`}
             download
             title="Download JSON"
           >
@@ -73,7 +77,7 @@ export default async function ContractPage({ params }: { params: Promise<{ index
           </a>
           <a
             className="btn sm"
-            href={`/download/contract/${idx}/all.zip`}
+            href={`${BACKEND_URL}/download/contract/${idx}/all.zip`}
             download
             title="Download all epochs as zip"
           >

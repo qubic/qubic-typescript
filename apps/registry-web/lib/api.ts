@@ -1,6 +1,7 @@
 import type { AbiLookupResult, ContractAbiVersion } from '@qubic.org/registry'
 
 const BASE = process.env.REGISTRY_API_URL ?? 'http://localhost:3001'
+export const BACKEND_URL = process.env.REGISTRY_API_URL ?? 'https://registry.qubickit.dev'
 
 export interface ContractSummary {
   contractIndex: number

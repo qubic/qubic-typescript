@@ -1,14 +1,11 @@
 import Link from 'next/link'
 import { api } from '../../lib/api'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = false
 
 export const metadata = {
   title: 'Epoch History',
-  openGraph: {
-    title: 'Epoch History',
-    images: ['/api/og?title=Epoch+History&sub=Immutable+ABI+snapshots+per+epoch'],
-  },
+  openGraph: { title: 'Epoch History' },
   twitter: { title: 'Epoch History' },
 }
 

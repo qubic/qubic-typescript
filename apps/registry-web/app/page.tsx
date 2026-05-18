@@ -3,14 +3,11 @@ import { HeroHeadline } from '../components/hero-headline'
 import { SearchFilter } from '../components/search-filter'
 import { api } from '../lib/api'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = false
 
 export const metadata = {
   title: 'qubic / registry — contract ABIs pinned per epoch',
-  openGraph: {
-    title: 'Qubic Registry',
-    images: ['/api/og?title=Qubic+Registry&sub=Contract+ABIs+pinned+per+epoch'],
-  },
+  openGraph: { title: 'Qubic Registry' },
   twitter: { title: 'Qubic Registry' },
 }
 

@@ -4,7 +4,19 @@ import { notFound } from 'next/navigation'
 import { AbiView } from '../../../../../components/abi-view'
 import { CopyButton } from '../../../../../components/copy-button'
 import { Crumbs } from '../../../../../components/crumbs'
-import { api } from '../../../../../lib/api'
+import { api, BACKEND_URL } from '../../../../../lib/api'
+
+export async function generateStaticParams() {
+  const contracts = await api.contracts().catch(() => [])
+  const all = await Promise.all(
+    contracts.map((c) =>
+      api.contractHistory(c.contractIndex).catch(() => []).then((history) =>
+        history.map((v) => ({ index: String(c.contractIndex), epoch: String(v.effectiveFromEpoch) }))
+      )
+    )
+  )
+  return all.flat()
+}
 
 export async function generateMetadata({
   params,
@@ -15,10 +27,9 @@ export async function generateMetadata({
   const contract = await api.contract(Number(index)).catch(() => null)
   const name = contract?.contractName ?? `Contract #${index}`
   const title = `${name} @ Epoch #${epoch}`
-  const img = `/api/og?title=${encodeURIComponent(title)}`
   return {
     title,
-    openGraph: { title, images: [img] },
+    openGraph: { title },
     twitter: { title },
   }
 }
@@ -86,7 +97,7 @@ export default async function AbiSnapshotPage({
             </Link>
             <a
               className="btn sm primary"
-              href={`/download/epoch/${ep}/${version.contractName}.json`}
+              href={`${BACKEND_URL}/download/epoch/${ep}/${version.contractName}.json`}
               download
             >
               Download Snapshot

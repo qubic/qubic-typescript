@@ -2,6 +2,8 @@
 import { useMemo, useState } from 'react'
 import { TryIt } from '../../components/try-it'
 
+const BASE_URL = process.env.NEXT_PUBLIC_REGISTRY_API_URL ?? 'https://registry.qubickit.dev'
+
 interface Endpoint {
   id: string
   method: 'GET'
@@ -181,11 +183,12 @@ export default function ApiDocsPage() {
             </div>
             <div className="card-body">
               {active.download ? (
-                <a className="btn sm" href={active.path} download>
+                <a className="btn sm" href={`${BASE_URL}${active.path}`} download>
                   ↓ Download
                 </a>
               ) : (
                 <TryIt
+                  baseUrl={BASE_URL}
                   path={active.path.replace(/:\w+/g, (m) => {
                     if (m === ':name' || m === ':contract') return 'System'
                     if (m === ':epoch') return '212'

@@ -5,13 +5,17 @@ import { EpochNav } from '../../../components/epoch-nav'
 import { Sigil } from '../../../components/sigil'
 import { api } from '../../../lib/api'
 
+export async function generateStaticParams() {
+  const epochs = await api.epochs().catch(() => [])
+  return epochs.map((e) => ({ epoch: String(e.epoch) }))
+}
+
 export async function generateMetadata({ params }: { params: Promise<{ epoch: string }> }) {
   const { epoch } = await params
   const title = `Epoch #${epoch}`
-  const img = `/api/og?title=${encodeURIComponent(title)}&sub=ABI+snapshot`
   return {
     title,
-    openGraph: { title, images: [img] },
+    openGraph: { title },
     twitter: { title },
   }
 }

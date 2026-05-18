@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 
-export function TryIt({ path }: { path: string }) {
+export function TryIt({ path, baseUrl = '' }: { path: string; baseUrl?: string }) {
   const [result, setResult] = useState<string | null>(null)
   const [statusLabel, setStatusLabel] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
@@ -9,7 +9,7 @@ export function TryIt({ path }: { path: string }) {
   async function run() {
     setLoading(true)
     try {
-      const res = await fetch(path)
+      const res = await fetch(`${baseUrl}${path}`)
       setStatusLabel(
         `${res.status} ${res.statusText || (res.ok ? 'OK' : 'Error')} · application/json`,
       )

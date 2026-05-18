@@ -13,7 +13,7 @@ export const metadata = {
 }
 
 export default async function EpochsPage() {
-  const epochs = await api.epochs()
+  const epochs = await api.epochs().catch(() => [])
   const sorted = [...epochs].reverse()
   const maxEpoch = epochs.length > 0 ? Math.max(...epochs.map((e) => e.epoch)) : null
   const minEpoch = epochs.length > 0 ? Math.min(...epochs.map((e) => e.epoch)) : null

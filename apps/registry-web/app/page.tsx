@@ -15,7 +15,10 @@ export const metadata = {
 }
 
 export default async function Home() {
-  const [contracts, epochs] = await Promise.all([api.contracts(), api.epochs().catch(() => [])])
+  const [contracts, epochs] = await Promise.all([
+    api.contracts().catch(() => []),
+    api.epochs().catch(() => []),
+  ])
 
   const totalProcs = contracts.reduce((s, c) => s + c.procedureCount, 0)
   const totalFuncs = contracts.reduce((s, c) => s + c.functionCount, 0)

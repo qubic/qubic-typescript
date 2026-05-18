@@ -11,7 +11,7 @@ sign(data: Uint8Array, seed: Seed): Promise<Uint8Array>
 
 ## Purpose
 
-Signs arbitrary bytes using the private key derived from a seed. Returns a 64-byte SchnorrQ signature. The function is async because the underlying SchnorrQ implementation runs in a WASM module that may need to initialize on first call — always `await` it.
+Signs arbitrary bytes using the private key derived from a seed. Returns a 64-byte SchnorrQ signature. The function is async by design to allow non-breaking addition of native backends in the future — always `await` it.
 
 ```ts
 import { sign } from "@qubic.org/crypto"

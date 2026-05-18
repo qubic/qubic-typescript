@@ -47,5 +47,5 @@ console.log("Encoded transaction:", encoded)
 </Steps>
 
 <Callout>
-`buildTransaction` and `encodeTransaction` are synchronous. Only `signTransaction` is async — it calls the SchnorrQ WASM signer internally. Always await it before encoding.
+`buildTransaction` and `encodeTransaction` are synchronous. Only `signTransaction` is async — it calls `sign` from `@qubic.org/crypto` internally. Always await it before encoding.
 </Callout>

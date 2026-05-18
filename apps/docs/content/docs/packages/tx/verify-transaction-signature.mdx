@@ -10,13 +10,9 @@ Extracts the source public key from the transaction header and verifies the 64-b
 ```ts
 import { verifyTransactionSignature } from "@qubic.org/tx"
 
-const valid: boolean = await verifyTransactionSignature(signed)
+const valid: boolean = verifyTransactionSignature(signed)
 // true if the signature matches the embedded source public key
 ```
-
-<Callout>
-  `verifyTransactionSignature` is async — it calls into the WASM SchnorrQ implementation. Always `await` it.
-</Callout>
 
 **Parameters**
 
@@ -24,4 +20,4 @@ const valid: boolean = await verifyTransactionSignature(signed)
 |---|---|---|
 | `signedTx` | `Uint8Array` | Signed transaction bytes (header + payload + 64-byte signature) |
 
-**Returns** `Promise<boolean>` — `true` if the signature is valid.
+**Returns** `boolean` — `true` if the signature is valid. Synchronous — no `await` needed.

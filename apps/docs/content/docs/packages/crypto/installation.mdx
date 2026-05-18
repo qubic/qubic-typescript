@@ -42,7 +42,5 @@ pnpm add @qubic.org/crypto @qubic.org/types
 </Tabs>
 
 <Callout type="warn">
-`@qubic.org/crypto` uses a WASM module internally. All key derivation and signing functions (`publicKeyFromSeed`, `identityFromSeed`, `sign`, `verify`) are async and must be awaited. Calling them without `await` returns a `Promise`, not the result.
+`sign` is the only async function — always `await` it. All other functions (`publicKeyFromSeed`, `deriveIdentityFromSeed`, `verify`, `k12`) are synchronous.
 </Callout>
-
-The WASM binary is bundled inside the package — there is nothing extra to configure. Bun, Node.js 18+, and all modern browsers load WASM natively. If you are bundling for a browser environment with a custom bundler, ensure your configuration allows `.wasm` imports.

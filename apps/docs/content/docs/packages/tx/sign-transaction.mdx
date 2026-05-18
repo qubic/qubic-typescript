@@ -19,7 +19,7 @@ const signed: Uint8Array = await signTransaction(unsigned, seed)
 ```
 
 <Callout>
-  `signTransaction` is async — it calls into the WASM SchnorrQ implementation. Always `await` it.
+  `signTransaction` is async — it delegates to `sign` in `@qubic.org/crypto`. Always `await` it.
 </Callout>
 
 **Parameters**

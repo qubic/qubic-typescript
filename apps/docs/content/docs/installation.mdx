@@ -81,6 +81,6 @@ If you're using Node.js with `moduleResolution: "node16"` or `"nodenext"`, the p
 All packages work in both runtimes. The main difference:
 
 - **Bun** — `bun add`, `bun run`, no extra config needed. Environment variables are loaded automatically.
-- **Node.js** — `npm install` / `pnpm add`, standard `tsconfig.json`. The WASM crypto module is loaded the same way in both.
+- **Node.js** — `npm install` / `pnpm add`, standard `tsconfig.json`. The crypto module works the same way in both.
 
 There is no browser-specific build required. The packages use standard Web APIs (`fetch`, `WebSocket`, `crypto.subtle`) and work in modern browsers, Bun, and Node.js.

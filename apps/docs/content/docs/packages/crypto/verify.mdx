@@ -6,12 +6,12 @@ description: Verifies a SchnorrQ signature over the FourQ curve, returning true 
 ## Signature
 
 ```ts
-verify(data: Uint8Array, signature: Uint8Array, publicKey: Uint8Array): Promise<boolean>
+verify(data: Uint8Array, signature: Uint8Array, publicKey: Uint8Array): boolean
 ```
 
 ## Purpose
 
-Verifies a SchnorrQ signature against a public key and message. Returns `true` if the signature is valid for the given data and key. Async for the same reason as `sign` — the WASM module may need to initialize on first call.
+Verifies a SchnorrQ signature against a public key and message. Returns `true` if the signature is valid for the given data and key. Synchronous — no `await` needed.
 
 ```ts
 import { sign, verify, publicKeyFromSeed } from "@qubic.org/crypto"
@@ -22,7 +22,7 @@ const publicKey = publicKeyFromSeed(seed)
 const message = new TextEncoder().encode("hello qubic")
 
 const sig = await sign(message, seed)
-const valid = await verify(message, sig, publicKey)
+const valid = verify(message, sig, publicKey)
 // valid === true
 ```
 
@@ -36,4 +36,4 @@ const valid = await verify(message, sig, publicKey)
 
 ## Returns
 
-`Promise<boolean>` — `true` if the signature is valid, `false` otherwise.
+`boolean` — `true` if the signature is valid, `false` otherwise.

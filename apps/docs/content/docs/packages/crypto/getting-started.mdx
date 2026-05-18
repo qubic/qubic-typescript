@@ -8,7 +8,7 @@ description: Derive a key pair from a seed and sign a digest in a few lines.
 **Import what you need**
 
 ```ts
-import { publicKeyFromSeed, identityFromSeed, sign } from "@qubic.org/crypto"
+import { publicKeyFromSeed, deriveIdentityFromSeed, sign } from "@qubic.org/crypto"
 import { toSeed } from "@qubic.org/types"
 ```
 </Step>
@@ -24,8 +24,8 @@ const seed = toSeed("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 **Derive the public key and identity**
 
 ```ts
-const publicKey = await publicKeyFromSeed(seed)  // Uint8Array (32 bytes)
-const identity  = await identityFromSeed(seed)   // Identity ("BPFJANADBB...")
+const publicKey = publicKeyFromSeed(seed)        // Uint8Array (32 bytes)
+const identity  = deriveIdentityFromSeed(seed)   // Identity ("BPFJANADBB...")
 
 console.log("Identity:", identity)
 console.log("Public key:", Buffer.from(publicKey).toString("hex"))
@@ -36,7 +36,7 @@ console.log("Public key:", Buffer.from(publicKey).toString("hex"))
 
 ```ts
 const digest    = new Uint8Array(32) // replace with your actual transaction digest
-const signature = await sign(seed, digest) // Uint8Array (64 bytes)
+const signature = await sign(digest, seed) // Uint8Array (64 bytes)
 
 console.log("Signature:", Buffer.from(signature).toString("hex"))
 ```
@@ -44,5 +44,5 @@ console.log("Signature:", Buffer.from(signature).toString("hex"))
 </Steps>
 
 <Callout>
-All functions that touch the WASM module — `publicKeyFromSeed`, `identityFromSeed`, `sign`, `verify`, and `K12` — are async. Forgetting `await` is the most common mistake when first using this package.
+Only `sign` is async — always `await` it. `publicKeyFromSeed`, `deriveIdentityFromSeed`, `verify`, and `k12` are all synchronous.
 </Callout>

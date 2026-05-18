@@ -26,7 +26,7 @@ const seed = toSeed("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 
 ### Cryptography that works
 
-Qubic uses FourQ curve operations and the K12 hash. Neither appears in Web Crypto or Node's crypto module. The SDK ships a compiled WASM implementation so you get the right primitives in any environment.
+Qubic uses FourQ curve operations and the K12 hash. Neither appears in Web Crypto or Node's crypto module. The SDK provides a pure TypeScript implementation of these primitives.
 
 ```ts
 import { identityFromSeed, sign, k12 } from "@qubic.org/crypto"

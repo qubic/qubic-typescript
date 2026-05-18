@@ -36,12 +36,12 @@ identity (60-char uppercase string)
 The full derivation pipeline:
 
 ```ts
-import { publicKeyFromSeed, identityFromSeed, publicKeyToIdentity } from "@qubic.org/crypto"
+import { publicKeyFromSeed, deriveIdentityFromSeed, publicKeyToIdentity } from "@qubic.org/crypto"
 import { toSeed } from "@qubic.org/types"
 
 const seed   = toSeed("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-const pubKey = publicKeyFromSeed(seed)  // 32 bytes
-const id     = identityFromSeed(seed)   // equivalent to publicKeyToIdentity(pubKey)
+const pubKey = publicKeyFromSeed(seed)       // 32 bytes
+const id     = deriveIdentityFromSeed(seed)  // equivalent to publicKeyToIdentity(pubKey)
 ```
 
 ---
@@ -51,10 +51,10 @@ const id     = identityFromSeed(seed)   // equivalent to publicKeyToIdentity(pub
 K12 is a variant of Keccak (the underlying primitive of SHA-3), tuned for modern hardware with 12 rounds instead of 24. It produces variable-length output:
 
 ```ts
-import { K12 } from "@qubic.org/crypto"
+import { k12 } from "@qubic.org/crypto"
 
-const digest32 = K12(data, 32)  // 32-byte output (like SHA-256)
-const digest64 = K12(data, 64)  // 64-byte output (like SHA-512)
+const digest32 = k12(data, 32)  // 32-byte output (like SHA-256)
+const digest64 = k12(data, 64)  // 64-byte output (like SHA-512)
 ```
 
 Qubic uses K12 for:
@@ -71,11 +71,8 @@ Signatures in Qubic use Schnorr over FourQ. Each transaction requires a signatur
 ```ts
 import { sign, verify } from "@qubic.org/crypto"
 
-// Signing (async — may use WebAssembly)
-const signature = await sign(seed, digest)    // Uint8Array (64 bytes)
-
-// Verification
-const isValid = await verify(publicKey, digest, signature) // boolean
+const signature = await sign(digest, seed)         // Uint8Array (64 bytes) — async
+const isValid   = verify(digest, signature, pubKey) // boolean — synchronous
 ```
 
 ### Properties
@@ -100,12 +97,6 @@ If you must handle seeds directly:
 
 ---
 
-## The `sign` and `verify` functions are async
+## `sign` is async, `verify` is not
 
-`sign` and `verify` are `async` because the implementation may use WebAssembly for performance. In environments without WebAssembly support they fall back to a pure JavaScript implementation. In either case the API is identical — just `await` the call.
-
-```ts
-// These are the same regardless of whether WASM is available
-const sig   = await sign(seed, digest)
-const valid = await verify(pubKey, digest, sig)
-```
+`sign` is async by design — always `await` it. `verify` is synchronous and returns `boolean` directly.

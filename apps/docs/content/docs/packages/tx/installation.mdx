@@ -42,7 +42,7 @@ pnpm add @qubic.org/tx @qubic.org/crypto @qubic.org/types
 </Tabs>
 
 <Callout>
-`signTransaction` is async because it delegates to `@qubic.org/crypto`'s WASM-backed signing functions. `buildTransaction` and `encodeTransaction` are synchronous.
+`signTransaction` is async because it delegates to `sign` in `@qubic.org/crypto`. `buildTransaction` and `encodeTransaction` are synchronous.
 </Callout>
 
 The package targets ES2020 and has no other runtime dependencies. It works in Bun, Node.js 18+, and browser environments.

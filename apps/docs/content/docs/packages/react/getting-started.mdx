@@ -13,11 +13,14 @@ This example shows the minimum setup needed to use `@qubic.org/react`: wrapping 
 ```tsx
 // app.tsx
 import { QubicProvider } from "@qubic.org/react"
+import { createLiveClient } from "@qubic.org/rpc"
 import { BalanceCard } from "./BalanceCard"
+
+const liveClient = createLiveClient()
 
 export default function App() {
   return (
-    <QubicProvider>
+    <QubicProvider liveClient={liveClient}>
       <BalanceCard />
     </QubicProvider>
   )

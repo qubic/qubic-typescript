@@ -23,7 +23,7 @@ function ConnectButton() {
   }
 
   return (
-    <button onClick={() => connect(extensionConnector)}>
+    <button onClick={() => connect(extensionConnector.id)}>
       Connect extension wallet
     </button>
   )
@@ -37,9 +37,9 @@ function ConnectButton() {
 | `account` | `WalletAccount \| null` | The connected account, or `null` when no wallet is connected. |
 | `account.identity` | `string` | The Qubic identity of the connected account. |
 | `account.name` | `string \| undefined` | Optional display name from the connector. |
-| `connector` | `WalletConnector \| null` | The active connector, or `null` when disconnected. |
+| `activeConnector` | `WalletConnector \| null` | The active connector, or `null` when disconnected. |
 | `isConnected` | `boolean` | True when an account is available. |
-| `connect` | `(connector, options?) => Promise<void>` | Connect with the given connector. |
+| `connect` | `(connectorId: string, options?) => Promise<void>` | Connect using the given connector ID string. |
 | `disconnect` | `() => Promise<void>` | Disconnect the current wallet. |
 | `signTransaction` | `(txBytes: Uint8Array) => Promise<Uint8Array>` | Sign a transaction and return the signed bytes. |
 
@@ -60,7 +60,7 @@ function ConnectModal() {
       {connectors.filter((c) => c.isAvailable()).map((connector) => (
         <button
           key={connector.id}
-          onClick={() => connect(connector)}
+          onClick={() => connect(connector.id)}
           disabled={pending}
         >
           {connector.id}

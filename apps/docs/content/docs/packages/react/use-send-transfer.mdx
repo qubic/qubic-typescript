@@ -15,14 +15,14 @@ function useSendTransfer(): {
     from: Identity
     destination: Identity
     amount: bigint
-    targetTick?: number
+    tickOffset?: number
   }): void
   mutateAsync(params: {
     from: Identity
     destination: Identity
     amount: bigint
-    targetTick?: number
-  }): Promise<{ hash: TxHash; peersBroadcastedTo: number }>
+    tickOffset?: number
+  }): Promise<BroadcastTransactionResponse>
   isPending: boolean
   isSuccess: boolean
   isError: boolean
@@ -65,14 +65,15 @@ function SendButton() {
 | `from` | `Identity` | The sending identity. Must match the connected wallet or unlocked vault identity. |
 | `destination` | `Identity` | Recipient identity. |
 | `amount` | `bigint` | Amount in QU. |
-| `targetTick` | `number` | Optional. Overrides the auto-derived target tick (current tick + 5). |
+| `tickOffset` | `number` | Optional. Added to the current tick to derive `targetTick`. Default: `5`. |
 
 ## Behavior
 
-1. Fetches the current tick from the live client (skipped if `targetTick` is provided)
-2. Builds and signs the transaction
-3. Broadcasts via `liveClient.broadcastTransaction`
-4. Resolves with `{ hash, peersBroadcastedTo }` on success
+1. Fetches the current tick from the live client
+2. Computes `targetTick = currentTick + tickOffset` (default offset: 5)
+3. Builds and signs the transaction
+4. Broadcasts via `liveClient.broadcastTransaction`
+5. Resolves with `BroadcastTransactionResponse` on success (`{ peersBroadcastedTo: number; txId: string }`)
 
 ## Handling results
 
@@ -82,7 +83,6 @@ const { mutate, isPending, isSuccess, error, reset } = useSendTransfer()
 // With callbacks
 mutate(input, {
   onSuccess: (result) => {
-    console.log("TX hash:", result.hash)
     console.log("Peers:", result.peersBroadcastedTo)
   },
   onError: (err) => {
@@ -93,7 +93,7 @@ mutate(input, {
 // Or with mutateAsync
 try {
   const result = await mutateAsync(input)
-  console.log("Done:", result.hash)
+  console.log("Peers:", result.peersBroadcastedTo)
 } catch (err) {
   console.error(err)
 }

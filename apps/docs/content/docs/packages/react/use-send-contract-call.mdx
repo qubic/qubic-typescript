@@ -16,17 +16,17 @@ function useSendContractCall(): {
     inputType: number
     payload: Uint8Array
     amount?: bigint
-    contractIndex?: number
-    targetTick?: number
+    destination?: Identity
+    tickOffset?: number
   }): void
   mutateAsync(params: {
     from: Identity
     inputType: number
     payload: Uint8Array
     amount?: bigint
-    contractIndex?: number
-    targetTick?: number
-  }): Promise<{ hash: TxHash; peersBroadcastedTo: number }>
+    destination?: Identity
+    tickOffset?: number
+  }): Promise<BroadcastTransactionResponse>
   isPending: boolean
   isSuccess: boolean
   isError: boolean
@@ -38,9 +38,8 @@ function useSendContractCall(): {
 ## Usage
 
 ```tsx
-import { useSendContractCall } from "@qubic.org/react"
-import { useWallet } from "@qubic.org/react"
-import { qearn } from "@qubic.org/contracts"
+import { useSendContractCall, useWallet } from "@qubic.org/react"
+import { QEARN_LOCK_INPUT_TYPE } from "@qubic.org/contracts"
 
 function LockButton() {
   const { account } = useWallet()
@@ -49,8 +48,8 @@ function LockButton() {
   function handleLock() {
     mutate({
       from: account!.identity,
-      inputType: qearn.LOCK_INPUT_TYPE,
-      payload: qearn.buildLockInput({ amount: 10_000_000n }),
+      inputType: QEARN_LOCK_INPUT_TYPE,
+      payload: new Uint8Array(0),  // lock has no input fields
       amount: 10_000_000n,
     })
   }
@@ -68,11 +67,11 @@ function LockButton() {
 | Field | Type | Description |
 |---|---|---|
 | `from` | `Identity` | The calling identity. |
-| `inputType` | `number` | The procedure's input type constant (e.g. `qearn.LOCK_INPUT_TYPE`). |
-| `payload` | `Uint8Array` | Encoded procedure payload from a `build*Input` function. |
-| `amount` | `bigint` | QU to attach to the call. Use `0n` for procedures that don't transfer funds. |
-| `contractIndex` | `number` | Optional. Override the contract index if not inferable from `inputType`. |
-| `targetTick` | `number` | Optional. Overrides the auto-derived target tick. |
+| `inputType` | `number` | The procedure's input type constant (e.g. `QEARN_LOCK_INPUT_TYPE`). |
+| `payload` | `Uint8Array` | Encoded procedure payload. Use an empty `Uint8Array` for procedures with no input fields. |
+| `amount` | `bigint` | QU to attach to the call. Defaults to `0n`. |
+| `destination` | `Identity` | Optional. Override the contract destination identity. Defaults to the all-zero SC address. |
+| `tickOffset` | `number` | Optional. Added to the current tick to derive `targetTick`. Default: `5`. |
 
 ## Handling results
 
@@ -81,7 +80,7 @@ const { mutate, isSuccess, isError, error, reset } = useSendContractCall()
 
 mutate(input, {
   onSuccess: (result) => {
-    console.log("TX hash:", result.hash)
+    console.log("Peers:", result.peersBroadcastedTo)
   },
   onError: (err) => {
     console.error("Call failed:", err.message)

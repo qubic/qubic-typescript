@@ -1,32 +1,31 @@
 ---
 title: useBalances
-description: Fetches balances for multiple identities in parallel, tolerating partial failures.
+description: Fetches QU balances for multiple identities in parallel using QUtil batching.
 ---
 
-`useBalances` runs concurrent balance lookups for a list of identities. Successful results go into `data`; per-identity errors go into `errors`. A failure for one identity does not block the rest.
+`useBalances` batches balance lookups for a list of identities via the QUtil `GetBalances16` contract function (up to 16 per batch). Returns a `Map` keyed by identity, a single `error` if any batch fails, and a `refetch` function.
 
-## `useBalances(identities, options?)`
+## `useBalances(identities)`
 
 ```tsx
 import { useBalances } from "@qubic.org/react"
 
-const WATCHED = [
-  "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-  "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+const WATCHED: Identity[] = [
+  toIdentity("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"),
+  toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL"),
 ]
 
 function BalanceList() {
-  const { data, isLoading, errors } = useBalances(WATCHED)
+  const { balances, isLoading, error } = useBalances(WATCHED)
 
   if (isLoading) return <p>Loading...</p>
+  if (error) return <p>Error: {error.message}</p>
 
   return (
     <ul>
-      {WATCHED.map((id) => {
-        if (errors[id]) return <li key={id}>{id}: error — {errors[id].message}</li>
-        const balance = data?.get(id)
-        return <li key={id}>{id}: {balance ? balance.balance.toString() : "—"}</li>
-      })}
+      {WATCHED.map((id) => (
+        <li key={id}>{id}: {balances.get(id)?.toString() ?? "—"} QU</li>
+      ))}
     </ul>
   )
 }
@@ -36,30 +35,13 @@ function BalanceList() {
 
 | Name | Type | Description |
 |---|---|---|
-| `identities` | `(Identity \| string)[]` | List of Qubic identities to query. An empty array performs no fetches. |
-| `options.refetchInterval` | `number \| false` | Polling interval in milliseconds. Pass `false` to disable. |
+| `identities` | `(Identity \| string)[] \| null \| undefined` | Identities to query. Null or empty performs no fetches. |
 
 **Returns**
 
 | Field | Type | Description |
 |---|---|---|
-| `data` | `Map<string, QubicBalance> \| undefined` | Successful balance results keyed by identity string. |
-| `isLoading` | `boolean` | True while any identity's first fetch is in progress. |
-| `errors` | `Record<string, QubicRpcError>` | Per-identity errors. An identity is absent from this map when its fetch succeeded. |
-
-## Partial failure handling
-
-When one identity returns an error, others are still returned in `data`. Always check `errors[identity]` before reading `data.get(identity)`:
-
-```tsx
-const { data, errors } = useBalances(identities)
-
-for (const id of identities) {
-  if (errors[id]) {
-    console.warn(`Failed to fetch balance for ${id}:`, errors[id].message)
-    continue
-  }
-  const balance = data?.get(id)
-  console.log(`${id}: ${balance?.balance}`)
-}
-```
+| `balances` | `Map<Identity, bigint>` | Balance in QU for each successfully queried identity. |
+| `isLoading` | `boolean` | True while any batch is still loading. |
+| `error` | `Error \| undefined` | First error encountered across batches, or `undefined`. |
+| `refetch` | `() => void` | Manually trigger a refetch of all batches. |

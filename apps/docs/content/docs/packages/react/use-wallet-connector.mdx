@@ -24,7 +24,7 @@ function WalletPicker() {
     <ul>
       {available.map((connector) => (
         <li key={connector.id}>
-          <button onClick={() => connect(connector)} disabled={pending}>
+          <button onClick={() => connect(connector.id)} disabled={pending}>
             {connector.id}
           </button>
         </li>

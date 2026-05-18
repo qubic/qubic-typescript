@@ -1,45 +1,27 @@
 ---
 title: useContractQuery
-description: Raw contract read hook — sends a query payload and returns the response bytes for manual decoding.
+description: TanStack Query hook for calling a typed contract read function from @qubic.org/contracts.
 ---
 
-`useContractQuery` is the low-level hook for calling contract read functions. It returns raw bytes that you decode with a contract-specific decoder from `@qubic.org/contracts` or `@qubic.org/registry`.
+`useContractQuery` runs any typed contract read function from `@qubic.org/contracts` as a TanStack Query. It automatically provides the crypto helpers (`identityToPublicKey`, `publicKeyToIdentity`) and disables the query when `input` is `null` or `undefined`.
 
-For contracts that have generated wrappers in `@qubic.org/contracts`, prefer using those directly. Use `useContractQuery` when you need to call a function not yet covered by the generated package, or when you're integrating a custom contract.
-
-## `useContractQuery(contractIndex, inputType, payload, options?)`
-
-The typical usage pattern is: **build payload → query → decode response**.
+## `useContractQuery(fn, input, options?)`
 
 ```tsx
 import { useContractQuery } from "@qubic.org/react"
-import { qearn } from "@qubic.org/contracts"
-import { useMemo } from "react"
+import { qearnGetStateOfRound } from "@qubic.org/contracts"
 
 function QearnRoundState({ epoch }: { epoch: number }) {
-  // Step 1: build the input payload
-  const payload = useMemo(
-    () => qearn.buildGetLockInfoPerEpochInput({ Epoch: epoch }),
-    [epoch],
-  )
-
-  // Step 2: send the query
-  const { data: rawBytes, isLoading, error } = useContractQuery(
-    qearn.contractIndex,
-    1, // QEARN_GET_LOCK_INFO_PER_EPOCH_INPUT_TYPE
-    payload,
+  const { data, isLoading, error } = useContractQuery(
+    qearnGetStateOfRound,
+    { epoch },
     { refetchInterval: 30_000 },
   )
-
-  // Step 3: decode the response
-  const info = rawBytes
-    ? qearn.decodeLockOutput(rawBytes)
-    : undefined
 
   if (isLoading) return <p>Loading...</p>
   if (error) return <p>Error: {error.message}</p>
 
-  return <p>Locked amount: {info?.lockedAmount?.toString()}</p>
+  return <p>Total locked: {data?.totalLockedAmount?.toString()}</p>
 }
 ```
 
@@ -47,15 +29,20 @@ function QearnRoundState({ epoch }: { epoch: number }) {
 
 | Name | Type | Description |
 |---|---|---|
-| `contractIndex` | `number` | The contract's index on-chain. |
-| `inputType` | `number` | The function's input type number from the ABI. |
-| `payload` | `Uint8Array` | Encoded input bytes. Build with `buildPayload` or a contract namespace builder. |
-| `options.refetchInterval` | `number \| false` | Polling interval in milliseconds. Pass `false` to disable. |
+| `fn` | `ContractQueryFn<TInput, TOutput>` | A typed caller function from `@qubic.org/contracts` (e.g. `qearnGetStateOfRound`). |
+| `input` | `TInput \| null \| undefined` | Input for the contract function. Pass `null` or `undefined` to disable the query. |
+| `options` | `UseQueryOptions` | Standard TanStack Query options (e.g. `refetchInterval`, `staleTime`). |
 
-**Returns**
+**Returns** `UseQueryResult<TOutput>` — standard TanStack Query result with `data`, `isLoading`, `error`, `refetch`.
 
-| Field | Type | Description |
-|---|---|---|
-| `data` | `Uint8Array \| undefined` | Raw response bytes from the contract. Decode with a matching decoder. |
-| `isLoading` | `boolean` | True while the first fetch is in progress. |
-| `error` | `QubicRpcError \| null` | Network or parse error. |
+## Disabling the query
+
+Pass `null` or `undefined` as `input` to conditionally disable the query:
+
+```tsx
+const { data } = useContractQuery(
+  qearnGetUserLockedInfo,
+  account ? { user: account.identity, epoch } : null,
+)
+// query runs only when account is available
+```

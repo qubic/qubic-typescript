@@ -1,17 +1,17 @@
 ---
 title: verify
-description: Verifies a SchnorrQ signature over the FourQ curve, returning true if the signature is valid for the given data and public key.
+description: Verifies a SchnorrQ signature over the FourQ curve, returning true if the signature is valid for the given message and public key.
 ---
 
 ## Signature
 
 ```ts
-verify(data: Uint8Array, signature: Uint8Array, publicKey: Uint8Array): boolean
+verify(message: Uint8Array, signature: Uint8Array, publicKey: Uint8Array): boolean
 ```
 
 ## Purpose
 
-Verifies a SchnorrQ signature against a public key and message. Returns `true` if the signature is valid for the given data and key. Synchronous — no `await` needed.
+Verifies a SchnorrQ signature against a public key and message. Returns `true` if the signature is valid for the given message and key. Synchronous — no `await` needed.
 
 ```ts
 import { sign, verify, publicKeyFromSeed } from "@qubic.org/crypto"
@@ -30,7 +30,7 @@ const valid = verify(message, sig, publicKey)
 
 | Name | Type | Description |
 |---|---|---|
-| `data` | `Uint8Array` | The original signed bytes |
+| `message` | `Uint8Array` | The original signed bytes |
 | `signature` | `Uint8Array` | 64-byte SchnorrQ signature |
 | `publicKey` | `Uint8Array` | 32-byte FourQ public key |
 

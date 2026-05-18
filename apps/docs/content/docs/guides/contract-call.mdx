@@ -158,7 +158,7 @@ SEED=your_seed bun qearn-lock.ts
 
 ## Other contracts
 
-The same pattern works for any procedure in any supported contract — find the contract namespace in the [`@qubic.org/contracts` reference](/docs/packages/contracts), pick the right `build*Input` builder and `*_INPUT_TYPE` constant, and wire them into `buildScTransaction`.
+The same pattern works for any procedure in any supported contract — find the contract namespace in the [`@qubic.org/contracts` reference](/packages/contracts), pick the right `build*Input` builder and `*_INPUT_TYPE` constant, and wire them into `buildScTransaction`.
 
 | Swap `qearn.buildLockInput` with | `wallet.buildScTransaction` `inputType` | Contract |
 |---|---|---|
@@ -166,7 +166,7 @@ The same pattern works for any procedure in any supported contract — find the 
 | `buildQuotteryBetInput` | `QUOTTERY_BET_INPUT_TYPE` | Quottery |
 | `buildQvaultProposeSCInput` | `QVAULT_PROPOSE_SC_INPUT_TYPE` | QVault |
 
-See the [contracts package reference](/docs/packages/contracts) for the full list.
+See the [contracts package reference](/packages/contracts) for the full list.
 
 ## Common errors
 

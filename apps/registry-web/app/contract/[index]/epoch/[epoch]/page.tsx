@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation'
 import { AbiView } from '../../../../../components/abi-view'
 import { CopyButton } from '../../../../../components/copy-button'
 import { Crumbs } from '../../../../../components/crumbs'
-import { api, BACKEND_URL } from '../../../../../lib/api'
+import { BACKEND_URL, api } from '../../../../../lib/api'
 
 export async function generateStaticParams() {
   const [contracts, epochList] = await Promise.all([
@@ -15,11 +15,14 @@ export async function generateStaticParams() {
   const all = await Promise.all(
     contracts.map(async (c) => {
       const history = await api.contractHistory(c.contractIndex).catch(() => [])
-      const minEpoch = history.length > 0 ? Math.min(...history.map((v) => v.effectiveFromEpoch)) : c.currentFromEpoch
+      const minEpoch =
+        history.length > 0
+          ? Math.min(...history.map((v) => v.effectiveFromEpoch))
+          : c.currentFromEpoch
       return allEpochs
         .filter((ep) => ep >= minEpoch)
         .map((ep) => ({ index: String(c.contractIndex), epoch: String(ep) }))
-    })
+    }),
   )
   return all.flat()
 }

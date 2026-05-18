@@ -6,7 +6,7 @@ import { AbiView } from '../../../components/abi-view'
 import { CopyButton } from '../../../components/copy-button'
 import { Crumbs } from '../../../components/crumbs'
 import { Sigil } from '../../../components/sigil'
-import { api, BACKEND_URL } from '../../../lib/api'
+import { BACKEND_URL, api } from '../../../lib/api'
 
 export async function generateStaticParams() {
   const contracts = await api.contracts().catch(() => [])

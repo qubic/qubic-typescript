@@ -76,7 +76,9 @@
   "files": {
     "ignore": [
       "dist/**",
+      "**/dist/**",
       "node_modules/**",
+      "**/node_modules/**",
       "**/*.d.ts",
       "coverage/**",
       "docs/**",
@@ -85,6 +87,7 @@
       "planning/**",
       ".claude/**",
       "**/.next/**",
+      "**/.open-next/**",
       "packages/registry/data/**"
     ]
   }

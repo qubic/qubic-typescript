@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { api, BACKEND_URL } from '../../lib/api'
+import { BACKEND_URL, api } from '../../lib/api'
 
 export const revalidate = false
 

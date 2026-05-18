@@ -5,33 +5,42 @@ description: Connect to a Qubic node and receive live tick updates in under fift
 
 <Steps>
 <Step>
-**Create and connect a Bob client**
+**Create a Bob client**
 
-Pass `autoResubscribe: true` so your subscriptions survive reconnects automatically.
+`createBobClient` returns `{ rest, rpc, subscription }`. The subscription client opens a WebSocket lazily when the first subscription method is called.
 
 ```ts
 import { createBobClient } from "@qubic.org/bob"
 
-const bob = createBobClient({ autoResubscribe: true })
-await bob.connect()
+const bob = createBobClient()
+// or with custom URLs:
+// createBobClient({ wsUrl: "wss://...", baseUrl: "https://..." })
 ```
 </Step>
 <Step>
 **Subscribe to live tick updates**
 
+Each subscription method returns an `AsyncIterable`. Consume it with `for await...of`. The client reconnects automatically — the loop resumes once the connection is restored.
+
 ```ts
 import { createBobClient } from "@qubic.org/bob"
 
-const bob = createBobClient({ autoResubscribe: true })
-await bob.connect()
+const bob = createBobClient()
 
-bob.subscribe("tickInfo", (tick, meta) => {
-  if (meta.isCatchUp) return // skip buffered ticks from reconnect gap
-  console.log(`Tick ${tick.tick} — epoch ${tick.epoch}`)
-})
+for await (const event of bob.subscription.subscribeNewTicks()) {
+  if (event.isCatchUp) continue // skip buffered ticks from reconnect gap
+  console.log(`Tick ${event.data.tick} — epoch ${event.data.epoch}`)
+}
+```
+</Step>
+<Step>
+**Clean up on exit**
 
-process.on("SIGINT", async () => {
-  await bob.disconnect()
+Call `bob.subscription.close()` to stop all active subscriptions and close the WebSocket.
+
+```ts
+process.on("SIGINT", () => {
+  bob.subscription.close()
   process.exit(0)
 })
 ```

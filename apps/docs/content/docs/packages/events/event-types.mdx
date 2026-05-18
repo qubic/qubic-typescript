@@ -59,8 +59,8 @@ Fires when ownership of an asset transfers.
 ```ts
 typed.data.issuer          // Identity
 typed.data.assetName       // string
-typed.data.owner           // Identity — previous owner
-typed.data.newOwner        // Identity — new owner
+typed.data.source          // Identity — previous owner
+typed.data.destination     // Identity — new owner
 typed.data.numberOfShares  // bigint — shares transferred
 ```
 
@@ -71,8 +71,8 @@ Fires when possession (not ownership) of an asset transfers. Qubic distinguishes
 ```ts
 typed.data.issuer           // Identity
 typed.data.assetName        // string
-typed.data.owner            // Identity — the owner
-typed.data.newPossessor     // Identity — new possessor
+typed.data.source           // Identity — previous possessor
+typed.data.destination      // Identity — new possessor
 typed.data.numberOfShares   // bigint
 ```
 
@@ -81,9 +81,12 @@ typed.data.numberOfShares   // bigint
 Fires when the contract managing ownership transfers for an asset changes.
 
 ```ts
-typed.data.issuer           // Identity
-typed.data.assetName        // string
-typed.data.managingContract // number — new contract index
+typed.data.owner                    // Identity
+typed.data.issuer                   // Identity
+typed.data.assetName                // string
+typed.data.sourceContractIndex      // number — previous managing contract
+typed.data.destinationContractIndex // number — new managing contract
+typed.data.numberOfShares           // bigint
 ```
 
 ### `ASSET_POSSESSION_MANAGING_CONTRACT_CHANGE` (12)
@@ -91,9 +94,13 @@ typed.data.managingContract // number — new contract index
 Same as above, but for possession management.
 
 ```ts
-typed.data.issuer           // Identity
-typed.data.assetName        // string
-typed.data.managingContract // number
+typed.data.possessor                // Identity
+typed.data.owner                    // Identity
+typed.data.issuer                   // Identity
+typed.data.assetName                // string
+typed.data.sourceContractIndex      // number — previous managing contract
+typed.data.destinationContractIndex // number — new managing contract
+typed.data.numberOfShares           // bigint
 ```
 
 ---
@@ -108,15 +115,15 @@ All four contract message types share the same data shape:
 ### `CONTRACT_DEBUG_MESSAGE` (7)
 
 ```ts
-typed.data.contractIndex  // number — which contract emitted the log
-typed.data.message        // string — human-readable message from the contract
+typed.data.contractIndex       // number — which contract emitted the log
+typed.data.contractMessageType // number — contract-defined message type code
 ```
 
 ```ts
 import { LOG_TYPE } from "@qubic.org/events"
 
 if (typed.logType === LOG_TYPE.CONTRACT_ERROR_MESSAGE) {
-  console.error(`Contract ${typed.data.contractIndex}: ${typed.data.message}`)
+  console.error(`Contract ${typed.data.contractIndex} message type ${typed.data.contractMessageType}`)
 }
 ```
 
@@ -129,8 +136,9 @@ if (typed.logType === LOG_TYPE.CONTRACT_ERROR_MESSAGE) {
 Fires when an identity burns QU (sends to the zero address or a designated burn address).
 
 ```ts
-typed.data.sourceId  // Identity — who burned
-typed.data.amount    // bigint — QU burned
+typed.data.source         // Identity — who burned
+typed.data.amount         // bigint — QU burned
+typed.data.contractIndex  // number — contract that triggered the burn
 ```
 
 ### `DUST_BURNING` (9)
@@ -138,8 +146,7 @@ typed.data.amount    // bigint — QU burned
 Fires when the network performs a dust-clearing sweep. Small balances below the dust threshold are burned in bulk.
 
 ```ts
-typed.data.numberOfBurns  // number — how many accounts were swept
-typed.data.totalAmount    // bigint — total QU burned
+typed.data.burns  // Array<{ source: Identity; amount: bigint }> — per-account burn entries
 ```
 
 ---
@@ -151,9 +158,10 @@ typed.data.totalAmount    // bigint — total QU burned
 Fires periodically with a snapshot of the network's balance distribution.
 
 ```ts
-typed.data.totalAmount       // bigint — total QU in circulation
-typed.data.dustThreshold     // bigint — minimum balance to avoid dust sweep
-typed.data.numberOfEntities  // number — number of accounts above threshold
+typed.data.totalAmount             // bigint — total QU in circulation
+typed.data.dustThresholdBurnAll    // bigint — below this, entire balance is burned
+typed.data.dustThresholdBurnHalf   // bigint — below this, half the balance is burned
+typed.data.numberOfEntities        // number — number of accounts above threshold
 ```
 
 ---
@@ -165,8 +173,9 @@ typed.data.numberOfEntities  // number — number of accounts above threshold
 Fires when a contract's reserve is reduced.
 
 ```ts
-typed.data.contractIndex  // number
-typed.data.amount         // bigint — QU deducted from reserve
+typed.data.contractIndex   // number
+typed.data.deductedAmount  // bigint — QU deducted from reserve
+typed.data.remainingAmount // bigint — reserve balance after deduction
 ```
 
 ### `ORACLE_QUERY_STATUS_CHANGE` (14)
@@ -174,8 +183,11 @@ typed.data.amount         // bigint — QU deducted from reserve
 Fires when an oracle query changes status.
 
 ```ts
-typed.data.oracleId  // number
-typed.data.status    // number — new status code
+typed.data.queryingEntity  // Identity — entity that submitted the query
+typed.data.queryId         // bigint — unique query identifier
+typed.data.interfaceIndex  // number — oracle interface
+typed.data.queryType       // number — type of query
+typed.data.queryStatus     // number — new status code
 ```
 
 ### `ORACLE_SUBSCRIBER_LOG_MESSAGE` (15)
@@ -183,8 +195,11 @@ typed.data.status    // number — new status code
 Fires when an oracle subscriber emits a log message.
 
 ```ts
-typed.data.subscriberId  // number
-typed.data.message       // string
+typed.data.subscriptionId       // number
+typed.data.interfaceIndex       // number
+typed.data.contractIndex        // number
+typed.data.periodMillis         // number — poll period in milliseconds
+typed.data.firstQueryTimestamp  // bigint — timestamp of first query
 ```
 
 ### `CUSTOM_MESSAGE` (255)
@@ -205,11 +220,17 @@ if (typed.logType === LOG_TYPE.CUSTOM_MESSAGE) {
 Use `eventFilter().ofTypes(...)` to subscribe only to specific log types:
 
 ```ts
+import { createBobClient } from "@qubic.org/bob"
 import { eventFilter, subscribeAllEvents, LOG_TYPE } from "@qubic.org/events"
+
+const bob = createBobClient()
 
 const filter = eventFilter()
   .ofTypes(LOG_TYPE.QU_TRANSFER, LOG_TYPE.ASSET_OWNERSHIP_CHANGE)
   .build()
 
-subscribeAllEvents(bob, identity, handler, filter)
+for await (const event of subscribeAllEvents(bob.subscription, filter)) {
+  if (event.isCatchUp) continue
+  console.log(event.logType, event.data)
+}
 ```

@@ -5,40 +5,53 @@ description: Subscribe to QU transfers for an identity using the built-in subscr
 
 <Steps>
 <Step>
-**Connect a Bob client**
+**Create a Bob client**
 
-`@qubic.org/events` subscription helpers take an already-connected Bob client.
+`@qubic.org/events` subscription helpers take a `BobSubscriptionClient` — accessible as `bob.subscription`.
 
 ```ts
 import { createBobClient } from "@qubic.org/bob"
 
-const bob = createBobClient({ autoResubscribe: true })
-await bob.connect()
+const bob = createBobClient()
 ```
 </Step>
 <Step>
 **Subscribe to typed QU transfers**
 
-`subscribeQuTransfers` wraps Bob's `"eventLogs"` subscription, decodes each event, and calls your callback only for `QU_TRANSFER` events.
+`subscribeQuTransfers` wraps Bob's event subscription, decodes each log, and yields only `QU_TRANSFER` events as an `AsyncIterable`.
 
 ```ts
 import { createBobClient } from "@qubic.org/bob"
 import { subscribeQuTransfers } from "@qubic.org/events"
 import { toIdentity } from "@qubic.org/types"
 
-const bob = createBobClient({ autoResubscribe: true })
-await bob.connect()
+const bob = createBobClient()
 
 const identity = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
 
-const unsub = subscribeQuTransfers(bob, identity, (transfer, meta) => {
-  if (meta.isCatchUp) return
-  const { source, destination, amount } = transfer.data
+for await (const event of subscribeQuTransfers(bob.subscription, { identity })) {
+  if (event.isCatchUp) continue
+  const { source, destination, amount } = event.data
   console.log(`${amount} QU: ${source} → ${destination}`)
-})
+}
+```
+</Step>
+<Step>
+**Stop the subscription**
 
-// Stop listening later
-// unsub()
+Pass an `AbortSignal` via `options` to cancel the loop cleanly:
+
+```ts
+const controller = new AbortController()
+
+for await (const event of subscribeQuTransfers(bob.subscription, { identity }, { signal: controller.signal })) {
+  if (event.isCatchUp) continue
+  const { source, destination, amount } = event.data
+  console.log(`${amount} QU: ${source} → ${destination}`)
+}
+
+// Somewhere else:
+controller.abort()
 ```
 </Step>
 </Steps>

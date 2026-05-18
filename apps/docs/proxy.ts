@@ -2,6 +2,8 @@ import { isMarkdownPreferred, rewritePath } from "fumadocs-core/negotiation";
 import { type NextRequest, NextResponse } from "next/server";
 import { docsContentRoute, docsRoute } from "@/lib/shared";
 
+export const runtime = "edge";
+
 const { rewrite: rewriteDocs } = rewritePath(
   `${docsRoute}{/*path}`,
   `${docsContentRoute}{/*path}/content.md`,

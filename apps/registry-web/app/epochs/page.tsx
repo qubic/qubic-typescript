@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { api } from '../../lib/api'
+import { api, BACKEND_URL } from '../../lib/api'
 
 export const revalidate = false
 
@@ -102,7 +102,7 @@ export default async function EpochsPage() {
                     </Link>
                     <a
                       className="btn sm ghost"
-                      href={`/download/epoch/${e.epoch}/all.zip`}
+                      href={`${BACKEND_URL}/download/epoch/${e.epoch}/all.zip`}
                       download
                     >
                       ↓ Zip

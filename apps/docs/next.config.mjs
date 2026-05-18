@@ -4,10 +4,12 @@ const withMDX = createMDX();
 
 /** @type {import('next').NextConfig} */
 const config = {
+  output: "export",
   reactStrictMode: true,
   images: {
+    unoptimized: true,
     dangerouslyAllowSVG: true,
-    domains: ["img.shields.io"],
+    remotePatterns: [{ hostname: "img.shields.io" }],
   },
 };
 

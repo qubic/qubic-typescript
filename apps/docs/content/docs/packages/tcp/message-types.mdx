@@ -19,7 +19,7 @@ MESSAGE_TYPE.RESPOND_CURRENT_TICK_INFO  // 28 — response to tick info request
 MESSAGE_TYPE.REQUEST_ENTITY             // 31 — ask for identity balance/nonce
 MESSAGE_TYPE.RESPOND_ENTITY             // 32 — response to entity request
 MESSAGE_TYPE.END_RESPONSE               // 35 — signals end of response stream
-MESSAGE_TYPE.TRY_AGAIN                  // 36 — server busy, retry in 1s
+MESSAGE_TYPE.TRY_AGAIN                  // 54 — server busy, retry in 1s
 ```
 
 `DEFAULT_PORT` is `21841` — the standard Qubic TCP port.
@@ -38,7 +38,7 @@ The high-level request helpers (`requestCurrentTickInfo`, `requestEntity`, etc.)
 
 ## Protocol types you won't see directly
 
-`END_RESPONSE` (35) and `TRY_AGAIN` (36) are protocol control frames. `conn.request()` handles both automatically:
+`END_RESPONSE` (35) and `TRY_AGAIN` (54) are protocol control frames. `conn.request()` handles both automatically:
 
 - When it sees `END_RESPONSE`, it returns the collected payloads
 - When it sees `TRY_AGAIN`, it waits 1 second and resends the request

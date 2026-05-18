@@ -8,7 +8,7 @@ description: Sends a signed transaction directly to a peer node, bypassing the H
 ```ts
 broadcastTransaction(
   conn: NodeConnection | NodePool,
-  txBytes: Uint8Array,
+  signedTxBytes: Uint8Array,
   options?: { signal?: AbortSignal },
 ): Promise<void>
 ```
@@ -22,8 +22,8 @@ import { createNodePool, broadcastTransaction } from "@qubic.org/tcp"
 
 const pool = createNodePool(["node1.qubic.org"])
 
-// txBytes is a Uint8Array from buildTransaction + signTransaction
-await broadcastTransaction(pool, txBytes)
+// signedTxBytes is a Uint8Array from buildTransaction + signTransaction
+await broadcastTransaction(pool, signedTxBytes)
 ```
 
 ## Parameters
@@ -31,7 +31,7 @@ await broadcastTransaction(pool, txBytes)
 | Name | Type | Description |
 |---|---|---|
 | `conn` | `NodeConnection \| NodePool` | Connection or pool |
-| `txBytes` | `Uint8Array` | Signed transaction bytes (not base64-encoded) |
+| `signedTxBytes` | `Uint8Array` | Signed transaction bytes (not base64-encoded) |
 | `options.signal` | `AbortSignal` | Optional |
 
 ## Returns

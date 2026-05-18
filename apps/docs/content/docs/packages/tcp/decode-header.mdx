@@ -16,7 +16,7 @@ Parses an 8-byte frame header. Use this when implementing custom TCP message flo
 ```ts
 import { decodeHeader } from "@qubic.org/tcp"
 
-const { size, messageType, dejavu } = decodeHeader(headerBytes)
+const { size, type, dejavu } = decodeHeader(headerBytes)
 ```
 
 ## Parameters
@@ -27,14 +27,14 @@ const { size, messageType, dejavu } = decodeHeader(headerBytes)
 
 ## Returns
 
-`DecodedHeader` — `{ size: number, messageType: number, dejavu: number }`
+`DecodedHeader` — `{ size: number, type: number, dejavu: number }`
 
 ### `DecodedHeader` type
 
 ```ts
 interface DecodedHeader {
   size: number         // total message length (header + payload)
-  messageType: number  // message type constant
+  type: number  // message type constant
   dejavu: number       // 32-bit nonce echoed from the request
 }
 ```

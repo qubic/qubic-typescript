@@ -13,16 +13,13 @@
     "format": "biome format --write"
   },
   "dependencies": {
-    "@ai-sdk/react": "^3.0.184",
     "@fontsource/geist-mono": "^5.2.8",
     "@fontsource/geist-sans": "^5.2.5",
-    "@openrouter/ai-sdk-provider": "^2.9.0",
     "@qubic.org/registry": "^0.2.7",
     "@radix-ui/react-collapsible": "^1.1.12",
     "@radix-ui/react-popover": "^1.1.15",
     "@radix-ui/react-presence": "^1.1.5",
     "@radix-ui/react-scroll-area": "^1.2.10",
-    "ai": "^6.0.182",
     "class-variance-authority": "^0.7.1",
     "flexsearch": "^0.8.212",
     "fumadocs-core": "16.8.11",

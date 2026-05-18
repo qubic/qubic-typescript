@@ -3,7 +3,7 @@ title: Transfers & contract calls
 description: buildTransfer and buildScTransaction — high-level signed transaction builders.
 ---
 
-Both methods return `{ encoded, hash }`: `encoded` is the base64 transaction ready to broadcast; `hash` is the canonical `TxHash`.
+Both methods return `SignedTransaction`: `{ encoded, hash, bytes }`. `encoded` is the base64 transaction ready to broadcast; `hash` is the canonical `TxHash`; `bytes` are the raw signed bytes.
 
 ## `wallet.buildTransfer(params)`
 
@@ -36,9 +36,9 @@ console.log("TX hash:", hash)
 | `destination` | `Identity` | Yes | Recipient identity |
 | `amount` | `bigint` | Yes | QU to send |
 | `targetTick` | `number` | Yes | Tick by which node must process the TX |
-| `currentTick` | `number` | Yes | Current tick (used for expiry validation) |
+| `currentTick` | `number` | No | Current tick; when provided, throws `TickInThePastError` if `targetTick <= currentTick` |
 
-**Returns** `Promise<{ encoded: Base64, hash: TxHash }>`
+**Returns** `Promise<SignedTransaction>` — `{ encoded: Base64, hash: TxHash, bytes: Uint8Array }`
 
 ---
 
@@ -47,35 +47,30 @@ console.log("TX hash:", hash)
 Builds and signs a smart contract procedure call.
 
 ```ts
-import { qearn } from "@qubic.org/contracts"
-import { toIdentity } from "@qubic.org/types"
-
-const destination = toIdentity("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+import { QEARN_LOCK_INPUT_TYPE } from "@qubic.org/contracts"
 
 const { encoded, hash } = await wallet.buildScTransaction({
-  destination,
   amount: 10_000_000n,
   targetTick: tick + 5,
-  currentTick: tick,
-  inputType: qearn.LOCK_INPUT_TYPE,
-  payload: qearn.buildLockInput({ amount: 10_000_000n }),
+  inputType: QEARN_LOCK_INPUT_TYPE,
+  payload: new Uint8Array(0),  // lock has no input fields
 })
 ```
 
-The destination for all SC calls is the 60-character all-A identity (the zero address). Each contract is identified by its `inputType`, not by address.
+The destination defaults to `SC_DESTINATION` (the all-A identity — the zero address for all SC calls). Each contract is identified by its `inputType`, not by address.
 
 **Parameters**
 
 | Name | Type | Required | Description |
 |---|---|---|---|
-| `destination` | `Identity` | Yes | Zero identity (`AAAA...`) |
-| `amount` | `bigint` | Yes | QU attached to the call (`0n` for read-only procedures) |
+| `destination` | `Identity` | No | Override the SC destination. Defaults to the all-A identity. |
+| `amount` | `bigint` | No | QU attached to the call. Defaults to `0n`. |
 | `targetTick` | `number` | Yes | Tick deadline |
-| `currentTick` | `number` | Yes | Current tick |
+| `currentTick` | `number` | No | Current tick; when provided, throws `TickInThePastError` if `targetTick <= currentTick` |
 | `inputType` | `number` | Yes | Procedure input type constant |
 | `payload` | `Uint8Array` | Yes | Encoded procedure input |
 
-**Returns** `Promise<{ encoded: Base64, hash: TxHash }>`
+**Returns** `Promise<SignedTransaction>` — `{ encoded: Base64, hash: TxHash, bytes: Uint8Array }`
 
 ---
 

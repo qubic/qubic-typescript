@@ -62,21 +62,24 @@ The vault never holds plaintext seeds outside of the in-memory structure returne
 ### Vault lifecycle
 
 ```ts
-import { createVault, addSeedToVault, exportVault, importVault, unlockVault, createWalletFromVault } from "@qubic.org/wallet"
+import { createVault, addToVault, exportVault, importVault, unlockVault } from "@qubic.org/wallet"
+import { generateSeed } from "@qubic.org/wallet"
 
-// 1. Create a new vault
-const vault = await createVault("my-password")
-await addSeedToVault(vault, "main", generateSeed())
-await addSeedToVault(vault, "trading", generateSeed())
+// 1. Create a new vault with initial seeds
+let vaultData = await createVault("my-password", [generateSeed()])
 
-// 2. Export to a JSON blob (safe to store in localStorage, a file, etc.)
-const blob = await exportVault(vault)
+// 2. Add more seeds later — returns a new VaultData (immutable)
+vaultData = await addToVault(vaultData, "my-password", generateSeed())
 
-// 3. Restore from the blob later
-const restored = await importVault(blob, "my-password")
+// 3. Export to a JSON string (safe to store in localStorage, a file, etc.)
+const json = exportVault(vaultData)  // synchronous, returns string
 
-// 4. Create a wallet from a named seed
-const wallet = createWalletFromVault(restored, "main")
+// 4. Restore from the JSON string — no password needed here
+const restored = importVault(json)   // synchronous, returns VaultData
+
+// 5. Unlock to get the seed array back
+const seeds = await unlockVault(restored, "my-password")
+// seeds: Seed[] — ordered array, no named seeds
 ```
 
 ### Security properties
@@ -84,6 +87,7 @@ const wallet = createWalletFromVault(restored, "main")
 - **Password-based** — the vault is only as strong as the password. Use a long, random passphrase.
 - **No plaintext at rest** — the exported blob contains no plaintext seeds.
 - **Authenticated encryption** — AES-256-GCM includes an authentication tag. A tampered or corrupted blob will fail to decrypt rather than silently produce wrong seeds.
+- **No named seeds** — seeds are stored as an ordered array. Track which index corresponds to which purpose in your own application state.
 - **No key derivation from seed** — each seed in the vault is a separate entry. There is no master seed or HD derivation.
 
 ### What the vault does NOT do

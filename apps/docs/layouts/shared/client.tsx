@@ -1,40 +1,52 @@
-'use client';
-import { usePathname } from 'fumadocs-core/framework';
-import Link from 'fumadocs-core/link';
-import { useI18n } from 'fumadocs-ui/contexts/i18n';
-import type { FC, ComponentProps } from 'react';
-import { isLinkItemActive, type BaseLayoutProps, type LinkItemType } from './index';
+"use client";
+import { usePathname } from "fumadocs-core/framework";
+import Link from "fumadocs-core/link";
+import { useI18n } from "fumadocs-ui/contexts/i18n";
+import type { ComponentProps, FC } from "react";
 import {
-  type LanguageSelectProps,
-  type LanguageSelectTextProps,
+  type BaseLayoutProps,
+  isLinkItemActive,
+  type LinkItemType,
+} from "./index";
+import {
   LanguageSelect,
+  type LanguageSelectProps,
   LanguageSelectText,
-} from './slots/language-select';
+  type LanguageSelectTextProps,
+} from "./slots/language-select";
 import {
-  type SearchTriggerProps,
+  FullSearchTrigger,
   type FullSearchTriggerProps,
   SearchTrigger,
-  FullSearchTrigger,
-} from './slots/search-trigger';
-import { type ThemeSwitchProps, ThemeSwitch } from './slots/theme-switch';
+  type SearchTriggerProps,
+} from "./slots/search-trigger";
+import { ThemeSwitch, type ThemeSwitchProps } from "./slots/theme-switch";
 
 export function LinkItem({
   ref,
   item,
   ...props
-}: Omit<ComponentProps<'a'>, 'href'> & { item: Extract<LinkItemType, { url: string }> }) {
+}: Omit<ComponentProps<"a">, "href"> & {
+  item: Extract<LinkItemType, { url: string }>;
+}) {
   const pathname = usePathname();
   const active = isLinkItemActive(item, pathname);
 
   return (
-    <Link ref={ref} href={item.url} external={item.external} {...props} data-active={active}>
+    <Link
+      ref={ref}
+      href={item.url}
+      external={item.external}
+      {...props}
+      data-active={active}
+    >
       {props.children}
     </Link>
   );
 }
 
 export interface BaseSlots {
-  navTitle: FC<ComponentProps<'a'>>;
+  navTitle: FC<ComponentProps<"a">>;
   themeSwitch: FC<ThemeSwitchProps> | false;
   searchTrigger:
     | {
@@ -50,12 +62,10 @@ export interface BaseSlots {
     | false;
 }
 
-export interface BaseSlotsProps<P extends BaseLayoutProps = BaseLayoutProps> extends Pick<
-  P,
-  'nav'
-> {
-  themeSwitch: Omit<NonNullable<P['themeSwitch']>, 'enabled'>;
-  searchToggle: Omit<NonNullable<P['searchToggle']>, 'enabled'>;
+export interface BaseSlotsProps<P extends BaseLayoutProps = BaseLayoutProps>
+  extends Pick<P, "nav"> {
+  themeSwitch: Omit<NonNullable<P["themeSwitch"]>, "enabled">;
+  searchToggle: Omit<NonNullable<P["searchToggle"]>, "enabled">;
 }
 
 export function baseSlots({ useProps }: { useProps: () => BaseSlotsProps }) {
@@ -77,10 +87,13 @@ export function baseSlots({ useProps }: { useProps: () => BaseSlotsProps }) {
     return <FullSearchTrigger {...props} {...searchToggle.full} />;
   }
 
-  function InlineNavTitle({ href: defaultUrl = '/', ...props }: ComponentProps<'a'>) {
+  function InlineNavTitle({
+    href: defaultUrl = "/",
+    ...props
+  }: ComponentProps<"a">) {
     const { url = defaultUrl, title } = useProps().nav ?? {};
 
-    if (typeof title === 'function') return title({ href: url, ...props });
+    if (typeof title === "function") return title({ href: url, ...props });
     return (
       <Link href={url} {...props}>
         {title}
@@ -98,14 +111,21 @@ export function baseSlots({ useProps }: { useProps: () => BaseSlotsProps }) {
         nav,
         slots = {},
         i18n = locales.length > 1,
-        searchToggle: { enabled: searchToggleEnabled = true, ...searchToggle } = {},
-        themeSwitch: { enabled: themeSwitchEnabled = true, ...themeSwitch } = {},
+        searchToggle: {
+          enabled: searchToggleEnabled = true,
+          ...searchToggle
+        } = {},
+        themeSwitch: {
+          enabled: themeSwitchEnabled = true,
+          ...themeSwitch
+        } = {},
       } = options;
 
       return {
         baseSlots: {
           navTitle: slots.navTitle ?? InlineNavTitle,
-          themeSwitch: themeSwitchEnabled && (slots.themeSwitch ?? InlineThemeSwitch),
+          themeSwitch:
+            themeSwitchEnabled && (slots.themeSwitch ?? InlineThemeSwitch),
           languageSelect: i18n
             ? (slots.languageSelect ?? {
                 root: LanguageSelect,

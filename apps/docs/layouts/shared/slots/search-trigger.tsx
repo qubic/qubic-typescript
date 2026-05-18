@@ -1,19 +1,24 @@
-'use client';
-import type { ComponentProps } from 'react';
-import { Search } from 'lucide-react';
-import { useSearchContext } from 'fumadocs-ui/contexts/search';
-import { useI18n } from 'fumadocs-ui/contexts/i18n';
-import { cn } from '../../../lib/cn';
-import { type ButtonProps, buttonVariants } from '../../../components/ui/button';
+"use client";
+import { useI18n } from "fumadocs-ui/contexts/i18n";
+import { useSearchContext } from "fumadocs-ui/contexts/search";
+import { Search } from "lucide-react";
+import type { ComponentProps } from "react";
+import {
+  type ButtonProps,
+  buttonVariants,
+} from "../../../components/ui/button";
+import { cn } from "../../../lib/cn";
 
-export interface SearchTriggerProps extends Omit<ComponentProps<'button'>, 'color'>, ButtonProps {
+export interface SearchTriggerProps
+  extends Omit<ComponentProps<"button">, "color">,
+    ButtonProps {
   hideIfDisabled?: boolean;
 }
 
 export function SearchTrigger({
   hideIfDisabled,
-  size = 'icon-sm',
-  color = 'ghost',
+  size = "icon-sm",
+  color = "ghost",
   ...props
 }: SearchTriggerProps) {
   const { setOpenSearch, enabled } = useSearchContext();
@@ -40,11 +45,14 @@ export function SearchTrigger({
   );
 }
 
-export interface FullSearchTriggerProps extends ComponentProps<'button'> {
+export interface FullSearchTriggerProps extends ComponentProps<"button"> {
   hideIfDisabled?: boolean;
 }
 
-export function FullSearchTrigger({ hideIfDisabled, ...props }: FullSearchTriggerProps) {
+export function FullSearchTrigger({
+  hideIfDisabled,
+  ...props
+}: FullSearchTriggerProps) {
   const { enabled, hotKey, setOpenSearch } = useSearchContext();
   const { text } = useI18n();
   if (hideIfDisabled && !enabled) return null;
@@ -55,7 +63,7 @@ export function FullSearchTrigger({ hideIfDisabled, ...props }: FullSearchTrigge
       data-search-full=""
       {...props}
       className={cn(
-        'inline-flex items-center gap-2 rounded-lg border bg-fd-secondary/50 p-1.5 ps-2 text-sm text-fd-muted-foreground transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground',
+        "inline-flex items-center gap-2 rounded-lg border bg-fd-secondary/50 p-1.5 ps-2 text-sm text-fd-muted-foreground transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground",
         props.className,
       )}
       onClick={() => {

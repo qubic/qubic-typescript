@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import { useI18n } from 'fumadocs-ui/contexts/i18n';
-import { cn } from '../../../../lib/cn';
-import { isActive } from '../../../../lib/urls';
-import { useFooterItems } from 'fumadocs-ui/utils/use-footer-items';
-import { usePathname } from 'fumadocs-core/framework';
-import Link from 'fumadocs-core/link';
-import type * as PageTree from 'fumadocs-core/page-tree';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { type ComponentProps, useMemo } from 'react';
+import { usePathname } from "fumadocs-core/framework";
+import Link from "fumadocs-core/link";
+import type * as PageTree from "fumadocs-core/page-tree";
+import { useI18n } from "fumadocs-ui/contexts/i18n";
+import { useFooterItems } from "fumadocs-ui/utils/use-footer-items";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { type ComponentProps, useMemo } from "react";
+import { cn } from "../../../../lib/cn";
+import { isActive } from "../../../../lib/urls";
 
-type Item = Pick<PageTree.Item, 'name' | 'description' | 'url'>;
+type Item = Pick<PageTree.Item, "name" | "description" | "url">;
 
-export interface FooterProps extends ComponentProps<'div'> {
+export interface FooterProps extends ComponentProps<"div"> {
   /**
    * Items including information for the next and previous page
    */
@@ -41,8 +41,8 @@ export function Footer({ items, children, className, ...props }: FooterProps) {
     <>
       <div
         className={cn(
-          '@container grid gap-4',
-          previous && next ? 'grid-cols-2' : 'grid-cols-1',
+          "@container grid gap-4",
+          previous && next ? "grid-cols-2" : "grid-cols-1",
           className,
         )}
         {...props}
@@ -63,14 +63,14 @@ function FooterItem({ item, index }: { item: Item; index: 0 | 1 }) {
     <Link
       href={item.url}
       className={cn(
-        'flex flex-col gap-2 rounded-lg border p-4 text-sm transition-colors hover:bg-fd-accent/80 hover:text-fd-accent-foreground @max-lg:col-span-full',
-        index === 1 && 'text-end',
+        "flex flex-col gap-2 rounded-lg border p-4 text-sm transition-colors hover:bg-fd-accent/80 hover:text-fd-accent-foreground @max-lg:col-span-full",
+        index === 1 && "text-end",
       )}
     >
       <div
         className={cn(
-          'inline-flex items-center gap-1.5 font-medium',
-          index === 1 && 'flex-row-reverse',
+          "inline-flex items-center gap-1.5 font-medium",
+          index === 1 && "flex-row-reverse",
         )}
       >
         <Icon className="-mx-1 size-4 shrink-0 rtl:rotate-180" />

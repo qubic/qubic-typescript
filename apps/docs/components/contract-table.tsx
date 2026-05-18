@@ -34,9 +34,7 @@ export function ContractTable() {
           {active.map((v, i) => (
             <tr
               key={v.contractIndex}
-              className={
-                i % 2 === 0 ? "bg-fd-background" : "bg-fd-muted/20"
-              }
+              className={i % 2 === 0 ? "bg-fd-background" : "bg-fd-muted/20"}
             >
               <td className="px-4 py-2.5 text-fd-muted-foreground font-mono text-xs">
                 {v.contractIndex}

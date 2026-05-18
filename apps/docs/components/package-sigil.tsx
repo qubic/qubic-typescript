@@ -18,8 +18,8 @@ const BGS = [
 function fnv(s: string): number {
   let h = 2166136261;
   for (let i = 0; i < s.length; i++) {
-    h = ((h ^ s.charCodeAt(i)) >>> 0);
-    h = (Math.imul(h, 16777619) >>> 0);
+    h = (h ^ s.charCodeAt(i)) >>> 0;
+    h = Math.imul(h, 16777619) >>> 0;
   }
   return h;
 }

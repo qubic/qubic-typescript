@@ -1,6 +1,6 @@
 import { docs } from "collections/server";
-import { loader } from "fumadocs-core/source";
 import type { LoaderPlugin } from "fumadocs-core/source";
+import { loader } from "fumadocs-core/source";
 import { lucideIconsPlugin } from "fumadocs-core/source/lucide-icons";
 import { createElement } from "react";
 import { PackageSigil } from "@/components/package-sigil";

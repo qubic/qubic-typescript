@@ -28,7 +28,8 @@ Or via the [namespace object](./namespace):
 ```ts
 import { qearn } from "@qubic.org/contracts"
 
-qearn.decodeLockOutput(rawBytes, publicKeyToIdentity)
+qearn.decodeLockOutput(rawBytes)
+// publicKeyToIdentity only needed for decoders with id-type output fields
 ```
 
 ---
@@ -39,9 +40,8 @@ Decoders are used when a procedure call returns output data — typically when y
 
 ```ts
 import { decodeQearnLockOutput } from "@qubic.org/contracts"
-import { publicKeyToIdentity } from "@qubic.org/crypto"
 
-const output = decodeQearnLockOutput(rawBytes, publicKeyToIdentity)
+const output = decodeQearnLockOutput(rawBytes)
 console.log("Lock output:", output)
 ```
 
@@ -50,7 +50,7 @@ console.log("Lock output:", output)
 | Name | Type | Description |
 |---|---|---|
 | `data` | `Uint8Array` | Raw output bytes from the node or archive. |
-| `publicKeyToIdentity` | `(pk: Uint8Array) => Identity` | From `@qubic.org/crypto`. Required only if output contains `id`-type fields. |
+| `publicKeyToIdentity` | `(pk: Uint8Array) => Identity` | From `@qubic.org/crypto`. Only required when the output contains `id`-type fields. Omit for decoders without id fields (e.g. `decodeQearnLockOutput`). |
 
 **Returns** a typed object with keys matching the procedure's output fields.
 
@@ -63,7 +63,6 @@ When fetching a historical transaction's output from the archive, use the decode
 ```ts
 import { createQueryClient } from "@qubic.org/rpc"
 import { decodeQearnLockOutput } from "@qubic.org/contracts"
-import { publicKeyToIdentity } from "@qubic.org/crypto"
 import { toTxHash } from "@qubic.org/types"
 
 const archive = createQueryClient()
@@ -73,7 +72,6 @@ const tx = await archive.getTransaction(toTxHash("abcdef..."))
 // Decode the output from the transaction's response field if available
 const output = decodeQearnLockOutput(
   Buffer.from(tx.responseData, "base64"),
-  publicKeyToIdentity,
 )
 console.log("Decoded output:", output)
 ```
@@ -87,7 +85,7 @@ Output field types use the same JavaScript type mapping as [builders](./builders
 | ABI type | JavaScript type |
 |---|---|
 | `uint8` / `uint16` / `uint32` | `number` |
-| `uint64` / `sint64` / `uint128` | `bigint` |
+| `uint64` / `sint64` | `bigint` |
 | `id` | `Identity` string |
 | `bytes` | `Uint8Array` |
 | `array` | Array of the element type |

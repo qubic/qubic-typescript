@@ -48,13 +48,13 @@ A Qubic transaction is a fixed-size binary structure:
 [targetTick: 4 bytes, little-endian uint32]
 [inputType: 2 bytes, little-endian uint16]
 [inputSize: 2 bytes, little-endian uint16]
-[signature: 64 bytes]
 [payload: inputSize bytes, optional]
+[signature: 64 bytes]
 ```
 
-Total header: 144 bytes (without payload).
+Total for a plain transfer (no payload): 80 bytes header + 64 bytes signature = 144 bytes.
 
-The signature covers bytes 0–79 (everything up to but not including the signature field). `hashTransaction` returns the K12 digest of those bytes.
+The signature covers bytes 0–79 (the header). `computeTransactionHash` returns the K12 digest of the full signed bytes.
 
 ---
 
@@ -67,7 +67,6 @@ The format is the same for both. The difference is in how you fill the fields:
 | `destinationPublicKey` | recipient's public key | 32 zero bytes (zero-address) |
 | `amount` | QU to send | QU to attach (can be 0) |
 | `inputType` | `0` | procedure's input type number |
-| `inputSize` | `0` | payload byte length |
 | `payload` | omitted | encoded procedure input |
 
 ```ts
@@ -86,9 +85,8 @@ const unsigned = buildTransaction({
   destinationPublicKey: new Uint8Array(32), // zero address
   amount: 10_000_000n,
   targetTick: tick + 5,
-  inputType: 6,           // e.g. Qearn lock_input
-  inputSize: payload.length,
-  payload,
+  inputType: 6,     // e.g. Qearn lock_input
+  payload,          // encoded procedure input (inputSize inferred from payload.byteLength)
 })
 ```
 
@@ -99,8 +97,9 @@ const unsigned = buildTransaction({
 `targetTick` is the tick by which the transaction must be included. Transactions that miss their target tick are dropped — they are not retried automatically. Choose a target tick that gives the node enough time to include it:
 
 ```ts
-const { tick } = await live.getTickInfo()
-const targetTick = tick + 5  // 5 ticks ≈ 5 seconds of buffer
+const tickResult = await live.getTickInfo()
+if (!tickResult.ok) throw tickResult.error
+const targetTick = tickResult.value.tick + 5  // 5 ticks ≈ 5 seconds of buffer
 ```
 
 If a transaction is time-sensitive, use a smaller buffer. If the network is congested, use a larger one. If a transaction misses, rebuild it with a new target tick and broadcast again.
@@ -109,13 +108,16 @@ If a transaction is time-sensitive, use a smaller buffer. If the network is cong
 
 ## Verifying a transaction
 
-`verifyTransaction` re-computes the digest and checks the signature using the public key embedded in the transaction bytes:
+`verifyTransactionSignature` re-computes the digest and checks the signature using the public key embedded in the transaction bytes:
 
 ```ts
-import { verifyTransaction, hashTransaction } from "@qubic.org/tx"
+import { verifyTransactionSignature, computeTransactionHash } from "@qubic.org/tx"
 
-const isValid = await verifyTransaction(signedTxBytes)
-const hash    = hashTransaction(signedTxBytes) // Uint8Array (32 bytes)
+const isValid: boolean = verifyTransactionSignature(signedTxBytes)
+// synchronous — no await needed
+
+const hash: TxHash = computeTransactionHash(signedTxBytes)
+// 60-character lowercase base-26 string (a–z alphabet, not hex)
 ```
 
 This is useful for auditing received transactions before submitting them, or for building a transaction explorer.

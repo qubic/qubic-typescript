@@ -41,4 +41,11 @@ new BinaryWriter(size: number)
 | `writeUint16(v)` | `number` | Writes an unsigned 16-bit integer (LE) |
 | `writeUint32(v)` | `number` | Writes an unsigned 32-bit integer (LE) |
 | `writeInt64(v)` | `bigint` | Writes a signed 64-bit integer (LE) |
+| `writeUint64(v)` | `bigint` | Writes an unsigned 64-bit integer (LE) |
 | `getBytes()` | — | Returns the full buffer as `Uint8Array` |
+
+### Properties
+
+| Property | Type | Description |
+|---|---|---|
+| `bytesWritten` | `number` | Number of bytes written so far |

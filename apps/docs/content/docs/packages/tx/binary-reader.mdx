@@ -18,8 +18,8 @@ const sessionId = reader.readUint32()  // 42
 const balance = reader.readInt64()     // 100_000_000n
 const flags = reader.readUint8()       // 3
 
-console.log(reader.bytesRead)      // 13
-console.log(reader.bytesRemaining) // 0
+console.log(reader.bytesRead) // 13
+console.log(reader.remaining) // 0
 ```
 
 ### Constructor
@@ -48,4 +48,4 @@ new BinaryReader(bytes: Uint8Array)
 | Property | Type | Description |
 |---|---|---|
 | `bytesRead` | `number` | Number of bytes consumed so far |
-| `bytesRemaining` | `number` | Number of bytes left in the buffer |
+| `remaining` | `number` | Number of bytes left in the buffer |

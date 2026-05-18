@@ -22,7 +22,6 @@ const unsigned = buildTransaction({
   amount: 1_000_000n,
   targetTick: currentTick + 5,
   inputType: 0,              // 0 = plain transfer
-  inputSize: 0,              // no payload
 })
 // unsigned is Uint8Array (80 bytes for a plain transfer)
 ```
@@ -36,10 +35,10 @@ const unsigned = buildTransaction({
 | `amount` | `bigint` | Transfer amount in QU |
 | `targetTick` | `number` | Tick by which the node must process the transaction |
 | `inputType` | `number` | 0 for transfers; procedure index for contract calls |
-| `inputSize` | `number` | Payload byte length (0 for plain transfers) |
-| `payload` | `Uint8Array \| undefined` | Optional payload bytes for contract calls |
+| `payload` | `Uint8Array \| undefined` | Optional payload bytes for contract calls; byte length is inferred automatically |
+| `currentTick` | `number \| undefined` | Optional current tick; when provided, throws `TickInThePastError` if `targetTick <= currentTick` |
 
-**Returns** `Uint8Array` — 80-byte header (+ `inputSize` payload bytes).
+**Returns** `Uint8Array` — 80-byte header (+ payload bytes, if any).
 
 ---
 
@@ -52,7 +51,7 @@ const { tick } = await live.getTickInfo()
 const targetTick = tick + 5  // deadline: process within the next 5 ticks
 ```
 
-Setting `targetTick` too low (e.g. `tick + 1`) risks rejection if the network is even slightly ahead of your clock. Setting it higher (e.g. `tick + 20`) gives more leeway but means the transaction sits pending longer before expiring if something goes wrong. The `PROTOCOL.TICKS_TO_EXPIRY` constant from `@qubic.org/types` defaults to `5` — a reasonable default for most conditions.
+Setting `targetTick` too low (e.g. `tick + 1`) risks rejection if the network is even slightly ahead of your clock. Setting it higher (e.g. `tick + 20`) gives more leeway but means the transaction sits pending longer before expiring if something goes wrong. The `PROTOCOL.TICKS_TO_EXPIRY` constant from `@qubic.org/types` defaults to `20` — a reasonable default for most conditions.
 
 ---
 
@@ -79,5 +78,4 @@ For a **plain transfer** (identity to identity):
 For a **contract call** (SC transaction):
 - `destinationPublicKey` = 32 zero bytes (the contract's canonical address)
 - `inputType` = the procedure's input type constant
-- `inputSize` = `payload.length`
-- `payload` = encoded procedure input from a `build*Input` function
+- `payload` = encoded procedure input from a `build*Input` function (`inputSize` is computed automatically)

@@ -5,7 +5,7 @@ description: Computes the canonical K12 hash of transaction bytes as a hex TxHas
 
 ## `computeTransactionHash(txBytes)`
 
-Computes the canonical transaction hash: K12 of the transaction bytes, truncated to 32 bytes, returned as a 60-character lowercase hex `TxHash`. Use this to look the transaction up in the archive after broadcasting.
+Computes the canonical transaction hash: K12 of the signed transaction bytes, truncated to 32 bytes, encoded as a 60-character lowercase base-26 string (letters a–z, not hex). Use this to look the transaction up in the archive after broadcasting.
 
 ```ts
 import { computeTransactionHash } from "@qubic.org/tx"
@@ -21,4 +21,4 @@ const result = await archive.getTransaction(hash)
 |---|---|---|
 | `txBytes` | `Uint8Array` | Signed transaction bytes |
 
-**Returns** `TxHash` — 60-character lowercase hex string.
+**Returns** `TxHash` — 60-character lowercase base-26 string (letters a–z, same alphabet as Qubic identity encoding but lowercase).

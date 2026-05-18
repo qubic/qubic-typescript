@@ -48,61 +48,60 @@ await live.broadcastTransaction(encoded)
 
 ---
 
-## `hashTransaction(signed)`
+## `computeTransactionHash(signed)`
 
-Computes the canonical transaction hash: K12 of the signed bytes, returned as a 60-character lowercase hex `TxHash`. Use this to look the transaction up in the archive after broadcasting.
+Computes the canonical transaction hash: K12 of the signed bytes, returned as a 60-character base-26 `TxHash`. Use this to look the transaction up in the archive after broadcasting.
 
 ```ts
-import { hashTransaction } from "@qubic.org/tx"
+import { computeTransactionHash } from "@qubic.org/tx"
 
-const hash: TxHash = hashTransaction(signed)
-const result = await archive.getTransaction(hash)
+const hash: TxHash = computeTransactionHash(signed)
+const result = await archive.getTransactionByHash(hash)
 ```
 
-**Returns** `TxHash`
+**Returns** `TxHash` — 60-character lowercase string (a–z alphabet, not hex).
 
 ---
 
-## `verifyTransaction(signed, publicKey)`
+## `verifyTransactionSignature(signedTxBytes)`
 
-Verifies the SchnorrQ signature on a signed transaction against the provided public key.
+Verifies the SchnorrQ signature on signed transaction bytes. Reads the public key embedded in the transaction bytes — no second argument required.
 
 ```ts
-import { verifyTransaction } from "@qubic.org/tx"
-import { publicKeyFromSeed } from "@qubic.org/crypto"
+import { verifyTransactionSignature } from "@qubic.org/tx"
 
-const publicKey = publicKeyFromSeed(seed)
-const valid: boolean = await verifyTransaction(signed, publicKey)
+const valid: boolean = verifyTransactionSignature(signed)
+// synchronous — no await needed
 ```
 
-**Returns** `Promise<boolean>` — `true` if the signature is valid for the given public key.
+**Returns** `boolean` — `true` if the signature is valid.
 
 ---
 
 ## Complete sign-and-broadcast flow
 
 ```ts
-import { buildTransaction, signTransaction, encodeTransaction, hashTransaction } from "@qubic.org/tx"
+import { buildTransaction, signTransaction, encodeTransaction, computeTransactionHash } from "@qubic.org/tx"
 import { publicKeyFromSeed } from "@qubic.org/crypto"
 import { toSeed } from "@qubic.org/types"
 import { createLiveClient } from "@qubic.org/rpc"
 
 const live = createLiveClient()
 const seed = toSeed(process.env.SEED!)
-const { tick } = await live.getTickInfo()
+const tickResult = await live.getTickInfo()
+if (!tickResult.ok) throw tickResult.error
 
 const unsigned = buildTransaction({
   sourcePublicKey: publicKeyFromSeed(seed),
   destinationPublicKey: new Uint8Array(32),
   amount: 0n,
-  targetTick: tick + 5,
+  targetTick: tickResult.value.tick + 5,
   inputType: 0,
-  inputSize: 0,
 })
 
 const signed = await signTransaction(unsigned, seed)
 const encoded = encodeTransaction(signed)
-const hash = hashTransaction(signed)
+const hash = computeTransactionHash(signed)
 
 await live.broadcastTransaction(encoded)
 console.log("TX hash:", hash)

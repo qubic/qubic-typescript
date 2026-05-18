@@ -1,11 +1,11 @@
 ---
 title: Payload codec
-description: buildPayload and readField — encode and decode typed struct fields for contract call payloads.
+description: buildPayload — encode typed struct fields for contract call payloads.
 ---
 
-Contract calls pass a binary payload encoding the procedure's input struct. `buildPayload` and `readField` are the raw tools for building and parsing these payloads field by field.
+Contract calls pass a binary payload encoding the procedure's input struct. `buildPayload` is the raw tool for building these payloads field by field.
 
-In practice, use the typed builders from `@qubic.org/contracts` (e.g. `qearn.buildLockInput`) instead of calling `buildPayload` directly. The contracts package generates these builders from the ABI, so they validate types and handle field ordering for you.
+In practice, use the typed builders from `@qubic.org/contracts` (e.g. `qearn.buildUnlockInput`) instead of calling `buildPayload` directly. The contracts package generates these builders from the ABI, so they validate types and handle field ordering for you.
 
 ---
 
@@ -32,12 +32,9 @@ const payload = buildPayload([
 | `"uint16"` | `number` | 2 | Unsigned 16-bit integer (LE) |
 | `"uint32"` | `number` | 4 | Unsigned 32-bit integer (LE) |
 | `"uint64"` | `bigint` | 8 | Unsigned 64-bit integer (LE) |
-| `"int8"` | `number` | 1 | Signed 8-bit integer |
-| `"int16"` | `number` | 2 | Signed 16-bit integer (LE) |
-| `"int32"` | `number` | 4 | Signed 32-bit integer (LE) |
-| `"int64"` | `bigint` | 8 | Signed 64-bit integer (LE) |
-| `"publicKey"` | `Uint8Array` | 32 | FourQ public key bytes |
-| `"bytes"` | `Uint8Array` | varies | Raw bytes — length comes from the struct definition |
+| `"sint64"` | `bigint` | 8 | Signed 64-bit integer (LE) |
+| `"bytes"` | `Uint8Array` | varies | Raw bytes |
+| `"id"` | `string` | 32 | Qubic identity string — encoded as its 32-byte public key via `identityToPublicKey` |
 
 All integers are encoded little-endian, matching the Qubic wire format.
 
@@ -45,39 +42,19 @@ All integers are encoded little-endian, matching the Qubic wire format.
 
 ---
 
-## `readField(buffer, offset, type)`
-
-Reads a single typed field from a buffer at a given byte offset.
-
-```ts
-import { readField } from "@qubic.org/tx"
-
-const buffer: Uint8Array = responseBytes
-
-const amount = readField(buffer, 0, "uint64")  // bigint
-const epoch  = readField(buffer, 8, "uint32")  // number
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `buffer` | `Uint8Array` | Source bytes |
-| `offset` | `number` | Byte offset to read from |
-| `type` | `PayloadFieldType` | One of the type strings listed above |
-
-**Returns** `bigint` for 64-bit types; `number` for types ≤32 bits; `Uint8Array` for `"publicKey"` and `"bytes"`.
-
----
-
 ## Prefer the generated wrappers
 
-The generated wrappers in `@qubic.org/contracts` call `buildPayload` and `readField` under the hood and add input validation on top. Use the raw codec only for contract functions not yet covered by the generated wrappers.
+The generated wrappers in `@qubic.org/contracts` call `buildPayload` under the hood and add input validation on top. Use the raw codec only for contract functions not yet covered by the generated wrappers.
 
 ```ts
 // Prefer this (from @qubic.org/contracts):
-const payload = qearn.buildLockInput({ amount: 10_000_000n })
+const call = qearn.buildUnlockInput({ amount: 10_000_000n, lockedEpoch: 213 })
 
 // Over this (raw codec):
-const payload = buildPayload([{ type: "uint64", value: 10_000_000n }])
+const payload = buildPayload([
+  { type: "uint64", value: 10_000_000n },
+  { type: "uint32", value: 213 },
+])
 ```
+
+For reading binary data from contract responses, use `BinaryReader` from the same package.

@@ -5,6 +5,8 @@ import { BookOpen, Clock, Code, FileText, Search } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 import type { ContractSummary } from '../lib/api'
+
+const BACKEND = process.env.NEXT_PUBLIC_REGISTRY_API_URL ?? 'https://registry.qubickit.dev'
 import { Sigil } from './sigil'
 
 export function CommandPalette() {
@@ -17,7 +19,7 @@ export function CommandPalette() {
     setOpen(true)
     if (loadState === 'idle') {
       setLoadState('loading')
-      fetch('/api/contracts')
+      fetch(`${BACKEND}/v1/contracts`, { cache: 'force-cache' })
         .then((r) => {
           if (!r.ok) throw new Error(String(r.status))
           return r.json()

@@ -2,9 +2,9 @@ import { ImageResponse } from "next/og";
 import { generate as DefaultImage } from "fumadocs-ui/og";
 import { notFound } from "next/navigation";
 import { appName } from "@/lib/shared";
-import { source } from "@/lib/source";
+import { getPageImage, source } from "@/lib/source";
 
-export const runtime = "edge";
+export const revalidate = false;
 
 export async function GET(
   _req: Request,
@@ -25,4 +25,11 @@ export async function GET(
       height: 630,
     },
   );
+}
+
+export function generateStaticParams() {
+  return source.getPages().map((page) => ({
+    lang: page.locale,
+    slug: getPageImage(page).segments,
+  }));
 }

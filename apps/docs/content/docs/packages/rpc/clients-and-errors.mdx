@@ -53,19 +53,21 @@ Use it for:
 
 ## The error model
 
-Both clients throw `QubicRpcError` on any failure. The error class has three properties:
+All client methods return `Result<T, QubicRpcError>` — they never throw. Check `result.ok` before accessing the value:
 
 ```ts
-import { QubicRpcError } from "@qubic.org/rpc"
+import { createLiveClient } from "@qubic.org/rpc"
 
-try {
-  await live.getTickInfo()
-} catch (e) {
-  if (e instanceof QubicRpcError) {
-    e.message  // human-readable description
-    e.status   // HTTP status code, or undefined for network failures
-    e.cause    // the underlying error, if any
-  }
+const live = createLiveClient()
+const result = await live.getTickInfo()
+
+if (!result.ok) {
+  const e = result.error  // QubicRpcError
+  console.error(e.message)   // human-readable description
+  console.error(e.status)    // HTTP status code, or -1 for network failures
+  console.error(e.endpoint)  // the URL that failed
+} else {
+  console.log(result.value.tick)
 }
 ```
 
@@ -76,24 +78,21 @@ try {
 | `404` | Resource not found (tx hash, identity) | The item doesn't exist or hasn't been indexed yet |
 | `429` | Rate limit exceeded | Back off and retry with exponential delay |
 | `500` | Gateway or node error | Retry; may be transient |
-| `undefined` | Network failure, DNS, timeout | Check connectivity; retry |
+| `-1` | Network failure, DNS, timeout | Check connectivity; retry |
 
 ### Retry pattern
 
 ```ts
-async function withRetry<T>(fn: () => Promise<T>, retries = 3): Promise<T> {
-  for (let i = 0; i < retries; i++) {
-    try {
-      return await fn()
-    } catch (e) {
-      if (e instanceof QubicRpcError && e.status === 429 && i < retries - 1) {
-        await new Promise((r) => setTimeout(r, 1000 * (i + 1)))
-        continue
-      }
-      throw e
-    }
+async function withRetry<T>(
+  fn: () => Promise<Result<T, QubicRpcError>>,
+  retries = 3,
+): Promise<Result<T, QubicRpcError>> {
+  let result = await fn()
+  for (let i = 0; i < retries && !result.ok && result.error.status === 429; i++) {
+    await new Promise((r) => setTimeout(r, 1000 * (i + 1)))
+    result = await fn()
   }
-  throw new Error("unreachable")
+  return result
 }
 ```
 
@@ -118,14 +117,15 @@ Use `@qubic.org/bob` when:
 
 ## Custom fetch
 
-Both clients accept a `fetch` option for custom HTTP behavior — useful for authentication headers, request logging, or running in environments with a non-standard `fetch` (like Cloudflare Workers):
+Both clients accept a `fetch` option for custom HTTP behavior — useful for authentication headers, request logging, or running in environments with a non-standard `fetch` (like Cloudflare Workers).
+
+The custom fetch receives a single `Request` object:
 
 ```ts
 const live = createLiveClient({
-  fetch: (url, init) =>
-    fetch(url, {
-      ...init,
-      headers: { ...init?.headers, "Authorization": `Bearer ${token}` },
-    }),
+  fetch: (request: Request) =>
+    fetch(new Request(request, {
+      headers: { ...Object.fromEntries(request.headers), "Authorization": `Bearer ${token}` },
+    })),
 })
 ```

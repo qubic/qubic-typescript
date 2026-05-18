@@ -29,8 +29,9 @@ if (confirmation.ok) {
 |---|---|---|
 | `live` | `LiveClient` | Live client to poll |
 | `targetTick` | `number` | Tick number to wait for |
-| `intervalMs` | `number` | Poll interval in milliseconds. Default: `1000` |
-| `timeoutMs` | `number` | Maximum wait in milliseconds. Default: `60000` |
-| `signal` | `AbortSignal` | Cancels polling when aborted |
+| `options` | `PollOptions` | Optional. `{ intervalMs?, timeoutMs?, signal? }` |
+| `options.intervalMs` | `number` | Poll interval in milliseconds. Default: `1000` |
+| `options.timeoutMs` | `number` | Maximum wait in milliseconds. Default: `60000` |
+| `options.signal` | `AbortSignal` | Cancels polling when aborted |
 
 **Returns** `Promise<Result<number, QubicRpcError>>` — `ok(targetTick)` when reached, `err` on timeout or cancellation.

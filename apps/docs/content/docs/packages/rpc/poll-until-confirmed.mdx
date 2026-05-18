@@ -34,8 +34,9 @@ if (!confirmed.ok) {
 |---|---|---|
 | `live` | `LiveClient` | Live client to poll |
 | `targetTick` | `number` | The tick number the transaction was submitted for |
-| `intervalMs` | `number` | Poll interval in milliseconds. Default: `1000` |
-| `timeoutMs` | `number` | Maximum wait in milliseconds. Default: `60000` |
-| `signal` | `AbortSignal` | Cancels polling when aborted |
+| `options` | `PollOptions` | Optional. `{ intervalMs?, timeoutMs?, signal? }` |
+| `options.intervalMs` | `number` | Poll interval in milliseconds. Default: `1000` |
+| `options.timeoutMs` | `number` | Maximum wait in milliseconds. Default: `60000` |
+| `options.signal` | `AbortSignal` | Cancels polling when aborted |
 
 **Returns** `Promise<Result<number, QubicRpcError>>` — `ok(targetTick)` when the tick passes, `err` on timeout or cancellation.

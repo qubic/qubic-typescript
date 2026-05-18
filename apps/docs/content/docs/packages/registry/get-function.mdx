@@ -6,7 +6,7 @@ description: Finds a read-only function by its inputType number in an ABI versio
 ## Signature
 
 ```ts
-getFunction(version: ContractAbiVersion, inputType: number): Function
+getFunction(version: ContractAbiVersion, inputType: number): ContractCallBase
 ```
 
 ## Purpose
@@ -37,7 +37,7 @@ fn.outputFields  // BinaryField[]
 
 ## Returns
 
-`Function` — the function definition including `name`, `inputType`, `inputFields`, and `outputFields`.
+`ContractCallBase` — the function definition including `name`, `inputType`, `inputFields`, and `outputFields`.
 
 ## Throws
 

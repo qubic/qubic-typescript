@@ -1,12 +1,12 @@
 ---
 title: getProcedure
-description: Finds a procedure (write function) by its inputType number in an ABI version, throwing EntryNotFoundError if absent.
+description: Finds a procedure (write function) by its inputType number in an ABI version, returning a ContractCallBase.
 ---
 
 ## Signature
 
 ```ts
-getProcedure(version: ContractAbiVersion, inputType: number): Procedure
+getProcedure(version: ContractAbiVersion, inputType: number): ContractCallBase
 ```
 
 ## Purpose
@@ -37,7 +37,7 @@ proc.outputFields  // BinaryField[]
 
 ## Returns
 
-`Procedure` — the procedure definition including `name`, `inputType`, `inputFields`, and `outputFields`.
+`ContractCallBase` — the procedure definition including `name`, `inputType`, `inputFields`, and `outputFields`.
 
 ## Throws
 

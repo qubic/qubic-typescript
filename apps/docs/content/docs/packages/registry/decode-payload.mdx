@@ -10,8 +10,8 @@ decodePayload(
   data: Uint8Array,
   fields: BinaryField[],
   structs: Record<string, NamedStruct>,
-  publicKeyToIdentity: (pk: Uint8Array) => Identity,
-): Record<string, FieldValue>
+  publicKeyToIdentity: (pk: Uint8Array) => string,
+): Record<string, unknown>
 ```
 
 ## Purpose
@@ -38,10 +38,10 @@ const output = decodePayload(
 | `data` | `Uint8Array` | Raw response bytes from the node or archive |
 | `fields` | `BinaryField[]` | Field definitions from `procedure.outputFields` or `fn.outputFields` |
 | `structs` | `Record<string, NamedStruct>` | Named structs from `version.structs` |
-| `publicKeyToIdentity` | `(pk: Uint8Array) => Identity` | From `@qubic.org/crypto`. Used to decode `id`-type fields. |
+| `publicKeyToIdentity` | `(pk: Uint8Array) => string` | From `@qubic.org/crypto`. Used to decode `id`-type fields. |
 
 ## Returns
 
-`Record<string, FieldValue>` — a typed object with field names as keys and decoded values.
+`Record<string, unknown>` — a typed object with field names as keys and decoded values.
 
 `identityToPublicKey` and `publicKeyToIdentity` are passed as parameters rather than imported directly, keeping `@qubic.org/registry` tree-shakeable for server-side registry browsing that does not need the crypto library.

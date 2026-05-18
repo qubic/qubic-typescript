@@ -50,20 +50,22 @@ If `isCurrent` is true, `effectiveToEpoch` is null — the version is still acti
 
 ```
 ContractRegistry
-└── contracts: ContractEntry[]
-    ├── index: number
-    ├── name: string
-    └── versions: ContractAbiVersion[]
-        ├── effectiveFromEpoch: number
-        ├── effectiveToEpoch: number | null
-        ├── procedures: Procedure[]
-        │   ├── name: string
-        │   ├── inputType: number
-        │   ├── inputFields: BinaryField[]
-        │   └── outputFields: BinaryField[]
-        ├── functions: Function[]
-        │   └── (same as Procedure)
-        └── structs: Record<string, NamedStruct>
+├── schemaVersion: 1
+├── updatedAt: string
+└── versions: ContractAbiVersion[]
+    ├── contractIndex: number
+    ├── contractName: string
+    ├── effectiveFromEpoch: number
+    ├── effectiveToEpoch: number | null  — null = still active
+    ├── procedures: ContractCallBase[]
+    │   ├── kind: "procedure"
+    │   ├── name: string
+    │   ├── inputType: number
+    │   ├── inputFields: BinaryField[]
+    │   └── outputFields: BinaryField[]
+    ├── functions: ContractCallBase[]
+    │   └── (same shape, kind: "function")
+    └── structs: Record<string, NamedStruct>
 ```
 
 ---

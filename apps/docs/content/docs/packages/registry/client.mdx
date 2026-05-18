@@ -11,16 +11,15 @@ Creates a registry client that fetches ABIs over HTTP. Use this when you need hi
 import { createRegistryClient } from "@qubic.org/registry"
 
 const client = createRegistryClient()
-// defaults to the public registry API
 ```
 
 **Options**
 
 | Name | Type | Default | Description |
 |---|---|---|---|
-| `url` | `string` | public registry API | Registry API base URL. |
+| `url` | `string` | `"https://registry.qubic.ts/registry.json"` | Registry API base URL. |
 | `cache` | `"none" \| "session" \| "persistent"` | `"session"` | Cache strategy. |
-| `ttlMs` | `number` | `300000` | Cache TTL in milliseconds (5 min). |
+| `ttlMs` | `number` | `3600000` | Cache TTL in milliseconds (1 hour). |
 | `fetch` | `typeof fetch` | global `fetch` | Custom fetch implementation. |
 
 ---

@@ -2751,7 +2751,7 @@ export function buildQVAULTGetVoteInProposalInput(
 
 export interface QVAULTGetVoteInProposalOutput {
   returnCode: bigint
-  isVoted: bigint
+  voteStatus: bigint
   votingDecision: bigint
 }
 
@@ -2763,7 +2763,7 @@ const QVAULT_GET_VOTE_IN_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
     byteLength: 8,
   },
   {
-    name: 'isVoted',
+    name: 'voteStatus',
     type: 'sint64',
     offset: 8,
     byteLength: 8,
@@ -2800,6 +2800,66 @@ export async function qVAULTGetVoteInProposal(
   })
 }
 
+export const QVAULT_GET_STAKE_EPOCH_FLAG_INPUT_TYPE = 22
+export const QVAULT_GET_STAKE_EPOCH_FLAG_INPUT_SIZE = 32
+
+export interface QVAULTGetStakeEpochFlagInput {
+  userID: string
+}
+
+const QVAULT_GET_STAKE_EPOCH_FLAG_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'userID',
+    type: 'id',
+    offset: 0,
+    byteLength: 32,
+  },
+]
+
+export function buildQVAULTGetStakeEpochFlagInput(
+  input: QVAULTGetStakeEpochFlagInput,
+  identityToPublicKey: (identity: string) => Uint8Array,
+): Uint8Array {
+  return buildPayload(QVAULT_GET_STAKE_EPOCH_FLAG_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+}
+
+export interface QVAULTGetStakeEpochFlagOutput {
+  flag: number
+}
+
+const QVAULT_GET_STAKE_EPOCH_FLAG_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'flag',
+    type: 'uint8',
+    offset: 0,
+    byteLength: 1,
+  },
+]
+
+export function decodeQVAULTGetStakeEpochFlagOutput(
+  data: Uint8Array,
+): QVAULTGetStakeEpochFlagOutput {
+  return decodePayload(data, QVAULT_GET_STAKE_EPOCH_FLAG_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTGetStakeEpochFlagOutput
+}
+
+export async function qVAULTGetStakeEpochFlag(
+  live: SmartContractCaller,
+  input: QVAULTGetStakeEpochFlagInput,
+  options?: ContractCallOptions,
+): Promise<Result<QVAULTGetStakeEpochFlagOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QVAULT_CONTRACT_INDEX,
+    inputType: QVAULT_GET_STAKE_EPOCH_FLAG_INPUT_TYPE,
+    inputSize: QVAULT_GET_STAKE_EPOCH_FLAG_INPUT_SIZE,
+    inputFields: QVAULT_GET_STAKE_EPOCH_FLAG_INPUT_FIELDS,
+    outputFields: QVAULT_GET_STAKE_EPOCH_FLAG_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
+}
+
 export const qVAULT = {
   contractIndex: QVAULT_CONTRACT_INDEX,
   getData: qVAULTGetData,
@@ -2822,6 +2882,7 @@ export const qVAULT = {
   getNumberOfHolderAndAvgAm: qVAULTGetNumberOfHolderAndAvgAm,
   getAmountForQearnInUpcomingEpoch: qVAULTGetAmountForQearnInUpcomingEpoch,
   getVoteInProposal: qVAULTGetVoteInProposal,
+  getStakeEpochFlag: qVAULTGetStakeEpochFlag,
   buildStakeInput: buildQVAULTStakeInput,
   decodeStakeOutput: decodeQVAULTStakeOutput,
   buildUnStakeInput: buildQVAULTUnStakeInput,

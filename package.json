@@ -3,9 +3,7 @@
   "license": "MIT",
   "private": true,
   "type": "module",
-  "workspaces": [
-    "packages/*"
-  ],
+  "workspaces": ["packages/*"],
   "scripts": {
     "generate": "bun run --filter '*' generate",
     "build": "bun run --filter '*' build",

@@ -13,9 +13,7 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "scripts": {
     "generate": "openapi-typescript ../../resources/core-bob/RESTAPI/openapi.json -o src/__generated__/bob-schema.d.ts",
     "build": "tsc -p tsconfig.json",

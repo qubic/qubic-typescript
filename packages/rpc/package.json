@@ -13,9 +13,7 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "scripts": {
     "generate": "openapi-typescript ../../resources/live-api.json -o src/live-schema.d.ts && openapi-typescript ../../resources/query-api.json -o src/query-schema.d.ts",
     "build": "tsc -p tsconfig.json && cp src/live-schema.d.ts dist/live-schema.d.ts && cp src/query-schema.d.ts dist/query-schema.d.ts",

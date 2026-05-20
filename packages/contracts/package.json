@@ -13,9 +13,7 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "scripts": {
     "generate": "bun scripts/generate.ts",
     "build": "tsc -p tsconfig.json",

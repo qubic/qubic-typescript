@@ -1,8 +1,11 @@
 {
   "name": "qubic-typescript",
+  "license": "MIT",
   "private": true,
   "type": "module",
-  "workspaces": ["packages/*"],
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "generate": "bun run --filter '*' generate",
     "build": "bun run --filter '*' build",
@@ -13,7 +16,7 @@
     "clean": "find . -name dist -not -path '*/node_modules/*' -exec rm -rf {} +",
     "changeset": "changeset",
     "version": "changeset version && bun scripts/replace-workspace-refs.ts && bunx biome format --write . && bun install",
-    "check:no-workspace-refs": "bun -e \"import {globSync,readFileSync} from 'node:fs';const bad=globSync('packages/*/package.json').filter(f=>readFileSync(f,'utf8').includes('workspace:'));if(bad.length){console.error('workspace: refs found — run bun run version first:\\n'+bad.join('\\n'));process.exit(1)}\"",
+    "check:no-workspace-refs": "bun -e \"import {globSync,readFileSync} from 'node:fs';const bad=globSync('packages/*/package.json').filter(f=>readFileSync(f,'utf8').includes('workspace:'));if(bad.length){console.error('workspace: refs found \u2014 run bun run version first:\\n'+bad.join('\\n'));process.exit(1)}\"",
     "release": "bun run check:no-workspace-refs && bun run build && changeset publish",
     "postinstall": "simple-git-hooks"
   },

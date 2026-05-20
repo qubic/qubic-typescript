@@ -292,14 +292,34 @@ async function runFromEpoch(fromEpoch: number, toEpoch: number) {
     }
     try {
       existing = JSON.parse(readFileSync(REGISTRY_PATH, 'utf-8')) as ContractRegistry
-      const indicesToProcess = new Set(contracts.map((sc) => sc.contractIndex))
-      existing.versions = existing.versions.filter((v) => !indicesToProcess.has(v.contractIndex))
     } catch {
       // Fresh
     }
 
-    // Track current ABI per contract for version-range index
+    // Track current ABI per contract for version-range index.
+    // Pre-seed from existing epoch snapshots before fromEpoch so single-epoch runs
+    // don't treat every contract as new.
     const current = new Map<number, { fingerprint: string; version: ContractAbiVersion }>()
+    const priorEpochDirs = existsSync(EPOCHS_DIR)
+      ? readdirSync(EPOCHS_DIR, { withFileTypes: true })
+          .filter((d) => d.isDirectory())
+          .map((d) => Number(d.name))
+          .filter((n) => !Number.isNaN(n) && n < fromEpoch)
+          .sort((a, b) => a - b)
+      : []
+    for (const priorEpoch of priorEpochDirs) {
+      const epochDir = join(EPOCHS_DIR, String(priorEpoch))
+      for (const file of readdirSync(epochDir).filter((f) => f.endsWith('.json'))) {
+        const snap = JSON.parse(readFileSync(join(epochDir, file), 'utf-8')) as ContractSnapshot
+        const version: ContractAbiVersion = {
+          ...snap,
+          effectiveFromEpoch: snap.epoch ?? priorEpoch,
+          effectiveToEpoch: null,
+        }
+        current.set(version.contractIndex, { fingerprint: abiFingerprint(version), version })
+      }
+    }
+
     const newVersions: ContractAbiVersion[] = []
 
     // Phase 2: for each epoch, read each active contract via git-show
@@ -355,6 +375,17 @@ async function runFromEpoch(fromEpoch: number, toEpoch: number) {
       }
 
       console.log(`${snapshots} contracts, ${changes} ABI change(s)`)
+    }
+
+    // Close the open registry entry for every contract that got a new version
+    const changedIndices = new Set(newVersions.map((v) => v.contractIndex))
+    for (const v of existing.versions) {
+      if (changedIndices.has(v.contractIndex) && v.effectiveToEpoch === null) {
+        const firstNew = newVersions
+          .filter((nv) => nv.contractIndex === v.contractIndex)
+          .sort((a, b) => a.effectiveFromEpoch - b.effectiveFromEpoch)[0]
+        v.effectiveToEpoch = firstNew.effectiveFromEpoch - 1
+      }
     }
 
     const allVersions = [...existing.versions, ...newVersions].sort(

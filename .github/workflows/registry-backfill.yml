@@ -34,7 +34,7 @@ jobs:
         run: bun install --frozen-lockfile --ignore-scripts
 
       - name: Build registry package
-        run: bun run --filter '@qubic.ts/registry' build
+        run: bun run --filter '@qubic.org/registry' build
 
       - name: Determine epoch range
         id: epochs

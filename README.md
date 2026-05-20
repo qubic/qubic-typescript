@@ -2,6 +2,9 @@
 
 TypeScript SDK for the [Qubic](https://qubic.org) network, split into focused packages for crypto, transaction building, RPC, ABI codec, and live node subscriptions. Built for [Bun](https://bun.com), works with Node.js.
 
+> [!NOTE]
+> **Public beta.** Core APIs are stable and the packages are in production use, but the public surface has not frozen yet. Breaking changes may land in minor versions before 1.0. Pin to an exact version and check the changelog when upgrading.
+
 ## Packages
 
 | Package | Version | Description |

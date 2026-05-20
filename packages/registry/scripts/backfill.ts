@@ -6,8 +6,6 @@
  *   --local              Read from resources/core/src/contracts/ (current epoch only, fast)
  *   --from-epoch N       Clone qubic/core once, scan tags since epoch N, write one snapshot
  *                        folder per epoch and a version-range registry.json
- *   --fill-gaps          Re-scan all epoch/contract combinations that have no snapshot yet,
- *                        using resources/core git (requires tags to be present locally)
  *   --rebuild-registry   Rebuild registry.json from all existing epoch snapshots on disk
  *   --patch-addresses    Add/refresh contractAddress on every snapshot and registry.json
  *
@@ -15,7 +13,7 @@
  *   --use-local-git      Source files from resources/core via git-show instead of cloning
  *   --contracts A,B      Process only these contracts (filename stem or label, comma-separated)
  *   --token GH_TOKEN     GitHub API token for fetching tags (--from-epoch only)
- *   --force              Overwrite existing snapshots (--fill-gaps only)
+ *   --force              Overwrite existing snapshots (--from-epoch only)
  *   --dry-run            Print what would be written without writing anything
  *
  * Outputs:
@@ -35,7 +33,6 @@ const { values: args } = parseArgs({
   args: process.argv.slice(2),
   options: {
     local: { type: 'boolean', default: false },
-    'fill-gaps': { type: 'boolean', default: false },
     'rebuild-registry': { type: 'boolean', default: false },
     'patch-addresses': { type: 'boolean', default: false },
     'migrate-snapshots': { type: 'boolean', default: false },
@@ -154,7 +151,24 @@ async function runLocal() {
 
   console.log(`Local mode — epoch ${epoch}`)
 
-  const versions: ContractAbiVersion[] = []
+  // Load existing registry first so we can skip writing snapshots for unchanged ABIs
+  let existing: ContractRegistry = {
+    schemaVersion: 1,
+    updatedAt: new Date().toISOString(),
+    versions: [],
+  }
+  try {
+    existing = JSON.parse(readFileSync(REGISTRY_PATH, 'utf-8')) as ContractRegistry
+  } catch {
+    /* fresh start */
+  }
+
+  const currentVersions = new Map<number, ContractAbiVersion>()
+  for (const v of existing.versions) {
+    if (v.effectiveToEpoch === null) currentVersions.set(v.contractIndex, v)
+  }
+
+  const toAdd: ContractAbiVersion[] = []
   let ok = 0
   let failed = 0
 
@@ -175,11 +189,19 @@ async function runLocal() {
         contractIndex: sc.contractIndex,
         effectiveFromEpoch: epoch,
       })
-      console.log(
-        `  ✓ [${sc.contractIndex}] ${sc.label}: ${version.procedures.length} proc, ${version.functions.length} fn`,
-      )
-      versions.push(version)
-      writeEpochSnapshot(epoch, version)
+      const prev = currentVersions.get(version.contractIndex)
+      if (prev === undefined) {
+        writeEpochSnapshot(epoch, version)
+        toAdd.push(version)
+        console.log(`  + [${sc.contractIndex}] ${sc.label}: new contract`)
+      } else if (abiFingerprint(version) !== abiFingerprint(prev)) {
+        writeEpochSnapshot(epoch, version)
+        prev.effectiveToEpoch = epoch - 1
+        toAdd.push(version)
+        console.log(`  ~ [${sc.contractIndex}] ${sc.label}: ABI changed`)
+      } else {
+        console.log(`  = [${sc.contractIndex}] ${sc.label}: unchanged`)
+      }
       ok++
     } catch (e) {
       console.warn(`  ✗ [${sc.contractIndex}] ${sc.label}: ${e instanceof Error ? e.message : e}`)
@@ -187,36 +209,7 @@ async function runLocal() {
     }
   }
 
-  console.log(`\nExtracted ${ok} contracts, ${failed} failed.`)
-
-  // Merge into existing registry: close out old versions on ABI changes, don't duplicate unchanged ones
-  let existing: ContractRegistry = {
-    schemaVersion: 1,
-    updatedAt: new Date().toISOString(),
-    versions: [],
-  }
-  try {
-    existing = JSON.parse(readFileSync(REGISTRY_PATH, 'utf-8')) as ContractRegistry
-  } catch {
-    /* fresh start */
-  }
-
-  const currentVersions = new Map<number, ContractAbiVersion>()
-  for (const v of existing.versions) {
-    if (v.effectiveToEpoch === null) currentVersions.set(v.contractIndex, v)
-  }
-
-  const toAdd: ContractAbiVersion[] = []
-  for (const version of versions) {
-    const prev = currentVersions.get(version.contractIndex)
-    if (prev === undefined) {
-      toAdd.push(version)
-    } else if (abiFingerprint(version) !== abiFingerprint(prev)) {
-      prev.effectiveToEpoch = epoch - 1
-      toAdd.push(version)
-    }
-    // else: unchanged — don't add a new version entry
-  }
+  console.log(`\nExtracted ${ok} contracts (${toAdd.length} changed), ${failed} failed.`)
 
   const allVersions = [...existing.versions, ...toAdd].sort(
     (a, b) => a.contractIndex - b.contractIndex || a.effectiveFromEpoch - b.effectiveFromEpoch,
@@ -342,20 +335,21 @@ async function runFromEpoch(fromEpoch: number, toEpoch: number) {
           continue
         }
 
-        writeEpochSnapshot(epoch, version, tag)
-        snapshots++
-
         const fp = abiFingerprint(version)
         const prev = current.get(sc.contractIndex)
 
         if (prev === undefined) {
+          writeEpochSnapshot(epoch, version, tag)
           current.set(sc.contractIndex, { fingerprint: fp, version })
           newVersions.push(version)
+          snapshots++
           changes++
         } else if (fp !== prev.fingerprint) {
+          writeEpochSnapshot(epoch, version, tag)
           prev.version.effectiveToEpoch = epoch - 1
           current.set(sc.contractIndex, { fingerprint: fp, version })
           newVersions.push(version)
+          snapshots++
           changes++
         }
       }
@@ -372,63 +366,6 @@ async function runFromEpoch(fromEpoch: number, toEpoch: number) {
   } finally {
     await cleanup()
   }
-}
-
-// ── Mode: --fill-gaps ─────────────────────────────────────────────────────────
-
-async function runFillGaps(showFile: (ref: string, path: string) => Promise<string | null>) {
-  const epochRefs = JSON.parse(readFileSync(EPOCH_REFS_PATH, 'utf-8')) as Record<string, string>
-  const epochs = Object.keys(epochRefs)
-    .map(Number)
-    .sort((a, b) => a - b)
-
-  let filled = 0
-  let skipped = 0
-  let failed = 0
-
-  for (const epoch of epochs) {
-    const tag = epochRefs[String(epoch)]
-    if (!tag) continue
-    const activeContracts = contracts.filter((sc) => sc.firstUseEpoch <= epoch)
-
-    for (const sc of activeContracts) {
-      const snapshotPath = join(EPOCHS_DIR, String(epoch), `${sc.label}.json`)
-      if (!args.force && existsSync(snapshotPath)) {
-        skipped++
-        continue
-      }
-
-      const headerSource = await showFile(tag, `src/contracts/${sc.filename}`)
-      if (!headerSource) {
-        console.warn(
-          `  ⚠ [${sc.contractIndex}] ${sc.label} @epoch ${epoch}: file not found in ${tag}`,
-        )
-        failed++
-        continue
-      }
-
-      const filenameStem = sc.filename.replace(/\.h$/, '')
-      try {
-        const version = parseContractHeader({
-          headerSource,
-          contractName: filenameStem,
-          contractIndex: sc.contractIndex,
-          effectiveFromEpoch: epoch,
-        })
-        writeEpochSnapshot(epoch, version, tag)
-        console.log(`  ✓ [${sc.contractIndex}] ${sc.label} @epoch ${epoch}`)
-        filled++
-      } catch (e) {
-        console.warn(
-          `  ✗ [${sc.contractIndex}] ${sc.label} @epoch ${epoch}: ${e instanceof Error ? e.message : e}`,
-        )
-        failed++
-      }
-    }
-  }
-
-  console.log(`\nFilled ${filled}, skipped ${skipped} existing, ${failed} failed.`)
-  rebuildRegistryFromSnapshots()
 }
 
 // ── Output ────────────────────────────────────────────────────────────────────
@@ -656,18 +593,6 @@ function patchAddresses() {
 
 if (args.local) {
   await runLocal()
-} else if (args['fill-gaps']) {
-  if (args['use-local-git']) {
-    await runFillGaps(showFileFromLocalGit)
-  } else {
-    console.log('Cloning qubic/core (treeless, sparse — blobs fetched on demand)…')
-    const { showFile, cleanup } = await cloneForBackfill()
-    try {
-      await runFillGaps(showFile)
-    } finally {
-      await cleanup()
-    }
-  }
 } else if (args['rebuild-registry']) {
   rebuildRegistryFromSnapshots()
 } else if (args['patch-addresses']) {
@@ -682,7 +607,6 @@ if (args.local) {
   console.error(
     'Usage:\n' +
       '  bun scripts/backfill.ts --local [--dry-run]\n' +
-      '  bun scripts/backfill.ts --fill-gaps [--use-local-git] [--contracts A,B] [--force] [--dry-run]\n' +
       '  bun scripts/backfill.ts --rebuild-registry [--contracts A,B] [--dry-run]\n' +
       '  bun scripts/backfill.ts --patch-addresses [--dry-run]\n' +
       '  bun scripts/backfill.ts --migrate-snapshots [--dry-run]\n' +

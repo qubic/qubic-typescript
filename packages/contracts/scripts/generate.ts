@@ -12,14 +12,20 @@ const epochDirs = readdirSync(epochsDir, { withFileTypes: true })
 
 if (epochDirs.length === 0) throw new Error(`No epoch folders found in ${epochsDir}`)
 const latestEpoch = epochDirs[epochDirs.length - 1] as number
-const latestEpochDir = join(epochsDir, String(latestEpoch))
 
-console.log(`Generating from epoch ${latestEpoch} (${latestEpochDir})`)
+// Snapshots are sparse: only written when the ABI changes, not for every epoch.
+// Scan all epoch folders in order so the last entry for each contract is the current ABI.
+const contractLatest = new Map<string, ContractAbiVersion>()
+for (const epoch of epochDirs) {
+  const epochDir = join(epochsDir, String(epoch))
+  for (const f of readdirSync(epochDir).filter((f) => f.endsWith('.json'))) {
+    contractLatest.set(f.replace('.json', ''), JSON.parse(readFileSync(join(epochDir, f), 'utf-8')) as ContractAbiVersion)
+  }
+}
 
-// Read all contract snapshots from the latest epoch folder
-const versions: ContractAbiVersion[] = readdirSync(latestEpochDir)
-  .filter((f) => f.endsWith('.json'))
-  .map((f) => JSON.parse(readFileSync(join(latestEpochDir, f), 'utf-8')) as ContractAbiVersion)
+console.log(`Generating from epoch ${latestEpoch} — ${contractLatest.size} contracts`)
+
+const versions: ContractAbiVersion[] = [...contractLatest.values()]
   .sort((a, b) => a.contractIndex - b.contractIndex)
 
 const outDir = join(import.meta.dir, '../src/__generated__')

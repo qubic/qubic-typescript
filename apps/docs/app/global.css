@@ -2,9 +2,173 @@
 @import "fumadocs-ui/css/black.css";
 @import "fumadocs-ui/css/preset.css";
 
+/* Qubic brand tokens — exact values from qubic/docs/src/css/custom.css */
+:root {
+  /* Brand surfaces / text */
+  --color-fd-foreground: rgba(38, 38, 42, 0.65); /* body text */
+  --color-fd-ring: #1ADEF5;
+  /* Callout (admonition) accent colors */
+  --color-fd-info: #1ADEF5;
+  --color-fd-success: #2ecc71;
+  --color-fd-warning: #f59e0b;
+  --color-fd-error: #ef4444;
+}
+
+.dark {
+  --color-fd-background: #1b1b1d;      /* Docusaurus default dark page bg */
+  --color-fd-card: #242526;            /* Docusaurus default dark surface */
+  --color-fd-popover: #1f1f21;
+  --color-fd-muted: #2a2a2c;
+  --color-fd-secondary: #2a2a2c;
+  --color-fd-accent: #303032;
+  --color-fd-border: hsla(0, 0%, 60%, 0.18);
+  --color-fd-foreground: #BDBFC6;      /* body text in dark mode */
+  --color-fd-muted-foreground: #BDBFC6;
+  --color-fd-ring: #1ADEF5;
+  /* Callout (admonition) accent colors — same in both themes */
+  --color-fd-info: #1ADEF5;
+  --color-fd-success: #2ecc71;
+  --color-fd-warning: #f59e0b;
+  --color-fd-error: #ef4444;
+}
+
+/* Cyan only on inline body/list links and active nav items —
+   matching docs.qubic.org behaviour where cyan is a text accent, not a fill.
+   NOTE: #nd-toc is handled separately below via --color-fd-primary scoping
+   (theme-dependent navy in light / cyan in dark), so it's deliberately excluded. */
+.prose :is(p, li, td, th) a:not(.no-underline),
+nav [data-active="true"],
+nav [aria-current="page"],
+aside [data-active="true"],
+aside [aria-current="page"],
+#nd-sidebar [data-active="true"],
+#nd-sidebar [aria-current="page"] {
+  color: #1ADEF5;
+}
+
+/* Headings are pure black (light) / pure white (dark), matching docs.qubic.org.
+   Fumadocs doesn't wrap pages in .prose, so target the content article directly. */
+#nd-page :is(h1, h2, h3, h4, h5, h6),
+#nd-page :is(h1, h2, h3, h4, h5, h6) a {
+  color: #000;
+}
+.dark #nd-page :is(h1, h2, h3, h4, h5, h6),
+.dark #nd-page :is(h1, h2, h3, h4, h5, h6) a {
+  color: #FFF;
+}
+
+/* Heading sizes — slightly smaller than docs.qubic.org's 3rem (3rem felt too big);
+   keeps hierarchy clear without the H1 dominating the page. */
+#nd-page h1 {
+  font-size: 2.5rem;
+  line-height: 1.15;
+}
+#nd-page h2 {
+  font-size: 1.875rem;
+  line-height: 1.25;
+}
+#nd-page h3 {
+  font-size: 1.5rem;
+  line-height: 1.3;
+}
+#nd-page h4 {
+  font-size: 1.25rem;
+}
+
+/* Make the DocsDescription paragraph (rendered below H1) the same size as body text,
+   so reading flow is uniform regardless of which heading the paragraph sits under. */
+#nd-page > p {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* Callout (admonition) styling — match docs.qubic.org INFO admonition look:
+   cyan left border + cyan icon + subtle cyan-tinted background.
+   Accent color tokens are defined in the consolidated :root / .dark blocks above. */
+
+/* Add cyan-tinted background to info callouts (Fumadocs's bg-fd-card alone is too plain).
+   Targets the Callout component by its inline --callout-color style. */
+.dark [style*="--callout-color"] {
+  background-color: color-mix(in srgb, var(--callout-color, transparent) 10%, #1f2937);
+}
+[style*="--callout-color"] {
+  background-color: color-mix(in srgb, var(--callout-color, transparent) 10%, #ffffff);
+}
+
+/* Prev/Next pagination cards (Fumadocs Footer) — match docs.qubic.org behavior:
+   muted "Previous"/"Next" sublabel, title in cyan link color, cyan border on hover. */
+#nd-page > div.\@container > a {
+  color: #1ADEF5; /* title text in cyan link color (matches docs.qubic.org) */
+}
+#nd-page > div.\@container > a:hover {
+  border-color: #1ADEF5;
+}
+#nd-page > div.\@container > a > p {
+  color: var(--color-fd-muted-foreground); /* "Previous page" / "Next page" muted sublabel */
+}
+
+/* Sidebar + top nav bg matches docs.qubic.org's navbar (#242526).
+   Higher-specificity selectors beat Fumadocs's inline Tailwind classes
+   (which use data-attribute variants like data-[transparent=false]:bg-fd-background/80). */
+.dark #nd-nav,
+.dark #nd-subnav,
+.dark #nd-sidebar,
+.dark #nd-toc {
+  background-color: #242526;
+  backdrop-filter: none;
+}
+
+/* TOC ("On this page") — match docs.qubic.org table-of-contents look.
+   Approach: redefine --color-fd-primary inside #nd-toc so Fumadocs's built-in
+   data-[active=true]:text-fd-primary class automatically picks the right color.
+   This is more reliable than fighting specificity with !important. */
+#nd-toc {
+  --color-fd-primary: #0F172A; /* light mode = dark navy (matches docs.qubic.org) */
+}
+.dark #nd-toc {
+  --color-fd-primary: #1ADEF5; /* dark mode = cyan (matches docs.qubic.org) */
+}
+
+/* Hide Fumadocs's moving thumb indicator — docs.qubic.org has no equivalent.
+   Target the absolute-positioned 1px bar Fumadocs renders for active range. */
+#nd-toc div.absolute.bg-fd-primary,
+#nd-toc div.w-px.bg-fd-primary {
+  display: none;
+}
+
+/* Smaller font matching docs.qubic.org's .table-of-contents look.
+   docs.qubic.org only changes COLOR on active (no font-weight change). */
+#nd-toc a {
+  font-size: 0.8rem;
+  line-height: 1.5;
+  padding-top: 0.35rem;
+  padding-bottom: 0.35rem;
+}
+
+/* Safety net: even with single=true on AnchorProvider, if multiple items end up
+   marked active (e.g., during HMR or edge cases), only the first stays styled. */
+#nd-toc a[data-active="true"] ~ a[data-active="true"] {
+  color: var(--color-fd-muted-foreground) !important;
+}
+
+
+/* Slightly heavier body text — Geist Sans at default weight reads thinner than
+   PP Telegraf does on docs.qubic.org, so bump body to 450 for closer parity. */
+body {
+  font-weight: 450;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 650;
+}
+
 html {
   scrollbar-gutter: stable;
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  /* Matches qubic/docs custom.css: prefers PP Telegraf (not actually loaded on
+     either site) and falls through to system sans-serif. */
+  font-family:
+    "PP Telegraf Regular",
+    "PP Telegraf Regular Placeholder",
+    sans-serif;
   letter-spacing: 0.0060rem;
 }
 

@@ -26,7 +26,8 @@ const BORDER_INDENT =
   "before:content-[''] before:absolute before:w-px before:inset-y-1 before:bg-fd-border before:inset-s-2.5";
 
 function offset(depth: number) {
-  return `calc(${2 + 3 * depth} * var(--spacing))`;
+  // 0.5rem base + 0.75rem per nesting level (4px / 12px / 20px / 28px ...)
+  return `${0.5 + 0.75 * depth}rem`;
 }
 
 // Styled sub-components that match fumadocs-ui's slot layer
@@ -100,6 +101,36 @@ function SlotFolderContent({ children }: { children: ReactNode }) {
     >
       <div className="flex flex-col gap-0.5 pt-0.5">{children}</div>
     </SidebarFolderContentBase>
+  );
+}
+
+// Custom leaf-item renderer — applies URL-based depth for visual hierarchy.
+// Can't rely on useFolderDepth() because root:true folders in meta.json (e.g.
+// the package roots) flatten their children to siblings — all such items end
+// up at depth 0 in the React FolderContext. URL segment count is a robust
+// proxy for "visual nesting level."
+export function CustomSidebarItem({ item }: { item: Item }) {
+  const pathname = usePathname();
+  const folderDepth = useFolderDepth();
+  const urlSegments = item.url.split("/").filter(Boolean).length;
+  // Use the deeper of folder-context depth or URL-derived depth.
+  // URL minus 1 because the first segment ("packages") is a top-level section.
+  const depth = Math.max(folderDepth, Math.max(0, urlSegments - 1));
+  // Normalize trailing slash so an item.url like "/foo/" doesn't break the
+  // active-state startsWith check (it would become "/foo//" otherwise).
+  const url = item.url.replace(/\/$/, "");
+  const active = pathname === url || pathname.startsWith(`${url}/`);
+  return (
+    <SidebarItemBase
+      href={item.url}
+      active={active}
+      icon={item.icon}
+      external={item.external}
+      className={`${ITEM_BASE} ${LINK_VARIANT} ${depth >= 1 ? "text-sm" : ""} ${depth >= 2 ? "text-[0.8125rem]" : ""}`}
+      style={{ paddingInlineStart: offset(depth) }}
+    >
+      {item.name}
+    </SidebarItemBase>
   );
 }
 

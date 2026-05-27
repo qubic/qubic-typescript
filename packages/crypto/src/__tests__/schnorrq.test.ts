@@ -59,7 +59,10 @@ describe('sign / verify', () => {
     const sPrime = s + ORDER
     const malleated = new Uint8Array(sig)
     let tmp = sPrime
-    for (let i = 0; i < 32; i++) { malleated[32 + i] = Number(tmp & 0xffn); tmp >>= 8n }
+    for (let i = 0; i < 32; i++) {
+      malleated[32 + i] = Number(tmp & 0xffn)
+      tmp >>= 8n
+    }
 
     expect(verify(message, malleated, publicKey)).toBe(false)
   })

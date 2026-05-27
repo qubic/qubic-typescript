@@ -132,16 +132,6 @@ function writeEpochSnapshot(epoch: number, version: ContractAbiVersion, coreVers
   )
 }
 
-async function showFileFromLocalGit(ref: string, path: string): Promise<string | null> {
-  const proc = Bun.spawn(['git', '-C', CORE_DIR, 'show', `${ref}:${path}`], {
-    stdout: 'pipe',
-    stderr: 'pipe',
-  })
-  const exit = await proc.exited
-  if (exit !== 0) return null
-  return new Response(proc.stdout).text()
-}
-
 // ── Mode: --local ─────────────────────────────────────────────────────────────
 
 async function runLocal() {

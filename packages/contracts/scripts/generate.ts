@@ -19,14 +19,18 @@ const contractLatest = new Map<string, ContractAbiVersion>()
 for (const epoch of epochDirs) {
   const epochDir = join(epochsDir, String(epoch))
   for (const f of readdirSync(epochDir).filter((f) => f.endsWith('.json'))) {
-    contractLatest.set(f.replace('.json', ''), JSON.parse(readFileSync(join(epochDir, f), 'utf-8')) as ContractAbiVersion)
+    contractLatest.set(
+      f.replace('.json', ''),
+      JSON.parse(readFileSync(join(epochDir, f), 'utf-8')) as ContractAbiVersion,
+    )
   }
 }
 
 console.log(`Generating from epoch ${latestEpoch} — ${contractLatest.size} contracts`)
 
-const versions: ContractAbiVersion[] = [...contractLatest.values()]
-  .sort((a, b) => a.contractIndex - b.contractIndex)
+const versions: ContractAbiVersion[] = [...contractLatest.values()].sort(
+  (a, b) => a.contractIndex - b.contractIndex,
+)
 
 const outDir = join(import.meta.dir, '../src/__generated__')
 mkdirSync(outDir, { recursive: true })

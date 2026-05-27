@@ -45,6 +45,25 @@ describe('sign / verify', () => {
     expect(verify(message, corrupted, publicKey)).toBe(false)
   })
 
+  test('rejects non-canonical S (S + order) — double-spend vector', async () => {
+    const message = new Uint8Array(32).fill(42)
+    const publicKey = publicKeyFromSeed(KNOWN_SEED)
+    const sig = await sign(message, KNOWN_SEED)
+
+    // S' = S + order (little-endian addition); this is the malleated scalar that
+    // the old bit-mask check wrongly accepted when S < 2^246 - order.
+    const ORDER = 0x0029cbc14e5e0a72f05397829cbc14e5dfbd004dfe0f79992fb2540ec7768ce7n
+    const sBytes = sig.slice(32, 64)
+    let s = 0n
+    for (let i = 31; i >= 0; i--) s = (s << 8n) | BigInt(sBytes[i] as number)
+    const sPrime = s + ORDER
+    const malleated = new Uint8Array(sig)
+    let tmp = sPrime
+    for (let i = 0; i < 32; i++) { malleated[32 + i] = Number(tmp & 0xffn); tmp >>= 8n }
+
+    expect(verify(message, malleated, publicKey)).toBe(false)
+  })
+
   test('is deterministic', async () => {
     const message = new Uint8Array(32).fill(99)
     const sig1 = await sign(message, KNOWN_SEED)

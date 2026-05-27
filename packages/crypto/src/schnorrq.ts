@@ -87,18 +87,16 @@ export function verify(
   messageDigest: Uint8Array,
   signature: Uint8Array,
 ): boolean {
-  if (
-    ((publicKey[15] as number) & 0x80) !== 0 ||
-    ((signature[15] as number) & 0x80) !== 0 ||
-    ((signature[62] as number) & 0xc0) !== 0 ||
-    (signature[63] as number) !== 0
-  ) {
+  if (((publicKey[15] as number) & 0x80) !== 0 || ((signature[15] as number) & 0x80) !== 0) {
     return false
   }
 
   const pointREncoding = signature.slice(0, 32)
   const sBytes = signature.slice(32, 64)
   const sValue = bytesToBigInt(sBytes)
+  // Reject non-canonical scalars: S must be strictly less than the curve order.
+  // Accepting S in [r, 2^246) would allow a second valid signature S' = S + r for
+  // the same message, producing a different tx hash and bypassing dedup.
   if (sValue >= ORDER) return false
 
   const pointPK = pointUnmarshal(publicKey)

@@ -816,6 +816,7 @@ export interface QswapGetPoolBasicStateOutput {
   reservedQuAmount: bigint
   reservedAssetAmount: bigint
   totalLiquidity: bigint
+  accFeePerLP: bigint
 }
 
 const QSWAP_GET_POOL_BASIC_STATE_OUTPUT_FIELDS: BinaryField[] = [
@@ -841,6 +842,12 @@ const QSWAP_GET_POOL_BASIC_STATE_OUTPUT_FIELDS: BinaryField[] = [
     name: 'totalLiquidity',
     type: 'sint64',
     offset: 24,
+    byteLength: 8,
+  },
+  {
+    name: 'accFeePerLP',
+    type: 'uint64',
+    offset: 32,
     byteLength: 8,
   },
 ]
@@ -908,6 +915,7 @@ export function buildQswapGetLiquidityOfInput(
 
 export interface QswapGetLiquidityOfOutput {
   liquidity: bigint
+  earnedFees: bigint
 }
 
 const QSWAP_GET_LIQUIDITY_OF_OUTPUT_FIELDS: BinaryField[] = [
@@ -915,6 +923,12 @@ const QSWAP_GET_LIQUIDITY_OF_OUTPUT_FIELDS: BinaryField[] = [
     name: 'liquidity',
     type: 'sint64',
     offset: 0,
+    byteLength: 8,
+  },
+  {
+    name: 'earnedFees',
+    type: 'uint64',
+    offset: 8,
     byteLength: 8,
   },
 ]

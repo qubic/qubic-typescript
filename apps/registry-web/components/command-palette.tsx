@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 import type { ContractSummary } from '../lib/api'
 
-const BACKEND = process.env.NEXT_PUBLIC_REGISTRY_API_URL ?? 'https://registry.qubickit.dev'
+const BACKEND = process.env.NEXT_PUBLIC_REGISTRY_API_URL ?? 'https://registry.qubic.org'
 import { Sigil } from './sigil'
 
 export function CommandPalette() {

@@ -24,6 +24,9 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+    # GH_PAT is a fine-grained PAT with contents:write + pull-requests:write on this repo.
+    # It bypasses the org-level "Allow GitHub Actions to create pull requests" restriction
+    # that prevents GITHUB_TOKEN from opening PRs in organisations where that setting is off.
 
     steps:
       - uses: actions/checkout@v4
@@ -94,7 +97,7 @@ jobs:
       - name: Open PR if snapshots or wrappers changed
         if: steps.changes.outputs.changed == 'true'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
           DATE=$(date -u +%Y-%m-%d)
           BRANCH="chore/registry-backfill-${DATE}"

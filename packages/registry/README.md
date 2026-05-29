@@ -181,7 +181,7 @@ Encodes ordered fields without field names. For unknown or custom contracts wher
 import { createRegistryClient } from '@qubic.org/registry'
 
 interface RegistryClientOptions {
-  url?: string                              // default: 'https://registry.qubic.ts/registry.json'
+  url?: string                              // default: 'https://registry.qubic.org/registry.json'
   cache?: 'none' | 'session' | 'persistent' // default: 'session'
   ttlMs?: number                            // default: 3_600_000 (1 hour)
   fetch?: typeof globalThis.fetch

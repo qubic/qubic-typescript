@@ -6,8 +6,8 @@ compatibility_date = "2025-05-15"
 compatibility_flags = ["nodejs_compat"]
 
 [[routes]]
-pattern = "registry.qubickit.dev/*"
-zone_name = "qubickit.dev"
+pattern = "registry.qubic.org/*"
+zone_name = "qubic.org"
 
 [[r2_buckets]]
 binding = "REGISTRY_BUCKET"

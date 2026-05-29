@@ -18,7 +18,7 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://registry.qubickit.dev'),
+  metadataBase: new URL('https://registry.qubic.org'),
   title: {
     default: 'qubic / registry — contract ABIs pinned per epoch',
     template: '%s | qubic registry',

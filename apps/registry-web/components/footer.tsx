@@ -19,7 +19,7 @@ export function Footer() {
           GitHub
         </a>
         <a
-          href={`${process.env.NEXT_PUBLIC_REGISTRY_API_URL ?? 'https://registry.qubickit.dev'}/health`}
+          href={`${process.env.NEXT_PUBLIC_REGISTRY_API_URL ?? 'https://registry.qubic.org'}/health`}
           className="muted"
           target="_blank"
           rel="noreferrer"

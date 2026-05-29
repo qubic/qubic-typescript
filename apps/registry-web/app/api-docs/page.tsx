@@ -2,7 +2,7 @@
 import { useMemo, useState } from 'react'
 import { TryIt } from '../../components/try-it'
 
-const BASE_URL = process.env.NEXT_PUBLIC_REGISTRY_API_URL ?? 'https://registry.qubickit.dev'
+const BASE_URL = process.env.NEXT_PUBLIC_REGISTRY_API_URL ?? 'https://registry.qubic.org'
 
 interface Endpoint {
   id: string

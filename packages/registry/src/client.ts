@@ -2,7 +2,7 @@ import { getAbi, getAbiHistory, getCurrentAbi } from './registry.js'
 import type { AbiLookupResult, ContractAbiVersion, ContractRegistry } from './types.js'
 
 export interface RegistryClientOptions {
-  /** Remote registry.json URL. Default: 'https://registry.qubic.org/registry.json' */
+  /** Remote registry.json URL. Default: 'https://ts.registry.qubic.org/registry.json' */
   url?: string
   /** Caching strategy. Default: 'session' */
   cache?: 'none' | 'session' | 'persistent'
@@ -20,7 +20,7 @@ export interface RegistryClient {
   getRegistry(): Promise<ContractRegistry>
 }
 
-const DEFAULT_URL = 'https://registry.qubic.org/registry.json'
+const DEFAULT_URL = 'https://ts.registry.qubic.org/registry.json'
 const DEFAULT_TTL = 3_600_000
 
 type CacheEntry = { registry: ContractRegistry; expiresAt: number }

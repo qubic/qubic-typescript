@@ -6,7 +6,7 @@ compatibility_date = "2025-05-15"
 compatibility_flags = ["nodejs_compat"]
 
 [[routes]]
-pattern = "registry.qubic.org/*"
+pattern = "ts.registry.qubic.org/*"
 zone_name = "qubic.org"
 
 [[r2_buckets]]

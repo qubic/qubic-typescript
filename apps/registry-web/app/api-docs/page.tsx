@@ -2,7 +2,7 @@
 import { useMemo, useState } from 'react'
 import { TryIt } from '../../components/try-it'
 
-const BASE_URL = process.env.NEXT_PUBLIC_REGISTRY_API_URL ?? 'https://registry.qubic.org'
+const BASE_URL = process.env.NEXT_PUBLIC_REGISTRY_API_URL ?? 'https://ts.registry.qubic.org'
 
 interface Endpoint {
   id: string
@@ -124,7 +124,7 @@ export default function ApiDocsPage() {
         <p className="page-sub">
           Public read API. No auth, rate-limited per IP. Base URL:{' '}
           <span className="mono" style={{ color: 'var(--text)' }}>
-            https://registry.qubic.org
+            https://ts.registry.qubic.org
           </span>
         </p>
       </div>

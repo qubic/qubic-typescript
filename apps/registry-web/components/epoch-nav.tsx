@@ -2,7 +2,7 @@
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
-const BACKEND = process.env.NEXT_PUBLIC_REGISTRY_API_URL ?? 'https://registry.qubic.org'
+const BACKEND = process.env.NEXT_PUBLIC_REGISTRY_API_URL ?? 'https://ts.registry.qubic.org'
 
 export function EpochNav({
   epoch,

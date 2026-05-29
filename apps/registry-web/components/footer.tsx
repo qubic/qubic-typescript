@@ -5,7 +5,7 @@ export function Footer() {
         <span className="dot pulse" />
         <span>All systems normal</span>
         <span className="mono">·</span>
-        <span className="mono">registry.qubic.org</span>
+        <span className="mono">ts.registry.qubic.org</span>
         <span style={{ flex: 1 }} />
         <a href="/api-docs" className="muted">
           API
@@ -19,7 +19,7 @@ export function Footer() {
           GitHub
         </a>
         <a
-          href={`${process.env.NEXT_PUBLIC_REGISTRY_API_URL ?? 'https://registry.qubic.org'}/health`}
+          href={`${process.env.NEXT_PUBLIC_REGISTRY_API_URL ?? 'https://ts.registry.qubic.org'}/health`}
           className="muted"
           target="_blank"
           rel="noreferrer"

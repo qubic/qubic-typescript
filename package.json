@@ -1,6 +1,6 @@
 {
   "name": "qubic-typescript",
-  "license": "MIT",
+  "license": "Anti-Military",
   "private": true,
   "type": "module",
   "workspaces": ["packages/*"],

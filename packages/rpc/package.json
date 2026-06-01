@@ -1,7 +1,7 @@
 {
   "name": "@qubic.org/rpc",
   "version": "0.2.7",
-  "license": "MIT",
+  "license": "Anti-Military",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "type": "module",

@@ -31,8 +31,5 @@
     "simple-git-hooks": "^2.11.1",
     "typedoc": "^0.28.0",
     "typescript": "^5.7.0"
-  },
-  "dependencies": {
-    "@qubic.org/rpc": "0.2.7"
   }
 }

@@ -180,7 +180,7 @@ const Q_BOND_TRANSFER_M_BOND_OWNERSHIP_AND_POSSESSION_OUTPUT_FIELDS: BinaryField
 export function decodeQBondTransferMBondOwnershipAndPossessionOutput(
   data: Uint8Array,
 ): QBondTransferMBondOwnershipAndPossessionOutput {
-  return decodePayload(data, Q_BOND_TRANSFER_M_BOND_OWNERSHIP_AND_POSSESSION_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QBondTransferMBondOwnershipAndPossessionOutput
+  return decodePayload(data, Q_BOND_TRANSFER_M_BOND_OWNERSHIP_AND_POSSESSION_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QBondTransferMBondOwnershipAndPossessionOutput
 }
 
 export const Q_BOND_ADD_ASK_ORDER_INPUT_TYPE = 3
@@ -234,7 +234,7 @@ const Q_BOND_ADD_ASK_ORDER_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQBondAddAskOrderOutput(
   data: Uint8Array,
 ): QBondAddAskOrderOutput {
-  return decodePayload(data, Q_BOND_ADD_ASK_ORDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QBondAddAskOrderOutput
+  return decodePayload(data, Q_BOND_ADD_ASK_ORDER_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QBondAddAskOrderOutput
 }
 
 export const Q_BOND_REMOVE_ASK_ORDER_INPUT_TYPE = 4
@@ -288,7 +288,7 @@ const Q_BOND_REMOVE_ASK_ORDER_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQBondRemoveAskOrderOutput(
   data: Uint8Array,
 ): QBondRemoveAskOrderOutput {
-  return decodePayload(data, Q_BOND_REMOVE_ASK_ORDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QBondRemoveAskOrderOutput
+  return decodePayload(data, Q_BOND_REMOVE_ASK_ORDER_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QBondRemoveAskOrderOutput
 }
 
 export const Q_BOND_ADD_BID_ORDER_INPUT_TYPE = 5
@@ -342,7 +342,7 @@ const Q_BOND_ADD_BID_ORDER_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQBondAddBidOrderOutput(
   data: Uint8Array,
 ): QBondAddBidOrderOutput {
-  return decodePayload(data, Q_BOND_ADD_BID_ORDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QBondAddBidOrderOutput
+  return decodePayload(data, Q_BOND_ADD_BID_ORDER_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QBondAddBidOrderOutput
 }
 
 export const Q_BOND_REMOVE_BID_ORDER_INPUT_TYPE = 6
@@ -396,7 +396,7 @@ const Q_BOND_REMOVE_BID_ORDER_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQBondRemoveBidOrderOutput(
   data: Uint8Array,
 ): QBondRemoveBidOrderOutput {
-  return decodePayload(data, Q_BOND_REMOVE_BID_ORDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QBondRemoveBidOrderOutput
+  return decodePayload(data, Q_BOND_REMOVE_BID_ORDER_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QBondRemoveBidOrderOutput
 }
 
 export const Q_BOND_BURN_QU_INPUT_TYPE = 7
@@ -436,7 +436,7 @@ const Q_BOND_BURN_QU_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQBondBurnQUOutput(
   data: Uint8Array,
 ): QBondBurnQUOutput {
-  return decodePayload(data, Q_BOND_BURN_QU_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QBondBurnQUOutput
+  return decodePayload(data, Q_BOND_BURN_QU_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QBondBurnQUOutput
 }
 
 export const Q_BOND_UPDATE_CFA_INPUT_TYPE = 8
@@ -484,7 +484,7 @@ const Q_BOND_UPDATE_CFA_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQBondUpdateCFAOutput(
   data: Uint8Array,
 ): QBondUpdateCFAOutput {
-  return decodePayload(data, Q_BOND_UPDATE_CFA_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QBondUpdateCFAOutput
+  return decodePayload(data, Q_BOND_UPDATE_CFA_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QBondUpdateCFAOutput
 }
 
 export const Q_BOND_GET_FEES_INPUT_TYPE = 1
@@ -520,7 +520,7 @@ const Q_BOND_GET_FEES_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQBondGetFeesOutput(
   data: Uint8Array,
 ): QBondGetFeesOutput {
-  return decodePayload(data, Q_BOND_GET_FEES_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QBondGetFeesOutput
+  return decodePayload(data, Q_BOND_GET_FEES_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QBondGetFeesOutput
 }
 
 export async function qBondGetFees(
@@ -566,7 +566,7 @@ const Q_BOND_GET_EARNED_FEES_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQBondGetEarnedFeesOutput(
   data: Uint8Array,
 ): QBondGetEarnedFeesOutput {
-  return decodePayload(data, Q_BOND_GET_EARNED_FEES_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QBondGetEarnedFeesOutput
+  return decodePayload(data, Q_BOND_GET_EARNED_FEES_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QBondGetEarnedFeesOutput
 }
 
 export async function qBondGetEarnedFees(
@@ -638,7 +638,7 @@ const Q_BOND_GET_INFO_PER_EPOCH_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQBondGetInfoPerEpochOutput(
   data: Uint8Array,
 ): QBondGetInfoPerEpochOutput {
-  return decodePayload(data, Q_BOND_GET_INFO_PER_EPOCH_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QBondGetInfoPerEpochOutput
+  return decodePayload(data, Q_BOND_GET_INFO_PER_EPOCH_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QBondGetInfoPerEpochOutput
 }
 
 export async function qBondGetInfoPerEpoch(
@@ -724,7 +724,7 @@ const Q_BOND_GET_ORDERS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQBondGetOrdersOutput(
   data: Uint8Array,
 ): QBondGetOrdersOutput {
-  return decodePayload(data, Q_BOND_GET_ORDERS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QBondGetOrdersOutput
+  return decodePayload(data, Q_BOND_GET_ORDERS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QBondGetOrdersOutput
 }
 
 export async function qBondGetOrders(
@@ -811,7 +811,7 @@ const Q_BOND_GET_USER_ORDERS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQBondGetUserOrdersOutput(
   data: Uint8Array,
 ): QBondGetUserOrdersOutput {
-  return decodePayload(data, Q_BOND_GET_USER_ORDERS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QBondGetUserOrdersOutput
+  return decodePayload(data, Q_BOND_GET_USER_ORDERS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QBondGetUserOrdersOutput
 }
 
 export async function qBondGetUserOrders(
@@ -854,7 +854,7 @@ const Q_BOND_GET_M_BONDS_TABLE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQBondGetMBondsTableOutput(
   data: Uint8Array,
 ): QBondGetMBondsTableOutput {
-  return decodePayload(data, Q_BOND_GET_M_BONDS_TABLE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QBondGetMBondsTableOutput
+  return decodePayload(data, Q_BOND_GET_M_BONDS_TABLE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QBondGetMBondsTableOutput
 }
 
 export async function qBondGetMBondsTable(
@@ -923,7 +923,7 @@ const Q_BOND_GET_USER_M_BONDS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQBondGetUserMBondsOutput(
   data: Uint8Array,
 ): QBondGetUserMBondsOutput {
-  return decodePayload(data, Q_BOND_GET_USER_M_BONDS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QBondGetUserMBondsOutput
+  return decodePayload(data, Q_BOND_GET_USER_M_BONDS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QBondGetUserMBondsOutput
 }
 
 export async function qBondGetUserMBonds(

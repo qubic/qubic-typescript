@@ -511,7 +511,7 @@ const COMPUTOR_CONTROLLED_FUND_SET_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeComputorControlledFundSetProposalOutput(
   data: Uint8Array,
 ): ComputorControlledFundSetProposalOutput {
-  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_SET_PROPOSAL_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as ComputorControlledFundSetProposalOutput
+  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_SET_PROPOSAL_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as ComputorControlledFundSetProposalOutput
 }
 
 export const COMPUTOR_CONTROLLED_FUND_VOTE_INPUT_TYPE = 2
@@ -572,7 +572,7 @@ const COMPUTOR_CONTROLLED_FUND_VOTE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeComputorControlledFundVoteOutput(
   data: Uint8Array,
 ): ComputorControlledFundVoteOutput {
-  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_VOTE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as ComputorControlledFundVoteOutput
+  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_VOTE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as ComputorControlledFundVoteOutput
 }
 
 export const COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_INDICES_INPUT_TYPE = 1
@@ -630,7 +630,7 @@ const COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_INDICES_OUTPUT_FIELDS: BinaryField[]
 export function decodeComputorControlledFundGetProposalIndicesOutput(
   data: Uint8Array,
 ): ComputorControlledFundGetProposalIndicesOutput {
-  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_INDICES_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as ComputorControlledFundGetProposalIndicesOutput
+  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_INDICES_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as ComputorControlledFundGetProposalIndicesOutput
 }
 
 export async function computorControlledFundGetProposalIndices(
@@ -838,7 +838,7 @@ const COMPUTOR_CONTROLLED_FUND_GET_VOTE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeComputorControlledFundGetVoteOutput(
   data: Uint8Array,
 ): ComputorControlledFundGetVoteOutput {
-  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_GET_VOTE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as ComputorControlledFundGetVoteOutput
+  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_GET_VOTE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as ComputorControlledFundGetVoteOutput
 }
 
 export async function computorControlledFundGetVote(
@@ -905,7 +905,7 @@ const COMPUTOR_CONTROLLED_FUND_GET_VOTING_RESULTS_OUTPUT_FIELDS: BinaryField[] =
 export function decodeComputorControlledFundGetVotingResultsOutput(
   data: Uint8Array,
 ): ComputorControlledFundGetVotingResultsOutput {
-  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_GET_VOTING_RESULTS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as ComputorControlledFundGetVotingResultsOutput
+  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_GET_VOTING_RESULTS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as ComputorControlledFundGetVotingResultsOutput
 }
 
 export async function computorControlledFundGetVotingResults(
@@ -948,7 +948,7 @@ const COMPUTOR_CONTROLLED_FUND_GET_LATEST_TRANSFERS_OUTPUT_FIELDS: BinaryField[]
 export function decodeComputorControlledFundGetLatestTransfersOutput(
   data: Uint8Array,
 ): ComputorControlledFundGetLatestTransfersOutput {
-  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_GET_LATEST_TRANSFERS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as ComputorControlledFundGetLatestTransfersOutput
+  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_GET_LATEST_TRANSFERS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as ComputorControlledFundGetLatestTransfersOutput
 }
 
 export async function computorControlledFundGetLatestTransfers(
@@ -987,7 +987,7 @@ const COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_FEE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeComputorControlledFundGetProposalFeeOutput(
   data: Uint8Array,
 ): ComputorControlledFundGetProposalFeeOutput {
-  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_FEE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as ComputorControlledFundGetProposalFeeOutput
+  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_GET_PROPOSAL_FEE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as ComputorControlledFundGetProposalFeeOutput
 }
 
 export async function computorControlledFundGetProposalFee(
@@ -1029,7 +1029,7 @@ const COMPUTOR_CONTROLLED_FUND_GET_REGULAR_PAYMENTS_OUTPUT_FIELDS: BinaryField[]
 export function decodeComputorControlledFundGetRegularPaymentsOutput(
   data: Uint8Array,
 ): ComputorControlledFundGetRegularPaymentsOutput {
-  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_GET_REGULAR_PAYMENTS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as ComputorControlledFundGetRegularPaymentsOutput
+  return decodePayload(data, COMPUTOR_CONTROLLED_FUND_GET_REGULAR_PAYMENTS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as ComputorControlledFundGetRegularPaymentsOutput
 }
 
 export async function computorControlledFundGetRegularPayments(

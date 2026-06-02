@@ -91,7 +91,7 @@ const QSWAP_ISSUE_ASSET_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQswapIssueAssetOutput(
   data: Uint8Array,
 ): QswapIssueAssetOutput {
-  return decodePayload(data, QSWAP_ISSUE_ASSET_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QswapIssueAssetOutput
+  return decodePayload(data, QSWAP_ISSUE_ASSET_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QswapIssueAssetOutput
 }
 
 export const QSWAP_TRANSFER_SHARE_OWNERSHIP_AND_POSSESSION_INPUT_TYPE = 2
@@ -153,7 +153,7 @@ const QSWAP_TRANSFER_SHARE_OWNERSHIP_AND_POSSESSION_OUTPUT_FIELDS: BinaryField[]
 export function decodeQswapTransferShareOwnershipAndPossessionOutput(
   data: Uint8Array,
 ): QswapTransferShareOwnershipAndPossessionOutput {
-  return decodePayload(data, QSWAP_TRANSFER_SHARE_OWNERSHIP_AND_POSSESSION_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QswapTransferShareOwnershipAndPossessionOutput
+  return decodePayload(data, QSWAP_TRANSFER_SHARE_OWNERSHIP_AND_POSSESSION_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QswapTransferShareOwnershipAndPossessionOutput
 }
 
 export const QSWAP_CREATE_POOL_INPUT_TYPE = 3
@@ -201,7 +201,7 @@ const QSWAP_CREATE_POOL_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQswapCreatePoolOutput(
   data: Uint8Array,
 ): QswapCreatePoolOutput {
-  return decodePayload(data, QSWAP_CREATE_POOL_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QswapCreatePoolOutput
+  return decodePayload(data, QSWAP_CREATE_POOL_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QswapCreatePoolOutput
 }
 
 export const QSWAP_ADD_LIQUIDITY_INPUT_TYPE = 4
@@ -284,7 +284,7 @@ const QSWAP_ADD_LIQUIDITY_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQswapAddLiquidityOutput(
   data: Uint8Array,
 ): QswapAddLiquidityOutput {
-  return decodePayload(data, QSWAP_ADD_LIQUIDITY_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QswapAddLiquidityOutput
+  return decodePayload(data, QSWAP_ADD_LIQUIDITY_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QswapAddLiquidityOutput
 }
 
 export const QSWAP_REMOVE_LIQUIDITY_INPUT_TYPE = 5
@@ -360,7 +360,7 @@ const QSWAP_REMOVE_LIQUIDITY_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQswapRemoveLiquidityOutput(
   data: Uint8Array,
 ): QswapRemoveLiquidityOutput {
-  return decodePayload(data, QSWAP_REMOVE_LIQUIDITY_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QswapRemoveLiquidityOutput
+  return decodePayload(data, QSWAP_REMOVE_LIQUIDITY_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QswapRemoveLiquidityOutput
 }
 
 export const QSWAP_SWAP_EXACT_QU_FOR_ASSET_INPUT_TYPE = 6
@@ -415,7 +415,7 @@ const QSWAP_SWAP_EXACT_QU_FOR_ASSET_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQswapSwapExactQuForAssetOutput(
   data: Uint8Array,
 ): QswapSwapExactQuForAssetOutput {
-  return decodePayload(data, QSWAP_SWAP_EXACT_QU_FOR_ASSET_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QswapSwapExactQuForAssetOutput
+  return decodePayload(data, QSWAP_SWAP_EXACT_QU_FOR_ASSET_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QswapSwapExactQuForAssetOutput
 }
 
 export const QSWAP_SWAP_QU_FOR_EXACT_ASSET_INPUT_TYPE = 7
@@ -470,7 +470,7 @@ const QSWAP_SWAP_QU_FOR_EXACT_ASSET_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQswapSwapQuForExactAssetOutput(
   data: Uint8Array,
 ): QswapSwapQuForExactAssetOutput {
-  return decodePayload(data, QSWAP_SWAP_QU_FOR_EXACT_ASSET_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QswapSwapQuForExactAssetOutput
+  return decodePayload(data, QSWAP_SWAP_QU_FOR_EXACT_ASSET_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QswapSwapQuForExactAssetOutput
 }
 
 export const QSWAP_SWAP_EXACT_ASSET_FOR_QU_INPUT_TYPE = 8
@@ -532,7 +532,7 @@ const QSWAP_SWAP_EXACT_ASSET_FOR_QU_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQswapSwapExactAssetForQuOutput(
   data: Uint8Array,
 ): QswapSwapExactAssetForQuOutput {
-  return decodePayload(data, QSWAP_SWAP_EXACT_ASSET_FOR_QU_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QswapSwapExactAssetForQuOutput
+  return decodePayload(data, QSWAP_SWAP_EXACT_ASSET_FOR_QU_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QswapSwapExactAssetForQuOutput
 }
 
 export const QSWAP_SWAP_ASSET_FOR_EXACT_QU_INPUT_TYPE = 9
@@ -594,7 +594,7 @@ const QSWAP_SWAP_ASSET_FOR_EXACT_QU_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQswapSwapAssetForExactQuOutput(
   data: Uint8Array,
 ): QswapSwapAssetForExactQuOutput {
-  return decodePayload(data, QSWAP_SWAP_ASSET_FOR_EXACT_QU_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QswapSwapAssetForExactQuOutput
+  return decodePayload(data, QSWAP_SWAP_ASSET_FOR_EXACT_QU_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QswapSwapAssetForExactQuOutput
 }
 
 export const QSWAP_SET_INVEST_REWARDS_INFO_INPUT_TYPE = 10
@@ -635,7 +635,7 @@ const QSWAP_SET_INVEST_REWARDS_INFO_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQswapSetInvestRewardsInfoOutput(
   data: Uint8Array,
 ): QswapSetInvestRewardsInfoOutput {
-  return decodePayload(data, QSWAP_SET_INVEST_REWARDS_INFO_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QswapSetInvestRewardsInfoOutput
+  return decodePayload(data, QSWAP_SET_INVEST_REWARDS_INFO_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QswapSetInvestRewardsInfoOutput
 }
 
 export const QSWAP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE = 11
@@ -690,7 +690,7 @@ const QSWAP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQswapTransferShareManagementRightsOutput(
   data: Uint8Array,
 ): QswapTransferShareManagementRightsOutput {
-  return decodePayload(data, QSWAP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QswapTransferShareManagementRightsOutput
+  return decodePayload(data, QSWAP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QswapTransferShareManagementRightsOutput
 }
 
 export const QSWAP_FEES_INPUT_TYPE = 1
@@ -761,7 +761,7 @@ const QSWAP_FEES_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQswapFeesOutput(
   data: Uint8Array,
 ): QswapFeesOutput {
-  return decodePayload(data, QSWAP_FEES_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QswapFeesOutput
+  return decodePayload(data, QSWAP_FEES_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QswapFeesOutput
 }
 
 export async function qswapFees(
@@ -855,7 +855,7 @@ const QSWAP_GET_POOL_BASIC_STATE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQswapGetPoolBasicStateOutput(
   data: Uint8Array,
 ): QswapGetPoolBasicStateOutput {
-  return decodePayload(data, QSWAP_GET_POOL_BASIC_STATE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QswapGetPoolBasicStateOutput
+  return decodePayload(data, QSWAP_GET_POOL_BASIC_STATE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QswapGetPoolBasicStateOutput
 }
 
 export async function qswapGetPoolBasicState(
@@ -936,7 +936,7 @@ const QSWAP_GET_LIQUIDITY_OF_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQswapGetLiquidityOfOutput(
   data: Uint8Array,
 ): QswapGetLiquidityOfOutput {
-  return decodePayload(data, QSWAP_GET_LIQUIDITY_OF_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QswapGetLiquidityOfOutput
+  return decodePayload(data, QSWAP_GET_LIQUIDITY_OF_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QswapGetLiquidityOfOutput
 }
 
 export async function qswapGetLiquidityOf(
@@ -1010,7 +1010,7 @@ const QSWAP_QUOTE_EXACT_QU_INPUT_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQswapQuoteExactQuInputOutput(
   data: Uint8Array,
 ): QswapQuoteExactQuInputOutput {
-  return decodePayload(data, QSWAP_QUOTE_EXACT_QU_INPUT_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QswapQuoteExactQuInputOutput
+  return decodePayload(data, QSWAP_QUOTE_EXACT_QU_INPUT_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QswapQuoteExactQuInputOutput
 }
 
 export async function qswapQuoteExactQuInput(
@@ -1084,7 +1084,7 @@ const QSWAP_QUOTE_EXACT_QU_OUTPUT_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQswapQuoteExactQuOutputOutput(
   data: Uint8Array,
 ): QswapQuoteExactQuOutputOutput {
-  return decodePayload(data, QSWAP_QUOTE_EXACT_QU_OUTPUT_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QswapQuoteExactQuOutputOutput
+  return decodePayload(data, QSWAP_QUOTE_EXACT_QU_OUTPUT_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QswapQuoteExactQuOutputOutput
 }
 
 export async function qswapQuoteExactQuOutput(
@@ -1158,7 +1158,7 @@ const QSWAP_QUOTE_EXACT_ASSET_INPUT_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQswapQuoteExactAssetInputOutput(
   data: Uint8Array,
 ): QswapQuoteExactAssetInputOutput {
-  return decodePayload(data, QSWAP_QUOTE_EXACT_ASSET_INPUT_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QswapQuoteExactAssetInputOutput
+  return decodePayload(data, QSWAP_QUOTE_EXACT_ASSET_INPUT_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QswapQuoteExactAssetInputOutput
 }
 
 export async function qswapQuoteExactAssetInput(
@@ -1232,7 +1232,7 @@ const QSWAP_QUOTE_EXACT_ASSET_OUTPUT_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQswapQuoteExactAssetOutputOutput(
   data: Uint8Array,
 ): QswapQuoteExactAssetOutputOutput {
-  return decodePayload(data, QSWAP_QUOTE_EXACT_ASSET_OUTPUT_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QswapQuoteExactAssetOutputOutput
+  return decodePayload(data, QSWAP_QUOTE_EXACT_ASSET_OUTPUT_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QswapQuoteExactAssetOutputOutput
 }
 
 export async function qswapQuoteExactAssetOutput(

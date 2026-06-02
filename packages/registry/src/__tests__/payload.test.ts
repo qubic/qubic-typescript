@@ -4,7 +4,7 @@ import type { BinaryField, NamedStruct } from '../types.js'
 
 const NO_STRUCTS: Record<string, NamedStruct> = {}
 const identity = (s: string) => new Uint8Array(32).fill(s.charCodeAt(0))
-const pkToId = (_pk: Uint8Array) => 'A'.repeat(60)
+const pkToId = (_pk: Uint8Array): string => { throw new Error('pkToId should not be called') }
 
 const UNLOCK_FIELDS: BinaryField[] = [
   { name: 'amount', type: 'uint64', offset: 0, byteLength: 8 },
@@ -126,10 +126,9 @@ describe('decodePayload', () => {
   test('decodes id field via publicKeyToIdentity', () => {
     const pk = new Uint8Array(32).fill(65)
     const fields: BinaryField[] = [{ name: 'sender', type: 'id', offset: 0, byteLength: 32 }]
-    const decoded = decodePayload(pk, fields, NO_STRUCTS, (b) =>
-      String.fromCharCode(b[0] ?? 65).repeat(60),
-    )
-    expect(decoded.sender).toBe('A'.repeat(60))
+    const ZERO_IDENTITY = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB'
+    const decoded = decodePayload(pk, fields, NO_STRUCTS, () => ZERO_IDENTITY)
+    expect(decoded.sender).toBe(ZERO_IDENTITY)
   })
 
   test('decodes bytes field as Uint8Array', () => {

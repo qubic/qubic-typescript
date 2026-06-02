@@ -238,7 +238,7 @@ const Q_RWA_DONATE_TO_TREASURY_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQRWADonateToTreasuryOutput(
   data: Uint8Array,
 ): QRWADonateToTreasuryOutput {
-  return decodePayload(data, Q_RWA_DONATE_TO_TREASURY_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWADonateToTreasuryOutput
+  return decodePayload(data, Q_RWA_DONATE_TO_TREASURY_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QRWADonateToTreasuryOutput
 }
 
 export const Q_RWA_VOTE_GOV_PARAMS_INPUT_TYPE = 4
@@ -279,7 +279,7 @@ const Q_RWA_VOTE_GOV_PARAMS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQRWAVoteGovParamsOutput(
   data: Uint8Array,
 ): QRWAVoteGovParamsOutput {
-  return decodePayload(data, Q_RWA_VOTE_GOV_PARAMS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWAVoteGovParamsOutput
+  return decodePayload(data, Q_RWA_VOTE_GOV_PARAMS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QRWAVoteGovParamsOutput
 }
 
 export const Q_RWA_DEPOSIT_GENERAL_ASSET_INPUT_TYPE = 7
@@ -327,7 +327,7 @@ const Q_RWA_DEPOSIT_GENERAL_ASSET_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQRWADepositGeneralAssetOutput(
   data: Uint8Array,
 ): QRWADepositGeneralAssetOutput {
-  return decodePayload(data, Q_RWA_DEPOSIT_GENERAL_ASSET_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWADepositGeneralAssetOutput
+  return decodePayload(data, Q_RWA_DEPOSIT_GENERAL_ASSET_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QRWADepositGeneralAssetOutput
 }
 
 export const Q_RWA_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_TYPE = 8
@@ -382,7 +382,7 @@ const Q_RWA_REVOKE_ASSET_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQRWARevokeAssetManagementRightsOutput(
   data: Uint8Array,
 ): QRWARevokeAssetManagementRightsOutput {
-  return decodePayload(data, Q_RWA_REVOKE_ASSET_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWARevokeAssetManagementRightsOutput
+  return decodePayload(data, Q_RWA_REVOKE_ASSET_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QRWARevokeAssetManagementRightsOutput
 }
 
 export const Q_RWA_SET_POOL_A_REVENUE_ADDRESS_INPUT_TYPE = 9
@@ -423,7 +423,7 @@ const Q_RWA_SET_POOL_A_REVENUE_ADDRESS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQRWASetPoolARevenueAddressOutput(
   data: Uint8Array,
 ): QRWASetPoolARevenueAddressOutput {
-  return decodePayload(data, Q_RWA_SET_POOL_A_REVENUE_ADDRESS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWASetPoolARevenueAddressOutput
+  return decodePayload(data, Q_RWA_SET_POOL_A_REVENUE_ADDRESS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QRWASetPoolARevenueAddressOutput
 }
 
 export const Q_RWA_SET_POOL_D_REVENUE_ADDRESS_INPUT_TYPE = 10
@@ -464,7 +464,7 @@ const Q_RWA_SET_POOL_D_REVENUE_ADDRESS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQRWASetPoolDRevenueAddressOutput(
   data: Uint8Array,
 ): QRWASetPoolDRevenueAddressOutput {
-  return decodePayload(data, Q_RWA_SET_POOL_D_REVENUE_ADDRESS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWASetPoolDRevenueAddressOutput
+  return decodePayload(data, Q_RWA_SET_POOL_D_REVENUE_ADDRESS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QRWASetPoolDRevenueAddressOutput
 }
 
 export const Q_RWA_GET_GOV_PARAMS_INPUT_TYPE = 1
@@ -487,7 +487,7 @@ const Q_RWA_GET_GOV_PARAMS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQRWAGetGovParamsOutput(
   data: Uint8Array,
 ): QRWAGetGovParamsOutput {
-  return decodePayload(data, Q_RWA_GET_GOV_PARAMS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWAGetGovParamsOutput
+  return decodePayload(data, Q_RWA_GET_GOV_PARAMS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QRWAGetGovParamsOutput
 }
 
 export async function qRWAGetGovParams(
@@ -553,7 +553,7 @@ const Q_RWA_GET_GOV_POLL_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQRWAGetGovPollOutput(
   data: Uint8Array,
 ): QRWAGetGovPollOutput {
-  return decodePayload(data, Q_RWA_GET_GOV_POLL_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWAGetGovPollOutput
+  return decodePayload(data, Q_RWA_GET_GOV_POLL_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QRWAGetGovPollOutput
 }
 
 export async function qRWAGetGovPoll(
@@ -593,7 +593,7 @@ const Q_RWA_GET_TREASURY_BALANCE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQRWAGetTreasuryBalanceOutput(
   data: Uint8Array,
 ): QRWAGetTreasuryBalanceOutput {
-  return decodePayload(data, Q_RWA_GET_TREASURY_BALANCE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWAGetTreasuryBalanceOutput
+  return decodePayload(data, Q_RWA_GET_TREASURY_BALANCE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QRWAGetTreasuryBalanceOutput
 }
 
 export async function qRWAGetTreasuryBalance(
@@ -709,7 +709,7 @@ const Q_RWA_GET_DIVIDEND_BALANCES_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQRWAGetDividendBalancesOutput(
   data: Uint8Array,
 ): QRWAGetDividendBalancesOutput {
-  return decodePayload(data, Q_RWA_GET_DIVIDEND_BALANCES_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWAGetDividendBalancesOutput
+  return decodePayload(data, Q_RWA_GET_DIVIDEND_BALANCES_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QRWAGetDividendBalancesOutput
 }
 
 export async function qRWAGetDividendBalances(
@@ -776,7 +776,7 @@ const Q_RWA_GET_TOTAL_DISTRIBUTED_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQRWAGetTotalDistributedOutput(
   data: Uint8Array,
 ): QRWAGetTotalDistributedOutput {
-  return decodePayload(data, Q_RWA_GET_TOTAL_DISTRIBUTED_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWAGetTotalDistributedOutput
+  return decodePayload(data, Q_RWA_GET_TOTAL_DISTRIBUTED_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QRWAGetTotalDistributedOutput
 }
 
 export async function qRWAGetTotalDistributed(
@@ -825,7 +825,7 @@ const Q_RWA_GET_ACTIVE_GOV_POLL_IDS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQRWAGetActiveGovPollIdsOutput(
   data: Uint8Array,
 ): QRWAGetActiveGovPollIdsOutput {
-  return decodePayload(data, Q_RWA_GET_ACTIVE_GOV_POLL_IDS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWAGetActiveGovPollIdsOutput
+  return decodePayload(data, Q_RWA_GET_ACTIVE_GOV_POLL_IDS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QRWAGetActiveGovPollIdsOutput
 }
 
 export async function qRWAGetActiveGovPollIds(
@@ -891,7 +891,7 @@ const Q_RWA_GET_GENERAL_ASSET_BALANCE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQRWAGetGeneralAssetBalanceOutput(
   data: Uint8Array,
 ): QRWAGetGeneralAssetBalanceOutput {
-  return decodePayload(data, Q_RWA_GET_GENERAL_ASSET_BALANCE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWAGetGeneralAssetBalanceOutput
+  return decodePayload(data, Q_RWA_GET_GENERAL_ASSET_BALANCE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QRWAGetGeneralAssetBalanceOutput
 }
 
 export async function qRWAGetGeneralAssetBalance(
@@ -951,7 +951,7 @@ const Q_RWA_GET_GENERAL_ASSETS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQRWAGetGeneralAssetsOutput(
   data: Uint8Array,
 ): QRWAGetGeneralAssetsOutput {
-  return decodePayload(data, Q_RWA_GET_GENERAL_ASSETS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWAGetGeneralAssetsOutput
+  return decodePayload(data, Q_RWA_GET_GENERAL_ASSETS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QRWAGetGeneralAssetsOutput
 }
 
 export async function qRWAGetGeneralAssets(
@@ -1040,7 +1040,7 @@ const Q_RWA_GET_PAYOUTS_QMINE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQRWAGetPayoutsQmineOutput(
   data: Uint8Array,
 ): QRWAGetPayoutsQmineOutput {
-  return decodePayload(data, Q_RWA_GET_PAYOUTS_QMINE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWAGetPayoutsQmineOutput
+  return decodePayload(data, Q_RWA_GET_PAYOUTS_QMINE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QRWAGetPayoutsQmineOutput
 }
 
 export async function qRWAGetPayoutsQmine(
@@ -1198,7 +1198,7 @@ const Q_RWA_GET_PAYOUTS_QRWA_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQRWAGetPayoutsQrwaOutput(
   data: Uint8Array,
 ): QRWAGetPayoutsQrwaOutput {
-  return decodePayload(data, Q_RWA_GET_PAYOUTS_QRWA_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWAGetPayoutsQrwaOutput
+  return decodePayload(data, Q_RWA_GET_PAYOUTS_QRWA_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QRWAGetPayoutsQrwaOutput
 }
 
 export async function qRWAGetPayoutsQrwa(
@@ -1288,7 +1288,7 @@ const Q_RWA_GET_PAYOUTS_DEDICATED_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQRWAGetPayoutsDedicatedOutput(
   data: Uint8Array,
 ): QRWAGetPayoutsDedicatedOutput {
-  return decodePayload(data, Q_RWA_GET_PAYOUTS_DEDICATED_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWAGetPayoutsDedicatedOutput
+  return decodePayload(data, Q_RWA_GET_PAYOUTS_DEDICATED_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QRWAGetPayoutsDedicatedOutput
 }
 
 export async function qRWAGetPayoutsDedicated(
@@ -1438,7 +1438,7 @@ const Q_RWA_GET_PAYOUTS_POOL_D_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQRWAGetPayoutsPoolDOutput(
   data: Uint8Array,
 ): QRWAGetPayoutsPoolDOutput {
-  return decodePayload(data, Q_RWA_GET_PAYOUTS_POOL_D_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRWAGetPayoutsPoolDOutput
+  return decodePayload(data, Q_RWA_GET_PAYOUTS_POOL_D_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QRWAGetPayoutsPoolDOutput
 }
 
 export async function qRWAGetPayoutsPoolD(

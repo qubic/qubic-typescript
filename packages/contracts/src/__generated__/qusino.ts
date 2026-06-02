@@ -117,7 +117,7 @@ const QUSINO_EARN_STAR_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQusinoEarnSTAROutput(
   data: Uint8Array,
 ): QusinoEarnSTAROutput {
-  return decodePayload(data, QUSINO_EARN_STAR_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QusinoEarnSTAROutput
+  return decodePayload(data, QUSINO_EARN_STAR_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QusinoEarnSTAROutput
 }
 
 export const QUSINO_TRANSFER_STAR_OR_QSC_INPUT_TYPE = 2
@@ -172,7 +172,7 @@ const QUSINO_TRANSFER_STAR_OR_QSC_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQusinoTransferSTAROrQSCOutput(
   data: Uint8Array,
 ): QusinoTransferSTAROrQSCOutput {
-  return decodePayload(data, QUSINO_TRANSFER_STAR_OR_QSC_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QusinoTransferSTAROrQSCOutput
+  return decodePayload(data, QUSINO_TRANSFER_STAR_OR_QSC_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QusinoTransferSTAROrQSCOutput
 }
 
 export const QUSINO_SUBMIT_GAME_INPUT_TYPE = 3
@@ -215,7 +215,7 @@ const QUSINO_SUBMIT_GAME_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQusinoSubmitGameOutput(
   data: Uint8Array,
 ): QusinoSubmitGameOutput {
-  return decodePayload(data, QUSINO_SUBMIT_GAME_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QusinoSubmitGameOutput
+  return decodePayload(data, QUSINO_SUBMIT_GAME_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QusinoSubmitGameOutput
 }
 
 export const QUSINO_VOTE_IN_GAME_PROPOSAL_INPUT_TYPE = 4
@@ -272,7 +272,7 @@ const QUSINO_VOTE_IN_GAME_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQusinoVoteInGameProposalOutput(
   data: Uint8Array,
 ): QusinoVoteInGameProposalOutput {
-  return decodePayload(data, QUSINO_VOTE_IN_GAME_PROPOSAL_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QusinoVoteInGameProposalOutput
+  return decodePayload(data, QUSINO_VOTE_IN_GAME_PROPOSAL_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QusinoVoteInGameProposalOutput
 }
 
 export const QUSINO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE = 5
@@ -327,7 +327,7 @@ const QUSINO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQusinoTransferShareManagementRightsOutput(
   data: Uint8Array,
 ): QusinoTransferShareManagementRightsOutput {
-  return decodePayload(data, QUSINO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QusinoTransferShareManagementRightsOutput
+  return decodePayload(data, QUSINO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QusinoTransferShareManagementRightsOutput
 }
 
 export const QUSINO_DEPOSIT_BONUS_INPUT_TYPE = 6
@@ -367,7 +367,7 @@ const QUSINO_DEPOSIT_BONUS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQusinoDepositBonusOutput(
   data: Uint8Array,
 ): QusinoDepositBonusOutput {
-  return decodePayload(data, QUSINO_DEPOSIT_BONUS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QusinoDepositBonusOutput
+  return decodePayload(data, QUSINO_DEPOSIT_BONUS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QusinoDepositBonusOutput
 }
 
 export const QUSINO_DAILY_CLAIM_BONUS_INPUT_TYPE = 7
@@ -388,7 +388,7 @@ const QUSINO_DAILY_CLAIM_BONUS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQusinoDailyClaimBonusOutput(
   data: Uint8Array,
 ): QusinoDailyClaimBonusOutput {
-  return decodePayload(data, QUSINO_DAILY_CLAIM_BONUS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QusinoDailyClaimBonusOutput
+  return decodePayload(data, QUSINO_DAILY_CLAIM_BONUS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QusinoDailyClaimBonusOutput
 }
 
 export const QUSINO_REDEMPTION_QSC_TO_QUBIC_INPUT_TYPE = 8
@@ -428,7 +428,7 @@ const QUSINO_REDEMPTION_QSC_TO_QUBIC_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQusinoRedemptionQSCToQubicOutput(
   data: Uint8Array,
 ): QusinoRedemptionQSCToQubicOutput {
-  return decodePayload(data, QUSINO_REDEMPTION_QSC_TO_QUBIC_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QusinoRedemptionQSCToQubicOutput
+  return decodePayload(data, QUSINO_REDEMPTION_QSC_TO_QUBIC_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QusinoRedemptionQSCToQubicOutput
 }
 
 export const QUSINO_GET_USER_ASSET_VOLUME_INPUT_TYPE = 1
@@ -477,7 +477,7 @@ const QUSINO_GET_USER_ASSET_VOLUME_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQusinoGetUserAssetVolumeOutput(
   data: Uint8Array,
 ): QusinoGetUserAssetVolumeOutput {
-  return decodePayload(data, QUSINO_GET_USER_ASSET_VOLUME_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QusinoGetUserAssetVolumeOutput
+  return decodePayload(data, QUSINO_GET_USER_ASSET_VOLUME_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QusinoGetUserAssetVolumeOutput
 }
 
 export async function qusinoGetUserAssetVolume(
@@ -539,7 +539,7 @@ const QUSINO_GET_FAILED_GAME_LIST_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQusinoGetFailedGameListOutput(
   data: Uint8Array,
 ): QusinoGetFailedGameListOutput {
-  return decodePayload(data, QUSINO_GET_FAILED_GAME_LIST_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QusinoGetFailedGameListOutput
+  return decodePayload(data, QUSINO_GET_FAILED_GAME_LIST_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QusinoGetFailedGameListOutput
 }
 
 export async function qusinoGetFailedGameList(
@@ -614,7 +614,7 @@ const QUSINO_GET_SC_INFO_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQusinoGetSCInfoOutput(
   data: Uint8Array,
 ): QusinoGetSCInfoOutput {
-  return decodePayload(data, QUSINO_GET_SC_INFO_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QusinoGetSCInfoOutput
+  return decodePayload(data, QUSINO_GET_SC_INFO_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QusinoGetSCInfoOutput
 }
 
 export async function qusinoGetSCInfo(
@@ -685,7 +685,7 @@ const QUSINO_GET_ACTIVE_GAME_LIST_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQusinoGetActiveGameListOutput(
   data: Uint8Array,
 ): QusinoGetActiveGameListOutput {
-  return decodePayload(data, QUSINO_GET_ACTIVE_GAME_LIST_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QusinoGetActiveGameListOutput
+  return decodePayload(data, QUSINO_GET_ACTIVE_GAME_LIST_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QusinoGetActiveGameListOutput
 }
 
 export async function qusinoGetActiveGameList(
@@ -752,7 +752,7 @@ const QUSINO_GET_PROPOSER_EARNED_QSC_INFO_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQusinoGetProposerEarnedQSCInfoOutput(
   data: Uint8Array,
 ): QusinoGetProposerEarnedQSCInfoOutput {
-  return decodePayload(data, QUSINO_GET_PROPOSER_EARNED_QSC_INFO_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QusinoGetProposerEarnedQSCInfoOutput
+  return decodePayload(data, QUSINO_GET_PROPOSER_EARNED_QSC_INFO_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QusinoGetProposerEarnedQSCInfoOutput
 }
 
 export async function qusinoGetProposerEarnedQSCInfo(

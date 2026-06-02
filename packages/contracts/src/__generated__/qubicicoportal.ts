@@ -115,7 +115,7 @@ export const QUBIC_ICO_PORTAL_CREATE_ICO_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQubicICOPortalCreateICOOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): QubicICOPortalCreateICOOutput {
   return decodePayload(
     data,
@@ -171,7 +171,7 @@ export const QUBIC_ICO_PORTAL_BUY_TOKEN_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQubicICOPortalBuyTokenOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): QubicICOPortalBuyTokenOutput {
   return decodePayload(
     data,
@@ -227,7 +227,7 @@ export const QUBIC_ICO_PORTAL_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: Bi
 
 export function decodeQubicICOPortalTransferShareManagementRightsOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): QubicICOPortalTransferShareManagementRightsOutput {
   return decodePayload(
     data,
@@ -374,7 +374,7 @@ export const QUBIC_ICO_PORTAL_GET_ICO_INFO_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQubicICOPortalGetICOInfoOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): QubicICOPortalGetICOInfoOutput {
   return decodePayload(
     data,

@@ -121,7 +121,7 @@ const QX_ISSUE_ASSET_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQxIssueAssetOutput(
   data: Uint8Array,
 ): QxIssueAssetOutput {
-  return decodePayload(data, QX_ISSUE_ASSET_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QxIssueAssetOutput
+  return decodePayload(data, QX_ISSUE_ASSET_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QxIssueAssetOutput
 }
 
 export const QX_TRANSFER_SHARE_OWNERSHIP_AND_POSSESSION_INPUT_TYPE = 2
@@ -183,7 +183,7 @@ const QX_TRANSFER_SHARE_OWNERSHIP_AND_POSSESSION_OUTPUT_FIELDS: BinaryField[] = 
 export function decodeQxTransferShareOwnershipAndPossessionOutput(
   data: Uint8Array,
 ): QxTransferShareOwnershipAndPossessionOutput {
-  return decodePayload(data, QX_TRANSFER_SHARE_OWNERSHIP_AND_POSSESSION_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QxTransferShareOwnershipAndPossessionOutput
+  return decodePayload(data, QX_TRANSFER_SHARE_OWNERSHIP_AND_POSSESSION_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QxTransferShareOwnershipAndPossessionOutput
 }
 
 export const QX_ADD_TO_ASK_ORDER_INPUT_TYPE = 5
@@ -245,7 +245,7 @@ const QX_ADD_TO_ASK_ORDER_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQxAddToAskOrderOutput(
   data: Uint8Array,
 ): QxAddToAskOrderOutput {
-  return decodePayload(data, QX_ADD_TO_ASK_ORDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QxAddToAskOrderOutput
+  return decodePayload(data, QX_ADD_TO_ASK_ORDER_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QxAddToAskOrderOutput
 }
 
 export const QX_ADD_TO_BID_ORDER_INPUT_TYPE = 6
@@ -307,7 +307,7 @@ const QX_ADD_TO_BID_ORDER_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQxAddToBidOrderOutput(
   data: Uint8Array,
 ): QxAddToBidOrderOutput {
-  return decodePayload(data, QX_ADD_TO_BID_ORDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QxAddToBidOrderOutput
+  return decodePayload(data, QX_ADD_TO_BID_ORDER_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QxAddToBidOrderOutput
 }
 
 export const QX_REMOVE_FROM_ASK_ORDER_INPUT_TYPE = 7
@@ -369,7 +369,7 @@ const QX_REMOVE_FROM_ASK_ORDER_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQxRemoveFromAskOrderOutput(
   data: Uint8Array,
 ): QxRemoveFromAskOrderOutput {
-  return decodePayload(data, QX_REMOVE_FROM_ASK_ORDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QxRemoveFromAskOrderOutput
+  return decodePayload(data, QX_REMOVE_FROM_ASK_ORDER_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QxRemoveFromAskOrderOutput
 }
 
 export const QX_REMOVE_FROM_BID_ORDER_INPUT_TYPE = 8
@@ -431,7 +431,7 @@ const QX_REMOVE_FROM_BID_ORDER_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQxRemoveFromBidOrderOutput(
   data: Uint8Array,
 ): QxRemoveFromBidOrderOutput {
-  return decodePayload(data, QX_REMOVE_FROM_BID_ORDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QxRemoveFromBidOrderOutput
+  return decodePayload(data, QX_REMOVE_FROM_BID_ORDER_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QxRemoveFromBidOrderOutput
 }
 
 export const QX_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE = 9
@@ -486,7 +486,7 @@ const QX_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQxTransferShareManagementRightsOutput(
   data: Uint8Array,
 ): QxTransferShareManagementRightsOutput {
-  return decodePayload(data, QX_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QxTransferShareManagementRightsOutput
+  return decodePayload(data, QX_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QxTransferShareManagementRightsOutput
 }
 
 export const QX_FEES_INPUT_TYPE = 1
@@ -522,7 +522,7 @@ const QX_FEES_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQxFeesOutput(
   data: Uint8Array,
 ): QxFeesOutput {
-  return decodePayload(data, QX_FEES_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QxFeesOutput
+  return decodePayload(data, QX_FEES_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QxFeesOutput
 }
 
 export async function qxFees(
@@ -598,7 +598,7 @@ const QX_ASSET_ASK_ORDERS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQxAssetAskOrdersOutput(
   data: Uint8Array,
 ): QxAssetAskOrdersOutput {
-  return decodePayload(data, QX_ASSET_ASK_ORDERS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QxAssetAskOrdersOutput
+  return decodePayload(data, QX_ASSET_ASK_ORDERS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QxAssetAskOrdersOutput
 }
 
 export async function qxAssetAskOrders(
@@ -675,7 +675,7 @@ const QX_ASSET_BID_ORDERS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQxAssetBidOrdersOutput(
   data: Uint8Array,
 ): QxAssetBidOrdersOutput {
-  return decodePayload(data, QX_ASSET_BID_ORDERS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QxAssetBidOrdersOutput
+  return decodePayload(data, QX_ASSET_BID_ORDERS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QxAssetBidOrdersOutput
 }
 
 export async function qxAssetBidOrders(
@@ -745,7 +745,7 @@ const QX_ENTITY_ASK_ORDERS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQxEntityAskOrdersOutput(
   data: Uint8Array,
 ): QxEntityAskOrdersOutput {
-  return decodePayload(data, QX_ENTITY_ASK_ORDERS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QxEntityAskOrdersOutput
+  return decodePayload(data, QX_ENTITY_ASK_ORDERS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QxEntityAskOrdersOutput
 }
 
 export async function qxEntityAskOrders(
@@ -815,7 +815,7 @@ const QX_ENTITY_BID_ORDERS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQxEntityBidOrdersOutput(
   data: Uint8Array,
 ): QxEntityBidOrdersOutput {
-  return decodePayload(data, QX_ENTITY_BID_ORDERS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QxEntityBidOrdersOutput
+  return decodePayload(data, QX_ENTITY_BID_ORDERS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QxEntityBidOrdersOutput
 }
 
 export async function qxEntityBidOrders(

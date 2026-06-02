@@ -326,7 +326,7 @@ const ESCROW_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeEscrowTransferShareManagementRightsOutput(
   data: Uint8Array,
 ): EscrowTransferShareManagementRightsOutput {
-  return decodePayload(data, ESCROW_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as EscrowTransferShareManagementRightsOutput
+  return decodePayload(data, ESCROW_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as EscrowTransferShareManagementRightsOutput
 }
 
 export const ESCROW_GET_DEALS_INPUT_TYPE = 1
@@ -426,7 +426,7 @@ const ESCROW_GET_DEALS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeEscrowGetDealsOutput(
   data: Uint8Array,
 ): EscrowGetDealsOutput {
-  return decodePayload(data, ESCROW_GET_DEALS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as EscrowGetDealsOutput
+  return decodePayload(data, ESCROW_GET_DEALS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as EscrowGetDealsOutput
 }
 
 export async function escrowGetDeals(
@@ -494,7 +494,7 @@ const ESCROW_GET_FREE_ASSET_AMOUNT_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeEscrowGetFreeAssetAmountOutput(
   data: Uint8Array,
 ): EscrowGetFreeAssetAmountOutput {
-  return decodePayload(data, ESCROW_GET_FREE_ASSET_AMOUNT_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as EscrowGetFreeAssetAmountOutput
+  return decodePayload(data, ESCROW_GET_FREE_ASSET_AMOUNT_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as EscrowGetFreeAssetAmountOutput
 }
 
 export async function escrowGetFreeAssetAmount(

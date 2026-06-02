@@ -46,7 +46,7 @@ const Q_RAFFLE_REGISTER_IN_SYSTEM_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQRaffleRegisterInSystemOutput(
   data: Uint8Array,
 ): QRaffleRegisterInSystemOutput {
-  return decodePayload(data, Q_RAFFLE_REGISTER_IN_SYSTEM_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRaffleRegisterInSystemOutput
+  return decodePayload(data, Q_RAFFLE_REGISTER_IN_SYSTEM_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QRaffleRegisterInSystemOutput
 }
 
 export const Q_RAFFLE_LOGOUT_IN_SYSTEM_INPUT_TYPE = 2
@@ -67,7 +67,7 @@ const Q_RAFFLE_LOGOUT_IN_SYSTEM_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQRaffleLogoutInSystemOutput(
   data: Uint8Array,
 ): QRaffleLogoutInSystemOutput {
-  return decodePayload(data, Q_RAFFLE_LOGOUT_IN_SYSTEM_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRaffleLogoutInSystemOutput
+  return decodePayload(data, Q_RAFFLE_LOGOUT_IN_SYSTEM_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QRaffleLogoutInSystemOutput
 }
 
 export const Q_RAFFLE_SUBMIT_ENTRY_AMOUNT_INPUT_TYPE = 3
@@ -107,7 +107,7 @@ const Q_RAFFLE_SUBMIT_ENTRY_AMOUNT_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQRaffleSubmitEntryAmountOutput(
   data: Uint8Array,
 ): QRaffleSubmitEntryAmountOutput {
-  return decodePayload(data, Q_RAFFLE_SUBMIT_ENTRY_AMOUNT_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRaffleSubmitEntryAmountOutput
+  return decodePayload(data, Q_RAFFLE_SUBMIT_ENTRY_AMOUNT_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QRaffleSubmitEntryAmountOutput
 }
 
 export const Q_RAFFLE_SUBMIT_PROPOSAL_INPUT_TYPE = 4
@@ -162,7 +162,7 @@ const Q_RAFFLE_SUBMIT_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQRaffleSubmitProposalOutput(
   data: Uint8Array,
 ): QRaffleSubmitProposalOutput {
-  return decodePayload(data, Q_RAFFLE_SUBMIT_PROPOSAL_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRaffleSubmitProposalOutput
+  return decodePayload(data, Q_RAFFLE_SUBMIT_PROPOSAL_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QRaffleSubmitProposalOutput
 }
 
 export const Q_RAFFLE_VOTE_IN_PROPOSAL_INPUT_TYPE = 5
@@ -209,7 +209,7 @@ const Q_RAFFLE_VOTE_IN_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQRaffleVoteInProposalOutput(
   data: Uint8Array,
 ): QRaffleVoteInProposalOutput {
-  return decodePayload(data, Q_RAFFLE_VOTE_IN_PROPOSAL_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRaffleVoteInProposalOutput
+  return decodePayload(data, Q_RAFFLE_VOTE_IN_PROPOSAL_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QRaffleVoteInProposalOutput
 }
 
 export const Q_RAFFLE_DEPOSIT_IN_QU_RAFFLE_INPUT_TYPE = 6
@@ -230,7 +230,7 @@ const Q_RAFFLE_DEPOSIT_IN_QU_RAFFLE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQRaffleDepositInQuRaffleOutput(
   data: Uint8Array,
 ): QRaffleDepositInQuRaffleOutput {
-  return decodePayload(data, Q_RAFFLE_DEPOSIT_IN_QU_RAFFLE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRaffleDepositInQuRaffleOutput
+  return decodePayload(data, Q_RAFFLE_DEPOSIT_IN_QU_RAFFLE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QRaffleDepositInQuRaffleOutput
 }
 
 export const Q_RAFFLE_DEPOSIT_IN_TOKEN_RAFFLE_INPUT_TYPE = 7
@@ -270,7 +270,7 @@ const Q_RAFFLE_DEPOSIT_IN_TOKEN_RAFFLE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQRaffleDepositInTokenRaffleOutput(
   data: Uint8Array,
 ): QRaffleDepositInTokenRaffleOutput {
-  return decodePayload(data, Q_RAFFLE_DEPOSIT_IN_TOKEN_RAFFLE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRaffleDepositInTokenRaffleOutput
+  return decodePayload(data, Q_RAFFLE_DEPOSIT_IN_TOKEN_RAFFLE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QRaffleDepositInTokenRaffleOutput
 }
 
 export const Q_RAFFLE_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE = 8
@@ -332,7 +332,7 @@ const Q_RAFFLE_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQRaffleTransferShareManagementRightsOutput(
   data: Uint8Array,
 ): QRaffleTransferShareManagementRightsOutput {
-  return decodePayload(data, Q_RAFFLE_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRaffleTransferShareManagementRightsOutput
+  return decodePayload(data, Q_RAFFLE_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QRaffleTransferShareManagementRightsOutput
 }
 
 export const Q_RAFFLE_GET_REGISTERS_INPUT_TYPE = 1
@@ -526,7 +526,7 @@ const Q_RAFFLE_GET_ANALYTICS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQRaffleGetAnalyticsOutput(
   data: Uint8Array,
 ): QRaffleGetAnalyticsOutput {
-  return decodePayload(data, Q_RAFFLE_GET_ANALYTICS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRaffleGetAnalyticsOutput
+  return decodePayload(data, Q_RAFFLE_GET_ANALYTICS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QRaffleGetAnalyticsOutput
 }
 
 export async function qRaffleGetAnalytics(
@@ -999,7 +999,7 @@ const Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQRaffleGetEpochRaffleIndexesOutput(
   data: Uint8Array,
 ): QRaffleGetEpochRaffleIndexesOutput {
-  return decodePayload(data, Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRaffleGetEpochRaffleIndexesOutput
+  return decodePayload(data, Q_RAFFLE_GET_EPOCH_RAFFLE_INDEXES_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QRaffleGetEpochRaffleIndexesOutput
 }
 
 export async function qRaffleGetEpochRaffleIndexes(
@@ -1066,7 +1066,7 @@ const Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AMOUNT_PER_USER_OUTPUT_FIELDS: BinaryField[] 
 export function decodeQRaffleGetQuRaffleEntryAmountPerUserOutput(
   data: Uint8Array,
 ): QRaffleGetQuRaffleEntryAmountPerUserOutput {
-  return decodePayload(data, Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AMOUNT_PER_USER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRaffleGetQuRaffleEntryAmountPerUserOutput
+  return decodePayload(data, Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AMOUNT_PER_USER_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QRaffleGetQuRaffleEntryAmountPerUserOutput
 }
 
 export async function qRaffleGetQuRaffleEntryAmountPerUser(
@@ -1113,7 +1113,7 @@ const Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AVERAGE_AMOUNT_OUTPUT_FIELDS: BinaryField[] =
 export function decodeQRaffleGetQuRaffleEntryAverageAmountOutput(
   data: Uint8Array,
 ): QRaffleGetQuRaffleEntryAverageAmountOutput {
-  return decodePayload(data, Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AVERAGE_AMOUNT_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QRaffleGetQuRaffleEntryAverageAmountOutput
+  return decodePayload(data, Q_RAFFLE_GET_QU_RAFFLE_ENTRY_AVERAGE_AMOUNT_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QRaffleGetQuRaffleEntryAverageAmountOutput
 }
 
 export async function qRaffleGetQuRaffleEntryAverageAmount(

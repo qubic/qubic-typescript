@@ -300,7 +300,7 @@ const NOSTROMO_REGISTER_IN_TIER_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeNostromoRegisterInTierOutput(
   data: Uint8Array,
 ): NostromoRegisterInTierOutput {
-  return decodePayload(data, NOSTROMO_REGISTER_IN_TIER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as NostromoRegisterInTierOutput
+  return decodePayload(data, NOSTROMO_REGISTER_IN_TIER_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as NostromoRegisterInTierOutput
 }
 
 export const NOSTROMO_LOGOUT_FROM_TIER_INPUT_TYPE = 2
@@ -321,7 +321,7 @@ const NOSTROMO_LOGOUT_FROM_TIER_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeNostromoLogoutFromTierOutput(
   data: Uint8Array,
 ): NostromoLogoutFromTierOutput {
-  return decodePayload(data, NOSTROMO_LOGOUT_FROM_TIER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as NostromoLogoutFromTierOutput
+  return decodePayload(data, NOSTROMO_LOGOUT_FROM_TIER_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as NostromoLogoutFromTierOutput
 }
 
 export const NOSTROMO_CREATE_PROJECT_INPUT_TYPE = 3
@@ -424,7 +424,7 @@ const NOSTROMO_CREATE_PROJECT_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeNostromoCreateProjectOutput(
   data: Uint8Array,
 ): NostromoCreateProjectOutput {
-  return decodePayload(data, NOSTROMO_CREATE_PROJECT_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as NostromoCreateProjectOutput
+  return decodePayload(data, NOSTROMO_CREATE_PROJECT_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as NostromoCreateProjectOutput
 }
 
 export const NOSTROMO_VOTE_IN_PROJECT_INPUT_TYPE = 4
@@ -835,7 +835,7 @@ const NOSTROMO_CLAIM_TOKEN_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeNostromoClaimTokenOutput(
   data: Uint8Array,
 ): NostromoClaimTokenOutput {
-  return decodePayload(data, NOSTROMO_CLAIM_TOKEN_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as NostromoClaimTokenOutput
+  return decodePayload(data, NOSTROMO_CLAIM_TOKEN_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as NostromoClaimTokenOutput
 }
 
 export const NOSTROMO_UPGRADE_TIER_INPUT_TYPE = 8
@@ -911,7 +911,7 @@ const NOSTROMO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeNostromoTransferShareManagementRightsOutput(
   data: Uint8Array,
 ): NostromoTransferShareManagementRightsOutput {
-  return decodePayload(data, NOSTROMO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as NostromoTransferShareManagementRightsOutput
+  return decodePayload(data, NOSTROMO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as NostromoTransferShareManagementRightsOutput
 }
 
 export const NOSTROMO_GET_STATS_INPUT_TYPE = 1
@@ -940,7 +940,7 @@ const NOSTROMO_GET_STATS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeNostromoGetStatsOutput(
   data: Uint8Array,
 ): NostromoGetStatsOutput {
-  return decodePayload(data, NOSTROMO_GET_STATS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as NostromoGetStatsOutput
+  return decodePayload(data, NOSTROMO_GET_STATS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as NostromoGetStatsOutput
 }
 
 export async function nostromoGetStats(
@@ -999,7 +999,7 @@ const NOSTROMO_GET_TIER_LEVEL_BY_USER_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeNostromoGetTierLevelByUserOutput(
   data: Uint8Array,
 ): NostromoGetTierLevelByUserOutput {
-  return decodePayload(data, NOSTROMO_GET_TIER_LEVEL_BY_USER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as NostromoGetTierLevelByUserOutput
+  return decodePayload(data, NOSTROMO_GET_TIER_LEVEL_BY_USER_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as NostromoGetTierLevelByUserOutput
 }
 
 export async function nostromoGetTierLevelByUser(
@@ -1069,7 +1069,7 @@ const NOSTROMO_GET_USER_VOTE_STATUS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeNostromoGetUserVoteStatusOutput(
   data: Uint8Array,
 ): NostromoGetUserVoteStatusOutput {
-  return decodePayload(data, NOSTROMO_GET_USER_VOTE_STATUS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as NostromoGetUserVoteStatusOutput
+  return decodePayload(data, NOSTROMO_GET_USER_VOTE_STATUS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as NostromoGetUserVoteStatusOutput
 }
 
 export async function nostromoGetUserVoteStatus(
@@ -1128,7 +1128,7 @@ const NOSTROMO_CHECK_TOKEN_CREATABILITY_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeNostromoCheckTokenCreatabilityOutput(
   data: Uint8Array,
 ): NostromoCheckTokenCreatabilityOutput {
-  return decodePayload(data, NOSTROMO_CHECK_TOKEN_CREATABILITY_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as NostromoCheckTokenCreatabilityOutput
+  return decodePayload(data, NOSTROMO_CHECK_TOKEN_CREATABILITY_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as NostromoCheckTokenCreatabilityOutput
 }
 
 export async function nostromoCheckTokenCreatability(
@@ -1188,7 +1188,7 @@ const NOSTROMO_GET_NUMBER_OF_INVESTED_PROJECTS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeNostromoGetNumberOfInvestedProjectsOutput(
   data: Uint8Array,
 ): NostromoGetNumberOfInvestedProjectsOutput {
-  return decodePayload(data, NOSTROMO_GET_NUMBER_OF_INVESTED_PROJECTS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as NostromoGetNumberOfInvestedProjectsOutput
+  return decodePayload(data, NOSTROMO_GET_NUMBER_OF_INVESTED_PROJECTS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as NostromoGetNumberOfInvestedProjectsOutput
 }
 
 export async function nostromoGetNumberOfInvestedProjects(
@@ -1248,7 +1248,7 @@ const NOSTROMO_GET_PROJECT_BY_INDEX_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeNostromoGetProjectByIndexOutput(
   data: Uint8Array,
 ): NostromoGetProjectByIndexOutput {
-  return decodePayload(data, NOSTROMO_GET_PROJECT_BY_INDEX_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as NostromoGetProjectByIndexOutput
+  return decodePayload(data, NOSTROMO_GET_PROJECT_BY_INDEX_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as NostromoGetProjectByIndexOutput
 }
 
 export async function nostromoGetProjectByIndex(
@@ -1308,7 +1308,7 @@ const NOSTROMO_GET_FUNDARASING_BY_INDEX_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeNostromoGetFundarasingByIndexOutput(
   data: Uint8Array,
 ): NostromoGetFundarasingByIndexOutput {
-  return decodePayload(data, NOSTROMO_GET_FUNDARASING_BY_INDEX_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as NostromoGetFundarasingByIndexOutput
+  return decodePayload(data, NOSTROMO_GET_FUNDARASING_BY_INDEX_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as NostromoGetFundarasingByIndexOutput
 }
 
 export async function nostromoGetFundarasingByIndex(
@@ -1371,7 +1371,7 @@ const NOSTROMO_GET_PROJECT_INDEX_LIST_BY_CREATOR_OUTPUT_FIELDS: BinaryField[] = 
 export function decodeNostromoGetProjectIndexListByCreatorOutput(
   data: Uint8Array,
 ): NostromoGetProjectIndexListByCreatorOutput {
-  return decodePayload(data, NOSTROMO_GET_PROJECT_INDEX_LIST_BY_CREATOR_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as NostromoGetProjectIndexListByCreatorOutput
+  return decodePayload(data, NOSTROMO_GET_PROJECT_INDEX_LIST_BY_CREATOR_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as NostromoGetProjectIndexListByCreatorOutput
 }
 
 export async function nostromoGetProjectIndexListByCreator(
@@ -1434,7 +1434,7 @@ const NOSTROMO_GET_INFO_USER_INVESTED_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeNostromoGetInfoUserInvestedOutput(
   data: Uint8Array,
 ): NostromoGetInfoUserInvestedOutput {
-  return decodePayload(data, NOSTROMO_GET_INFO_USER_INVESTED_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as NostromoGetInfoUserInvestedOutput
+  return decodePayload(data, NOSTROMO_GET_INFO_USER_INVESTED_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as NostromoGetInfoUserInvestedOutput
 }
 
 export async function nostromoGetInfoUserInvested(
@@ -1501,7 +1501,7 @@ const NOSTROMO_GET_MAX_CLAIM_AMOUNT_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeNostromoGetMaxClaimAmountOutput(
   data: Uint8Array,
 ): NostromoGetMaxClaimAmountOutput {
-  return decodePayload(data, NOSTROMO_GET_MAX_CLAIM_AMOUNT_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as NostromoGetMaxClaimAmountOutput
+  return decodePayload(data, NOSTROMO_GET_MAX_CLAIM_AMOUNT_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as NostromoGetMaxClaimAmountOutput
 }
 
 export async function nostromoGetMaxClaimAmount(

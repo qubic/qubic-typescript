@@ -258,7 +258,7 @@ for (const version of versions) {
         '  data: Uint8Array,',
         ...(needsPkToId ? ['  publicKeyToIdentity: (pk: Uint8Array) => string,'] : []),
         `): ${cPascal}${callPascal}Output {`,
-        `  return decodePayload(data, ${cSnake}_${callSnake}_OUTPUT_FIELDS, STRUCTS, ${needsPkToId ? 'publicKeyToIdentity' : "(_pk: Uint8Array) => 'A'.repeat(60)"}) as unknown as ${cPascal}${callPascal}Output`,
+        `  return decodePayload(data, ${cSnake}_${callSnake}_OUTPUT_FIELDS, STRUCTS, ${needsPkToId ? 'publicKeyToIdentity' : "(_: Uint8Array) => { throw new Error('unreachable') }"}) as unknown as ${cPascal}${callPascal}Output`,
         '}',
         '',
       )
@@ -310,7 +310,7 @@ for (const version of versions) {
         '  data: Uint8Array,',
         ...(needsPkToId ? ['  publicKeyToIdentity: (pk: Uint8Array) => string,'] : []),
         `): ${cPascal}${callPascal}Output {`,
-        `  return decodePayload(data, ${cSnake}_${callSnake}_OUTPUT_FIELDS, STRUCTS, ${needsPkToId ? 'publicKeyToIdentity' : "(_pk: Uint8Array) => 'A'.repeat(60)"}) as unknown as ${cPascal}${callPascal}Output`,
+        `  return decodePayload(data, ${cSnake}_${callSnake}_OUTPUT_FIELDS, STRUCTS, ${needsPkToId ? 'publicKeyToIdentity' : "(_: Uint8Array) => { throw new Error('unreachable') }"}) as unknown as ${cPascal}${callPascal}Output`,
         '}',
         '',
         // High-level async caller

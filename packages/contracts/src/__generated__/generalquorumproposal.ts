@@ -247,7 +247,7 @@ const GENERAL_QUORUM_PROPOSAL_SET_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeGeneralQuorumProposalSetProposalOutput(
   data: Uint8Array,
 ): GeneralQuorumProposalSetProposalOutput {
-  return decodePayload(data, GENERAL_QUORUM_PROPOSAL_SET_PROPOSAL_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as GeneralQuorumProposalSetProposalOutput
+  return decodePayload(data, GENERAL_QUORUM_PROPOSAL_SET_PROPOSAL_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as GeneralQuorumProposalSetProposalOutput
 }
 
 export const GENERAL_QUORUM_PROPOSAL_VOTE_INPUT_TYPE = 2
@@ -308,7 +308,7 @@ const GENERAL_QUORUM_PROPOSAL_VOTE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeGeneralQuorumProposalVoteOutput(
   data: Uint8Array,
 ): GeneralQuorumProposalVoteOutput {
-  return decodePayload(data, GENERAL_QUORUM_PROPOSAL_VOTE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as GeneralQuorumProposalVoteOutput
+  return decodePayload(data, GENERAL_QUORUM_PROPOSAL_VOTE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as GeneralQuorumProposalVoteOutput
 }
 
 export const GENERAL_QUORUM_PROPOSAL_GET_PROPOSAL_INDICES_INPUT_TYPE = 1
@@ -366,7 +366,7 @@ const GENERAL_QUORUM_PROPOSAL_GET_PROPOSAL_INDICES_OUTPUT_FIELDS: BinaryField[] 
 export function decodeGeneralQuorumProposalGetProposalIndicesOutput(
   data: Uint8Array,
 ): GeneralQuorumProposalGetProposalIndicesOutput {
-  return decodePayload(data, GENERAL_QUORUM_PROPOSAL_GET_PROPOSAL_INDICES_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as GeneralQuorumProposalGetProposalIndicesOutput
+  return decodePayload(data, GENERAL_QUORUM_PROPOSAL_GET_PROPOSAL_INDICES_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as GeneralQuorumProposalGetProposalIndicesOutput
 }
 
 export async function generalQuorumProposalGetProposalIndices(
@@ -546,7 +546,7 @@ const GENERAL_QUORUM_PROPOSAL_GET_VOTE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeGeneralQuorumProposalGetVoteOutput(
   data: Uint8Array,
 ): GeneralQuorumProposalGetVoteOutput {
-  return decodePayload(data, GENERAL_QUORUM_PROPOSAL_GET_VOTE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as GeneralQuorumProposalGetVoteOutput
+  return decodePayload(data, GENERAL_QUORUM_PROPOSAL_GET_VOTE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as GeneralQuorumProposalGetVoteOutput
 }
 
 export async function generalQuorumProposalGetVote(
@@ -613,7 +613,7 @@ const GENERAL_QUORUM_PROPOSAL_GET_VOTING_RESULTS_OUTPUT_FIELDS: BinaryField[] = 
 export function decodeGeneralQuorumProposalGetVotingResultsOutput(
   data: Uint8Array,
 ): GeneralQuorumProposalGetVotingResultsOutput {
-  return decodePayload(data, GENERAL_QUORUM_PROPOSAL_GET_VOTING_RESULTS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as GeneralQuorumProposalGetVotingResultsOutput
+  return decodePayload(data, GENERAL_QUORUM_PROPOSAL_GET_VOTING_RESULTS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as GeneralQuorumProposalGetVotingResultsOutput
 }
 
 export async function generalQuorumProposalGetVotingResults(
@@ -656,7 +656,7 @@ const GENERAL_QUORUM_PROPOSAL_GET_REVENUE_DONATION_OUTPUT_FIELDS: BinaryField[] 
 export function decodeGeneralQuorumProposalGetRevenueDonationOutput(
   data: Uint8Array,
 ): GeneralQuorumProposalGetRevenueDonationOutput {
-  return decodePayload(data, GENERAL_QUORUM_PROPOSAL_GET_REVENUE_DONATION_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as GeneralQuorumProposalGetRevenueDonationOutput
+  return decodePayload(data, GENERAL_QUORUM_PROPOSAL_GET_REVENUE_DONATION_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as GeneralQuorumProposalGetRevenueDonationOutput
 }
 
 export async function generalQuorumProposalGetRevenueDonation(

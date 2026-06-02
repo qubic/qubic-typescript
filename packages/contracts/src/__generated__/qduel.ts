@@ -174,7 +174,7 @@ const Q_DUEL_CREATE_ROOM_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQDuelCreateRoomOutput(
   data: Uint8Array,
 ): QDuelCreateRoomOutput {
-  return decodePayload(data, Q_DUEL_CREATE_ROOM_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QDuelCreateRoomOutput
+  return decodePayload(data, Q_DUEL_CREATE_ROOM_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QDuelCreateRoomOutput
 }
 
 export const Q_DUEL_CONNECT_TO_ROOM_INPUT_TYPE = 2
@@ -284,7 +284,7 @@ const Q_DUEL_SET_PERCENT_FEES_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQDuelSetPercentFeesOutput(
   data: Uint8Array,
 ): QDuelSetPercentFeesOutput {
-  return decodePayload(data, Q_DUEL_SET_PERCENT_FEES_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QDuelSetPercentFeesOutput
+  return decodePayload(data, Q_DUEL_SET_PERCENT_FEES_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QDuelSetPercentFeesOutput
 }
 
 export const Q_DUEL_SET_TTL_HOURS_INPUT_TYPE = 4
@@ -324,7 +324,7 @@ const Q_DUEL_SET_TTL_HOURS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQDuelSetTTLHoursOutput(
   data: Uint8Array,
 ): QDuelSetTTLHoursOutput {
-  return decodePayload(data, Q_DUEL_SET_TTL_HOURS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QDuelSetTTLHoursOutput
+  return decodePayload(data, Q_DUEL_SET_TTL_HOURS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QDuelSetTTLHoursOutput
 }
 
 export const Q_DUEL_DEPOSIT_INPUT_TYPE = 5
@@ -345,7 +345,7 @@ const Q_DUEL_DEPOSIT_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQDuelDepositOutput(
   data: Uint8Array,
 ): QDuelDepositOutput {
-  return decodePayload(data, Q_DUEL_DEPOSIT_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QDuelDepositOutput
+  return decodePayload(data, Q_DUEL_DEPOSIT_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QDuelDepositOutput
 }
 
 export const Q_DUEL_WITHDRAW_INPUT_TYPE = 6
@@ -385,7 +385,7 @@ const Q_DUEL_WITHDRAW_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQDuelWithdrawOutput(
   data: Uint8Array,
 ): QDuelWithdrawOutput {
-  return decodePayload(data, Q_DUEL_WITHDRAW_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QDuelWithdrawOutput
+  return decodePayload(data, Q_DUEL_WITHDRAW_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QDuelWithdrawOutput
 }
 
 export const Q_DUEL_CLOSE_ROOM_INPUT_TYPE = 7
@@ -406,7 +406,7 @@ const Q_DUEL_CLOSE_ROOM_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQDuelCloseRoomOutput(
   data: Uint8Array,
 ): QDuelCloseRoomOutput {
-  return decodePayload(data, Q_DUEL_CLOSE_ROOM_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QDuelCloseRoomOutput
+  return decodePayload(data, Q_DUEL_CLOSE_ROOM_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QDuelCloseRoomOutput
 }
 
 export const Q_DUEL_GET_PERCENT_FEES_INPUT_TYPE = 1
@@ -456,7 +456,7 @@ const Q_DUEL_GET_PERCENT_FEES_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQDuelGetPercentFeesOutput(
   data: Uint8Array,
 ): QDuelGetPercentFeesOutput {
-  return decodePayload(data, Q_DUEL_GET_PERCENT_FEES_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QDuelGetPercentFeesOutput
+  return decodePayload(data, Q_DUEL_GET_PERCENT_FEES_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QDuelGetPercentFeesOutput
 }
 
 export async function qDuelGetPercentFees(
@@ -505,7 +505,7 @@ const Q_DUEL_GET_ROOMS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQDuelGetRoomsOutput(
   data: Uint8Array,
 ): QDuelGetRoomsOutput {
-  return decodePayload(data, Q_DUEL_GET_ROOMS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QDuelGetRoomsOutput
+  return decodePayload(data, Q_DUEL_GET_ROOMS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QDuelGetRoomsOutput
 }
 
 export async function qDuelGetRooms(
@@ -551,7 +551,7 @@ const Q_DUEL_GET_TTL_HOURS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQDuelGetTTLHoursOutput(
   data: Uint8Array,
 ): QDuelGetTTLHoursOutput {
-  return decodePayload(data, Q_DUEL_GET_TTL_HOURS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QDuelGetTTLHoursOutput
+  return decodePayload(data, Q_DUEL_GET_TTL_HOURS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QDuelGetTTLHoursOutput
 }
 
 export async function qDuelGetTTLHours(
@@ -733,7 +733,7 @@ const Q_DUEL_CALCULATE_REVENUE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQDuelCalculateRevenueOutput(
   data: Uint8Array,
 ): QDuelCalculateRevenueOutput {
-  return decodePayload(data, Q_DUEL_CALCULATE_REVENUE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QDuelCalculateRevenueOutput
+  return decodePayload(data, Q_DUEL_CALCULATE_REVENUE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QDuelCalculateRevenueOutput
 }
 
 export async function qDuelCalculateRevenue(
@@ -783,7 +783,7 @@ const Q_DUEL_GET_LAST_WINNERS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQDuelGetLastWinnersOutput(
   data: Uint8Array,
 ): QDuelGetLastWinnersOutput {
-  return decodePayload(data, Q_DUEL_GET_LAST_WINNERS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QDuelGetLastWinnersOutput
+  return decodePayload(data, Q_DUEL_GET_LAST_WINNERS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QDuelGetLastWinnersOutput
 }
 
 export async function qDuelGetLastWinners(

@@ -95,7 +95,7 @@ const RANDOM_LOTTERY_BUY_TICKET_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeRandomLotteryBuyTicketOutput(
   data: Uint8Array,
 ): RandomLotteryBuyTicketOutput {
-  return decodePayload(data, RANDOM_LOTTERY_BUY_TICKET_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as RandomLotteryBuyTicketOutput
+  return decodePayload(data, RANDOM_LOTTERY_BUY_TICKET_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as RandomLotteryBuyTicketOutput
 }
 
 export const RANDOM_LOTTERY_SET_PRICE_INPUT_TYPE = 2
@@ -135,7 +135,7 @@ const RANDOM_LOTTERY_SET_PRICE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeRandomLotterySetPriceOutput(
   data: Uint8Array,
 ): RandomLotterySetPriceOutput {
-  return decodePayload(data, RANDOM_LOTTERY_SET_PRICE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as RandomLotterySetPriceOutput
+  return decodePayload(data, RANDOM_LOTTERY_SET_PRICE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as RandomLotterySetPriceOutput
 }
 
 export const RANDOM_LOTTERY_SET_SCHEDULE_INPUT_TYPE = 3
@@ -175,7 +175,7 @@ const RANDOM_LOTTERY_SET_SCHEDULE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeRandomLotterySetScheduleOutput(
   data: Uint8Array,
 ): RandomLotterySetScheduleOutput {
-  return decodePayload(data, RANDOM_LOTTERY_SET_SCHEDULE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as RandomLotterySetScheduleOutput
+  return decodePayload(data, RANDOM_LOTTERY_SET_SCHEDULE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as RandomLotterySetScheduleOutput
 }
 
 export const RANDOM_LOTTERY_GET_FEES_INPUT_TYPE = 1
@@ -225,7 +225,7 @@ const RANDOM_LOTTERY_GET_FEES_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeRandomLotteryGetFeesOutput(
   data: Uint8Array,
 ): RandomLotteryGetFeesOutput {
-  return decodePayload(data, RANDOM_LOTTERY_GET_FEES_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as RandomLotteryGetFeesOutput
+  return decodePayload(data, RANDOM_LOTTERY_GET_FEES_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as RandomLotteryGetFeesOutput
 }
 
 export async function randomLotteryGetFees(
@@ -338,7 +338,7 @@ const RANDOM_LOTTERY_GET_WINNERS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeRandomLotteryGetWinnersOutput(
   data: Uint8Array,
 ): RandomLotteryGetWinnersOutput {
-  return decodePayload(data, RANDOM_LOTTERY_GET_WINNERS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as RandomLotteryGetWinnersOutput
+  return decodePayload(data, RANDOM_LOTTERY_GET_WINNERS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as RandomLotteryGetWinnersOutput
 }
 
 export async function randomLotteryGetWinners(
@@ -377,7 +377,7 @@ const RANDOM_LOTTERY_GET_TICKET_PRICE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeRandomLotteryGetTicketPriceOutput(
   data: Uint8Array,
 ): RandomLotteryGetTicketPriceOutput {
-  return decodePayload(data, RANDOM_LOTTERY_GET_TICKET_PRICE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as RandomLotteryGetTicketPriceOutput
+  return decodePayload(data, RANDOM_LOTTERY_GET_TICKET_PRICE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as RandomLotteryGetTicketPriceOutput
 }
 
 export async function randomLotteryGetTicketPrice(
@@ -416,7 +416,7 @@ const RANDOM_LOTTERY_GET_MAX_NUMBER_OF_PLAYERS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeRandomLotteryGetMaxNumberOfPlayersOutput(
   data: Uint8Array,
 ): RandomLotteryGetMaxNumberOfPlayersOutput {
-  return decodePayload(data, RANDOM_LOTTERY_GET_MAX_NUMBER_OF_PLAYERS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as RandomLotteryGetMaxNumberOfPlayersOutput
+  return decodePayload(data, RANDOM_LOTTERY_GET_MAX_NUMBER_OF_PLAYERS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as RandomLotteryGetMaxNumberOfPlayersOutput
 }
 
 export async function randomLotteryGetMaxNumberOfPlayers(
@@ -455,7 +455,7 @@ const RANDOM_LOTTERY_GET_STATE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeRandomLotteryGetStateOutput(
   data: Uint8Array,
 ): RandomLotteryGetStateOutput {
-  return decodePayload(data, RANDOM_LOTTERY_GET_STATE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as RandomLotteryGetStateOutput
+  return decodePayload(data, RANDOM_LOTTERY_GET_STATE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as RandomLotteryGetStateOutput
 }
 
 export async function randomLotteryGetState(
@@ -494,7 +494,7 @@ const RANDOM_LOTTERY_GET_BALANCE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeRandomLotteryGetBalanceOutput(
   data: Uint8Array,
 ): RandomLotteryGetBalanceOutput {
-  return decodePayload(data, RANDOM_LOTTERY_GET_BALANCE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as RandomLotteryGetBalanceOutput
+  return decodePayload(data, RANDOM_LOTTERY_GET_BALANCE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as RandomLotteryGetBalanceOutput
 }
 
 export async function randomLotteryGetBalance(
@@ -534,7 +534,7 @@ const RANDOM_LOTTERY_GET_NEXT_EPOCH_DATA_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeRandomLotteryGetNextEpochDataOutput(
   data: Uint8Array,
 ): RandomLotteryGetNextEpochDataOutput {
-  return decodePayload(data, RANDOM_LOTTERY_GET_NEXT_EPOCH_DATA_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as RandomLotteryGetNextEpochDataOutput
+  return decodePayload(data, RANDOM_LOTTERY_GET_NEXT_EPOCH_DATA_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as RandomLotteryGetNextEpochDataOutput
 }
 
 export async function randomLotteryGetNextEpochData(
@@ -573,7 +573,7 @@ const RANDOM_LOTTERY_GET_DRAW_HOUR_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeRandomLotteryGetDrawHourOutput(
   data: Uint8Array,
 ): RandomLotteryGetDrawHourOutput {
-  return decodePayload(data, RANDOM_LOTTERY_GET_DRAW_HOUR_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as RandomLotteryGetDrawHourOutput
+  return decodePayload(data, RANDOM_LOTTERY_GET_DRAW_HOUR_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as RandomLotteryGetDrawHourOutput
 }
 
 export async function randomLotteryGetDrawHour(
@@ -612,7 +612,7 @@ const RANDOM_LOTTERY_GET_SCHEDULE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeRandomLotteryGetScheduleOutput(
   data: Uint8Array,
 ): RandomLotteryGetScheduleOutput {
-  return decodePayload(data, RANDOM_LOTTERY_GET_SCHEDULE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as RandomLotteryGetScheduleOutput
+  return decodePayload(data, RANDOM_LOTTERY_GET_SCHEDULE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as RandomLotteryGetScheduleOutput
 }
 
 export async function randomLotteryGetSchedule(

@@ -77,7 +77,7 @@ const QBAY_SETTING_CFB_AND_QUBIC_PRICE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQbaySettingCFBAndQubicPriceOutput(
   data: Uint8Array,
 ): QbaySettingCFBAndQubicPriceOutput {
-  return decodePayload(data, QBAY_SETTING_CFB_AND_QUBIC_PRICE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QbaySettingCFBAndQubicPriceOutput
+  return decodePayload(data, QBAY_SETTING_CFB_AND_QUBIC_PRICE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QbaySettingCFBAndQubicPriceOutput
 }
 
 export const QBAY_CREATE_COLLECTION_INPUT_TYPE = 2
@@ -155,7 +155,7 @@ const QBAY_CREATE_COLLECTION_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQbayCreateCollectionOutput(
   data: Uint8Array,
 ): QbayCreateCollectionOutput {
-  return decodePayload(data, QBAY_CREATE_COLLECTION_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QbayCreateCollectionOutput
+  return decodePayload(data, QBAY_CREATE_COLLECTION_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QbayCreateCollectionOutput
 }
 
 export const QBAY_MINT_INPUT_TYPE = 3
@@ -219,7 +219,7 @@ const QBAY_MINT_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQbayMintOutput(
   data: Uint8Array,
 ): QbayMintOutput {
-  return decodePayload(data, QBAY_MINT_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QbayMintOutput
+  return decodePayload(data, QBAY_MINT_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QbayMintOutput
 }
 
 export const QBAY_MINT_OF_DROP_INPUT_TYPE = 4
@@ -269,7 +269,7 @@ const QBAY_MINT_OF_DROP_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQbayMintOfDropOutput(
   data: Uint8Array,
 ): QbayMintOfDropOutput {
-  return decodePayload(data, QBAY_MINT_OF_DROP_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QbayMintOfDropOutput
+  return decodePayload(data, QBAY_MINT_OF_DROP_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QbayMintOfDropOutput
 }
 
 export const QBAY_TRANSFER_INPUT_TYPE = 5
@@ -317,7 +317,7 @@ const QBAY_TRANSFER_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQbayTransferOutput(
   data: Uint8Array,
 ): QbayTransferOutput {
-  return decodePayload(data, QBAY_TRANSFER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QbayTransferOutput
+  return decodePayload(data, QBAY_TRANSFER_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QbayTransferOutput
 }
 
 export const QBAY_LIST_IN_MARKET_INPUT_TYPE = 6
@@ -364,7 +364,7 @@ const QBAY_LIST_IN_MARKET_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQbayListInMarketOutput(
   data: Uint8Array,
 ): QbayListInMarketOutput {
-  return decodePayload(data, QBAY_LIST_IN_MARKET_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QbayListInMarketOutput
+  return decodePayload(data, QBAY_LIST_IN_MARKET_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QbayListInMarketOutput
 }
 
 export const QBAY_BUY_INPUT_TYPE = 7
@@ -411,7 +411,7 @@ const QBAY_BUY_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQbayBuyOutput(
   data: Uint8Array,
 ): QbayBuyOutput {
-  return decodePayload(data, QBAY_BUY_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QbayBuyOutput
+  return decodePayload(data, QBAY_BUY_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QbayBuyOutput
 }
 
 export const QBAY_CANCEL_SALE_INPUT_TYPE = 8
@@ -451,7 +451,7 @@ const QBAY_CANCEL_SALE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQbayCancelSaleOutput(
   data: Uint8Array,
 ): QbayCancelSaleOutput {
-  return decodePayload(data, QBAY_CANCEL_SALE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QbayCancelSaleOutput
+  return decodePayload(data, QBAY_CANCEL_SALE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QbayCancelSaleOutput
 }
 
 export const QBAY_LIST_IN_EXCHANGE_INPUT_TYPE = 9
@@ -498,7 +498,7 @@ const QBAY_LIST_IN_EXCHANGE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQbayListInExchangeOutput(
   data: Uint8Array,
 ): QbayListInExchangeOutput {
-  return decodePayload(data, QBAY_LIST_IN_EXCHANGE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QbayListInExchangeOutput
+  return decodePayload(data, QBAY_LIST_IN_EXCHANGE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QbayListInExchangeOutput
 }
 
 export const QBAY_CANCEL_EXCHANGE_INPUT_TYPE = 10
@@ -545,7 +545,7 @@ const QBAY_CANCEL_EXCHANGE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQbayCancelExchangeOutput(
   data: Uint8Array,
 ): QbayCancelExchangeOutput {
-  return decodePayload(data, QBAY_CANCEL_EXCHANGE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QbayCancelExchangeOutput
+  return decodePayload(data, QBAY_CANCEL_EXCHANGE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QbayCancelExchangeOutput
 }
 
 export const QBAY_MAKE_OFFER_INPUT_TYPE = 11
@@ -599,7 +599,7 @@ const QBAY_MAKE_OFFER_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQbayMakeOfferOutput(
   data: Uint8Array,
 ): QbayMakeOfferOutput {
-  return decodePayload(data, QBAY_MAKE_OFFER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QbayMakeOfferOutput
+  return decodePayload(data, QBAY_MAKE_OFFER_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QbayMakeOfferOutput
 }
 
 export const QBAY_ACCEPT_OFFER_INPUT_TYPE = 12
@@ -639,7 +639,7 @@ const QBAY_ACCEPT_OFFER_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQbayAcceptOfferOutput(
   data: Uint8Array,
 ): QbayAcceptOfferOutput {
-  return decodePayload(data, QBAY_ACCEPT_OFFER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QbayAcceptOfferOutput
+  return decodePayload(data, QBAY_ACCEPT_OFFER_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QbayAcceptOfferOutput
 }
 
 export const QBAY_CANCEL_OFFER_INPUT_TYPE = 13
@@ -679,7 +679,7 @@ const QBAY_CANCEL_OFFER_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQbayCancelOfferOutput(
   data: Uint8Array,
 ): QbayCancelOfferOutput {
-  return decodePayload(data, QBAY_CANCEL_OFFER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QbayCancelOfferOutput
+  return decodePayload(data, QBAY_CANCEL_OFFER_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QbayCancelOfferOutput
 }
 
 export const QBAY_CREATE_TRADITIONAL_AUCTION_INPUT_TYPE = 14
@@ -789,7 +789,7 @@ const QBAY_CREATE_TRADITIONAL_AUCTION_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQbayCreateTraditionalAuctionOutput(
   data: Uint8Array,
 ): QbayCreateTraditionalAuctionOutput {
-  return decodePayload(data, QBAY_CREATE_TRADITIONAL_AUCTION_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QbayCreateTraditionalAuctionOutput
+  return decodePayload(data, QBAY_CREATE_TRADITIONAL_AUCTION_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QbayCreateTraditionalAuctionOutput
 }
 
 export const QBAY_BID_ON_TRADITIONAL_AUCTION_INPUT_TYPE = 15
@@ -843,7 +843,7 @@ const QBAY_BID_ON_TRADITIONAL_AUCTION_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQbayBidOnTraditionalAuctionOutput(
   data: Uint8Array,
 ): QbayBidOnTraditionalAuctionOutput {
-  return decodePayload(data, QBAY_BID_ON_TRADITIONAL_AUCTION_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QbayBidOnTraditionalAuctionOutput
+  return decodePayload(data, QBAY_BID_ON_TRADITIONAL_AUCTION_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QbayBidOnTraditionalAuctionOutput
 }
 
 export const QBAY_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE = 16
@@ -905,7 +905,7 @@ const QBAY_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQbayTransferShareManagementRightsOutput(
   data: Uint8Array,
 ): QbayTransferShareManagementRightsOutput {
-  return decodePayload(data, QBAY_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QbayTransferShareManagementRightsOutput
+  return decodePayload(data, QBAY_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QbayTransferShareManagementRightsOutput
 }
 
 export const QBAY_CHANGE_STATUS_OF_MARKET_PLACE_INPUT_TYPE = 17
@@ -945,7 +945,7 @@ const QBAY_CHANGE_STATUS_OF_MARKET_PLACE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQbayChangeStatusOfMarketPlaceOutput(
   data: Uint8Array,
 ): QbayChangeStatusOfMarketPlaceOutput {
-  return decodePayload(data, QBAY_CHANGE_STATUS_OF_MARKET_PLACE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QbayChangeStatusOfMarketPlaceOutput
+  return decodePayload(data, QBAY_CHANGE_STATUS_OF_MARKET_PLACE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QbayChangeStatusOfMarketPlaceOutput
 }
 
 export const QBAY_GET_NUMBER_OF_NFT_FOR_USER_INPUT_TYPE = 1
@@ -987,7 +987,7 @@ const QBAY_GET_NUMBER_OF_NFT_FOR_USER_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQbayGetNumberOfNFTForUserOutput(
   data: Uint8Array,
 ): QbayGetNumberOfNFTForUserOutput {
-  return decodePayload(data, QBAY_GET_NUMBER_OF_NFT_FOR_USER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QbayGetNumberOfNFTForUserOutput
+  return decodePayload(data, QBAY_GET_NUMBER_OF_NFT_FOR_USER_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QbayGetNumberOfNFTForUserOutput
 }
 
 export async function qbayGetNumberOfNFTForUser(
@@ -1336,7 +1336,7 @@ const QBAY_GET_INFO_OF_MARKETPLACE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQbayGetInfoOfMarketplaceOutput(
   data: Uint8Array,
 ): QbayGetInfoOfMarketplaceOutput {
-  return decodePayload(data, QBAY_GET_INFO_OF_MARKETPLACE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QbayGetInfoOfMarketplaceOutput
+  return decodePayload(data, QBAY_GET_INFO_OF_MARKETPLACE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QbayGetInfoOfMarketplaceOutput
 }
 
 export async function qbayGetInfoOfMarketplace(
@@ -1447,7 +1447,7 @@ const QBAY_GET_INFO_OF_COLLECTION_BY_CREATOR_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQbayGetInfoOfCollectionByCreatorOutput(
   data: Uint8Array,
 ): QbayGetInfoOfCollectionByCreatorOutput {
-  return decodePayload(data, QBAY_GET_INFO_OF_COLLECTION_BY_CREATOR_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QbayGetInfoOfCollectionByCreatorOutput
+  return decodePayload(data, QBAY_GET_INFO_OF_COLLECTION_BY_CREATOR_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QbayGetInfoOfCollectionByCreatorOutput
 }
 
 export async function qbayGetInfoOfCollectionByCreator(
@@ -1621,7 +1621,7 @@ const QBAY_GET_INCOMING_AUCTIONS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQbayGetIncomingAuctionsOutput(
   data: Uint8Array,
 ): QbayGetIncomingAuctionsOutput {
-  return decodePayload(data, QBAY_GET_INCOMING_AUCTIONS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QbayGetIncomingAuctionsOutput
+  return decodePayload(data, QBAY_GET_INCOMING_AUCTIONS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QbayGetIncomingAuctionsOutput
 }
 
 export async function qbayGetIncomingAuctions(
@@ -1950,7 +1950,7 @@ const QBAY_GET_USER_CREATED_COLLECTION_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQbayGetUserCreatedCollectionOutput(
   data: Uint8Array,
 ): QbayGetUserCreatedCollectionOutput {
-  return decodePayload(data, QBAY_GET_USER_CREATED_COLLECTION_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QbayGetUserCreatedCollectionOutput
+  return decodePayload(data, QBAY_GET_USER_CREATED_COLLECTION_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QbayGetUserCreatedCollectionOutput
 }
 
 export async function qbayGetUserCreatedCollection(
@@ -2027,7 +2027,7 @@ const QBAY_GET_USER_CREATED_NFT_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQbayGetUserCreatedNFTOutput(
   data: Uint8Array,
 ): QbayGetUserCreatedNFTOutput {
-  return decodePayload(data, QBAY_GET_USER_CREATED_NFT_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QbayGetUserCreatedNFTOutput
+  return decodePayload(data, QBAY_GET_USER_CREATED_NFT_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QbayGetUserCreatedNFTOutput
 }
 
 export async function qbayGetUserCreatedNFT(

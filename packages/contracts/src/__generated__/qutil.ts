@@ -193,7 +193,7 @@ const Q_UTIL_SEND_TO_MANY_V1_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQUtilSendToManyV1Output(
   data: Uint8Array,
 ): QUtilSendToManyV1Output {
-  return decodePayload(data, Q_UTIL_SEND_TO_MANY_V1_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilSendToManyV1Output
+  return decodePayload(data, Q_UTIL_SEND_TO_MANY_V1_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QUtilSendToManyV1Output
 }
 
 export const Q_UTIL_BURN_QUBIC_INPUT_TYPE = 2
@@ -233,7 +233,7 @@ const Q_UTIL_BURN_QUBIC_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQUtilBurnQubicOutput(
   data: Uint8Array,
 ): QUtilBurnQubicOutput {
-  return decodePayload(data, Q_UTIL_BURN_QUBIC_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilBurnQubicOutput
+  return decodePayload(data, Q_UTIL_BURN_QUBIC_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QUtilBurnQubicOutput
 }
 
 export const Q_UTIL_SEND_TO_MANY_BENCHMARK_INPUT_TYPE = 3
@@ -294,7 +294,7 @@ const Q_UTIL_SEND_TO_MANY_BENCHMARK_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQUtilSendToManyBenchmarkOutput(
   data: Uint8Array,
 ): QUtilSendToManyBenchmarkOutput {
-  return decodePayload(data, Q_UTIL_SEND_TO_MANY_BENCHMARK_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilSendToManyBenchmarkOutput
+  return decodePayload(data, Q_UTIL_SEND_TO_MANY_BENCHMARK_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QUtilSendToManyBenchmarkOutput
 }
 
 export const Q_UTIL_CREATE_POLL_INPUT_TYPE = 4
@@ -376,7 +376,7 @@ const Q_UTIL_CREATE_POLL_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQUtilCreatePollOutput(
   data: Uint8Array,
 ): QUtilCreatePollOutput {
-  return decodePayload(data, Q_UTIL_CREATE_POLL_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilCreatePollOutput
+  return decodePayload(data, Q_UTIL_CREATE_POLL_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QUtilCreatePollOutput
 }
 
 export const Q_UTIL_VOTE_INPUT_TYPE = 5
@@ -438,7 +438,7 @@ const Q_UTIL_VOTE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQUtilVoteOutput(
   data: Uint8Array,
 ): QUtilVoteOutput {
-  return decodePayload(data, Q_UTIL_VOTE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilVoteOutput
+  return decodePayload(data, Q_UTIL_VOTE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QUtilVoteOutput
 }
 
 export const Q_UTIL_CANCEL_POLL_INPUT_TYPE = 6
@@ -478,7 +478,7 @@ const Q_UTIL_CANCEL_POLL_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQUtilCancelPollOutput(
   data: Uint8Array,
 ): QUtilCancelPollOutput {
-  return decodePayload(data, Q_UTIL_CANCEL_POLL_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilCancelPollOutput
+  return decodePayload(data, Q_UTIL_CANCEL_POLL_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QUtilCancelPollOutput
 }
 
 export const Q_UTIL_DISTRIBUTE_QU_TO_SHAREHOLDERS_INPUT_TYPE = 7
@@ -540,7 +540,7 @@ const Q_UTIL_DISTRIBUTE_QU_TO_SHAREHOLDERS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQUtilDistributeQuToShareholdersOutput(
   data: Uint8Array,
 ): QUtilDistributeQuToShareholdersOutput {
-  return decodePayload(data, Q_UTIL_DISTRIBUTE_QU_TO_SHAREHOLDERS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilDistributeQuToShareholdersOutput
+  return decodePayload(data, Q_UTIL_DISTRIBUTE_QU_TO_SHAREHOLDERS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QUtilDistributeQuToShareholdersOutput
 }
 
 export const Q_UTIL_BURN_QUBIC_FOR_CONTRACT_INPUT_TYPE = 8
@@ -580,7 +580,7 @@ const Q_UTIL_BURN_QUBIC_FOR_CONTRACT_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQUtilBurnQubicForContractOutput(
   data: Uint8Array,
 ): QUtilBurnQubicForContractOutput {
-  return decodePayload(data, Q_UTIL_BURN_QUBIC_FOR_CONTRACT_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilBurnQubicForContractOutput
+  return decodePayload(data, Q_UTIL_BURN_QUBIC_FOR_CONTRACT_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QUtilBurnQubicForContractOutput
 }
 
 export const Q_UTIL_TRANSFER_SHARES_TO_MANY_V1_INPUT_TYPE = 9
@@ -642,7 +642,7 @@ const Q_UTIL_TRANSFER_SHARES_TO_MANY_V1_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQUtilTransferSharesToManyV1Output(
   data: Uint8Array,
 ): QUtilTransferSharesToManyV1Output {
-  return decodePayload(data, Q_UTIL_TRANSFER_SHARES_TO_MANY_V1_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilTransferSharesToManyV1Output
+  return decodePayload(data, Q_UTIL_TRANSFER_SHARES_TO_MANY_V1_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QUtilTransferSharesToManyV1Output
 }
 
 export const Q_UTIL_TRANSFER_SHARES_MANAGEMENT_RIGHTS_INPUT_TYPE = 10
@@ -697,7 +697,7 @@ const Q_UTIL_TRANSFER_SHARES_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQUtilTransferSharesManagementRightsOutput(
   data: Uint8Array,
 ): QUtilTransferSharesManagementRightsOutput {
-  return decodePayload(data, Q_UTIL_TRANSFER_SHARES_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilTransferSharesManagementRightsOutput
+  return decodePayload(data, Q_UTIL_TRANSFER_SHARES_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QUtilTransferSharesManagementRightsOutput
 }
 
 export const Q_UTIL_QUERY_PRICE_ORACLE_INPUT_TYPE = 100
@@ -745,7 +745,7 @@ const Q_UTIL_QUERY_PRICE_ORACLE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQUtilQueryPriceOracleOutput(
   data: Uint8Array,
 ): QUtilQueryPriceOracleOutput {
-  return decodePayload(data, Q_UTIL_QUERY_PRICE_ORACLE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilQueryPriceOracleOutput
+  return decodePayload(data, Q_UTIL_QUERY_PRICE_ORACLE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QUtilQueryPriceOracleOutput
 }
 
 export const Q_UTIL_SUBSCRIBE_PRICE_ORACLE_INPUT_TYPE = 101
@@ -800,7 +800,7 @@ const Q_UTIL_SUBSCRIBE_PRICE_ORACLE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQUtilSubscribePriceOracleOutput(
   data: Uint8Array,
 ): QUtilSubscribePriceOracleOutput {
-  return decodePayload(data, Q_UTIL_SUBSCRIBE_PRICE_ORACLE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilSubscribePriceOracleOutput
+  return decodePayload(data, Q_UTIL_SUBSCRIBE_PRICE_ORACLE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QUtilSubscribePriceOracleOutput
 }
 
 export const Q_UTIL_UNSUBSCRIBE_ORACLE_INPUT_TYPE = 102
@@ -840,7 +840,7 @@ const Q_UTIL_UNSUBSCRIBE_ORACLE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQUtilUnsubscribeOracleOutput(
   data: Uint8Array,
 ): QUtilUnsubscribeOracleOutput {
-  return decodePayload(data, Q_UTIL_UNSUBSCRIBE_ORACLE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilUnsubscribeOracleOutput
+  return decodePayload(data, Q_UTIL_UNSUBSCRIBE_ORACLE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QUtilUnsubscribeOracleOutput
 }
 
 export const Q_UTIL_GET_SEND_TO_MANY_V1FEE_INPUT_TYPE = 1
@@ -862,7 +862,7 @@ const Q_UTIL_GET_SEND_TO_MANY_V1FEE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQUtilGetSendToManyV1FeeOutput(
   data: Uint8Array,
 ): QUtilGetSendToManyV1FeeOutput {
-  return decodePayload(data, Q_UTIL_GET_SEND_TO_MANY_V1FEE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilGetSendToManyV1FeeOutput
+  return decodePayload(data, Q_UTIL_GET_SEND_TO_MANY_V1FEE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QUtilGetSendToManyV1FeeOutput
 }
 
 export async function qUtilGetSendToManyV1Fee(
@@ -928,7 +928,7 @@ const Q_UTIL_GET_TOTAL_NUMBER_OF_ASSET_SHARES_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQUtilGetTotalNumberOfAssetSharesOutput(
   data: Uint8Array,
 ): QUtilGetTotalNumberOfAssetSharesOutput {
-  return decodePayload(data, Q_UTIL_GET_TOTAL_NUMBER_OF_ASSET_SHARES_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilGetTotalNumberOfAssetSharesOutput
+  return decodePayload(data, Q_UTIL_GET_TOTAL_NUMBER_OF_ASSET_SHARES_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QUtilGetTotalNumberOfAssetSharesOutput
 }
 
 export async function qUtilGetTotalNumberOfAssetShares(
@@ -1007,7 +1007,7 @@ const Q_UTIL_GET_CURRENT_RESULT_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQUtilGetCurrentResultOutput(
   data: Uint8Array,
 ): QUtilGetCurrentResultOutput {
-  return decodePayload(data, Q_UTIL_GET_CURRENT_RESULT_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilGetCurrentResultOutput
+  return decodePayload(data, Q_UTIL_GET_CURRENT_RESULT_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QUtilGetCurrentResultOutput
 }
 
 export async function qUtilGetCurrentResult(
@@ -1077,7 +1077,7 @@ const Q_UTIL_GET_POLLS_BY_CREATOR_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQUtilGetPollsByCreatorOutput(
   data: Uint8Array,
 ): QUtilGetPollsByCreatorOutput {
-  return decodePayload(data, Q_UTIL_GET_POLLS_BY_CREATOR_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilGetPollsByCreatorOutput
+  return decodePayload(data, Q_UTIL_GET_POLLS_BY_CREATOR_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QUtilGetPollsByCreatorOutput
 }
 
 export async function qUtilGetPollsByCreator(
@@ -1134,7 +1134,7 @@ const Q_UTIL_GET_CURRENT_POLL_ID_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQUtilGetCurrentPollIdOutput(
   data: Uint8Array,
 ): QUtilGetCurrentPollIdOutput {
-  return decodePayload(data, Q_UTIL_GET_CURRENT_POLL_ID_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilGetCurrentPollIdOutput
+  return decodePayload(data, Q_UTIL_GET_CURRENT_POLL_ID_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QUtilGetCurrentPollIdOutput
 }
 
 export async function qUtilGetCurrentPollId(
@@ -1210,7 +1210,7 @@ const Q_UTIL_GET_POLL_INFO_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQUtilGetPollInfoOutput(
   data: Uint8Array,
 ): QUtilGetPollInfoOutput {
-  return decodePayload(data, Q_UTIL_GET_POLL_INFO_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilGetPollInfoOutput
+  return decodePayload(data, Q_UTIL_GET_POLL_INFO_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QUtilGetPollInfoOutput
 }
 
 export async function qUtilGetPollInfo(
@@ -1320,7 +1320,7 @@ const Q_UTIL_GET_FEES_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQUtilGetFeesOutput(
   data: Uint8Array,
 ): QUtilGetFeesOutput {
-  return decodePayload(data, Q_UTIL_GET_FEES_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilGetFeesOutput
+  return decodePayload(data, Q_UTIL_GET_FEES_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QUtilGetFeesOutput
 }
 
 export async function qUtilGetFees(
@@ -1378,7 +1378,7 @@ const Q_UTIL_QUERY_FEE_RESERVE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQUtilQueryFeeReserveOutput(
   data: Uint8Array,
 ): QUtilQueryFeeReserveOutput {
-  return decodePayload(data, Q_UTIL_QUERY_FEE_RESERVE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilQueryFeeReserveOutput
+  return decodePayload(data, Q_UTIL_QUERY_FEE_RESERVE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QUtilQueryFeeReserveOutput
 }
 
 export async function qUtilQueryFeeReserve(
@@ -1444,7 +1444,7 @@ const Q_UTIL_GET_BALANCES16_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQUtilGetBalances16Output(
   data: Uint8Array,
 ): QUtilGetBalances16Output {
-  return decodePayload(data, Q_UTIL_GET_BALANCES16_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QUtilGetBalances16Output
+  return decodePayload(data, Q_UTIL_GET_BALANCES16_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QUtilGetBalances16Output
 }
 
 export async function qUtilGetBalances16(

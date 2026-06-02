@@ -27,7 +27,7 @@ const QEARN_LOCK_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQearnLockOutput(
   data: Uint8Array,
 ): QearnLockOutput {
-  return decodePayload(data, QEARN_LOCK_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QearnLockOutput
+  return decodePayload(data, QEARN_LOCK_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QearnLockOutput
 }
 
 export const QEARN_UNLOCK_INPUT_TYPE = 2
@@ -74,7 +74,7 @@ const QEARN_UNLOCK_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQearnUnlockOutput(
   data: Uint8Array,
 ): QearnUnlockOutput {
-  return decodePayload(data, QEARN_UNLOCK_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QearnUnlockOutput
+  return decodePayload(data, QEARN_UNLOCK_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QearnUnlockOutput
 }
 
 export const QEARN_GET_LOCK_INFO_PER_EPOCH_INPUT_TYPE = 1
@@ -143,7 +143,7 @@ const QEARN_GET_LOCK_INFO_PER_EPOCH_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQearnGetLockInfoPerEpochOutput(
   data: Uint8Array,
 ): QearnGetLockInfoPerEpochOutput {
-  return decodePayload(data, QEARN_GET_LOCK_INFO_PER_EPOCH_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QearnGetLockInfoPerEpochOutput
+  return decodePayload(data, QEARN_GET_LOCK_INFO_PER_EPOCH_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QearnGetLockInfoPerEpochOutput
 }
 
 export async function qearnGetLockInfoPerEpoch(
@@ -210,7 +210,7 @@ const QEARN_GET_USER_LOCKED_INFO_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQearnGetUserLockedInfoOutput(
   data: Uint8Array,
 ): QearnGetUserLockedInfoOutput {
-  return decodePayload(data, QEARN_GET_USER_LOCKED_INFO_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QearnGetUserLockedInfoOutput
+  return decodePayload(data, QEARN_GET_USER_LOCKED_INFO_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QearnGetUserLockedInfoOutput
 }
 
 export async function qearnGetUserLockedInfo(
@@ -269,7 +269,7 @@ const QEARN_GET_STATE_OF_ROUND_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQearnGetStateOfRoundOutput(
   data: Uint8Array,
 ): QearnGetStateOfRoundOutput {
-  return decodePayload(data, QEARN_GET_STATE_OF_ROUND_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QearnGetStateOfRoundOutput
+  return decodePayload(data, QEARN_GET_STATE_OF_ROUND_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QearnGetStateOfRoundOutput
 }
 
 export async function qearnGetStateOfRound(
@@ -329,7 +329,7 @@ const QEARN_GET_USER_LOCK_STATUS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQearnGetUserLockStatusOutput(
   data: Uint8Array,
 ): QearnGetUserLockStatusOutput {
-  return decodePayload(data, QEARN_GET_USER_LOCK_STATUS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QearnGetUserLockStatusOutput
+  return decodePayload(data, QEARN_GET_USER_LOCK_STATUS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QearnGetUserLockStatusOutput
 }
 
 export async function qearnGetUserLockStatus(
@@ -410,7 +410,7 @@ const QEARN_GET_ENDED_STATUS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQearnGetEndedStatusOutput(
   data: Uint8Array,
 ): QearnGetEndedStatusOutput {
-  return decodePayload(data, QEARN_GET_ENDED_STATUS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QearnGetEndedStatusOutput
+  return decodePayload(data, QEARN_GET_ENDED_STATUS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QearnGetEndedStatusOutput
 }
 
 export async function qearnGetEndedStatus(
@@ -490,7 +490,7 @@ const QEARN_GET_STATS_PER_EPOCH_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQearnGetStatsPerEpochOutput(
   data: Uint8Array,
 ): QearnGetStatsPerEpochOutput {
-  return decodePayload(data, QEARN_GET_STATS_PER_EPOCH_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QearnGetStatsPerEpochOutput
+  return decodePayload(data, QEARN_GET_STATS_PER_EPOCH_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QearnGetStatsPerEpochOutput
 }
 
 export async function qearnGetStatsPerEpoch(
@@ -565,7 +565,7 @@ const QEARN_GET_BURNED_AND_BOOSTED_STATS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQearnGetBurnedAndBoostedStatsOutput(
   data: Uint8Array,
 ): QearnGetBurnedAndBoostedStatsOutput {
-  return decodePayload(data, QEARN_GET_BURNED_AND_BOOSTED_STATS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QearnGetBurnedAndBoostedStatsOutput
+  return decodePayload(data, QEARN_GET_BURNED_AND_BOOSTED_STATS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QearnGetBurnedAndBoostedStatsOutput
 }
 
 export async function qearnGetBurnedAndBoostedStats(
@@ -658,7 +658,7 @@ const QEARN_GET_BURNED_AND_BOOSTED_STATS_PER_EPOCH_OUTPUT_FIELDS: BinaryField[] 
 export function decodeQearnGetBurnedAndBoostedStatsPerEpochOutput(
   data: Uint8Array,
 ): QearnGetBurnedAndBoostedStatsPerEpochOutput {
-  return decodePayload(data, QEARN_GET_BURNED_AND_BOOSTED_STATS_PER_EPOCH_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QearnGetBurnedAndBoostedStatsPerEpochOutput
+  return decodePayload(data, QEARN_GET_BURNED_AND_BOOSTED_STATS_PER_EPOCH_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QearnGetBurnedAndBoostedStatsPerEpochOutput
 }
 
 export async function qearnGetBurnedAndBoostedStatsPerEpoch(

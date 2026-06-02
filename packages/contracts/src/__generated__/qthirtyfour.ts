@@ -252,7 +252,7 @@ const Q_THIRTY_FOUR_BUY_TICKET_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQThirtyFourBuyTicketOutput(
   data: Uint8Array,
 ): QThirtyFourBuyTicketOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_BUY_TICKET_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourBuyTicketOutput
+  return decodePayload(data, Q_THIRTY_FOUR_BUY_TICKET_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QThirtyFourBuyTicketOutput
 }
 
 export const Q_THIRTY_FOUR_SET_PRICE_INPUT_TYPE = 2
@@ -292,7 +292,7 @@ const Q_THIRTY_FOUR_SET_PRICE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQThirtyFourSetPriceOutput(
   data: Uint8Array,
 ): QThirtyFourSetPriceOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_SET_PRICE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourSetPriceOutput
+  return decodePayload(data, Q_THIRTY_FOUR_SET_PRICE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QThirtyFourSetPriceOutput
 }
 
 export const Q_THIRTY_FOUR_SET_SCHEDULE_INPUT_TYPE = 3
@@ -332,7 +332,7 @@ const Q_THIRTY_FOUR_SET_SCHEDULE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQThirtyFourSetScheduleOutput(
   data: Uint8Array,
 ): QThirtyFourSetScheduleOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_SET_SCHEDULE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourSetScheduleOutput
+  return decodePayload(data, Q_THIRTY_FOUR_SET_SCHEDULE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QThirtyFourSetScheduleOutput
 }
 
 export const Q_THIRTY_FOUR_SET_TARGET_JACKPOT_INPUT_TYPE = 4
@@ -372,7 +372,7 @@ const Q_THIRTY_FOUR_SET_TARGET_JACKPOT_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQThirtyFourSetTargetJackpotOutput(
   data: Uint8Array,
 ): QThirtyFourSetTargetJackpotOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_SET_TARGET_JACKPOT_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourSetTargetJackpotOutput
+  return decodePayload(data, Q_THIRTY_FOUR_SET_TARGET_JACKPOT_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QThirtyFourSetTargetJackpotOutput
 }
 
 export const Q_THIRTY_FOUR_SET_DRAW_HOUR_INPUT_TYPE = 5
@@ -412,7 +412,7 @@ const Q_THIRTY_FOUR_SET_DRAW_HOUR_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQThirtyFourSetDrawHourOutput(
   data: Uint8Array,
 ): QThirtyFourSetDrawHourOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_SET_DRAW_HOUR_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourSetDrawHourOutput
+  return decodePayload(data, Q_THIRTY_FOUR_SET_DRAW_HOUR_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QThirtyFourSetDrawHourOutput
 }
 
 export const Q_THIRTY_FOUR_SYNC_JACKPOT_INPUT_TYPE = 6
@@ -433,7 +433,7 @@ const Q_THIRTY_FOUR_SYNC_JACKPOT_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQThirtyFourSyncJackpotOutput(
   data: Uint8Array,
 ): QThirtyFourSyncJackpotOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_SYNC_JACKPOT_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourSyncJackpotOutput
+  return decodePayload(data, Q_THIRTY_FOUR_SYNC_JACKPOT_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QThirtyFourSyncJackpotOutput
 }
 
 export const Q_THIRTY_FOUR_BUY_TICKETS_BATCH_INPUT_TYPE = 7
@@ -483,7 +483,7 @@ const Q_THIRTY_FOUR_BUY_TICKETS_BATCH_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQThirtyFourBuyTicketsBatchOutput(
   data: Uint8Array,
 ): QThirtyFourBuyTicketsBatchOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_BUY_TICKETS_BATCH_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourBuyTicketsBatchOutput
+  return decodePayload(data, Q_THIRTY_FOUR_BUY_TICKETS_BATCH_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QThirtyFourBuyTicketsBatchOutput
 }
 
 export const Q_THIRTY_FOUR_BUY_TICKETS_BY_SELECTION_INPUT_TYPE = 8
@@ -540,7 +540,7 @@ const Q_THIRTY_FOUR_BUY_TICKETS_BY_SELECTION_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQThirtyFourBuyTicketsBySelectionOutput(
   data: Uint8Array,
 ): QThirtyFourBuyTicketsBySelectionOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_BUY_TICKETS_BY_SELECTION_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourBuyTicketsBySelectionOutput
+  return decodePayload(data, Q_THIRTY_FOUR_BUY_TICKETS_BY_SELECTION_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QThirtyFourBuyTicketsBySelectionOutput
 }
 
 export const Q_THIRTY_FOUR_GET_TICKET_PRICE_INPUT_TYPE = 1
@@ -562,7 +562,7 @@ const Q_THIRTY_FOUR_GET_TICKET_PRICE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQThirtyFourGetTicketPriceOutput(
   data: Uint8Array,
 ): QThirtyFourGetTicketPriceOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_GET_TICKET_PRICE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourGetTicketPriceOutput
+  return decodePayload(data, Q_THIRTY_FOUR_GET_TICKET_PRICE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QThirtyFourGetTicketPriceOutput
 }
 
 export async function qThirtyFourGetTicketPrice(
@@ -602,7 +602,7 @@ const Q_THIRTY_FOUR_GET_NEXT_EPOCH_DATA_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQThirtyFourGetNextEpochDataOutput(
   data: Uint8Array,
 ): QThirtyFourGetNextEpochDataOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_GET_NEXT_EPOCH_DATA_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourGetNextEpochDataOutput
+  return decodePayload(data, Q_THIRTY_FOUR_GET_NEXT_EPOCH_DATA_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QThirtyFourGetNextEpochDataOutput
 }
 
 export async function qThirtyFourGetNextEpochData(
@@ -642,7 +642,7 @@ const Q_THIRTY_FOUR_GET_WINNER_DATA_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQThirtyFourGetWinnerDataOutput(
   data: Uint8Array,
 ): QThirtyFourGetWinnerDataOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_GET_WINNER_DATA_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourGetWinnerDataOutput
+  return decodePayload(data, Q_THIRTY_FOUR_GET_WINNER_DATA_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QThirtyFourGetWinnerDataOutput
 }
 
 export async function qThirtyFourGetWinnerData(
@@ -682,7 +682,7 @@ const Q_THIRTY_FOUR_GET_POOLS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQThirtyFourGetPoolsOutput(
   data: Uint8Array,
 ): QThirtyFourGetPoolsOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_GET_POOLS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourGetPoolsOutput
+  return decodePayload(data, Q_THIRTY_FOUR_GET_POOLS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QThirtyFourGetPoolsOutput
 }
 
 export async function qThirtyFourGetPools(
@@ -721,7 +721,7 @@ const Q_THIRTY_FOUR_GET_SCHEDULE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQThirtyFourGetScheduleOutput(
   data: Uint8Array,
 ): QThirtyFourGetScheduleOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_GET_SCHEDULE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourGetScheduleOutput
+  return decodePayload(data, Q_THIRTY_FOUR_GET_SCHEDULE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QThirtyFourGetScheduleOutput
 }
 
 export async function qThirtyFourGetSchedule(
@@ -760,7 +760,7 @@ const Q_THIRTY_FOUR_GET_DRAW_HOUR_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQThirtyFourGetDrawHourOutput(
   data: Uint8Array,
 ): QThirtyFourGetDrawHourOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_GET_DRAW_HOUR_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourGetDrawHourOutput
+  return decodePayload(data, Q_THIRTY_FOUR_GET_DRAW_HOUR_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QThirtyFourGetDrawHourOutput
 }
 
 export async function qThirtyFourGetDrawHour(
@@ -799,7 +799,7 @@ const Q_THIRTY_FOUR_GET_STATE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQThirtyFourGetStateOutput(
   data: Uint8Array,
 ): QThirtyFourGetStateOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_GET_STATE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourGetStateOutput
+  return decodePayload(data, Q_THIRTY_FOUR_GET_STATE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QThirtyFourGetStateOutput
 }
 
 export async function qThirtyFourGetState(
@@ -866,7 +866,7 @@ const Q_THIRTY_FOUR_GET_FEES_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQThirtyFourGetFeesOutput(
   data: Uint8Array,
 ): QThirtyFourGetFeesOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_GET_FEES_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourGetFeesOutput
+  return decodePayload(data, Q_THIRTY_FOUR_GET_FEES_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QThirtyFourGetFeesOutput
 }
 
 export async function qThirtyFourGetFees(
@@ -980,7 +980,7 @@ const Q_THIRTY_FOUR_ESTIMATE_PRIZE_PAYOUTS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQThirtyFourEstimatePrizePayoutsOutput(
   data: Uint8Array,
 ): QThirtyFourEstimatePrizePayoutsOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_ESTIMATE_PRIZE_PAYOUTS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourEstimatePrizePayoutsOutput
+  return decodePayload(data, Q_THIRTY_FOUR_ESTIMATE_PRIZE_PAYOUTS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QThirtyFourEstimatePrizePayoutsOutput
 }
 
 export async function qThirtyFourEstimatePrizePayouts(
@@ -1030,7 +1030,7 @@ const Q_THIRTY_FOUR_GET_PLAYERS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQThirtyFourGetPlayersOutput(
   data: Uint8Array,
 ): QThirtyFourGetPlayersOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_GET_PLAYERS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourGetPlayersOutput
+  return decodePayload(data, Q_THIRTY_FOUR_GET_PLAYERS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QThirtyFourGetPlayersOutput
 }
 
 export async function qThirtyFourGetPlayers(
@@ -1079,7 +1079,7 @@ const Q_THIRTY_FOUR_GET_WINNING_COMBINATIONS_HISTORY_OUTPUT_FIELDS: BinaryField[
 export function decodeQThirtyFourGetWinningCombinationsHistoryOutput(
   data: Uint8Array,
 ): QThirtyFourGetWinningCombinationsHistoryOutput {
-  return decodePayload(data, Q_THIRTY_FOUR_GET_WINNING_COMBINATIONS_HISTORY_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QThirtyFourGetWinningCombinationsHistoryOutput
+  return decodePayload(data, Q_THIRTY_FOUR_GET_WINNING_COMBINATIONS_HISTORY_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QThirtyFourGetWinningCombinationsHistoryOutput
 }
 
 export async function qThirtyFourGetWinningCombinationsHistory(

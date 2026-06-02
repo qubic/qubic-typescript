@@ -53,7 +53,7 @@ const Q_RESERVE_POOL_WITHDRAW_RESERVE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQReservePoolWithdrawReserveOutput(
   data: Uint8Array,
 ): QReservePoolWithdrawReserveOutput {
-  return decodePayload(data, Q_RESERVE_POOL_WITHDRAW_RESERVE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QReservePoolWithdrawReserveOutput
+  return decodePayload(data, Q_RESERVE_POOL_WITHDRAW_RESERVE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QReservePoolWithdrawReserveOutput
 }
 
 export const Q_RESERVE_POOL_ADD_ALLOWED_SC_INPUT_TYPE = 2
@@ -93,7 +93,7 @@ const Q_RESERVE_POOL_ADD_ALLOWED_SC_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQReservePoolAddAllowedSCOutput(
   data: Uint8Array,
 ): QReservePoolAddAllowedSCOutput {
-  return decodePayload(data, Q_RESERVE_POOL_ADD_ALLOWED_SC_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QReservePoolAddAllowedSCOutput
+  return decodePayload(data, Q_RESERVE_POOL_ADD_ALLOWED_SC_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QReservePoolAddAllowedSCOutput
 }
 
 export const Q_RESERVE_POOL_REMOVE_ALLOWED_SC_INPUT_TYPE = 3
@@ -133,7 +133,7 @@ const Q_RESERVE_POOL_REMOVE_ALLOWED_SC_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQReservePoolRemoveAllowedSCOutput(
   data: Uint8Array,
 ): QReservePoolRemoveAllowedSCOutput {
-  return decodePayload(data, Q_RESERVE_POOL_REMOVE_ALLOWED_SC_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QReservePoolRemoveAllowedSCOutput
+  return decodePayload(data, Q_RESERVE_POOL_REMOVE_ALLOWED_SC_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QReservePoolRemoveAllowedSCOutput
 }
 
 export const Q_RESERVE_POOL_SEND_RESERVE_INPUT_TYPE = 4
@@ -180,7 +180,7 @@ const Q_RESERVE_POOL_SEND_RESERVE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQReservePoolSendReserveOutput(
   data: Uint8Array,
 ): QReservePoolSendReserveOutput {
-  return decodePayload(data, Q_RESERVE_POOL_SEND_RESERVE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QReservePoolSendReserveOutput
+  return decodePayload(data, Q_RESERVE_POOL_SEND_RESERVE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QReservePoolSendReserveOutput
 }
 
 export const Q_RESERVE_POOL_GET_AVAILABLE_RESERVE_INPUT_TYPE = 1
@@ -202,7 +202,7 @@ const Q_RESERVE_POOL_GET_AVAILABLE_RESERVE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQReservePoolGetAvailableReserveOutput(
   data: Uint8Array,
 ): QReservePoolGetAvailableReserveOutput {
-  return decodePayload(data, Q_RESERVE_POOL_GET_AVAILABLE_RESERVE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QReservePoolGetAvailableReserveOutput
+  return decodePayload(data, Q_RESERVE_POOL_GET_AVAILABLE_RESERVE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QReservePoolGetAvailableReserveOutput
 }
 
 export async function qReservePoolGetAvailableReserve(

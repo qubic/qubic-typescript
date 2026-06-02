@@ -1,6 +1,5 @@
 import type { BroadcastTransactionResponse } from '@qubic.org/rpc'
 import type { Identity } from '@qubic.org/types'
-import { SC_DESTINATION } from '@qubic.org/wallet'
 import { type UseMutationResult, useMutation } from '@tanstack/react-query'
 import { useQubic } from '../context.js'
 import { useVaultSigning } from '../vault/vault-provider.js'
@@ -14,11 +13,8 @@ export interface SendContractCallParams {
   payload: Uint8Array
   /** Amount to attach (QU). Default: 0n. */
   amount?: bigint
-  /**
-   * Destination identity. Defaults to the Qubic zero identity (standard for SC calls).
-   * Override when targeting a specific contract address.
-   */
-  destination?: Identity
+  /** Destination identity. Use `contractIndexToIdentity(contractIndex)` from `@qubic.org/crypto`. */
+  destination: Identity
   /**
    * Ticks added to the current tick to compute `targetTick`.
    * Default: 5.
@@ -60,7 +56,7 @@ export function useSendContractCall(): UseMutationResult<
       inputType,
       payload,
       amount = 0n,
-      destination = SC_DESTINATION,
+      destination,
       tickOffset = 5,
     }) => {
       const wallet = getWallet(from)

@@ -30,16 +30,13 @@ export interface TransferParams {
   currentTick?: number
 }
 
-/** The all-A identity used as the destination for all Qubic smart contract calls. */
-export const SC_DESTINATION = 'A'.repeat(60) as Identity
-
 export interface ScTransactionParams extends Omit<TransferParams, 'destination'> {
   /** SC procedure input type index. */
   inputType: number
   /** Encoded SC payload bytes. */
   payload: Uint8Array
-  /** Defaults to `SC_DESTINATION` (all-A identity). Override only for non-standard contracts. */
-  destination?: Identity
+  /** Destination identity. Use `contractIndexToIdentity(contractIndex)` from `@qubic.org/crypto`. */
+  destination: Identity
 }
 
 export interface Wallet {
@@ -103,7 +100,7 @@ export function createWallet(seed: Seed): Wallet {
     },
 
     buildScTransaction({
-      destination = SC_DESTINATION,
+      destination,
       amount,
       targetTick,
       currentTick,

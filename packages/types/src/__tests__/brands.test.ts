@@ -2,7 +2,7 @@ import { describe, expect, test } from 'bun:test'
 import { isIdentity, isSeed, isTxHash, toBase64, toIdentity, toSeed, toTxHash } from '../brands.js'
 import { InvalidIdentityError, InvalidSeedError, InvalidTxHashError } from '../errors.js'
 
-const VALID_IDENTITY = 'A'.repeat(60)
+const VALID_IDENTITY = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB'
 const VALID_SEED = 'a'.repeat(55)
 const VALID_TX_HASH = 'a'.repeat(60)
 

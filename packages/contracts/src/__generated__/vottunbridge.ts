@@ -307,7 +307,7 @@ const VOTTUN_BRIDGE_CREATE_ORDER_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeVottunBridgeCreateOrderOutput(
   data: Uint8Array,
 ): VottunBridgeCreateOrderOutput {
-  return decodePayload(data, VOTTUN_BRIDGE_CREATE_ORDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as VottunBridgeCreateOrderOutput
+  return decodePayload(data, VOTTUN_BRIDGE_CREATE_ORDER_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as VottunBridgeCreateOrderOutput
 }
 
 export const VOTTUN_BRIDGE_COMPLETE_ORDER_INPUT_TYPE = 2
@@ -347,7 +347,7 @@ const VOTTUN_BRIDGE_COMPLETE_ORDER_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeVottunBridgeCompleteOrderOutput(
   data: Uint8Array,
 ): VottunBridgeCompleteOrderOutput {
-  return decodePayload(data, VOTTUN_BRIDGE_COMPLETE_ORDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as VottunBridgeCompleteOrderOutput
+  return decodePayload(data, VOTTUN_BRIDGE_COMPLETE_ORDER_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as VottunBridgeCompleteOrderOutput
 }
 
 export const VOTTUN_BRIDGE_REFUND_ORDER_INPUT_TYPE = 3
@@ -387,7 +387,7 @@ const VOTTUN_BRIDGE_REFUND_ORDER_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeVottunBridgeRefundOrderOutput(
   data: Uint8Array,
 ): VottunBridgeRefundOrderOutput {
-  return decodePayload(data, VOTTUN_BRIDGE_REFUND_ORDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as VottunBridgeRefundOrderOutput
+  return decodePayload(data, VOTTUN_BRIDGE_REFUND_ORDER_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as VottunBridgeRefundOrderOutput
 }
 
 export const VOTTUN_BRIDGE_TRANSFER_TO_CONTRACT_INPUT_TYPE = 4
@@ -434,7 +434,7 @@ const VOTTUN_BRIDGE_TRANSFER_TO_CONTRACT_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeVottunBridgeTransferToContractOutput(
   data: Uint8Array,
 ): VottunBridgeTransferToContractOutput {
-  return decodePayload(data, VOTTUN_BRIDGE_TRANSFER_TO_CONTRACT_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as VottunBridgeTransferToContractOutput
+  return decodePayload(data, VOTTUN_BRIDGE_TRANSFER_TO_CONTRACT_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as VottunBridgeTransferToContractOutput
 }
 
 export const VOTTUN_BRIDGE_ADD_LIQUIDITY_INPUT_TYPE = 5
@@ -469,7 +469,7 @@ const VOTTUN_BRIDGE_ADD_LIQUIDITY_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeVottunBridgeAddLiquidityOutput(
   data: Uint8Array,
 ): VottunBridgeAddLiquidityOutput {
-  return decodePayload(data, VOTTUN_BRIDGE_ADD_LIQUIDITY_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as VottunBridgeAddLiquidityOutput
+  return decodePayload(data, VOTTUN_BRIDGE_ADD_LIQUIDITY_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as VottunBridgeAddLiquidityOutput
 }
 
 export const VOTTUN_BRIDGE_CREATE_PROPOSAL_INPUT_TYPE = 6
@@ -538,7 +538,7 @@ const VOTTUN_BRIDGE_CREATE_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeVottunBridgeCreateProposalOutput(
   data: Uint8Array,
 ): VottunBridgeCreateProposalOutput {
-  return decodePayload(data, VOTTUN_BRIDGE_CREATE_PROPOSAL_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as VottunBridgeCreateProposalOutput
+  return decodePayload(data, VOTTUN_BRIDGE_CREATE_PROPOSAL_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as VottunBridgeCreateProposalOutput
 }
 
 export const VOTTUN_BRIDGE_APPROVE_PROPOSAL_INPUT_TYPE = 7
@@ -585,7 +585,7 @@ const VOTTUN_BRIDGE_APPROVE_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeVottunBridgeApproveProposalOutput(
   data: Uint8Array,
 ): VottunBridgeApproveProposalOutput {
-  return decodePayload(data, VOTTUN_BRIDGE_APPROVE_PROPOSAL_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as VottunBridgeApproveProposalOutput
+  return decodePayload(data, VOTTUN_BRIDGE_APPROVE_PROPOSAL_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as VottunBridgeApproveProposalOutput
 }
 
 export const VOTTUN_BRIDGE_CANCEL_PROPOSAL_INPUT_TYPE = 8
@@ -625,7 +625,7 @@ const VOTTUN_BRIDGE_CANCEL_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeVottunBridgeCancelProposalOutput(
   data: Uint8Array,
 ): VottunBridgeCancelProposalOutput {
-  return decodePayload(data, VOTTUN_BRIDGE_CANCEL_PROPOSAL_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as VottunBridgeCancelProposalOutput
+  return decodePayload(data, VOTTUN_BRIDGE_CANCEL_PROPOSAL_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as VottunBridgeCancelProposalOutput
 }
 
 export const VOTTUN_BRIDGE_GET_ORDER_INPUT_TYPE = 1
@@ -684,7 +684,7 @@ const VOTTUN_BRIDGE_GET_ORDER_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeVottunBridgeGetOrderOutput(
   data: Uint8Array,
 ): VottunBridgeGetOrderOutput {
-  return decodePayload(data, VOTTUN_BRIDGE_GET_ORDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as VottunBridgeGetOrderOutput
+  return decodePayload(data, VOTTUN_BRIDGE_GET_ORDER_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as VottunBridgeGetOrderOutput
 }
 
 export async function vottunBridgeGetOrder(
@@ -724,7 +724,7 @@ const VOTTUN_BRIDGE_GET_TOTAL_RECEIVED_TOKENS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeVottunBridgeGetTotalReceivedTokensOutput(
   data: Uint8Array,
 ): VottunBridgeGetTotalReceivedTokensOutput {
-  return decodePayload(data, VOTTUN_BRIDGE_GET_TOTAL_RECEIVED_TOKENS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as VottunBridgeGetTotalReceivedTokensOutput
+  return decodePayload(data, VOTTUN_BRIDGE_GET_TOTAL_RECEIVED_TOKENS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as VottunBridgeGetTotalReceivedTokensOutput
 }
 
 export async function vottunBridgeGetTotalReceivedTokens(
@@ -763,7 +763,7 @@ const VOTTUN_BRIDGE_GET_TOTAL_LOCKED_TOKENS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeVottunBridgeGetTotalLockedTokensOutput(
   data: Uint8Array,
 ): VottunBridgeGetTotalLockedTokensOutput {
-  return decodePayload(data, VOTTUN_BRIDGE_GET_TOTAL_LOCKED_TOKENS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as VottunBridgeGetTotalLockedTokensOutput
+  return decodePayload(data, VOTTUN_BRIDGE_GET_TOTAL_LOCKED_TOKENS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as VottunBridgeGetTotalLockedTokensOutput
 }
 
 export async function vottunBridgeGetTotalLockedTokens(
@@ -1047,7 +1047,7 @@ const VOTTUN_BRIDGE_GET_AVAILABLE_FEES_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeVottunBridgeGetAvailableFeesOutput(
   data: Uint8Array,
 ): VottunBridgeGetAvailableFeesOutput {
-  return decodePayload(data, VOTTUN_BRIDGE_GET_AVAILABLE_FEES_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as VottunBridgeGetAvailableFeesOutput
+  return decodePayload(data, VOTTUN_BRIDGE_GET_AVAILABLE_FEES_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as VottunBridgeGetAvailableFeesOutput
 }
 
 export async function vottunBridgeGetAvailableFees(
@@ -1113,7 +1113,7 @@ const VOTTUN_BRIDGE_GET_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeVottunBridgeGetProposalOutput(
   data: Uint8Array,
 ): VottunBridgeGetProposalOutput {
-  return decodePayload(data, VOTTUN_BRIDGE_GET_PROPOSAL_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as VottunBridgeGetProposalOutput
+  return decodePayload(data, VOTTUN_BRIDGE_GET_PROPOSAL_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as VottunBridgeGetProposalOutput
 }
 
 export async function vottunBridgeGetProposal(

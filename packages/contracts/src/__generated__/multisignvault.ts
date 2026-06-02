@@ -130,7 +130,7 @@ export const MULTI_SIGN_VAULT_REGISTER_VAULT_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMultiSignVaultRegisterVaultOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): MultiSignVaultRegisterVaultOutput {
   return decodePayload(
     data,
@@ -179,7 +179,7 @@ export const MULTI_SIGN_VAULT_DEPOSIT_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMultiSignVaultDepositOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): MultiSignVaultDepositOutput {
   return decodePayload(
     data,
@@ -242,7 +242,7 @@ export const MULTI_SIGN_VAULT_RELEASE_TO_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMultiSignVaultReleaseToOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): MultiSignVaultReleaseToOutput {
   return decodePayload(
     data,
@@ -291,7 +291,7 @@ export const MULTI_SIGN_VAULT_RESET_RELEASE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMultiSignVaultResetReleaseOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): MultiSignVaultResetReleaseOutput {
   return decodePayload(
     data,
@@ -375,7 +375,7 @@ export const MULTI_SIGN_VAULT_VOTE_FEE_CHANGE_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMultiSignVaultVoteFeeChangeOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): MultiSignVaultVoteFeeChangeOutput {
   return decodePayload(
     data,
@@ -431,7 +431,7 @@ export const MULTI_SIGN_VAULT_DEPOSIT_ASSET_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMultiSignVaultDepositAssetOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): MultiSignVaultDepositAssetOutput {
   return decodePayload(
     data,
@@ -487,7 +487,7 @@ export const MULTI_SIGN_VAULT_REVOKE_ASSET_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: Bina
 
 export function decodeMultiSignVaultRevokeAssetManagementRightsOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): MultiSignVaultRevokeAssetManagementRightsOutput {
   return decodePayload(
     data,
@@ -550,7 +550,7 @@ export const MULTI_SIGN_VAULT_RELEASE_ASSET_TO_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMultiSignVaultReleaseAssetToOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): MultiSignVaultReleaseAssetToOutput {
   return decodePayload(
     data,
@@ -599,7 +599,7 @@ export const MULTI_SIGN_VAULT_RESET_ASSET_RELEASE_OUTPUT_FIELDS: BinaryField[] =
 
 export function decodeMultiSignVaultResetAssetReleaseOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): MultiSignVaultResetAssetReleaseOutput {
   return decodePayload(
     data,
@@ -648,7 +648,7 @@ export const MULTI_SIGN_VAULT_IS_SHARE_HOLDER_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMultiSignVaultIsShareHolderOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): MultiSignVaultIsShareHolderOutput {
   return decodePayload(
     data,
@@ -697,7 +697,7 @@ export const MULTI_SIGN_VAULT_GET_MANAGED_ASSET_BALANCE_OUTPUT_FIELDS: BinaryFie
 
 export function decodeMultiSignVaultGetManagedAssetBalanceOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): MultiSignVaultGetManagedAssetBalanceOutput {
   return decodePayload(
     data,
@@ -766,7 +766,7 @@ export const MULTI_SIGN_VAULT_GET_VAULTS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMultiSignVaultGetVaultsOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): MultiSignVaultGetVaultsOutput {
   return decodePayload(
     data,
@@ -835,7 +835,7 @@ export const MULTI_SIGN_VAULT_GET_RELEASE_STATUS_OUTPUT_FIELDS: BinaryField[] = 
 
 export function decodeMultiSignVaultGetReleaseStatusOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): MultiSignVaultGetReleaseStatusOutput {
   return decodePayload(
     data,
@@ -891,7 +891,7 @@ export const MULTI_SIGN_VAULT_GET_BALANCE_OF_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMultiSignVaultGetBalanceOfOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): MultiSignVaultGetBalanceOfOutput {
   return decodePayload(
     data,
@@ -947,7 +947,7 @@ export const MULTI_SIGN_VAULT_GET_VAULT_NAME_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMultiSignVaultGetVaultNameOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): MultiSignVaultGetVaultNameOutput {
   return decodePayload(
     data,
@@ -997,7 +997,7 @@ export const MULTI_SIGN_VAULT_GET_REVENUE_INFO_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMultiSignVaultGetRevenueInfoOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): MultiSignVaultGetRevenueInfoOutput {
   return decodePayload(
     data,
@@ -1061,7 +1061,7 @@ export const MULTI_SIGN_VAULT_GET_FEES_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMultiSignVaultGetFeesOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): MultiSignVaultGetFeesOutput {
   return decodePayload(
     data,
@@ -1134,7 +1134,7 @@ export const MULTI_SIGN_VAULT_GET_VAULT_OWNERS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMultiSignVaultGetVaultOwnersOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): MultiSignVaultGetVaultOwnersOutput {
   return decodePayload(
     data,
@@ -1180,7 +1180,7 @@ export const MULTI_SIGN_VAULT_GET_FEE_VOTES_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeMultiSignVaultGetFeeVotesOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): MultiSignVaultGetFeeVotesOutput {
   return decodePayload(
     data,
@@ -1226,7 +1226,7 @@ export const MULTI_SIGN_VAULT_GET_FEE_VOTES_OWNER_OUTPUT_FIELDS: BinaryField[] =
 
 export function decodeMultiSignVaultGetFeeVotesOwnerOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): MultiSignVaultGetFeeVotesOwnerOutput {
   return decodePayload(
     data,
@@ -1272,7 +1272,7 @@ export const MULTI_SIGN_VAULT_GET_FEE_VOTES_SCORE_OUTPUT_FIELDS: BinaryField[] =
 
 export function decodeMultiSignVaultGetFeeVotesScoreOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): MultiSignVaultGetFeeVotesScoreOutput {
   return decodePayload(
     data,
@@ -1318,7 +1318,7 @@ export const MULTI_SIGN_VAULT_GET_UNIQUE_FEE_VOTES_OUTPUT_FIELDS: BinaryField[] 
 
 export function decodeMultiSignVaultGetUniqueFeeVotesOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): MultiSignVaultGetUniqueFeeVotesOutput {
   return decodePayload(
     data,
@@ -1364,7 +1364,7 @@ export const MULTI_SIGN_VAULT_GET_UNIQUE_FEE_VOTES_RANKING_OUTPUT_FIELDS: Binary
 
 export function decodeMultiSignVaultGetUniqueFeeVotesRankingOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): MultiSignVaultGetUniqueFeeVotesRankingOutput {
   return decodePayload(
     data,
@@ -1433,7 +1433,7 @@ export const MULTI_SIGN_VAULT_GET_ASSET_RELEASE_STATUS_OUTPUT_FIELDS: BinaryFiel
 
 export function decodeMultiSignVaultGetAssetReleaseStatusOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): MultiSignVaultGetAssetReleaseStatusOutput {
   return decodePayload(
     data,
@@ -1499,7 +1499,7 @@ export const MULTI_SIGN_VAULT_GET_VAULT_ASSET_BALANCES_OUTPUT_FIELDS: BinaryFiel
 
 export function decodeMultiSignVaultGetVaultAssetBalancesOutput(
   data: Uint8Array,
-  publicKeyToIdentity: (pk: Uint8Array) => string = () => 'A'.repeat(60),
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): MultiSignVaultGetVaultAssetBalancesOutput {
   return decodePayload(
     data,

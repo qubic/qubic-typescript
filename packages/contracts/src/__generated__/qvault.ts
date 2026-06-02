@@ -672,7 +672,7 @@ const QVAULT_STAKE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQVAULTStakeOutput(
   data: Uint8Array,
 ): QVAULTStakeOutput {
-  return decodePayload(data, QVAULT_STAKE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTStakeOutput
+  return decodePayload(data, QVAULT_STAKE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTStakeOutput
 }
 
 export const QVAULT_UN_STAKE_INPUT_TYPE = 2
@@ -712,7 +712,7 @@ const QVAULT_UN_STAKE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQVAULTUnStakeOutput(
   data: Uint8Array,
 ): QVAULTUnStakeOutput {
-  return decodePayload(data, QVAULT_UN_STAKE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTUnStakeOutput
+  return decodePayload(data, QVAULT_UN_STAKE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTUnStakeOutput
 }
 
 export const QVAULT_SUBMIT_GP_INPUT_TYPE = 3
@@ -755,7 +755,7 @@ const QVAULT_SUBMIT_GP_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQVAULTSubmitGPOutput(
   data: Uint8Array,
 ): QVAULTSubmitGPOutput {
-  return decodePayload(data, QVAULT_SUBMIT_GP_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTSubmitGPOutput
+  return decodePayload(data, QVAULT_SUBMIT_GP_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTSubmitGPOutput
 }
 
 export const QVAULT_SUBMIT_QCP_INPUT_TYPE = 4
@@ -805,7 +805,7 @@ const QVAULT_SUBMIT_QCP_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQVAULTSubmitQCPOutput(
   data: Uint8Array,
 ): QVAULTSubmitQCPOutput {
-  return decodePayload(data, QVAULT_SUBMIT_QCP_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTSubmitQCPOutput
+  return decodePayload(data, QVAULT_SUBMIT_QCP_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTSubmitQCPOutput
 }
 
 export const QVAULT_SUBMIT_IPOP_INPUT_TYPE = 5
@@ -855,7 +855,7 @@ const QVAULT_SUBMIT_IPOP_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQVAULTSubmitIPOPOutput(
   data: Uint8Array,
 ): QVAULTSubmitIPOPOutput {
-  return decodePayload(data, QVAULT_SUBMIT_IPOP_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTSubmitIPOPOutput
+  return decodePayload(data, QVAULT_SUBMIT_IPOP_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTSubmitIPOPOutput
 }
 
 export const QVAULT_SUBMIT_Q_EARN_P_INPUT_TYPE = 6
@@ -912,7 +912,7 @@ const QVAULT_SUBMIT_Q_EARN_P_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQVAULTSubmitQEarnPOutput(
   data: Uint8Array,
 ): QVAULTSubmitQEarnPOutput {
-  return decodePayload(data, QVAULT_SUBMIT_Q_EARN_P_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTSubmitQEarnPOutput
+  return decodePayload(data, QVAULT_SUBMIT_Q_EARN_P_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTSubmitQEarnPOutput
 }
 
 export const QVAULT_SUBMIT_FUND_P_INPUT_TYPE = 7
@@ -969,7 +969,7 @@ const QVAULT_SUBMIT_FUND_P_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQVAULTSubmitFundPOutput(
   data: Uint8Array,
 ): QVAULTSubmitFundPOutput {
-  return decodePayload(data, QVAULT_SUBMIT_FUND_P_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTSubmitFundPOutput
+  return decodePayload(data, QVAULT_SUBMIT_FUND_P_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTSubmitFundPOutput
 }
 
 export const QVAULT_SUBMIT_MKTP_INPUT_TYPE = 8
@@ -1047,7 +1047,7 @@ const QVAULT_SUBMIT_MKTP_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQVAULTSubmitMKTPOutput(
   data: Uint8Array,
 ): QVAULTSubmitMKTPOutput {
-  return decodePayload(data, QVAULT_SUBMIT_MKTP_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTSubmitMKTPOutput
+  return decodePayload(data, QVAULT_SUBMIT_MKTP_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTSubmitMKTPOutput
 }
 
 export const QVAULT_SUBMIT_ALLO_P_INPUT_TYPE = 9
@@ -1111,7 +1111,7 @@ const QVAULT_SUBMIT_ALLO_P_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQVAULTSubmitAlloPOutput(
   data: Uint8Array,
 ): QVAULTSubmitAlloPOutput {
-  return decodePayload(data, QVAULT_SUBMIT_ALLO_P_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTSubmitAlloPOutput
+  return decodePayload(data, QVAULT_SUBMIT_ALLO_P_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTSubmitAlloPOutput
 }
 
 export const QVAULT_VOTE_IN_PROPOSAL_INPUT_TYPE = 11
@@ -1172,7 +1172,7 @@ const QVAULT_VOTE_IN_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQVAULTVoteInProposalOutput(
   data: Uint8Array,
 ): QVAULTVoteInProposalOutput {
-  return decodePayload(data, QVAULT_VOTE_IN_PROPOSAL_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTVoteInProposalOutput
+  return decodePayload(data, QVAULT_VOTE_IN_PROPOSAL_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTVoteInProposalOutput
 }
 
 export const QVAULT_BUY_QCAP_INPUT_TYPE = 12
@@ -1212,7 +1212,7 @@ const QVAULT_BUY_QCAP_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQVAULTBuyQcapOutput(
   data: Uint8Array,
 ): QVAULTBuyQcapOutput {
-  return decodePayload(data, QVAULT_BUY_QCAP_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTBuyQcapOutput
+  return decodePayload(data, QVAULT_BUY_QCAP_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTBuyQcapOutput
 }
 
 export const QVAULT_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE = 13
@@ -1274,7 +1274,7 @@ const QVAULT_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQVAULTTransferShareManagementRightsOutput(
   data: Uint8Array,
 ): QVAULTTransferShareManagementRightsOutput {
-  return decodePayload(data, QVAULT_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTTransferShareManagementRightsOutput
+  return decodePayload(data, QVAULT_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTTransferShareManagementRightsOutput
 }
 
 export const QVAULT_GET_DATA_INPUT_TYPE = 1
@@ -1513,7 +1513,7 @@ const QVAULT_GET_DATA_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQVAULTGetDataOutput(
   data: Uint8Array,
 ): QVAULTGetDataOutput {
-  return decodePayload(data, QVAULT_GET_DATA_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTGetDataOutput
+  return decodePayload(data, QVAULT_GET_DATA_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTGetDataOutput
 }
 
 export async function qVAULTGetData(
@@ -1586,7 +1586,7 @@ const QVAULT_GET_STAKED_AMOUNT_AND_VOTING_POWER_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQVAULTGetStakedAmountAndVotingPowerOutput(
   data: Uint8Array,
 ): QVAULTGetStakedAmountAndVotingPowerOutput {
-  return decodePayload(data, QVAULT_GET_STAKED_AMOUNT_AND_VOTING_POWER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTGetStakedAmountAndVotingPowerOutput
+  return decodePayload(data, QVAULT_GET_STAKED_AMOUNT_AND_VOTING_POWER_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTGetStakedAmountAndVotingPowerOutput
 }
 
 export async function qVAULTGetStakedAmountAndVotingPower(
@@ -1653,7 +1653,7 @@ const QVAULT_GET_GP_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQVAULTGetGPOutput(
   data: Uint8Array,
 ): QVAULTGetGPOutput {
-  return decodePayload(data, QVAULT_GET_GP_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTGetGPOutput
+  return decodePayload(data, QVAULT_GET_GP_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTGetGPOutput
 }
 
 export async function qVAULTGetGP(
@@ -1720,7 +1720,7 @@ const QVAULT_GET_QCP_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQVAULTGetQCPOutput(
   data: Uint8Array,
 ): QVAULTGetQCPOutput {
-  return decodePayload(data, QVAULT_GET_QCP_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTGetQCPOutput
+  return decodePayload(data, QVAULT_GET_QCP_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTGetQCPOutput
 }
 
 export async function qVAULTGetQCP(
@@ -1787,7 +1787,7 @@ const QVAULT_GET_IPOP_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQVAULTGetIPOPOutput(
   data: Uint8Array,
 ): QVAULTGetIPOPOutput {
-  return decodePayload(data, QVAULT_GET_IPOP_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTGetIPOPOutput
+  return decodePayload(data, QVAULT_GET_IPOP_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTGetIPOPOutput
 }
 
 export async function qVAULTGetIPOP(
@@ -1854,7 +1854,7 @@ const QVAULT_GET_Q_EARN_P_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQVAULTGetQEarnPOutput(
   data: Uint8Array,
 ): QVAULTGetQEarnPOutput {
-  return decodePayload(data, QVAULT_GET_Q_EARN_P_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTGetQEarnPOutput
+  return decodePayload(data, QVAULT_GET_Q_EARN_P_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTGetQEarnPOutput
 }
 
 export async function qVAULTGetQEarnP(
@@ -1921,7 +1921,7 @@ const QVAULT_GET_FUND_P_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQVAULTGetFundPOutput(
   data: Uint8Array,
 ): QVAULTGetFundPOutput {
-  return decodePayload(data, QVAULT_GET_FUND_P_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTGetFundPOutput
+  return decodePayload(data, QVAULT_GET_FUND_P_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTGetFundPOutput
 }
 
 export async function qVAULTGetFundP(
@@ -1988,7 +1988,7 @@ const QVAULT_GET_MKTP_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQVAULTGetMKTPOutput(
   data: Uint8Array,
 ): QVAULTGetMKTPOutput {
-  return decodePayload(data, QVAULT_GET_MKTP_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTGetMKTPOutput
+  return decodePayload(data, QVAULT_GET_MKTP_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTGetMKTPOutput
 }
 
 export async function qVAULTGetMKTP(
@@ -2055,7 +2055,7 @@ const QVAULT_GET_ALLO_P_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQVAULTGetAlloPOutput(
   data: Uint8Array,
 ): QVAULTGetAlloPOutput {
-  return decodePayload(data, QVAULT_GET_ALLO_P_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTGetAlloPOutput
+  return decodePayload(data, QVAULT_GET_ALLO_P_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTGetAlloPOutput
 }
 
 export async function qVAULTGetAlloP(
@@ -2209,7 +2209,7 @@ const QVAULT_PP_CREATION_POWER_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQVAULTPpCreationPowerOutput(
   data: Uint8Array,
 ): QVAULTPpCreationPowerOutput {
-  return decodePayload(data, QVAULT_PP_CREATION_POWER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTPpCreationPowerOutput
+  return decodePayload(data, QVAULT_PP_CREATION_POWER_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTPpCreationPowerOutput
 }
 
 export async function qVAULTPpCreationPower(
@@ -2275,7 +2275,7 @@ const QVAULT_GET_QCAP_BURNT_AMOUNT_IN_LAST_EPOCHES_OUTPUT_FIELDS: BinaryField[] 
 export function decodeQVAULTGetQcapBurntAmountInLastEpochesOutput(
   data: Uint8Array,
 ): QVAULTGetQcapBurntAmountInLastEpochesOutput {
-  return decodePayload(data, QVAULT_GET_QCAP_BURNT_AMOUNT_IN_LAST_EPOCHES_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTGetQcapBurntAmountInLastEpochesOutput
+  return decodePayload(data, QVAULT_GET_QCAP_BURNT_AMOUNT_IN_LAST_EPOCHES_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTGetQcapBurntAmountInLastEpochesOutput
 }
 
 export async function qVAULTGetQcapBurntAmountInLastEpoches(
@@ -2334,7 +2334,7 @@ const QVAULT_GET_AMOUNT_TO_BE_SOLD_PER_YEAR_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQVAULTGetAmountToBeSoldPerYearOutput(
   data: Uint8Array,
 ): QVAULTGetAmountToBeSoldPerYearOutput {
-  return decodePayload(data, QVAULT_GET_AMOUNT_TO_BE_SOLD_PER_YEAR_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTGetAmountToBeSoldPerYearOutput
+  return decodePayload(data, QVAULT_GET_AMOUNT_TO_BE_SOLD_PER_YEAR_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTGetAmountToBeSoldPerYearOutput
 }
 
 export async function qVAULTGetAmountToBeSoldPerYear(
@@ -2374,7 +2374,7 @@ const QVAULT_GET_TOTAL_REVENUE_IN_QCAP_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQVAULTGetTotalRevenueInQcapOutput(
   data: Uint8Array,
 ): QVAULTGetTotalRevenueInQcapOutput {
-  return decodePayload(data, QVAULT_GET_TOTAL_REVENUE_IN_QCAP_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTGetTotalRevenueInQcapOutput
+  return decodePayload(data, QVAULT_GET_TOTAL_REVENUE_IN_QCAP_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTGetTotalRevenueInQcapOutput
 }
 
 export async function qVAULTGetTotalRevenueInQcap(
@@ -2453,7 +2453,7 @@ const QVAULT_GET_REVENUE_IN_QCAP_PER_EPOCH_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQVAULTGetRevenueInQcapPerEpochOutput(
   data: Uint8Array,
 ): QVAULTGetRevenueInQcapPerEpochOutput {
-  return decodePayload(data, QVAULT_GET_REVENUE_IN_QCAP_PER_EPOCH_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTGetRevenueInQcapPerEpochOutput
+  return decodePayload(data, QVAULT_GET_REVENUE_IN_QCAP_PER_EPOCH_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTGetRevenueInQcapPerEpochOutput
 }
 
 export async function qVAULTGetRevenueInQcapPerEpoch(
@@ -2512,7 +2512,7 @@ const QVAULT_GET_REVENUE_PER_SHARE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQVAULTGetRevenuePerShareOutput(
   data: Uint8Array,
 ): QVAULTGetRevenuePerShareOutput {
-  return decodePayload(data, QVAULT_GET_REVENUE_PER_SHARE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTGetRevenuePerShareOutput
+  return decodePayload(data, QVAULT_GET_REVENUE_PER_SHARE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTGetRevenuePerShareOutput
 }
 
 export async function qVAULTGetRevenuePerShare(
@@ -2572,7 +2572,7 @@ const QVAULT_GET_AMOUNT_OF_SHARE_QVAULT_HOLD_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQVAULTGetAmountOfShareQvaultHoldOutput(
   data: Uint8Array,
 ): QVAULTGetAmountOfShareQvaultHoldOutput {
-  return decodePayload(data, QVAULT_GET_AMOUNT_OF_SHARE_QVAULT_HOLD_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTGetAmountOfShareQvaultHoldOutput
+  return decodePayload(data, QVAULT_GET_AMOUNT_OF_SHARE_QVAULT_HOLD_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTGetAmountOfShareQvaultHoldOutput
 }
 
 export async function qVAULTGetAmountOfShareQvaultHold(
@@ -2626,7 +2626,7 @@ const QVAULT_GET_NUMBER_OF_HOLDER_AND_AVG_AM_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQVAULTGetNumberOfHolderAndAvgAmOutput(
   data: Uint8Array,
 ): QVAULTGetNumberOfHolderAndAvgAmOutput {
-  return decodePayload(data, QVAULT_GET_NUMBER_OF_HOLDER_AND_AVG_AM_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTGetNumberOfHolderAndAvgAmOutput
+  return decodePayload(data, QVAULT_GET_NUMBER_OF_HOLDER_AND_AVG_AM_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTGetNumberOfHolderAndAvgAmOutput
 }
 
 export async function qVAULTGetNumberOfHolderAndAvgAm(
@@ -2691,7 +2691,7 @@ const QVAULT_GET_AMOUNT_FOR_QEARN_IN_UPCOMING_EPOCH_OUTPUT_FIELDS: BinaryField[]
 export function decodeQVAULTGetAmountForQearnInUpcomingEpochOutput(
   data: Uint8Array,
 ): QVAULTGetAmountForQearnInUpcomingEpochOutput {
-  return decodePayload(data, QVAULT_GET_AMOUNT_FOR_QEARN_IN_UPCOMING_EPOCH_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTGetAmountForQearnInUpcomingEpochOutput
+  return decodePayload(data, QVAULT_GET_AMOUNT_FOR_QEARN_IN_UPCOMING_EPOCH_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTGetAmountForQearnInUpcomingEpochOutput
 }
 
 export async function qVAULTGetAmountForQearnInUpcomingEpoch(
@@ -2779,7 +2779,7 @@ const QVAULT_GET_VOTE_IN_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQVAULTGetVoteInProposalOutput(
   data: Uint8Array,
 ): QVAULTGetVoteInProposalOutput {
-  return decodePayload(data, QVAULT_GET_VOTE_IN_PROPOSAL_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTGetVoteInProposalOutput
+  return decodePayload(data, QVAULT_GET_VOTE_IN_PROPOSAL_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTGetVoteInProposalOutput
 }
 
 export async function qVAULTGetVoteInProposal(
@@ -2839,7 +2839,7 @@ const QVAULT_GET_STAKE_EPOCH_FLAG_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQVAULTGetStakeEpochFlagOutput(
   data: Uint8Array,
 ): QVAULTGetStakeEpochFlagOutput {
-  return decodePayload(data, QVAULT_GET_STAKE_EPOCH_FLAG_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QVAULTGetStakeEpochFlagOutput
+  return decodePayload(data, QVAULT_GET_STAKE_EPOCH_FLAG_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTGetStakeEpochFlagOutput
 }
 
 export async function qVAULTGetStakeEpochFlag(

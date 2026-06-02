@@ -136,7 +136,7 @@ const PULSE_BUY_TICKET_OUTPUT_FIELDS: BinaryField[] = [
 export function decodePulseBuyTicketOutput(
   data: Uint8Array,
 ): PulseBuyTicketOutput {
-  return decodePayload(data, PULSE_BUY_TICKET_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as PulseBuyTicketOutput
+  return decodePayload(data, PULSE_BUY_TICKET_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as PulseBuyTicketOutput
 }
 
 export const PULSE_SET_PRICE_INPUT_TYPE = 2
@@ -176,7 +176,7 @@ const PULSE_SET_PRICE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodePulseSetPriceOutput(
   data: Uint8Array,
 ): PulseSetPriceOutput {
-  return decodePayload(data, PULSE_SET_PRICE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as PulseSetPriceOutput
+  return decodePayload(data, PULSE_SET_PRICE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as PulseSetPriceOutput
 }
 
 export const PULSE_SET_SCHEDULE_INPUT_TYPE = 3
@@ -216,7 +216,7 @@ const PULSE_SET_SCHEDULE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodePulseSetScheduleOutput(
   data: Uint8Array,
 ): PulseSetScheduleOutput {
-  return decodePayload(data, PULSE_SET_SCHEDULE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as PulseSetScheduleOutput
+  return decodePayload(data, PULSE_SET_SCHEDULE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as PulseSetScheduleOutput
 }
 
 export const PULSE_SET_DRAW_HOUR_INPUT_TYPE = 4
@@ -256,7 +256,7 @@ const PULSE_SET_DRAW_HOUR_OUTPUT_FIELDS: BinaryField[] = [
 export function decodePulseSetDrawHourOutput(
   data: Uint8Array,
 ): PulseSetDrawHourOutput {
-  return decodePayload(data, PULSE_SET_DRAW_HOUR_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as PulseSetDrawHourOutput
+  return decodePayload(data, PULSE_SET_DRAW_HOUR_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as PulseSetDrawHourOutput
 }
 
 export const PULSE_SET_FEES_INPUT_TYPE = 5
@@ -317,7 +317,7 @@ const PULSE_SET_FEES_OUTPUT_FIELDS: BinaryField[] = [
 export function decodePulseSetFeesOutput(
   data: Uint8Array,
 ): PulseSetFeesOutput {
-  return decodePayload(data, PULSE_SET_FEES_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as PulseSetFeesOutput
+  return decodePayload(data, PULSE_SET_FEES_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as PulseSetFeesOutput
 }
 
 export const PULSE_SET_Q_HEART_HOLD_LIMIT_INPUT_TYPE = 6
@@ -357,7 +357,7 @@ const PULSE_SET_Q_HEART_HOLD_LIMIT_OUTPUT_FIELDS: BinaryField[] = [
 export function decodePulseSetQHeartHoldLimitOutput(
   data: Uint8Array,
 ): PulseSetQHeartHoldLimitOutput {
-  return decodePayload(data, PULSE_SET_Q_HEART_HOLD_LIMIT_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as PulseSetQHeartHoldLimitOutput
+  return decodePayload(data, PULSE_SET_Q_HEART_HOLD_LIMIT_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as PulseSetQHeartHoldLimitOutput
 }
 
 export const PULSE_BUY_RANDOM_TICKETS_INPUT_TYPE = 7
@@ -397,7 +397,7 @@ const PULSE_BUY_RANDOM_TICKETS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodePulseBuyRandomTicketsOutput(
   data: Uint8Array,
 ): PulseBuyRandomTicketsOutput {
-  return decodePayload(data, PULSE_BUY_RANDOM_TICKETS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as PulseBuyRandomTicketsOutput
+  return decodePayload(data, PULSE_BUY_RANDOM_TICKETS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as PulseBuyRandomTicketsOutput
 }
 
 export const PULSE_DEPOSIT_AUTO_PARTICIPATION_INPUT_TYPE = 8
@@ -451,7 +451,7 @@ const PULSE_DEPOSIT_AUTO_PARTICIPATION_OUTPUT_FIELDS: BinaryField[] = [
 export function decodePulseDepositAutoParticipationOutput(
   data: Uint8Array,
 ): PulseDepositAutoParticipationOutput {
-  return decodePayload(data, PULSE_DEPOSIT_AUTO_PARTICIPATION_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as PulseDepositAutoParticipationOutput
+  return decodePayload(data, PULSE_DEPOSIT_AUTO_PARTICIPATION_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as PulseDepositAutoParticipationOutput
 }
 
 export const PULSE_WITHDRAW_AUTO_PARTICIPATION_INPUT_TYPE = 9
@@ -491,7 +491,7 @@ const PULSE_WITHDRAW_AUTO_PARTICIPATION_OUTPUT_FIELDS: BinaryField[] = [
 export function decodePulseWithdrawAutoParticipationOutput(
   data: Uint8Array,
 ): PulseWithdrawAutoParticipationOutput {
-  return decodePayload(data, PULSE_WITHDRAW_AUTO_PARTICIPATION_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as PulseWithdrawAutoParticipationOutput
+  return decodePayload(data, PULSE_WITHDRAW_AUTO_PARTICIPATION_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as PulseWithdrawAutoParticipationOutput
 }
 
 export const PULSE_SET_AUTO_CONFIG_INPUT_TYPE = 10
@@ -531,7 +531,7 @@ const PULSE_SET_AUTO_CONFIG_OUTPUT_FIELDS: BinaryField[] = [
 export function decodePulseSetAutoConfigOutput(
   data: Uint8Array,
 ): PulseSetAutoConfigOutput {
-  return decodePayload(data, PULSE_SET_AUTO_CONFIG_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as PulseSetAutoConfigOutput
+  return decodePayload(data, PULSE_SET_AUTO_CONFIG_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as PulseSetAutoConfigOutput
 }
 
 export const PULSE_SET_AUTO_LIMITS_INPUT_TYPE = 11
@@ -571,7 +571,7 @@ const PULSE_SET_AUTO_LIMITS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodePulseSetAutoLimitsOutput(
   data: Uint8Array,
 ): PulseSetAutoLimitsOutput {
-  return decodePayload(data, PULSE_SET_AUTO_LIMITS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as PulseSetAutoLimitsOutput
+  return decodePayload(data, PULSE_SET_AUTO_LIMITS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as PulseSetAutoLimitsOutput
 }
 
 export const PULSE_TRANSFER_TOKEN_TO_QX_INPUT_TYPE = 12
@@ -611,7 +611,7 @@ const PULSE_TRANSFER_TOKEN_TO_QX_OUTPUT_FIELDS: BinaryField[] = [
 export function decodePulseTransferTokenToQxOutput(
   data: Uint8Array,
 ): PulseTransferTokenToQxOutput {
-  return decodePayload(data, PULSE_TRANSFER_TOKEN_TO_QX_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as PulseTransferTokenToQxOutput
+  return decodePayload(data, PULSE_TRANSFER_TOKEN_TO_QX_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as PulseTransferTokenToQxOutput
 }
 
 export const PULSE_DEPOSIT_MANAGED_Q_HEART_INPUT_TYPE = 13
@@ -651,7 +651,7 @@ const PULSE_DEPOSIT_MANAGED_Q_HEART_OUTPUT_FIELDS: BinaryField[] = [
 export function decodePulseDepositManagedQHeartOutput(
   data: Uint8Array,
 ): PulseDepositManagedQHeartOutput {
-  return decodePayload(data, PULSE_DEPOSIT_MANAGED_Q_HEART_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as PulseDepositManagedQHeartOutput
+  return decodePayload(data, PULSE_DEPOSIT_MANAGED_Q_HEART_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as PulseDepositManagedQHeartOutput
 }
 
 export const PULSE_GET_TICKET_PRICE_INPUT_TYPE = 1
@@ -673,7 +673,7 @@ const PULSE_GET_TICKET_PRICE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodePulseGetTicketPriceOutput(
   data: Uint8Array,
 ): PulseGetTicketPriceOutput {
-  return decodePayload(data, PULSE_GET_TICKET_PRICE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as PulseGetTicketPriceOutput
+  return decodePayload(data, PULSE_GET_TICKET_PRICE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as PulseGetTicketPriceOutput
 }
 
 export async function pulseGetTicketPrice(
@@ -739,7 +739,7 @@ const PULSE_GET_PLAYER_BALANCE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodePulseGetPlayerBalanceOutput(
   data: Uint8Array,
 ): PulseGetPlayerBalanceOutput {
-  return decodePayload(data, PULSE_GET_PLAYER_BALANCE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as PulseGetPlayerBalanceOutput
+  return decodePayload(data, PULSE_GET_PLAYER_BALANCE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as PulseGetPlayerBalanceOutput
 }
 
 export async function pulseGetPlayerBalance(
@@ -842,7 +842,7 @@ const PULSE_GET_ROUND_STATE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodePulseGetRoundStateOutput(
   data: Uint8Array,
 ): PulseGetRoundStateOutput {
-  return decodePayload(data, PULSE_GET_ROUND_STATE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as PulseGetRoundStateOutput
+  return decodePayload(data, PULSE_GET_ROUND_STATE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as PulseGetRoundStateOutput
 }
 
 export async function pulseGetRoundState(
@@ -909,7 +909,7 @@ const PULSE_GET_FEES_OUTPUT_FIELDS: BinaryField[] = [
 export function decodePulseGetFeesOutput(
   data: Uint8Array,
 ): PulseGetFeesOutput {
-  return decodePayload(data, PULSE_GET_FEES_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as PulseGetFeesOutput
+  return decodePayload(data, PULSE_GET_FEES_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as PulseGetFeesOutput
 }
 
 export async function pulseGetFees(
@@ -948,7 +948,7 @@ const PULSE_GET_Q_HEART_HOLD_LIMIT_OUTPUT_FIELDS: BinaryField[] = [
 export function decodePulseGetQHeartHoldLimitOutput(
   data: Uint8Array,
 ): PulseGetQHeartHoldLimitOutput {
-  return decodePayload(data, PULSE_GET_Q_HEART_HOLD_LIMIT_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as PulseGetQHeartHoldLimitOutput
+  return decodePayload(data, PULSE_GET_Q_HEART_HOLD_LIMIT_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as PulseGetQHeartHoldLimitOutput
 }
 
 export async function pulseGetQHeartHoldLimit(
@@ -1030,7 +1030,7 @@ const PULSE_GET_WINNING_DIGITS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodePulseGetWinningDigitsOutput(
   data: Uint8Array,
 ): PulseGetWinningDigitsOutput {
-  return decodePayload(data, PULSE_GET_WINNING_DIGITS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as PulseGetWinningDigitsOutput
+  return decodePayload(data, PULSE_GET_WINNING_DIGITS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as PulseGetWinningDigitsOutput
 }
 
 export async function pulseGetWinningDigits(
@@ -1069,7 +1069,7 @@ const PULSE_GET_BALANCE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodePulseGetBalanceOutput(
   data: Uint8Array,
 ): PulseGetBalanceOutput {
-  return decodePayload(data, PULSE_GET_BALANCE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as PulseGetBalanceOutput
+  return decodePayload(data, PULSE_GET_BALANCE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as PulseGetBalanceOutput
 }
 
 export async function pulseGetBalance(
@@ -1125,7 +1125,7 @@ const PULSE_GET_WINNERS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodePulseGetWinnersOutput(
   data: Uint8Array,
 ): PulseGetWinnersOutput {
-  return decodePayload(data, PULSE_GET_WINNERS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as PulseGetWinnersOutput
+  return decodePayload(data, PULSE_GET_WINNERS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as PulseGetWinnersOutput
 }
 
 export async function pulseGetWinners(
@@ -1198,7 +1198,7 @@ const PULSE_GET_AUTO_PARTICIPATION_OUTPUT_FIELDS: BinaryField[] = [
 export function decodePulseGetAutoParticipationOutput(
   data: Uint8Array,
 ): PulseGetAutoParticipationOutput {
-  return decodePayload(data, PULSE_GET_AUTO_PARTICIPATION_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as PulseGetAutoParticipationOutput
+  return decodePayload(data, PULSE_GET_AUTO_PARTICIPATION_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as PulseGetAutoParticipationOutput
 }
 
 export async function pulseGetAutoParticipation(
@@ -1269,7 +1269,7 @@ const PULSE_GET_AUTO_STATS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodePulseGetAutoStatsOutput(
   data: Uint8Array,
 ): PulseGetAutoStatsOutput {
-  return decodePayload(data, PULSE_GET_AUTO_STATS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as PulseGetAutoStatsOutput
+  return decodePayload(data, PULSE_GET_AUTO_STATS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as PulseGetAutoStatsOutput
 }
 
 export async function pulseGetAutoStats(
@@ -1330,7 +1330,7 @@ const PULSE_VALIDATE_DIGITS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodePulseValidateDigitsOutput(
   data: Uint8Array,
 ): PulseValidateDigitsOutput {
-  return decodePayload(data, PULSE_VALIDATE_DIGITS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as PulseValidateDigitsOutput
+  return decodePayload(data, PULSE_VALIDATE_DIGITS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as PulseValidateDigitsOutput
 }
 
 export async function pulseValidateDigits(
@@ -1380,7 +1380,7 @@ const PULSE_GET_PLAYERS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodePulseGetPlayersOutput(
   data: Uint8Array,
 ): PulseGetPlayersOutput {
-  return decodePayload(data, PULSE_GET_PLAYERS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as PulseGetPlayersOutput
+  return decodePayload(data, PULSE_GET_PLAYERS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as PulseGetPlayersOutput
 }
 
 export async function pulseGetPlayers(
@@ -1446,7 +1446,7 @@ const PULSE_GET_PRIZE_TABLE_OUTPUT_FIELDS: BinaryField[] = [
 export function decodePulseGetPrizeTableOutput(
   data: Uint8Array,
 ): PulseGetPrizeTableOutput {
-  return decodePayload(data, PULSE_GET_PRIZE_TABLE_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as PulseGetPrizeTableOutput
+  return decodePayload(data, PULSE_GET_PRIZE_TABLE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as PulseGetPrizeTableOutput
 }
 
 export async function pulseGetPrizeTable(

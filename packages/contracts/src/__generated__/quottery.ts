@@ -359,7 +359,7 @@ const QUOTTERY_ADD_TO_ASK_ORDER_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQuotteryAddToAskOrderOutput(
   data: Uint8Array,
 ): QuotteryAddToAskOrderOutput {
-  return decodePayload(data, QUOTTERY_ADD_TO_ASK_ORDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryAddToAskOrderOutput
+  return decodePayload(data, QUOTTERY_ADD_TO_ASK_ORDER_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QuotteryAddToAskOrderOutput
 }
 
 export const QUOTTERY_REMOVE_ASK_ORDER_INPUT_TYPE = 3
@@ -420,7 +420,7 @@ const QUOTTERY_REMOVE_ASK_ORDER_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQuotteryRemoveAskOrderOutput(
   data: Uint8Array,
 ): QuotteryRemoveAskOrderOutput {
-  return decodePayload(data, QUOTTERY_REMOVE_ASK_ORDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryRemoveAskOrderOutput
+  return decodePayload(data, QUOTTERY_REMOVE_ASK_ORDER_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QuotteryRemoveAskOrderOutput
 }
 
 export const QUOTTERY_ADD_TO_BID_ORDER_INPUT_TYPE = 4
@@ -481,7 +481,7 @@ const QUOTTERY_ADD_TO_BID_ORDER_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQuotteryAddToBidOrderOutput(
   data: Uint8Array,
 ): QuotteryAddToBidOrderOutput {
-  return decodePayload(data, QUOTTERY_ADD_TO_BID_ORDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryAddToBidOrderOutput
+  return decodePayload(data, QUOTTERY_ADD_TO_BID_ORDER_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QuotteryAddToBidOrderOutput
 }
 
 export const QUOTTERY_REMOVE_BID_ORDER_INPUT_TYPE = 5
@@ -542,7 +542,7 @@ const QUOTTERY_REMOVE_BID_ORDER_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQuotteryRemoveBidOrderOutput(
   data: Uint8Array,
 ): QuotteryRemoveBidOrderOutput {
-  return decodePayload(data, QUOTTERY_REMOVE_BID_ORDER_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryRemoveBidOrderOutput
+  return decodePayload(data, QUOTTERY_REMOVE_BID_ORDER_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QuotteryRemoveBidOrderOutput
 }
 
 export const QUOTTERY_PUBLISH_RESULT_INPUT_TYPE = 6
@@ -741,7 +741,7 @@ const QUOTTERY_TRANSFER_QUSD_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQuotteryTransferQUSDOutput(
   data: Uint8Array,
 ): QuotteryTransferQUSDOutput {
-  return decodePayload(data, QUOTTERY_TRANSFER_QUSD_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryTransferQUSDOutput
+  return decodePayload(data, QUOTTERY_TRANSFER_QUSD_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QuotteryTransferQUSDOutput
 }
 
 export const QUOTTERY_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE = 13
@@ -796,7 +796,7 @@ const QUOTTERY_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQuotteryTransferShareManagementRightsOutput(
   data: Uint8Array,
 ): QuotteryTransferShareManagementRightsOutput {
-  return decodePayload(data, QUOTTERY_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryTransferShareManagementRightsOutput
+  return decodePayload(data, QUOTTERY_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QuotteryTransferShareManagementRightsOutput
 }
 
 export const QUOTTERY_CLEAN_MEMORY_INPUT_TYPE = 14
@@ -846,7 +846,7 @@ const QUOTTERY_TRANSFER_QTRYGOV_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQuotteryTransferQTRYGOVOutput(
   data: Uint8Array,
 ): QuotteryTransferQTRYGOVOutput {
-  return decodePayload(data, QUOTTERY_TRANSFER_QTRYGOV_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryTransferQTRYGOVOutput
+  return decodePayload(data, QUOTTERY_TRANSFER_QTRYGOV_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QuotteryTransferQTRYGOVOutput
 }
 
 export const QUOTTERY_UPDATE_FEE_DISCOUNT_LIST_INPUT_TYPE = 20
@@ -1092,7 +1092,7 @@ const QUOTTERY_GET_EVENT_INFO_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQuotteryGetEventInfoOutput(
   data: Uint8Array,
 ): QuotteryGetEventInfoOutput {
-  return decodePayload(data, QUOTTERY_GET_EVENT_INFO_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryGetEventInfoOutput
+  return decodePayload(data, QUOTTERY_GET_EVENT_INFO_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QuotteryGetEventInfoOutput
 }
 
 export async function quotteryGetEventInfo(
@@ -1175,7 +1175,7 @@ const QUOTTERY_GET_ORDERS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQuotteryGetOrdersOutput(
   data: Uint8Array,
 ): QuotteryGetOrdersOutput {
-  return decodePayload(data, QUOTTERY_GET_ORDERS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryGetOrdersOutput
+  return decodePayload(data, QUOTTERY_GET_ORDERS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QuotteryGetOrdersOutput
 }
 
 export async function quotteryGetOrders(
@@ -1218,7 +1218,7 @@ const QUOTTERY_GET_ACTIVE_EVENT_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQuotteryGetActiveEventOutput(
   data: Uint8Array,
 ): QuotteryGetActiveEventOutput {
-  return decodePayload(data, QUOTTERY_GET_ACTIVE_EVENT_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryGetActiveEventOutput
+  return decodePayload(data, QUOTTERY_GET_ACTIVE_EVENT_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QuotteryGetActiveEventOutput
 }
 
 export async function quotteryGetActiveEvent(
@@ -1282,7 +1282,7 @@ const QUOTTERY_GET_EVENT_INFO_BATCH_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQuotteryGetEventInfoBatchOutput(
   data: Uint8Array,
 ): QuotteryGetEventInfoBatchOutput {
-  return decodePayload(data, QUOTTERY_GET_EVENT_INFO_BATCH_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryGetEventInfoBatchOutput
+  return decodePayload(data, QUOTTERY_GET_EVENT_INFO_BATCH_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QuotteryGetEventInfoBatchOutput
 }
 
 export async function quotteryGetEventInfoBatch(
@@ -1352,7 +1352,7 @@ const QUOTTERY_GET_USER_POSITION_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQuotteryGetUserPositionOutput(
   data: Uint8Array,
 ): QuotteryGetUserPositionOutput {
-  return decodePayload(data, QUOTTERY_GET_USER_POSITION_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryGetUserPositionOutput
+  return decodePayload(data, QUOTTERY_GET_USER_POSITION_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QuotteryGetUserPositionOutput
 }
 
 export async function quotteryGetUserPosition(
@@ -1412,7 +1412,7 @@ const QUOTTERY_GET_APPROVED_AMOUNT_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQuotteryGetApprovedAmountOutput(
   data: Uint8Array,
 ): QuotteryGetApprovedAmountOutput {
-  return decodePayload(data, QUOTTERY_GET_APPROVED_AMOUNT_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryGetApprovedAmountOutput
+  return decodePayload(data, QUOTTERY_GET_APPROVED_AMOUNT_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QuotteryGetApprovedAmountOutput
 }
 
 export async function quotteryGetApprovedAmount(
@@ -1462,7 +1462,7 @@ const QUOTTERY_GET_TOP_PROPOSALS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQuotteryGetTopProposalsOutput(
   data: Uint8Array,
 ): QuotteryGetTopProposalsOutput {
-  return decodePayload(data, QUOTTERY_GET_TOP_PROPOSALS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QuotteryGetTopProposalsOutput
+  return decodePayload(data, QUOTTERY_GET_TOP_PROPOSALS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QuotteryGetTopProposalsOutput
 }
 
 export async function quotteryGetTopProposals(

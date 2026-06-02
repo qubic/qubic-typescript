@@ -141,7 +141,7 @@ const QIP_CREATE_ICO_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQIPCreateICOOutput(
   data: Uint8Array,
 ): QIPCreateICOOutput {
-  return decodePayload(data, QIP_CREATE_ICO_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QIPCreateICOOutput
+  return decodePayload(data, QIP_CREATE_ICO_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QIPCreateICOOutput
 }
 
 export const QIP_BUY_TOKEN_INPUT_TYPE = 2
@@ -188,7 +188,7 @@ const QIP_BUY_TOKEN_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQIPBuyTokenOutput(
   data: Uint8Array,
 ): QIPBuyTokenOutput {
-  return decodePayload(data, QIP_BUY_TOKEN_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QIPBuyTokenOutput
+  return decodePayload(data, QIP_BUY_TOKEN_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QIPBuyTokenOutput
 }
 
 export const QIP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE = 3
@@ -243,7 +243,7 @@ const QIP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS: BinaryField[] = [
 export function decodeQIPTransferShareManagementRightsOutput(
   data: Uint8Array,
 ): QIPTransferShareManagementRightsOutput {
-  return decodePayload(data, QIP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_pk: Uint8Array) => 'A'.repeat(60)) as unknown as QIPTransferShareManagementRightsOutput
+  return decodePayload(data, QIP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QIPTransferShareManagementRightsOutput
 }
 
 export const QIP_GET_ICO_INFO_INPUT_TYPE = 1

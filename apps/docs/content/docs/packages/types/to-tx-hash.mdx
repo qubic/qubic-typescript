@@ -19,10 +19,6 @@ import { toTxHash } from "@qubic.org/types"
 const hash = toTxHash(apiResponse.txId)
 ```
 
-<Callout>
-  Transaction hashes from some API responses come back uppercase. Call `.toLowerCase()` before passing to `toTxHash`.
-</Callout>
-
 ## Parameters
 
 | Name | Type | Description |

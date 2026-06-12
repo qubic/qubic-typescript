@@ -74,7 +74,6 @@ const PROTOCOL = {
   IDENTITY_LENGTH: 60,    // identity string characters
   SEED_LENGTH:     55,    // seed string characters
   TX_HASH_LENGTH:  60,    // tx hash string characters
-  TICKS_TO_EXPIRY: 20,    // recommended target tick offset
 } as const
 ```
 
@@ -153,7 +152,7 @@ function parseInput(raw: { identity: string; seed: string }) {
 ### Type guard in a conditional branch
 
 ```ts
-import { isIdentity, isIdentity as guard } from '@qubic.org/types'
+import { isIdentity } from '@qubic.org/types'
 import type { Identity } from '@qubic.org/types'
 
 function display(s: string): string {
@@ -187,7 +186,7 @@ try {
 ```ts
 import { PROTOCOL, CONTRACT_INDEX } from '@qubic.org/types'
 
-const targetTick = currentTick + PROTOCOL.TICKS_TO_EXPIRY
+const headerSize = PROTOCOL.TX_HEADER_SIZE
 const contractId = CONTRACT_INDEX.QEARN  // 9
 ```
 

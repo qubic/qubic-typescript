@@ -5,7 +5,6 @@ import { BinaryReader } from './binary-reader.js'
 import { BinaryWriter } from './binary-writer.js'
 import { InvalidTransactionError, PayloadTooLargeError, TickInThePastError } from './errors.js'
 
-
 export interface TransactionInput {
   /**
    * Sender identifier. Provide either a 60-character uppercase Identity

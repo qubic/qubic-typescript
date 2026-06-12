@@ -87,8 +87,10 @@ async function decryptPayload(vaultData: VaultData, password: string): Promise<S
     throw new InvalidVaultError('malformed hex fields')
   }
 
-  if (salt.byteLength < SALT_BYTES) throw new InvalidVaultError(`salt must be at least ${SALT_BYTES} bytes`)
-  if (iv.byteLength !== IV_BYTES) throw new InvalidVaultError(`IV must be exactly ${IV_BYTES} bytes`)
+  if (salt.byteLength < SALT_BYTES)
+    throw new InvalidVaultError(`salt must be at least ${SALT_BYTES} bytes`)
+  if (iv.byteLength !== IV_BYTES)
+    throw new InvalidVaultError(`IV must be exactly ${IV_BYTES} bytes`)
   if (vaultData.iterations < MIN_PBKDF2_ITERATIONS) {
     throw new InvalidVaultError(`iterations must be at least ${MIN_PBKDF2_ITERATIONS}`)
   }

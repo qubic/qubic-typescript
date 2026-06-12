@@ -1,8 +1,8 @@
 import { BobConnectionError, BobSubscriptionError } from './errors.js'
 import type {
+  BobIndexedTick,
   BobLogEvent,
   BobLogFilter,
-  BobIndexedTick,
   BobTickNotification,
   BobTransferEvent,
   BobTransferFilter,

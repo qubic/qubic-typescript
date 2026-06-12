@@ -325,9 +325,7 @@ export type CustomMessageOp = (typeof CUSTOM_MESSAGE_OP)[keyof typeof CUSTOM_MES
  * Maps a raw 8-byte operation code to the human-readable tag, or `undefined`
  * if the code is not one of the four known protocol messages.
  */
-export function customMessageOpLabel(
-  op: bigint,
-): (keyof typeof CUSTOM_MESSAGE_OP) | undefined {
+export function customMessageOpLabel(op: bigint): keyof typeof CUSTOM_MESSAGE_OP | undefined {
   for (const [key, value] of Object.entries(CUSTOM_MESSAGE_OP)) {
     if (value === op) return key as keyof typeof CUSTOM_MESSAGE_OP
   }

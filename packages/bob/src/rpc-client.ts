@@ -67,12 +67,12 @@ export interface BobRpcClient {
   ): Promise<Result<TxHash, BobRpcError>>
   /** Returns the current epoch number. */
   getCurrentEpoch(options?: { signal?: AbortSignal }): Promise<Result<number, BobRpcError>>
-  /** Returns tick data by tick number. Pass includeTx=true to include full transactions. */
+  /** Returns indexed tick metadata. Pass `includeTx=true` to include full transaction objects. */
   getTickByNumber(
     tick: number,
     includeTx: boolean | undefined,
     options?: { signal?: AbortSignal },
-  ): Promise<Result<BobTickData, BobRpcError>>
+  ): Promise<Result<BobIndexedTick, BobRpcError>>
   /** Returns asset balance for an identity. */
   getAssetBalance(
     identity: Identity,

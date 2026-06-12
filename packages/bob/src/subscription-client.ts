@@ -48,7 +48,7 @@ export interface BobSubscriptionClient {
 
   subscribeTickStream(options?: {
     signal?: AbortSignal
-  }): AsyncIterable<SubscriptionEvent<BobTickData>>
+  }): AsyncIterable<SubscriptionEvent<BobIndexedTick>>
 
   close(): void
 }

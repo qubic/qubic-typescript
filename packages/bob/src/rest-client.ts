@@ -41,7 +41,18 @@ async function unwrap<T>(
   }
 }
 
-/** Creates a type-safe REST client for the Bob indexer API. */
+/**
+ * Creates a type-safe REST client for the Bob indexer API.
+ *
+ * The REST client provides typed access to the stateless HTTP endpoints defined
+ * in the Bob OpenAPI spec.  It intentionally covers only the subset of endpoints
+ * that map cleanly to simple GET/POST operations (status, balance, asset, epoch,
+ * tick, transaction, querySmartContract, broadcastTransaction).
+ *
+ * Log queries, transfer history, and other advanced operations are available
+ * exclusively through the JSON-RPC client (`createBobRpcClient`) to avoid
+ * duplicating maintenance across two transport layers.
+ */
 export function createBobRestClient(options: BobRestClientOptions = {}) {
   const client = createClient<paths>({
     baseUrl: options.baseUrl ?? DEFAULT_BOB_BASE_URL,

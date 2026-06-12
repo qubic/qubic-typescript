@@ -60,7 +60,7 @@ export function subscribeAssetEvents(
     LOG_TYPE.ASSET_OWNERSHIP_MANAGING_CONTRACT_CHANGE,
     LOG_TYPE.ASSET_POSSESSION_MANAGING_CONTRACT_CHANGE,
   ] as const
-  const bobFilter = toBobFilter({ ...filter })
+  const bobFilter = toBobFilter({ ...filter, logTypes: [...assetLogTypes] })
   const raw = bob.subscribeLogs(bobFilter, options)
   return decodeStream(raw, assetLogTypes)
 }
@@ -77,7 +77,7 @@ export function subscribeContractLogs(
     LOG_TYPE.CONTRACT_INFORMATION_MESSAGE,
     LOG_TYPE.CONTRACT_DEBUG_MESSAGE,
   ] as const
-  const bobFilter = toBobFilter({ ...filter })
+  const bobFilter = toBobFilter({ ...filter, logTypes: [...scLogTypes] })
   const raw = bob.subscribeLogs(bobFilter, options)
   return decodeStream(raw, scLogTypes)
 }

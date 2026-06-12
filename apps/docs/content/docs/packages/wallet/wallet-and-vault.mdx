@@ -17,8 +17,8 @@ wallet.identity   // Identity — the public address
 wallet.publicKey  // Uint8Array (32 bytes) — the FourQ public key
 
 // One-call transaction building:
-const { encoded, hash } = await wallet.buildTransfer({ destination, amount, targetTick, currentTick })
-const { encoded, hash } = await wallet.buildScTransaction({ destination, amount, targetTick, currentTick, inputType, payload })
+const { encoded, hash } = await wallet.buildTransaction({ destination, amount, targetTick, currentTick })
+const { encoded, hash } = await wallet.buildContractCall({ destination, amount, targetTick, currentTick, inputType, payload })
 ```
 
 `encoded` is the base64 string ready for `live.broadcastTransaction`. `hash` is the K12 digest of the transaction header, which you can use to track the transaction in the archive.

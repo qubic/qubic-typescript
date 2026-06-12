@@ -1,11 +1,11 @@
 ---
 title: Transfers & contract calls
-description: buildTransfer and buildScTransaction — high-level signed transaction builders.
+description: buildTransaction and buildContractCall — high-level signed transaction builders.
 ---
 
 Both methods return `SignedTransaction`: `{ encoded, hash, bytes }`. `encoded` is the base64 transaction ready to broadcast; `hash` is the canonical `TxHash`; `bytes` are the raw signed bytes.
 
-## `wallet.buildTransfer(params)`
+## `wallet.buildTransaction(params)`
 
 Builds and signs a QU transfer.
 
@@ -18,7 +18,7 @@ const live = createLiveClient()
 const wallet = createWallet(generateSeed())
 const { tick } = await live.getTickInfo()
 
-const { encoded, hash } = await wallet.buildTransfer({
+const { encoded, hash } = await wallet.buildTransaction({
   destination: toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL"),
   amount: 1_000_000n,
   targetTick: tick + 5,
@@ -42,14 +42,14 @@ console.log("TX hash:", hash)
 
 ---
 
-## `wallet.buildScTransaction(params)`
+## `wallet.buildContractCall(params)`
 
 Builds and signs a smart contract procedure call.
 
 ```ts
 import { QEARN_LOCK_INPUT_TYPE } from "@qubic.org/contracts"
 
-const { encoded, hash } = await wallet.buildScTransaction({
+const { encoded, hash } = await wallet.buildContractCall({
   amount: 10_000_000n,
   targetTick: tick + 5,
   inputType: QEARN_LOCK_INPUT_TYPE,

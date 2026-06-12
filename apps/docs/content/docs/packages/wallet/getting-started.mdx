@@ -29,7 +29,7 @@ console.log("Public key:", wallet.publicKey) // Uint8Array (32 bytes)
 ```ts
 const destination = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
 
-const { encoded, hash } = await wallet.buildTransfer({
+const { encoded, hash } = await wallet.buildTransaction({
   destination,
   amount: 1_000_000n,
   targetTick: 18500000,  // use live.getTickInfo() for the real tick

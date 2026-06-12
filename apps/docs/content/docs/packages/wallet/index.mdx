@@ -59,7 +59,7 @@ pnpm add @qubic.org/wallet
 
 | Page | What's covered |
 |---|---|
-| [Transfers](./transfers) | `createWallet`, `generateSeed`, `buildTransfer`, `buildScTransaction` |
+| [Transfers](./transfers) | `createWallet`, `generateSeed`, `buildTransaction`, `buildContractCall` |
 | [Vault](./vault) | `createVault`, `exportVault`, `importVault`, `unlockVault`, `createWalletFromVault`, `addSeedToVault` |
 
 ### All exports
@@ -95,7 +95,7 @@ const live   = createLiveClient()
 const wallet = createWallet(generateSeed())
 const { tick } = await live.getTickInfo()
 
-const { encoded, hash } = await wallet.buildTransfer({
+const { encoded, hash } = await wallet.buildTransaction({
   destination: toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL"),
   amount: 1_000_000n,
   targetTick: tick + 5,
@@ -141,7 +141,7 @@ const { tick } = await live.getTickInfo()
 const payload     = qearn.buildLockInput({ amount: 10_000_000n })
 const destination = toIdentity("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
 
-const { encoded, hash } = await wallet.buildScTransaction({
+const { encoded, hash } = await wallet.buildContractCall({
   destination,
   amount: 10_000_000n,
   targetTick: tick + 5,

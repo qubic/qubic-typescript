@@ -42,7 +42,7 @@ pnpm add @qubic.org/wallet @qubic.org/crypto @qubic.org/types
 </Tabs>
 
 <Callout type="warn">
-`buildTransfer` and `buildScTransaction` are async — they call `sign` from `@qubic.org/crypto` internally. Always await them.
+`buildTransaction` and `buildContractCall` are async — they call `sign` from `@qubic.org/crypto` internally. Always await them.
 </Callout>
 
 The vault encryption (`createVault`, `unlockVault`) uses the Web Crypto API (`globalThis.crypto`). This is available natively in Bun, Node.js 19+, and all modern browsers. On Node.js 18, it is available as `globalThis.crypto` without any import.

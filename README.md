@@ -105,7 +105,7 @@ console.log('peers:', result.value.peersBroadcastedTo)
 import { createWallet } from '@qubic.org/wallet'
 import { toSeed } from '@qubic.org/types'
 import { createLiveClient } from '@qubic.org/rpc'
-import { qearn } from '@qubic.org/contracts'
+import { buildQearnUnlockInput } from '@qubic.org/contracts'
 import { contractIndexToIdentity } from '@qubic.org/crypto'
 
 const live = createLiveClient()
@@ -114,15 +114,15 @@ if (!tickInfoResult.ok) throw tickInfoResult.error
 const tickInfo = tickInfoResult.value
 const wallet = createWallet(toSeed('a'.repeat(55)))
 
-const payload = qearn.buildLockInput({ amount: 10_000_000n })
+const call = buildQearnUnlockInput({ amount: 10_000_000n, lockedEpoch: tickInfo.epoch - 1 })
 
 const { encoded } = await wallet.buildContractCall({
-  destination: contractIndexToIdentity(9),
+  destination: contractIndexToIdentity(call.contractIndex),
   amount: 10_000_000n,
   targetTick: tickInfo.tick + 5,
   currentTick: tickInfo.tick,
-  inputType: 6,
-  payload,
+  inputType: call.inputType,
+  payload: call.payload,
 })
 
 const result = await live.broadcastTransaction(encoded)
@@ -182,6 +182,8 @@ for await (const event of subscribeAssetEvents(bob, filter)) {
 
 ```ts
 import { createNodePool, requestCurrentTickInfo, requestEntity, broadcastTransaction } from '@qubic.org/tcp'
+import { createWallet } from '@qubic.org/wallet'
+import { toSeed } from '@qubic.org/types'
 import { identityToPublicKey } from '@qubic.org/crypto'
 
 const pool = createNodePool([
@@ -199,7 +201,14 @@ const { entity, identity } = await requestEntity(pool, pk)
 console.log(identity, entity.incomingAmount - entity.outgoingAmount)
 
 // Broadcast a signed transaction
-await broadcastTransaction(pool, signedTx)
+const wallet = createWallet(toSeed('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'))
+const { bytes } = await wallet.buildTransaction({
+  destination: 'BZBQFLLBNCXEMGLOBHUVFTLUPLVCPQUASSILFABOFFBCADQSSUPNWLZBQEXK',
+  amount: 1n,
+  targetTick: tick + 5,
+  currentTick: tick,
+})
+await broadcastTransaction(pool, bytes)
 
 pool.close()
 ```
@@ -208,9 +217,9 @@ pool.close()
 
 ```tsx
 import {
-  QubicProvider, WalletProvider, VaultProvider,
+  QubicProvider, WalletProvider,
   extensionConnector,
-  useWallet, useBalance, useContractQuery, useSendTransfer,
+  useWallet, useBalance, useContractQuery,
 } from '@qubic.org/react'
 import { createLiveClient, createQueryClient } from '@qubic.org/rpc'
 import { qearnGetStateOfRound } from '@qubic.org/contracts'

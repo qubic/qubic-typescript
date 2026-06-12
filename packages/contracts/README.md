@@ -46,6 +46,7 @@ In a monorepo workspace:
 | VottunBridge | 25 |
 | Qusino | 26 |
 | Escrow | 27 |
+| GGWP | 28 |
 | GeneralQuorumProposal | 6 |
 
 ## API Reference
@@ -67,13 +68,13 @@ Any live node client that implements `querySmartContract` satisfies this interfa
 
 ```ts
 interface SmartContractCaller {
-  querySmartContract(req: QuerySmartContractRequest): Promise<QuerySmartContractResponse>
+  querySmartContract(req: QuerySmartContractRequest): Promise<Result<QuerySmartContractResponse, QubicRpcError>>
 }
 ```
 
 ### `ContractCallOptions`
 
-Optional converters injected into function callers for `id`-typed fields. Both default to no-ops (zero public key / `'AAA...AAA'` identity) if omitted.
+Optional converters injected into function callers for `id`-typed fields. They are only needed when the ABI uses identity fields.
 
 ```ts
 interface ContractCallOptions {
@@ -112,26 +113,23 @@ Every contract follows the same pattern. Qearn (index 9) exports:
 ```ts
 // Constants
 const QEARN_CONTRACT_INDEX: 9
-const QEARN_LOCK_INPUT_TYPE: 6
-const QEARN_UNLOCK_INPUT_TYPE: 7
+const QEARN_LOCK_INPUT_TYPE: 1
+const QEARN_UNLOCK_INPUT_TYPE: 2
 const QEARN_GET_STATE_OF_ROUND_INPUT_TYPE: 3
 // ... one INPUT_TYPE constant per procedure and function
 
-// Procedure payload builders (for transaction inputs)
+// Procedure call builders (for transaction inputs)
 function buildQearnUnlockInput(
   input: QearnUnlockInput,
-  identityToPublicKey?: (identity: string) => Uint8Array,
-): Uint8Array
+): ContractCall
 
 // Procedure output decoders
 function decodeQearnLockOutput(
   data: Uint8Array,
-  publicKeyToIdentity?: (pk: Uint8Array) => string,
 ): QearnLockOutput
 
 function decodeQearnUnlockOutput(
   data: Uint8Array,
-  publicKeyToIdentity?: (pk: Uint8Array) => string,
 ): QearnUnlockOutput
 
 // Function callers (async read-only RPC queries)
@@ -205,13 +203,12 @@ if (result.ok) {
 
 ```ts
 import { buildQearnUnlockInput } from '@qubic.org/contracts'
-import { identityToPublicKey } from '@qubic.org/crypto'
+import { contractIndexToIdentity } from '@qubic.org/crypto'
 
-const payload = buildQearnUnlockInput(
-  { amount: 5_000_000n, lockedEpoch: 210 },
-  identityToPublicKey,
-)
-// payload is a Uint8Array ready to embed in a transaction
+const call = buildQearnUnlockInput({ amount: 5_000_000n, lockedEpoch: 210 })
+const destination = contractIndexToIdentity(call.contractIndex)
+
+console.log(destination, call.inputType, call.payload)
 ```
 
 ### Decode a procedure output returned from a node

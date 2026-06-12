@@ -55,20 +55,20 @@ Builds and signs a smart contract procedure call.
 import { createWallet, generateSeed } from '@qubic.org/wallet'
 import type { SignedTransaction } from '@qubic.org/wallet'
 import { contractIndexToIdentity } from '@qubic.org/crypto'
-import { qearn } from '@qubic.org/contracts'
+import { buildQearnUnlockInput } from '@qubic.org/contracts'
 
 const wallet = createWallet(generateSeed())
 const currentTick = 20_000_000
 
-const payload = qearn.buildLockInput({ amount: 10_000_000n })
+const call = buildQearnUnlockInput({ amount: 10_000_000n, lockedEpoch: 212 })
 
 const result: SignedTransaction = await wallet.buildContractCall({
-  destination: contractIndexToIdentity(qearn.contractIndex),
+  destination: contractIndexToIdentity(call.contractIndex),
   amount: 10_000_000n,
   targetTick: currentTick + 5,
   currentTick,
-  inputType: qearn.LOCK_INPUT_TYPE,
-  payload,
+  inputType: call.inputType,
+  payload: call.payload,
 })
 
 console.log(result.encoded) // Base64 string for broadcast

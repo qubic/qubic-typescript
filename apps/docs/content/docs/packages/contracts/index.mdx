@@ -109,12 +109,14 @@ import { contractIndexToIdentity } from "@qubic.org/crypto"
 
 const live   = createLiveClient()
 const wallet = createWallet(generateSeed())
-const { tick } = await live.getTickInfo()
+const tickResult = await live.getTickInfo()
+if (!tickResult.ok) throw tickResult.error
+const { tick } = tickResult.value
 
 const payload     = qearn.buildLockInput({ amount: 10_000_000n })
 const destination = contractIndexToIdentity(qearn.contractIndex)
 
-const { encoded, hash } = await wallet.buildScTransaction({
+const { encoded, hash } = await wallet.buildContractCall({
   destination,
   amount: 10_000_000n,
   targetTick: tick + 5,
@@ -124,7 +126,8 @@ const { encoded, hash } = await wallet.buildScTransaction({
 })
 
 const result = await live.broadcastTransaction(encoded)
-console.log(`TX ${hash} broadcast to ${result.peersBroadcastedTo} peers`)
+if (!result.ok) throw result.error
+console.log(`TX ${hash} broadcast to ${result.value.peersBroadcastedTo} peers`)
 ```
 
 ### Decode historical output from archive
@@ -136,10 +139,11 @@ import { createQueryClient } from "@qubic.org/rpc"
 import { toTxHash } from "@qubic.org/types"
 
 const archive = createQueryClient()
-const tx = await archive.getTransaction(toTxHash("abcdef..."))
+const txResult = await archive.getTransactionByHash(toTxHash("abcdef..."))
+if (!txResult.ok) throw txResult.error
 
 const output = decodeQearnLockOutput(
-  Buffer.from(tx.responseData ?? "", "base64"),
+  Buffer.from(txResult.value.responseData ?? "", "base64"),
   publicKeyToIdentity,
 )
 console.log("Lock output:", output)

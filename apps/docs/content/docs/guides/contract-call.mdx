@@ -27,7 +27,7 @@ pnpm add @qubic.org/contracts @qubic.org/wallet @qubic.org/rpc @qubic.org/types
 
 ## How contract calls work
 
-Every Qubic smart contract has a fixed **contract index** (e.g. Qearn is `9`) and a canonical **destination identity** derived from that index. Procedure calls pass an `inputType` number and an encoded binary `payload`. You never construct the destination manually — `buildScTransaction` handles it.
+Every Qubic smart contract has a fixed **contract index** (e.g. Qearn is `9`) and a canonical **destination identity** derived from that index. Procedure calls pass an `inputType` number and an encoded binary `payload`. You never construct the destination manually — `buildContractCall` handles it.
 
 ```
 Contract call = { contractIndex, inputType, payload, amount } → SC transaction
@@ -47,7 +47,9 @@ import { createLiveClient } from "@qubic.org/rpc"
 
 const live = createLiveClient()
 const wallet = createWallet(process.env.SEED!)
-const { tick } = await live.getTickInfo()
+const tickResult = await live.getTickInfo()
+if (!tickResult.ok) throw tickResult.error
+const { tick } = tickResult.value
 ```
 
 </Step>
@@ -72,7 +74,7 @@ The builder throws `PayloadBuildError` synchronously on bad input (wrong types, 
 
 ### Build the SC transaction
 
-`buildScTransaction` constructs the transaction, sets the correct contract destination identity, and signs it with your seed:
+`buildContractCall` constructs the transaction, sets the correct contract destination identity, and signs it with your seed:
 
 ```ts
 import { contractIndexToIdentity } from "@qubic.org/crypto"
@@ -97,8 +99,9 @@ const { encoded, hash } = await wallet.buildContractCall({
 
 ```ts
 const result = await live.broadcastTransaction(encoded)
+if (!result.ok) throw result.error
 console.log(`TX hash: ${hash}`)
-console.log(`Broadcast to ${result.peersBroadcastedTo} peers`)
+console.log(`Broadcast to ${result.value.peersBroadcastedTo} peers`)
 ```
 
 </Step>
@@ -130,7 +133,9 @@ import { contractIndexToIdentity } from "@qubic.org/crypto"
 
 const live = createLiveClient()
 const wallet = createWallet(process.env.SEED!)
-const { tick } = await live.getTickInfo()
+const tickResult = await live.getTickInfo()
+if (!tickResult.ok) throw tickResult.error
+const { tick } = tickResult.value
 
 const payload = qearn.buildLockInput({ amount: 10_000_000n })
 
@@ -144,8 +149,9 @@ const { encoded, hash } = await wallet.buildContractCall({
 })
 
 const result = await live.broadcastTransaction(encoded)
+if (!result.ok) throw result.error
 console.log(`TX hash: ${hash}`)
-console.log(`Broadcast to ${result.peersBroadcastedTo} peers`)
+console.log(`Broadcast to ${result.value.peersBroadcastedTo} peers`)
 ```
 
 Run it:
@@ -156,9 +162,9 @@ SEED=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa bun qearn-lock.ts
 
 ## Other contracts
 
-The same pattern works for any procedure in any supported contract — find the contract namespace in the [`@qubic.org/contracts` reference](/packages/contracts), pick the right `build*Input` builder and `*_INPUT_TYPE` constant, and wire them into `buildScTransaction`.
+The same pattern works for any procedure in any supported contract — find the contract namespace in the [`@qubic.org/contracts` reference](/packages/contracts), pick the right `build*Input` builder and `*_INPUT_TYPE` constant, and wire them into `buildContractCall`.
 
-| Swap `qearn.buildLockInput` with | `wallet.buildScTransaction` `inputType` | Contract |
+| Swap `qearn.buildLockInput` with | `wallet.buildContractCall` `inputType` | Contract |
 |---|---|---|
 | `buildQxAddToAskOrderInput` | `QX_ADD_TO_ASK_ORDER_INPUT_TYPE` | Qx |
 | `buildQuotteryBetInput` | `QUOTTERY_BET_INPUT_TYPE` | Quottery |

@@ -93,7 +93,9 @@ import { contractIndexToIdentity } from "@qubic.org/crypto"
 
 const live   = createLiveClient()
 const wallet = createWallet(generateSeed())
-const { tick } = await live.getTickInfo()
+const tickResult = await live.getTickInfo()
+if (!tickResult.ok) throw tickResult.error
+const { tick } = tickResult.value
 
 const { encoded, hash } = await wallet.buildTransaction({
   destination: toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL"),
@@ -103,7 +105,8 @@ const { encoded, hash } = await wallet.buildTransaction({
 })
 
 const result = await live.broadcastTransaction(encoded)
-console.log(`TX ${hash} broadcast to ${result.peersBroadcastedTo} peers`)
+if (!result.ok) throw result.error
+console.log(`TX ${hash} broadcast to ${result.value.peersBroadcastedTo} peers`)
 ```
 
 ### Store seeds in an encrypted vault
@@ -136,7 +139,9 @@ import { contractIndexToIdentity } from "@qubic.org/crypto"
 
 const live   = createLiveClient()
 const wallet = createWallet(generateSeed())
-const { tick } = await live.getTickInfo()
+const tickResult = await live.getTickInfo()
+if (!tickResult.ok) throw tickResult.error
+const { tick } = tickResult.value
 
 const payload     = qearn.buildLockInput({ amount: 10_000_000n })
 const destination = contractIndexToIdentity(qearn.contractIndex)

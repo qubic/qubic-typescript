@@ -24,12 +24,15 @@ import { toIdentity } from "@qubic.org/types"
 
 const live = createLiveClient()
 
-const { tick, epoch } = await live.getTickInfo()
+const tickResult = await live.getTickInfo()
+if (!tickResult.ok) throw tickResult.error
+const { tick, epoch } = tickResult.value
 console.log(`Epoch ${epoch}, tick ${tick}`)
 
 const identity = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
-const { balance } = await live.getBalance(identity)
-console.log(`Balance: ${balance} QU`)
+const balanceResult = await live.getBalance(identity)
+if (!balanceResult.ok) throw balanceResult.error
+console.log(`Balance: ${balanceResult.value.balance} QU`)
 ```
 </Step>
 <Step>
@@ -42,8 +45,9 @@ import { createQueryClient } from "@qubic.org/rpc"
 
 const archive = createQueryClient()
 
-const tx = await archive.getTransactionByHash("abcdef1234...")
-console.log(`${tx.sourceId} → ${tx.destId}: ${tx.amount} QU`)
+const txResult = await archive.getTransactionByHash("abcdef1234...")
+if (!txResult.ok) throw txResult.error
+console.log(`${txResult.value.sourceId} → ${txResult.value.destId}: ${txResult.value.amount} QU`)
 ```
 </Step>
 </Steps>

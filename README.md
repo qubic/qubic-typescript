@@ -72,7 +72,9 @@ import { generateSeed, createWallet, createVault, unlockVault } from '@qubic.org
 import { createLiveClient } from '@qubic.org/rpc'
 
 const live = createLiveClient()
-const { tickInfo } = await live.getTickInfo()
+const tickInfoResult = await live.getTickInfo()
+if (!tickInfoResult.ok) throw tickInfoResult.error
+const tickInfo = tickInfoResult.value
 
 // Generate and persist a seed in an encrypted vault
 const seed = generateSeed()
@@ -85,7 +87,7 @@ const wallet = createWallet(storedSeed)
 
 console.log(wallet.identity) // 60-char Qubic identity
 
-const { encoded } = await wallet.buildTransfer({
+const { encoded } = await wallet.buildTransaction({
   destination: 'BZBQFLLBNCXEMGLOBHUVFTLUPLVCPQUASSILFABOFFBCADQSSUPNWLZBQEXK',
   amount: 1_000_000n,
   targetTick: tickInfo.tick + 5,
@@ -93,19 +95,23 @@ const { encoded } = await wallet.buildTransfer({
 })
 
 const result = await live.broadcastTransaction(encoded)
-console.log('peers:', result.peersBroadcastedTo)
+if (!result.ok) throw result.error
+console.log('peers:', result.value.peersBroadcastedTo)
 ```
 
 ## End-to-end example: build and broadcast a contract call
 
 ```ts
-import { createWallet, toSeed } from '@qubic.org/wallet'
+import { createWallet } from '@qubic.org/wallet'
+import { toSeed } from '@qubic.org/types'
 import { createLiveClient } from '@qubic.org/rpc'
 import { qearn } from '@qubic.org/contracts'
 import { contractIndexToIdentity } from '@qubic.org/crypto'
 
 const live = createLiveClient()
-const { tickInfo } = await live.getTickInfo()
+const tickInfoResult = await live.getTickInfo()
+if (!tickInfoResult.ok) throw tickInfoResult.error
+const tickInfo = tickInfoResult.value
 const wallet = createWallet(toSeed('a'.repeat(55)))
 
 const payload = qearn.buildLockInput({ amount: 10_000_000n })
@@ -120,7 +126,8 @@ const { encoded } = await wallet.buildContractCall({
 })
 
 const result = await live.broadcastTransaction(encoded)
-console.log('peers:', result.peersBroadcastedTo)
+if (!result.ok) throw result.error
+console.log('peers:', result.value.peersBroadcastedTo)
 ```
 
 ## End-to-end example: query a contract read function
@@ -192,7 +199,7 @@ const { entity, identity } = await requestEntity(pool, pk)
 console.log(identity, entity.incomingAmount - entity.outgoingAmount)
 
 // Broadcast a signed transaction
-await broadcastTransaction(pool, signedTxBytes)
+await broadcastTransaction(pool, signedTx)
 
 pool.close()
 ```
@@ -200,10 +207,9 @@ pool.close()
 ## End-to-end example: React dApp with wallet connector
 
 ```tsx
-import SignClient from '@walletconnect/sign-client'
 import {
   QubicProvider, WalletProvider, VaultProvider,
-  extensionConnector, createWalletConnectConnector,
+  extensionConnector,
   useWallet, useBalance, useContractQuery, useSendTransfer,
 } from '@qubic.org/react'
 import { createLiveClient, createQueryClient } from '@qubic.org/rpc'
@@ -214,9 +220,6 @@ const archive = createQueryClient()
 
 const connectors = [
   extensionConnector,
-  createWalletConnectConnector({
-    createClient: () => SignClient.init({ projectId: 'YOUR_WC_PROJECT_ID', metadata: { ... } }),
-  }),
 ]
 
 export function App() {
@@ -270,7 +273,7 @@ const decoded = decodePayload(payloadBytes, lockProc.inputFields, version.struct
 
 `@qubic.org/registry` stores per-epoch ABI snapshots as JSON for every Qubic smart contract. Each snapshot records the exact binary field layout (`inputFields`, `outputFields`, nested structs) active in that epoch. The codec engine (`buildPayload` / `decodePayload`) handles all Qubic primitive types including `uint128` and FourQ identity fields.
 
-Covers epochs 122–213 — every epoch with deployed contracts since early mainnet.
+Covers epochs 122–217 — every epoch with deployed contracts since early mainnet.
 
 ```
 packages/registry/data/

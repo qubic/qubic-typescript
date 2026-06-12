@@ -67,7 +67,9 @@ import { createLiveClient } from "@qubic.org/rpc"
 const live = createLiveClient()
 // Defaults to https://rpc.qubic.org/live/v1
 
-const { tick, epoch } = await live.getTickInfo()
+const tickResult = await live.getTickInfo()
+if (!tickResult.ok) throw tickResult.error
+const { tick, epoch } = tickResult.value
 console.log(`Tick ${tick}, epoch ${epoch}`)
 ```
 
@@ -83,7 +85,7 @@ import { toIdentity } from "@qubic.org/types"
 
 const destination = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
 
-const { encoded, hash } = await wallet.buildTransfer({
+const { encoded, hash } = await wallet.buildTransaction({
   destination,
   amount: 1_000_000n,    // QU amount as bigint
   targetTick: tick + 5,
@@ -100,7 +102,8 @@ const { encoded, hash } = await wallet.buildTransfer({
 
 ```ts title="send-transfer.ts"
 const result = await live.broadcastTransaction(encoded)
-console.log(`Broadcast to ${result.peersBroadcastedTo} peers`)
+if (!result.ok) throw result.error
+console.log(`Broadcast to ${result.value.peersBroadcastedTo} peers`)
 console.log(`TX hash: ${hash}`)
 ```
 
@@ -118,11 +121,13 @@ const seed = generateSeed()
 const wallet = createWallet(seed)
 const live = createLiveClient()
 
-const { tick } = await live.getTickInfo()
+const tickResult = await live.getTickInfo()
+if (!tickResult.ok) throw tickResult.error
+const { tick } = tickResult.value
 
 const destination = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
 
-const { encoded, hash } = await wallet.buildTransfer({
+const { encoded, hash } = await wallet.buildTransaction({
   destination,
   amount: 1_000_000n,
   targetTick: tick + 5,
@@ -130,7 +135,8 @@ const { encoded, hash } = await wallet.buildTransfer({
 })
 
 const result = await live.broadcastTransaction(encoded)
-console.log(`Peers: ${result.peersBroadcastedTo}`)
+if (!result.ok) throw result.error
+console.log(`Peers: ${result.value.peersBroadcastedTo}`)
 console.log(`TX hash: ${hash}`)
 ```
 

@@ -101,16 +101,17 @@ for (const tx of txs.transactions) {
 If you have a transaction hash (e.g. from a broadcast), look it up directly:
 
 ```ts
-const tx = await archive.getTransaction("your-tx-hash-here")
+const txResult = await archive.getTransactionByHash("your-tx-hash-here")
+if (!txResult.ok) throw txResult.error
 
-console.log("Source:", tx.sourceId)
-console.log("Destination:", tx.destId)
-console.log("Amount:", tx.amount)
-console.log("Tick:", tx.tickNumber)
-console.log("Status:", tx.transactionStatus)
+console.log('Source:', txResult.value.sourceId)
+console.log('Destination:', txResult.value.destId)
+console.log('Amount:', txResult.value.amount)
+console.log('Tick:', txResult.value.tickNumber)
+console.log('Status:', txResult.value.transactionStatus)
 ```
 
-`getTransaction` throws `QubicRpcError` if the transaction is not indexed yet or the hash is unknown.
+`getTransactionByHash()` returns a `Result`; handle the error when the transaction is not indexed yet or the hash is unknown.`
 
 ## React with archive hooks
 

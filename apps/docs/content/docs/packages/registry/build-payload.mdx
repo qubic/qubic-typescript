@@ -16,7 +16,7 @@ buildPayload(
 
 ## Purpose
 
-Encodes a structured input object into binary using the field layout from the ABI. The result is a `Uint8Array` ready to pass as `inputPayload` to transaction builders.
+Encodes a structured input object into binary using the field layout from the ABI. The result is a `Uint8Array` ready to pass as `payload` to transaction builders.
 
 ```ts
 import { getAbi, getProcedure, buildPayload } from "@qubic.org/registry"
@@ -34,7 +34,7 @@ const payload = buildPayload(
   { amount: 10_000_000n },
   identityToPublicKey,
 )
-// Returns Uint8Array — pass to wallet.buildScTransaction as inputPayload
+// Returns Uint8Array — pass to wallet.buildContractCall as payload
 ```
 
 ## Parameters

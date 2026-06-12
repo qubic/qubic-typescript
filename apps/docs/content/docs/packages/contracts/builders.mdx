@@ -44,12 +44,12 @@ const call = buildQxTransferShareOwnershipAndPossessionInput(
 
 ## Using the payload
 
-Pass the builder result to `wallet.buildScTransaction`:
+Pass the builder result to `wallet.buildContractCall`:
 
 ```ts
 const call = qearn.buildUnlockInput({ amount: 10_000_000n, lockedEpoch: 213 })
 
-const { encoded } = await wallet.buildScTransaction({
+const { encoded } = await wallet.buildContractCall({
   destination: QEARN_CONTRACT_ADDRESS,
   amount: 0n,
   targetTick: tick + 5,

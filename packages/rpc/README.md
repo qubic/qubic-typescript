@@ -247,7 +247,7 @@ const signedTx = await signTransaction(txBytes, seed)
 const encoded = encodeTransaction(signedTx)
 const broadcastResult = await live.broadcastTransaction(encoded)
 if (broadcastResult.ok) {
-  console.log('Broadcast to', broadcastResult.value.peersBroadcasted, 'peers')
+  console.log('Broadcast to', broadcastResult.value.peersBroadcastedTo, 'peers')
 }
 ```
 

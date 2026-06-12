@@ -19,7 +19,7 @@ All four are `string` in TypeScript. Without additional structure, nothing stops
 ```ts
 // Compiles. Wrong at runtime.
 await live.getBalance(txHash as any)
-await archive.getTransaction(identity as any)
+await archive.getTransactionByHash(identity as any)
 ```
 
 This class of mistake shows up as a confusing RPC error rather than a compile error, and it happens in tests too — the type system doesn't help.

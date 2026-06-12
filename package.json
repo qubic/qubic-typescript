@@ -11,6 +11,7 @@
     "test": "bun test --recursive --coverage",
     "lint": "bunx biome check --write .",
     "ci:lint": "bunx biome ci .",
+    "docs:check": "bun scripts/check-docs-examples.ts",
     "clean": "find . -name dist -not -path '*/node_modules/*' -exec rm -rf {} +",
     "changeset": "changeset",
     "version": "changeset version && bun scripts/replace-workspace-refs.ts && bunx biome format --write . && bun install",

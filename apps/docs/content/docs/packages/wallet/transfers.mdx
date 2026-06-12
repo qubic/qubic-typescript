@@ -16,7 +16,9 @@ import { toIdentity } from "@qubic.org/types"
 
 const live = createLiveClient()
 const wallet = createWallet(generateSeed())
-const { tick } = await live.getTickInfo()
+const tickResult = await live.getTickInfo()
+if (!tickResult.ok) throw tickResult.error
+const { tick } = tickResult.value
 
 const { encoded, hash } = await wallet.buildTransaction({
   destination: toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL"),

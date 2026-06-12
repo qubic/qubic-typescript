@@ -109,7 +109,9 @@ import { toSeed, toIdentity } from "@qubic.org/types"
 import { createLiveClient } from "@qubic.org/rpc"
 
 const live = createLiveClient()
-const { tick } = await live.getTickInfo()
+const tickResult = await live.getTickInfo()
+if (!tickResult.ok) throw tickResult.error
+const { tick } = tickResult.value
 
 const seed = toSeed("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 const source = publicKeyFromSeed(seed)
@@ -127,7 +129,8 @@ const signed  = await signTransaction(unsigned, seed)
 const encoded = encodeTransaction(signed)
 
 const result = await live.broadcastTransaction(encoded)
-console.log(`Broadcast to ${result.peersBroadcastedTo} peers`)
+if (!result.ok) throw result.error
+console.log(`Broadcast to ${result.value.peersBroadcastedTo} peers`)
 ```
 
 ### Smart contract call with payload

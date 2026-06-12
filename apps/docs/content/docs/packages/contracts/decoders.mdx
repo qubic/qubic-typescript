@@ -66,12 +66,13 @@ import { decodeQearnLockOutput } from "@qubic.org/contracts"
 import { toTxHash } from "@qubic.org/types"
 
 const archive = createQueryClient()
-const tx = await archive.getTransaction(toTxHash("abcdef..."))
+const txResult = await archive.getTransactionByHash(toTxHash("abcdef..."))
+if (!txResult.ok) throw txResult.error
 
 // tx.inputHex contains the raw input; response bytes come from event logs
 // Decode the output from the transaction's response field if available
 const output = decodeQearnLockOutput(
-  Buffer.from(tx.responseData, "base64"),
+  Buffer.from(txResult.value.responseData ?? "", "base64"),
 )
 console.log("Decoded output:", output)
 ```

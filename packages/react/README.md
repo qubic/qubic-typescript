@@ -238,23 +238,17 @@ const queryClient = new QueryClient()
 </QubicProvider>
 ```
 
-## Wallet connectors (extension / WalletConnect / MetaMask Snap)
+## Wallet connectors (extension / MetaMask Snap)
 
 ### Setup — `WalletProvider`
 
-Register all wallet backends once and wrap your app. Components call `useWallet()` with no arguments — no connector plumbing in every component.
-
-```bash
-bun add @walletconnect/sign-client   # only if using WalletConnect
-```
+Register your wallet backends once and wrap your app. The primary runnable example below uses the browser extension and MetaMask Snap only. Components call `useWallet()` with no arguments — no connector plumbing in every component.
 
 ```tsx
-import SignClient from '@walletconnect/sign-client'
 import {
   QubicProvider,
   WalletProvider,
   extensionConnector,
-  createWalletConnectConnector,
   createMetaMaskSnapConnector,
 } from '@qubic.org/react'
 
@@ -262,12 +256,6 @@ import {
 const connectors = [
   extensionConnector,
 
-  createWalletConnectConnector({
-    // SignClient is initialized lazily on first connect() — no upfront await
-    createClient: () => SignClient.init({
-      projectId: 'YOUR_WC_PROJECT_ID',
-      metadata: { name: 'My App', description: '…', url: 'https://myapp.com', icons: [] },
-    }),
   }),
 
   createMetaMaskSnapConnector({

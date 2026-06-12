@@ -12,7 +12,7 @@ import { computeTransactionHash } from "@qubic.org/tx"
 
 const hash: TxHash = computeTransactionHash(signed)
 // Use to poll the archive for confirmation
-const result = await archive.getTransaction(hash)
+const result = await archive.getTransactionByHash(hash)
 ```
 
 **Parameters**

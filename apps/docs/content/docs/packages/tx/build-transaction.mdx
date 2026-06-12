@@ -45,7 +45,9 @@ const unsigned = buildTransaction({
 `targetTick` is a deadline, not a schedule. The network rejects the transaction if the current tick has already passed `targetTick` when the node processes it. If `targetTick` is in the future, the node will process the transaction when it reaches that tick — or drop it after a grace period.
 
 ```ts
-const { tick } = await live.getTickInfo()
+const tickResult = await live.getTickInfo()
+if (!tickResult.ok) throw tickResult.error
+const { tick } = tickResult.value
 const targetTick = tick + 5  // deadline: process within the next 5 ticks
 ```
 

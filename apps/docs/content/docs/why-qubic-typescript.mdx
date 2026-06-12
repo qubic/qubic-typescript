@@ -29,9 +29,9 @@ const seed = toSeed("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 Qubic uses FourQ curve operations and the K12 hash. Neither appears in Web Crypto or Node's crypto module. The SDK provides a pure TypeScript implementation of these primitives.
 
 ```ts
-import { identityFromSeed, sign, k12 } from "@qubic.org/crypto"
+import { deriveIdentityFromSeed, sign, k12 } from "@qubic.org/crypto"
 
-const { identity, privateKey } = await identityFromSeed(seed)
+const { identity, privateKey } = await deriveIdentityFromSeed(seed)
 const signature = await sign(privateKey, messageBytes)
 ```
 
@@ -40,7 +40,7 @@ const signature = await sign(privateKey, messageBytes)
 A raw Qubic transaction is a specific sequence of fields packed into bytes with a 64-byte signature appended. The SDK builds and signs it from a plain object.
 
 ```ts
-const { encoded, hash } = await wallet.buildTransfer({
+const { encoded, hash } = await wallet.buildTransaction({
   destination,
   amount: 1_000_000n,
   targetTick: tick + 5,

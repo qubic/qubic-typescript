@@ -88,13 +88,16 @@ import { toIdentity } from "@qubic.org/types"
 
 const live = createLiveClient()
 
-const { tick, epoch } = await live.getTickInfo()
+const tickResult = await live.getTickInfo()
+if (!tickResult.ok) throw tickResult.error
+const { tick, epoch } = tickResult.value
 console.log(`Epoch ${epoch}, tick ${tick}`)
 
-const { balance } = await live.getBalance(
+const balanceResult = await live.getBalance(
   toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
 )
-console.log("Balance:", balance, "QU")
+if (!balanceResult.ok) throw balanceResult.error
+console.log("Balance:", balanceResult.value.balance, "QU")
 ```
 
 ### Look up a historical transaction
@@ -105,9 +108,10 @@ import { toTxHash } from "@qubic.org/types"
 
 const archive = createQueryClient()
 
-const tx = await archive.getTransaction(toTxHash("abcdef..."))
-console.log(tx.sourceId, "→", tx.destId, ":", tx.amount, "QU")
-console.log("Status:", tx.transactionStatus)
+const txResult = await archive.getTransactionByHash(toTxHash("abcdef..."))
+if (!txResult.ok) throw txResult.error
+console.log(txResult.value.sourceId, "→", txResult.value.destId, ":", txResult.value.amount, "QU")
+console.log("Status:", txResult.value.transactionStatus)
 ```
 
 ### Retry on rate limit

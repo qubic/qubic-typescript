@@ -1,4 +1,4 @@
-import { getAbi, getAbiHistory, getCurrentAbi } from './registry.js'
+import { getAbi, getAbiHistory, getCurrentAbi, validateRegistry } from './registry.js'
 import type { AbiLookupResult, ContractAbiVersion, ContractRegistry } from './types.js'
 
 export interface RegistryClientOptions {
@@ -46,7 +46,9 @@ export function createRegistryClient(options: RegistryClientOptions = {}): Regis
   async function fetchRegistry(): Promise<ContractRegistry> {
     const res = await fetchFn(url)
     if (!res.ok) throw new Error(`Failed to fetch registry: HTTP ${res.status}`)
-    return (await res.json()) as ContractRegistry
+    const registry = (await res.json()) as ContractRegistry
+    validateRegistry(registry)
+    return registry
   }
 
   async function load(): Promise<ContractRegistry> {

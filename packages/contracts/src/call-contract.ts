@@ -78,5 +78,10 @@ export async function callContractFunction<TInput extends Record<string, unknown
   if (!r.ok) return r
   const responseBytes = fromBase64(r.value.responseData ?? '')
   const decoded = decodePayload(responseBytes, options.outputFields, options.structs, pkToId)
+  for (const field of options.outputFields) {
+    if (!(field.name in decoded)) {
+      throw new Error(`decoded response missing expected field "${field.name}"`)
+    }
+  }
   return ok(decoded as unknown as TOutput)
 }

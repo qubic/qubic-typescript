@@ -18,19 +18,19 @@ Dependencies: `@qubic.org/crypto`, `@qubic.org/types`
 
 ```ts
 interface TransactionInput {
-  sourcePublicKey: Uint8Array       // 32-byte compressed FourQ public key of the sender
-  destinationPublicKey: Uint8Array  // 32-byte public key of the recipient; all-zeros for SC calls
-  amount: bigint                    // transfer amount in QU; 0n for most SC calls
-  targetTick: number                // tick at which this transaction should execute
-  inputType: number                 // 0 for QU transfer; procedure index for SC calls
-  payload?: Uint8Array              // SC-specific binary data; must be ≤ 1024 bytes
-  currentTick?: number              // when set, validates that targetTick > currentTick
+  source: Identity | Uint8Array       // 60-char identity or 32-byte public key
+  destination: Identity | Uint8Array  // 60-char identity or 32-byte public key
+  amount: bigint                      // transfer amount in QU; 0n for most SC calls
+  targetTick: number                  // tick at which this transaction should execute
+  inputType: number                   // 0 for QU transfer; procedure index for SC calls
+  payload?: Uint8Array                // SC-specific binary data; must be ≤ 1024 bytes
+  currentTick?: number                // when set, validates that targetTick > currentTick
 }
 
 function buildTransaction(input: TransactionInput): Uint8Array
 ```
 
-Serialises the transaction header and payload into the Qubic binary wire format:
+Serialises the transaction header and payload into the Qubic binary wire format. Both `source` and `destination` accept either a branded `Identity` string (which is automatically converted to its 32-byte public key) or a raw `Uint8Array` public key.
 
 ```
 [sourcePublicKey  32B][destinationPublicKey  32B]
@@ -135,23 +135,20 @@ All three errors carry structured context:
 
 ```ts
 import { buildTransaction, signTransaction, encodeTransaction } from '@qubic.org/tx'
-import { publicKeyFromSeed, identityToPublicKey } from '@qubic.org/crypto'
+import { deriveIdentityFromSeed } from '@qubic.org/crypto'
 import { PROTOCOL, toSeed, toIdentity } from '@qubic.org/types'
 
 const seed = toSeed('a'.repeat(PROTOCOL.SEED_LENGTH))
-const sourcePublicKey = publicKeyFromSeed(seed)
-const destinationPublicKey = identityToPublicKey(
-  toIdentity('BZBQFLLBNCXEMGLOBHUVFTLUPLVCPQUASSILFABOFFBCADQSSUPNWLZBQEXK'),
-)
+const source = deriveIdentityFromSeed(seed)
+const destination = toIdentity('BZBQFLLBNCXEMGLOBHUVFTLUPLVCPQUASSILFABOFFBCADQSSUPNWLZBQEXK')
 
-// currentTick obtained from live.getTickInfo()
 const currentTick = 18_500_000
 const targetTick = currentTick + 5
 
 const txBytes = buildTransaction({
-  sourcePublicKey,
-  destinationPublicKey,
-  amount: 1_000_000n,  // 1 QU = 1,000,000 base units
+  source,
+  destination,
+  amount: 1_000_000n,
   targetTick,
   inputType: 0,
   currentTick,
@@ -159,32 +156,29 @@ const txBytes = buildTransaction({
 
 const signedTx = await signTransaction(txBytes, seed)
 const encoded = encodeTransaction(signedTx)
-// encoded is ready to pass to live.broadcastTransaction(encoded)
 ```
 
 ### Smart contract call with payload
 
 ```ts
 import { buildTransaction, signTransaction, encodeTransaction, buildPayload } from '@qubic.org/tx'
-import { publicKeyFromSeed } from '@qubic.org/crypto'
+import { deriveIdentityFromSeed, contractIndexToIdentity } from '@qubic.org/crypto'
 import { PROTOCOL, toSeed } from '@qubic.org/types'
 
 const seed = toSeed('a'.repeat(PROTOCOL.SEED_LENGTH))
-const sourcePublicKey = publicKeyFromSeed(seed)
-
-// Contract destination is all-zeros for SC calls
-const destinationPublicKey = new Uint8Array(PROTOCOL.PUBLIC_KEY_SIZE)
+const source = deriveIdentityFromSeed(seed)
+const destination = contractIndexToIdentity(9) // QEarn contract
 
 const payload = buildPayload([
-  { type: 'uint64', value: 500_000n },  // amount to lock
+  { type: 'uint64', value: 500_000n },
 ])
 
 const txBytes = buildTransaction({
-  sourcePublicKey,
-  destinationPublicKey,
+  source,
+  destination,
   amount: 0n,
   targetTick: 18_500_005,
-  inputType: 1,  // procedure 1 of the target contract
+  inputType: 1,
   payload,
 })
 

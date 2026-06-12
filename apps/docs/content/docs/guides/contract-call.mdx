@@ -79,7 +79,7 @@ import { toIdentity } from "@qubic.org/types"
 
 // All SC calls go to the zero-address for the given contract index.
 // buildScTransaction derives this automatically from contractIndex.
-const { encoded, hash } = await wallet.buildScTransaction({
+const { encoded, hash } = await wallet.buildContractCall({
   destination: toIdentity("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"),
   amount: 10_000_000n,
   targetTick: tick + 5,
@@ -136,7 +136,7 @@ const { tick } = await live.getTickInfo()
 
 const payload = qearn.buildLockInput({ amount: 10_000_000n })
 
-const { encoded, hash } = await wallet.buildScTransaction({
+const { encoded, hash } = await wallet.buildContractCall({
   destination: toIdentity("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"),
   amount: 10_000_000n,
   targetTick: tick + 5,

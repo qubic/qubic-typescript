@@ -78,7 +78,7 @@ import { toIdentity } from "@qubic.org/types"
 
 const destination = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
 
-const { encoded, hash } = await wallet.buildTransfer({
+const { encoded, hash } = await wallet.buildTransaction({
   destination,
   amount: 1_000_000n,       // amount in QU (bigint)
   targetTick: tick + 5,     // ~5 ticks ahead
@@ -121,7 +121,7 @@ const { tick } = await live.getTickInfo()
 
 const destination = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
 
-const { encoded, hash } = await wallet.buildTransfer({
+const { encoded, hash } = await wallet.buildTransaction({
   destination,
   amount: 1_000_000n,
   targetTick: tick + 5,

@@ -87,7 +87,7 @@ export function PackageSigil({
   );
 }
 
-export function PackageHeader({ name }: { name: string; label?: string }) {
+export function PackageHeader({ name }: { name: string }) {
   return (
     <div style={{ marginBottom: 16 }}>
       <PackageSigil name={name} size={52} />

@@ -68,7 +68,7 @@ const { tick } = await live.getTickInfo()
 
 const wallet = createWalletFromVault(unlockedVault, unlockedVault.identities[0])
 
-const { encoded, hash } = await wallet.buildTransfer({
+const { encoded, hash } = await wallet.buildTransaction({
   destination: toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL"),
   amount: 1_000_000n,
   targetTick: tick + 5,
@@ -186,7 +186,7 @@ const live = createLiveClient()
 const { tick } = await live.getTickInfo()
 const wallet = createWalletFromVault(unlocked, unlocked.identities[0])
 
-const { encoded, hash } = await wallet.buildTransfer({
+const { encoded, hash } = await wallet.buildTransaction({
   destination: toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL"),
   amount: 500_000n,
   targetTick: tick + 5,

@@ -44,46 +44,39 @@ const logs = await archive.getEventLogs({
 console.log(`Found ${logs.events.length} events`)
 ```
 
-Each event in `logs.events` has `eventType`, `eventData` (base64), `tick`, and `txId` fields.
+Each event in `logs.events` has `logType`, `data` (base64), `tick`, and `txId` fields.
 
 ## Decode events
 
-`decodeEvent` from `@qubic.org/events` parses the base64 `eventData` into a typed structure:
+`decodeEvent` from `@qubic.org/events` parses the base64 `data` into a typed structure:
 
 ```ts
 import { decodeEvent } from "@qubic.org/events"
-import { publicKeyToIdentity } from "@qubic.org/crypto"
 
 for (const raw of logs.events) {
-  const decoded = decodeEvent(raw, publicKeyToIdentity)
-  if (!decoded) {
-    console.log("Unknown event type:", raw.eventType)
-    continue
-  }
+  const decoded = decodeEvent(raw)
 
-  console.log(`Tick ${raw.tick} — type ${decoded.eventType}:`, decoded.data)
+  console.log(`Tick ${raw.tick} — type ${decoded.logType}:`, decoded.data)
 }
 ```
 
-`decodeEvent` returns `null` for unknown event types (not yet in the decoder table). Check for `null` before using the result.
+`decodeEvent` throws `EventDecodeError` for unknown event types (not yet in the decoder table).
 
 ## Filter by event type
 
 Use `eventFilter()` to pre-filter before decoding:
 
 ```ts
-import { eventFilter } from "@qubic.org/events"
+import { eventFilter, LOG_TYPE } from "@qubic.org/events"
 
-const isQuTransfer = eventFilter().type(14).build()
-const transfers = logs.events.filter(isQuTransfer)
+const filter = eventFilter().ofTypes(LOG_TYPE.QU_TRANSFER).build()
 
-for (const raw of transfers) {
-  const decoded = decodeEvent(raw, publicKeyToIdentity)
-  if (decoded) {
-    // decoded.data is typed as QuTransferData
-    const { sourceIdentity, destIdentity, amount } = decoded.data as { sourceIdentity: string; destIdentity: string; amount: bigint }
-    console.log(`${sourceIdentity} → ${destIdentity}: ${amount} QU`)
-  }
+for (const raw of logs.events) {
+  if (raw.logType !== LOG_TYPE.QU_TRANSFER) continue
+  const decoded = decodeEvent(raw)
+  // decoded.data is typed as QuTransferData
+  const { source, destination, amount } = decoded.data
+  console.log(`${source} → ${destination}: ${amount} QU`)
 }
 ```
 
@@ -126,7 +119,6 @@ In a React app, use the archive hooks from `@qubic.org/react`:
 ```tsx
 import { useEventLogs, useTransactionsForIdentity, useTransaction } from "@qubic.org/react"
 import { decodeEvent } from "@qubic.org/events"
-import { publicKeyToIdentity } from "@qubic.org/crypto"
 import { toIdentity } from "@qubic.org/types"
 import type { Identity } from "@qubic.org/types"
 
@@ -144,11 +136,11 @@ function EventHistory() {
   return (
     <ul>
       {data?.events.map((raw) => {
-        const decoded = decodeEvent(raw, publicKeyToIdentity)
+        const decoded = decodeEvent(raw)
         return (
-          <li key={`${raw.tick}-${raw.eventType}`}>
-            Tick {raw.tick} — type {raw.eventType}
-            {decoded && `: ${JSON.stringify(decoded.data)}`}
+          <li key={`${raw.tick}-${raw.logType}`}>
+            Tick {raw.tick} — type {raw.logType}
+            {`: ${JSON.stringify(decoded.data)}`}
           </li>
         )
       })}
@@ -161,14 +153,13 @@ function EventHistory() {
 
 ```ts title="decode-history.ts"
 import { createQueryClient } from "@qubic.org/rpc"
-import { decodeEvent, eventFilter } from "@qubic.org/events"
-import { publicKeyToIdentity } from "@qubic.org/crypto"
+import { decodeEvent, eventFilter, LOG_TYPE } from "@qubic.org/events"
 import { toIdentity } from "@qubic.org/types"
 
 const archive = createQueryClient()
 
 const identity = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
-const isTransfer = eventFilter().type(14).build()
+const isTransfer = eventFilter().ofTypes(LOG_TYPE.QU_TRANSFER).build()
 
 const logs = await archive.getEventLogs({
   identity,
@@ -178,11 +169,10 @@ const logs = await archive.getEventLogs({
 
 console.log(`${logs.events.length} total events`)
 
-for (const raw of logs.events.filter(isTransfer)) {
-  const decoded = decodeEvent(raw, publicKeyToIdentity)
-  if (decoded) {
-    console.log(`Tick ${raw.tick} transfer:`, decoded.data)
-  }
+for (const raw of logs.events) {
+  if (raw.logType !== LOG_TYPE.QU_TRANSFER) continue
+  const decoded = decodeEvent(raw)
+  console.log(`Tick ${raw.tick} transfer:`, decoded.data)
 }
 ```
 

@@ -23,7 +23,8 @@ export function useTransaction(
   return useQuery<QueryTransaction>({
     queryKey: ['qubic', 'transaction', hash],
     queryFn: async () => {
-      const client = archiveClient as NonNullable<typeof archiveClient>
+      if (!archiveClient) throw new Error('useTransaction requires archiveClient to be provided to QubicProvider')
+      const client = archiveClient
       const r = await client.getTransactionByHash(hash as string)
       if (!r.ok) throw r.error
       return r.value

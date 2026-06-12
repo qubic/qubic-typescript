@@ -1,8 +1,8 @@
 import createClient from 'openapi-fetch'
 import { sig, unwrap } from './_utils.js'
-import type { QubicRpcError } from './errors.js'
+import { QubicRpcError } from './errors.js'
 import type { components, paths } from './query-schema'
-import { ok } from './result.js'
+import { err, ok } from './result.js'
 import type { Result } from './result.js'
 
 export type QueryClientOptions = {
@@ -61,8 +61,12 @@ export function createQueryClient(options: QueryClientOptions = {}) {
         '/getLastProcessedTick',
       )
       if (!r.ok) return r
+      const v = r.value as Record<string, unknown>
+      if (v['tickNumber'] == null || v['epoch'] == null || v['intervalInitialTick'] == null || v['logTickNumber'] == null) {
+        return err(new QubicRpcError(-2, '/getLastProcessedTick', 'missing required fields in response'))
+      }
       return ok(
-        r.value as {
+        v as {
           tickNumber: number
           epoch: number
           intervalInitialTick: number
@@ -109,7 +113,9 @@ export function createQueryClient(options: QueryClientOptions = {}) {
         '/getTickData',
       )
       if (!r.ok) return r
-      return ok((r.value as { tickData?: QueryTickData }).tickData as QueryTickData)
+      const td = (r.value as { tickData?: QueryTickData }).tickData
+      if (td == null) return err(new QubicRpcError(-2, '/getTickData', 'missing tickData in response'))
+      return ok(td)
     },
 
     /** Returns a single transaction by its 60-char lowercase hash. */
@@ -122,7 +128,9 @@ export function createQueryClient(options: QueryClientOptions = {}) {
         '/getTransactionByHash',
       )
       if (!r.ok) return r
-      return ok((r.value as { transaction?: QueryTransaction }).transaction as QueryTransaction)
+      const tx = (r.value as { transaction?: QueryTransaction }).transaction
+      if (tx == null) return err(new QubicRpcError(-2, '/getTransactionByHash', 'missing transaction in response'))
+      return ok(tx)
     },
 
     /** Returns transactions for the given identity with optional filters. */
@@ -142,9 +150,10 @@ export function createQueryClient(options: QueryClientOptions = {}) {
         hits?: Hits
         validForTick?: number
       }
+      if (v.hits == null) return err(new QubicRpcError(-2, '/getTransactionsForIdentity', 'missing hits in response'))
       return ok({
         transactions: v.transactions ?? [],
-        hits: v.hits as Hits,
+        hits: v.hits,
         validForTick: v.validForTick ?? 0,
       })
     },
@@ -179,9 +188,10 @@ export function createQueryClient(options: QueryClientOptions = {}) {
         hits?: Hits
         validForTick?: number
       }
+      if (v.hits == null) return err(new QubicRpcError(-2, '/getEventLogs', 'missing hits in response'))
       return ok({
         eventLogs: v.eventLogs ?? [],
-        hits: v.hits as Hits,
+        hits: v.hits,
         validForTick: v.validForTick ?? 0,
       })
     },

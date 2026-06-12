@@ -1,8 +1,8 @@
 import createClient from 'openapi-fetch'
 import { sig, unwrap } from './_utils.js'
-import type { QubicRpcError } from './errors.js'
+import { QubicRpcError } from './errors.js'
 import type { components, paths } from './live-schema'
-import { ok } from './result.js'
+import { err, ok } from './result.js'
 import type { Result } from './result.js'
 
 export type LiveClientOptions = {
@@ -68,6 +68,7 @@ export function createLiveClient(options: LiveClientOptions = {}) {
     async getTickInfo(opts?: Opts): Promise<Result<LiveTickInfo, QubicRpcError>> {
       const r = await unwrap(client.GET('/tick-info', { ...s(opts) }), '/tick-info')
       if (!r.ok) return r
+      if (r.value.tickInfo == null) return err(new QubicRpcError(-2, '/tick-info', 'missing tickInfo in response'))
       return ok(r.value.tickInfo as LiveTickInfo)
     },
 
@@ -78,6 +79,7 @@ export function createLiveClient(options: LiveClientOptions = {}) {
         `/balances/${identity}`,
       )
       if (!r.ok) return r
+      if (r.value.balance == null) return err(new QubicRpcError(-2, `/balances/${identity}`, 'missing balance in response'))
       const b = r.value.balance as LiveBalance
       return ok({
         id: b.id ?? '',
@@ -278,6 +280,7 @@ export function createLiveClient(options: LiveClientOptions = {}) {
     async getBlockHeight(opts?: Opts): Promise<Result<LiveTickInfo, QubicRpcError>> {
       const r = await unwrap(client.GET('/block-height', { ...s(opts) }), '/block-height')
       if (!r.ok) return r
+      if (r.value.blockHeight == null) return err(new QubicRpcError(-2, '/block-height', 'missing blockHeight in response'))
       return ok(r.value.blockHeight as LiveTickInfo)
     },
   }

@@ -20,7 +20,14 @@ import { PROTOCOL } from "@qubic.org/types"
 | `IDENTITY_LENGTH` | `60` | Identity string character count |
 | `SEED_LENGTH` | `55` | Seed string character count |
 | `TX_HASH_LENGTH` | `60` | Transaction hash character count |
-| `TICKS_TO_EXPIRY` | `20` | Default ticks ahead used for `targetTick` |
+| `NUMBER_OF_COMPUTORS` | `676` | Total number of computors in the network |
+| `QUORUM` | `451` | Quorum threshold (2/3 + 1 of computors) |
+| `NUMBER_OF_TRANSACTIONS_PER_TICK` | `4096` | Max transactions per tick (must be 2^N) |
+| `MAX_NUMBER_OF_CONTRACTS` | `1024` | Max number of smart contracts |
+| `NUMBER_OF_EXCHANGED_PEERS` | `4` | Number of peers exchanged in EXCHANGE_PUBLIC_PEERS |
+| `HEADER_SIZE` | `8` | Request/response header size in bytes |
+| `SPECTRUM_DEPTH` | `24` | Spectrum Merkle tree depth |
+| `ASSETS_DEPTH` | `24` | Assets Merkle tree depth |
 
 ---
 

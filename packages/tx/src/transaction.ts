@@ -5,9 +5,6 @@ import { BinaryReader } from './binary-reader.js'
 import { BinaryWriter } from './binary-writer.js'
 import { InvalidTransactionError, PayloadTooLargeError, TickInThePastError } from './errors.js'
 
-const HEADER_SIZE = PROTOCOL.TX_HEADER_SIZE // 80
-const SIG_SIZE = PROTOCOL.SIGNATURE_SIZE // 64
-const PK_SIZE = PROTOCOL.PUBLIC_KEY_SIZE // 32
 
 export interface TransactionInput {
   /**
@@ -66,14 +63,14 @@ export function buildTransaction(input: TransactionInput): Uint8Array {
       ? identityToPublicKey(input.destination)
       : (input.destination as Uint8Array)
 
-  if (sourcePublicKey.byteLength !== PK_SIZE) {
+  if (sourcePublicKey.byteLength !== PROTOCOL.PUBLIC_KEY_SIZE) {
     throw new InvalidTransactionError(
-      `source must resolve to exactly ${PK_SIZE} bytes, got ${sourcePublicKey.byteLength}`,
+      `source must resolve to exactly ${PROTOCOL.PUBLIC_KEY_SIZE} bytes, got ${sourcePublicKey.byteLength}`,
     )
   }
-  if (destinationPublicKey.byteLength !== PK_SIZE) {
+  if (destinationPublicKey.byteLength !== PROTOCOL.PUBLIC_KEY_SIZE) {
     throw new InvalidTransactionError(
-      `destination must resolve to exactly ${PK_SIZE} bytes, got ${destinationPublicKey.byteLength}`,
+      `destination must resolve to exactly ${PROTOCOL.PUBLIC_KEY_SIZE} bytes, got ${destinationPublicKey.byteLength}`,
     )
   }
   if (payload.byteLength > PROTOCOL.MAX_INPUT_SIZE) {
@@ -83,7 +80,7 @@ export function buildTransaction(input: TransactionInput): Uint8Array {
     throw new TickInThePastError(input.targetTick, input.currentTick)
   }
 
-  const writer = new BinaryWriter(HEADER_SIZE + payload.byteLength)
+  const writer = new BinaryWriter(PROTOCOL.TX_HEADER_SIZE + payload.byteLength)
   writer.writeBytes(sourcePublicKey)
   writer.writeBytes(destinationPublicKey)
   writer.writeInt64(input.amount)
@@ -109,7 +106,7 @@ export function buildTransaction(input: TransactionInput): Uint8Array {
 export async function signTransaction(txBytes: Uint8Array, seed: Seed): Promise<Uint8Array> {
   const digest = k12(txBytes, 32)
   const signature = await sign(digest, seed)
-  const result = new Uint8Array(txBytes.byteLength + SIG_SIZE)
+  const result = new Uint8Array(txBytes.byteLength + PROTOCOL.SIGNATURE_SIZE)
   result.set(txBytes, 0)
   result.set(signature, txBytes.byteLength)
   return result
@@ -135,14 +132,14 @@ export function encodeTransaction(signedTx: Uint8Array): Base64 {
  * @throws {InvalidTransactionError} If `bytes` is too short to contain a valid header.
  */
 export function decodeTransaction(bytes: Uint8Array): DecodedTransaction {
-  if (bytes.byteLength < HEADER_SIZE) {
+  if (bytes.byteLength < PROTOCOL.TX_HEADER_SIZE) {
     throw new InvalidTransactionError(
-      `buffer too small: expected ≥ ${HEADER_SIZE} bytes, got ${bytes.byteLength}`,
+      `buffer too small: expected ≥ ${PROTOCOL.TX_HEADER_SIZE} bytes, got ${bytes.byteLength}`,
     )
   }
   const reader = new BinaryReader(bytes)
-  const sourcePublicKey = reader.readBytes(PK_SIZE)
-  const destinationPublicKey = reader.readBytes(PK_SIZE)
+  const sourcePublicKey = reader.readBytes(PROTOCOL.PUBLIC_KEY_SIZE)
+  const destinationPublicKey = reader.readBytes(PROTOCOL.PUBLIC_KEY_SIZE)
   const amount = reader.readInt64()
   const targetTick = reader.readUint32()
   const inputType = reader.readUint16()
@@ -171,7 +168,7 @@ export function computeTransactionHash(signedTxBytes: Uint8Array): TxHash {
  * @returns `true` if the signature is valid.
  */
 export function verifyTransactionSignature(signedTxBytes: Uint8Array): boolean {
-  if (signedTxBytes.byteLength < HEADER_SIZE + SIG_SIZE) return false
+  if (signedTxBytes.byteLength < PROTOCOL.TX_HEADER_SIZE + PROTOCOL.SIGNATURE_SIZE) return false
 
   const inputSize = new DataView(
     signedTxBytes.buffer,
@@ -179,12 +176,12 @@ export function verifyTransactionSignature(signedTxBytes: Uint8Array): boolean {
     signedTxBytes.byteLength,
   ).getUint16(78, true)
 
-  const txEnd = HEADER_SIZE + inputSize
-  if (signedTxBytes.byteLength < txEnd + SIG_SIZE) return false
+  const txEnd = PROTOCOL.TX_HEADER_SIZE + inputSize
+  if (signedTxBytes.byteLength < txEnd + PROTOCOL.SIGNATURE_SIZE) return false
 
   const txBytes = signedTxBytes.slice(0, txEnd)
-  const signature = signedTxBytes.slice(txEnd, txEnd + SIG_SIZE)
-  const sourcePublicKey = signedTxBytes.slice(0, PK_SIZE)
+  const signature = signedTxBytes.slice(txEnd, txEnd + PROTOCOL.SIGNATURE_SIZE)
+  const sourcePublicKey = signedTxBytes.slice(0, PROTOCOL.PUBLIC_KEY_SIZE)
 
   const digest = k12(txBytes, 32)
   return verify(digest, signature, sourcePublicKey)

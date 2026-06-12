@@ -1,6 +1,6 @@
-import { QubicRpcError } from './errors.js'
 import { err, ok } from '@qubic.org/types'
 import type { Result } from '@qubic.org/types'
+import { QubicRpcError } from './errors.js'
 
 export async function unwrap<T>(
   promise: Promise<{ data?: T; error?: unknown; response: Response }>,

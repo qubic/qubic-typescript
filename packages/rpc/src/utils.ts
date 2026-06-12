@@ -1,10 +1,10 @@
+import { err } from '@qubic.org/types'
+import type { Result } from '@qubic.org/types'
 import { QubicRpcError } from './errors.js'
 import type { LiveClient, LiveClientOptions } from './live-client.js'
 import { createLiveClient } from './live-client.js'
 import { createQueryClient } from './query-client.js'
 import type { QueryClient, QueryClientOptions } from './query-client.js'
-import { err } from '@qubic.org/types'
-import type { Result } from '@qubic.org/types'
 
 export interface QubicClient {
   live: LiveClient

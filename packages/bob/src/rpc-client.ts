@@ -1,7 +1,7 @@
 import { isIdentity } from '@qubic.org/types'
 import type { Base64, Identity, TxHash } from '@qubic.org/types'
-import { BobRpcError } from './errors.js'
 import { type Result, err, ok } from '@qubic.org/types'
+import { BobRpcError } from './errors.js'
 import type {
   BobAllAssetTransferFilter,
   BobAssetTransferFilter,

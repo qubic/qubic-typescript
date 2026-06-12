@@ -46,30 +46,15 @@ describe('decodeCurrentTickInfo', () => {
 
 describe('decodeExchangePublicPeers', () => {
   test('decodes four IPv4 addresses', () => {
-    const buf = new Uint8Array([
-      192, 168, 1, 1,
-      10, 0, 0, 2,
-      172, 16, 0, 3,
-      8, 8, 8, 8,
-    ])
+    const buf = new Uint8Array([192, 168, 1, 1, 10, 0, 0, 2, 172, 16, 0, 3, 8, 8, 8, 8])
     const result = decodeExchangePublicPeers(buf)
-    expect(result.peers).toEqual([
-      '192.168.1.1',
-      '10.0.0.2',
-      '172.16.0.3',
-      '8.8.8.8',
-    ])
+    expect(result.peers).toEqual(['192.168.1.1', '10.0.0.2', '172.16.0.3', '8.8.8.8'])
   })
 
   test('decodes all-zeros payload', () => {
     const buf = new Uint8Array(16)
     const result = decodeExchangePublicPeers(buf)
-    expect(result.peers).toEqual([
-      '0.0.0.0',
-      '0.0.0.0',
-      '0.0.0.0',
-      '0.0.0.0',
-    ])
+    expect(result.peers).toEqual(['0.0.0.0', '0.0.0.0', '0.0.0.0', '0.0.0.0'])
   })
 
   test('decodes max-value octets', () => {

@@ -58,13 +58,17 @@ export function buildTransaction(input: TransactionInput): Uint8Array {
     typeof input.source === 'string'
       ? isIdentity(input.source)
         ? identityToPublicKey(input.source)
-        : (() => { throw new InvalidIdentityError(input.source as string) })()
+        : (() => {
+            throw new InvalidIdentityError(input.source as string)
+          })()
       : input.source
   const destinationPublicKey =
     typeof input.destination === 'string'
       ? isIdentity(input.destination)
         ? identityToPublicKey(input.destination)
-        : (() => { throw new InvalidIdentityError(input.destination as string) })()
+        : (() => {
+            throw new InvalidIdentityError(input.destination as string)
+          })()
       : input.destination
 
   if (sourcePublicKey.byteLength !== PROTOCOL.PUBLIC_KEY_SIZE) {

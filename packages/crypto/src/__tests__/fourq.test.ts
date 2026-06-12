@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'bun:test'
 import {
-  pointIdentity,
   pointGenerator,
+  pointIdentity,
   pointMarshal,
   pointUnmarshal,
   scalarBaseMult,

@@ -1,9 +1,9 @@
+import { err, ok } from '@qubic.org/types'
+import type { Result } from '@qubic.org/types'
 import createClient from 'openapi-fetch'
 import { sig, unwrap } from './_utils.js'
 import { QubicRpcError } from './errors.js'
 import type { components, paths } from './live-schema'
-import { err, ok } from '@qubic.org/types'
-import type { Result } from '@qubic.org/types'
 
 export type LiveClientOptions = {
   baseUrl?: string

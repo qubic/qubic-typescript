@@ -32,7 +32,8 @@ export function useEventLogs(
   return useQuery<EventLogsResult>({
     queryKey: ['qubic', 'eventLogs', request],
     queryFn: async () => {
-      if (!archiveClient) throw new Error('useEventLogs requires archiveClient to be provided to QubicProvider')
+      if (!archiveClient)
+        throw new Error('useEventLogs requires archiveClient to be provided to QubicProvider')
       const client = archiveClient
       const r = await client.getEventLogs(request as GetEventLogsRequest)
       if (!r.ok) throw r.error

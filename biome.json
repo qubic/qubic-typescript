@@ -75,10 +75,7 @@
   ],
   "files": {
     "ignore": [
-      "dist/**",
-      "out/**",
       "**/dist/**",
-      "node_modules/**",
       "**/node_modules/**",
       "**/*.d.ts",
       "coverage/**",

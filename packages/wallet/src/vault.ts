@@ -111,7 +111,8 @@ async function decryptPayload(vaultData: VaultData, password: string): Promise<S
     throw new VaultDecryptionError({ cause: e })
   }
 
-  if (!Array.isArray(payload.seeds)) throw new InvalidVaultError('seeds field is not an array')
+  if (!Array.isArray(payload.seeds) || !payload.seeds.every((s) => typeof s === 'string'))
+    throw new InvalidVaultError('seeds must be an array of strings')
   return payload.seeds.map((s) => toSeed(s))
 }
 

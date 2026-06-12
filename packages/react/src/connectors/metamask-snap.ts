@@ -1,4 +1,5 @@
 import type { BroadcastTransactionResponse } from '@qubic.org/rpc'
+import type { Identity } from '@qubic.org/types'
 import type {
   ConnectOptions,
   SendTransactionResult,
@@ -135,7 +136,7 @@ export function createMetaMaskSnapConnector(
         })
         const identity = typeof result === 'string' ? result : result?.identity
         if (!identity) return null
-        return { identity: identity as import('@qubic.org/types').Identity }
+        return { identity: identity as Identity }
       } catch {
         return null
       }

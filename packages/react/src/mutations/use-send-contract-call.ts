@@ -30,15 +30,17 @@ export interface SendContractCallParams {
  *
  * @example
  * ```tsx
+ * import { contractIndexToIdentity } from '@qubic.org/crypto'
  * import { qearn } from '@qubic.org/contracts'
  *
  * const { mutate: send, isPending } = useSendContractCall()
+ * const call = qearn.buildUnlockInput({ amount: 10_000_000n, lockedEpoch: 212 })
  *
  * send({
  *   from: identities[0],
- *   inputType: qearn.QEARN_LOCK_INPUT_TYPE,
- *   payload: qearn.buildQearnLockInput({ amount: 10_000_000n }),
- *   amount: 10_000_000n,
+ *   inputType: call.inputType,
+ *   payload: call.payload,
+ *   destination: contractIndexToIdentity(qearn.contractIndex),
  * })
  * ```
  */

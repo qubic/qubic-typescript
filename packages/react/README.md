@@ -126,23 +126,25 @@ Signs and broadcasts a smart contract procedure call.
 
 ```tsx
 import { useSendContractCall, useVaultState } from '@qubic.org/react'
-import { QEARN_LOCK_INPUT_TYPE, buildQearnLockInput } from '@qubic.org/contracts'
+import { contractIndexToIdentity } from '@qubic.org/crypto'
+import { qearn } from '@qubic.org/contracts'
 
-function LockPanel() {
+function UnlockPanel() {
   const { identities } = useVaultState()
   const { mutate: send, isPending } = useSendContractCall()
+  const call = qearn.buildUnlockInput({ amount: 10_000_000n, lockedEpoch: 212 })
 
   return (
     <button
       disabled={isPending}
       onClick={() => send({
         from: identities[0]!,
-        inputType: QEARN_LOCK_INPUT_TYPE,
-        payload: buildQearnLockInput({ amount: 10_000_000n }),
-        amount: 10_000_000n,
+        inputType: call.inputType,
+        payload: call.payload,
+        destination: contractIndexToIdentity(qearn.contractIndex),
       })}
     >
-      Lock QU
+      Unlock QU
     </button>
   )
 }
@@ -202,7 +204,7 @@ const { data } = useTransaction(txHash)
 
 ```tsx
 const { data } = useEventLogs({
-  filters: { eventType: '0' },
+  filters: { logType: '0' },
   pagination: { offset: 0, size: 20 },
 })
 ```
@@ -255,7 +257,6 @@ import {
   createWalletConnectConnector,
   createMetaMaskSnapConnector,
 } from '@qubic.org/react'
-import type { Base64 } from '@qubic.org/types'
 
 // Create connectors outside the component tree (stable references)
 const connectors = [
@@ -271,9 +272,9 @@ const connectors = [
 
   createMetaMaskSnapConnector({
     broadcast: async (signedBase64) => {
-      const result = await liveClient.broadcastTransaction(signedBase64 as Base64)
-      if (!result.isOk()) throw result.error
-      return { networkTxId: result.value.transactionId, broadcast: result.value }
+      const result = await liveClient.broadcastTransaction(signedBase64)
+      if (!result.ok) throw result.error
+      return { networkTxId: result.value.transactionId ?? '', broadcast: result.value }
     },
   }),
 ]

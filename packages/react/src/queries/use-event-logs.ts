@@ -18,7 +18,7 @@ type Options = Omit<UseQueryOptions<EventLogsResult>, 'queryKey' | 'queryFn' | '
  * @example
  * ```tsx
  * const { data } = useEventLogs({
- *   filters: { eventType: '0' },
+ *   filters: { logType: '0' },
  *   pagination: { offset: 0, size: 20 },
  * })
  * data?.eventLogs.forEach(e => console.log(e))

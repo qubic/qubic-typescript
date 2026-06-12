@@ -1,0 +1,88 @@
+{
+  "contractIndex": 3,
+  "contractName": "Random",
+  "contractAddress": "DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANMIG",
+  "epoch": 217,
+  "coreVersion": "v1.295.2",
+  "structs": {},
+  "procedures": [
+    {
+      "kind": "procedure",
+      "inputType": 1,
+      "name": "RevealAndCommit",
+      "inputFields": [
+        {
+          "name": "reveal",
+          "type": "bytes",
+          "offset": 0,
+          "byteLength": 512
+        },
+        {
+          "name": "commit",
+          "type": "id",
+          "offset": 512,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [],
+      "inputSize": 544,
+      "outputSize": 0
+    },
+    {
+      "kind": "procedure",
+      "inputType": 2,
+      "name": "BuyEntropy",
+      "inputFields": [
+        {
+          "name": "collateralTier",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        },
+        {
+          "name": "numberOfBits",
+          "type": "uint16",
+          "offset": 1,
+          "byteLength": 2
+        },
+        {
+          "name": "trustee",
+          "type": "id",
+          "offset": 3,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "entropy",
+          "type": "bytes",
+          "offset": 0,
+          "byteLength": 512
+        }
+      ],
+      "inputSize": 35,
+      "outputSize": 512
+    }
+  ],
+  "functions": [
+    {
+      "kind": "function",
+      "inputType": 1,
+      "name": "Fees",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "fees",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 64,
+          "arrayLength": 16,
+          "arrayItemType": "uint32",
+          "arrayItemByteLength": 4
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 64
+    }
+  ]
+}

@@ -6,6 +6,7 @@
  *   --local              Read from resources/core/src/contracts/ (current epoch only, fast)
  *   --from-epoch N       Clone qubic/core once, scan tags since epoch N, write one snapshot
  *                        folder per epoch and a version-range registry.json
+ *   --catch-up           Auto-detect current epoch from RPC, backfill from last known epoch
  *   --rebuild-registry   Rebuild registry.json from all existing epoch snapshots on disk
  *   --patch-addresses    Add/refresh contractAddress on every snapshot and registry.json
  *
@@ -13,6 +14,7 @@
  *   --use-local-git      Source files from resources/core via git-show instead of cloning
  *   --contracts A,B      Process only these contracts (filename stem or label, comma-separated)
  *   --token GH_TOKEN     GitHub API token for fetching tags (--from-epoch only)
+ *   --rpc-url URL        RPC endpoint for --catch-up (default: https://rpc.qubic.org/live/v1)
  *   --force              Overwrite existing snapshots (--from-epoch only)
  *   --dry-run            Print what would be written without writing anything
  *
@@ -39,6 +41,8 @@ const { values: args } = parseArgs({
     'use-local-git': { type: 'boolean', default: false },
     'from-epoch': { type: 'string' },
     'to-epoch': { type: 'string' },
+    'catch-up': { type: 'boolean', default: false },
+    'rpc-url': { type: 'string' },
     contracts: { type: 'string' },
     token: { type: 'string' },
     force: { type: 'boolean', default: false },
@@ -212,14 +216,19 @@ async function runLocal() {
 async function buildEpochRefs(
   allTags: string[],
   showFile: (ref: string, path: string) => Promise<string | null>,
+  requiredMaxEpoch?: number,
 ): Promise<Map<number, string>> {
-  // Load cached epoch-refs if available
+  // Load cached epoch-refs if available and covers the required range
   try {
     const cached = JSON.parse(readFileSync(EPOCH_REFS_PATH, 'utf-8')) as Record<string, string>
     const map = new Map<number, string>()
     for (const [epoch, tag] of Object.entries(cached)) map.set(Number(epoch), tag)
-    console.log(`Loaded ${map.size} epoch→tag refs from ${EPOCH_REFS_PATH}`)
-    return map
+    const maxCachedEpoch = Math.max(...map.keys())
+    if (requiredMaxEpoch === undefined || maxCachedEpoch >= requiredMaxEpoch) {
+      console.log(`Loaded ${map.size} epoch→tag refs from ${EPOCH_REFS_PATH}`)
+      return map
+    }
+    console.log(`Cached epoch-refs only go to ${maxCachedEpoch}, need ${requiredMaxEpoch} — refreshing…`)
   } catch {
     // Build fresh
   }
@@ -261,7 +270,7 @@ async function runFromEpoch(fromEpoch: number, toEpoch: number) {
 
   try {
     // Phase 1: build epoch→tag map (cached in data/epoch-refs.json)
-    const epochToTag = await buildEpochRefs(allTags, showFile)
+    const epochToTag = await buildEpochRefs(allTags, showFile, toEpoch)
 
     const epochs = [...epochToTag.keys()]
       .filter((e) => e >= fromEpoch && e <= toEpoch)
@@ -610,6 +619,55 @@ function patchAddresses() {
   }
 }
 
+// ── Mode: --catch-up ────────────────────────────────────────────────────────
+
+async function getLastKnownEpoch(): Promise<number> {
+  // 1. Check epoch-refs.json
+  try {
+    const refs = JSON.parse(readFileSync(EPOCH_REFS_PATH, 'utf-8')) as Record<string, string>
+    const maxRef = Math.max(...Object.keys(refs).map(Number))
+    if (!Number.isNaN(maxRef)) return maxRef
+  } catch { /* no refs */ }
+
+  // 2. Fall back to highest epoch snapshot dir
+  const dirs = existsSync(EPOCHS_DIR)
+    ? readdirSync(EPOCHS_DIR, { withFileTypes: true })
+        .filter((d) => d.isDirectory())
+        .map((d) => Number(d.name))
+        .filter((n) => !Number.isNaN(n))
+    : []
+  return dirs.length > 0 ? Math.max(...dirs) : 0
+}
+
+async function fetchCurrentEpoch(rpcUrl: string): Promise<number> {
+  const res = await fetch(`${rpcUrl}/tick-info`)
+  if (!res.ok) throw new Error(`RPC error: ${res.status} ${res.statusText}`)
+  const data = (await res.json()) as { tickInfo?: { epoch?: number } }
+  const epoch = data.tickInfo?.epoch
+  if (epoch === undefined || epoch === null) throw new Error('Could not read epoch from RPC response')
+  return epoch
+}
+
+async function runCatchUp() {
+  const rpcUrl = args['rpc-url'] ?? 'https://rpc.qubic.org/live/v1'
+
+  console.log(`Querying current epoch from ${rpcUrl}…`)
+  const currentEpoch = await fetchCurrentEpoch(rpcUrl)
+  console.log(`Current epoch: ${currentEpoch}`)
+
+  const lastKnown = await getLastKnownEpoch()
+  console.log(`Last known epoch: ${lastKnown}`)
+
+  if (currentEpoch <= lastKnown) {
+    console.log('Already up to date — nothing to backfill.')
+    return
+  }
+
+  const fromEpoch = lastKnown + 1
+  console.log(`Backfilling epochs ${fromEpoch}–${currentEpoch}…`)
+  await runFromEpoch(fromEpoch, currentEpoch)
+}
+
 // ── Dispatch ──────────────────────────────────────────────────────────────────
 
 if (args.local) {
@@ -620,6 +678,8 @@ if (args.local) {
   patchAddresses()
 } else if (args['migrate-snapshots']) {
   migrateSnapshots()
+} else if (args['catch-up']) {
+  await runCatchUp()
 } else if (args['from-epoch'] !== undefined) {
   const fromEpoch = Number(args['from-epoch'])
   const toEpoch = args['to-epoch'] !== undefined ? Number(args['to-epoch']) : 9999
@@ -628,6 +688,7 @@ if (args.local) {
   console.error(
     'Usage:\n' +
       '  bun scripts/backfill.ts --local [--dry-run]\n' +
+      '  bun scripts/backfill.ts --catch-up [--rpc-url URL] [--contracts A,B] [--token GH_TOKEN] [--dry-run]\n' +
       '  bun scripts/backfill.ts --rebuild-registry [--contracts A,B] [--dry-run]\n' +
       '  bun scripts/backfill.ts --patch-addresses [--dry-run]\n' +
       '  bun scripts/backfill.ts --migrate-snapshots [--dry-run]\n' +

@@ -1,18 +1,10 @@
-import type {
-  CustomMessageSubtype,
-  EndDistributeDividendsCustomMessage,
-  EndEpochCustomMessage,
-  Identity,
-  LogType,
-  StartDistributeDividendsCustomMessage,
-  StartEpochCustomMessage,
-  UnknownCustomMessage,
-} from '@qubic.org/types'
+import type { CustomMessageSubtype, Identity, LogType } from '@qubic.org/types'
 
 export type {
   CustomMessageSubtype,
   EndDistributeDividendsCustomMessage,
   EndEpochCustomMessage,
+  LogType,
   StartDistributeDividendsCustomMessage,
   StartEpochCustomMessage,
   UnknownCustomMessage,

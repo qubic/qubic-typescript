@@ -69,7 +69,7 @@ describe('publicKeyToIdentity / identityToPublicKey', () => {
 
   test('isValidIdentityChecksum returns false for bad checksum', () => {
     const identity = deriveIdentityFromSeed(KNOWN_SEED)
-    const corrupt = identity.slice(0, 56) + 'AAAA'
+    const corrupt = `${identity.slice(0, 56)}AAAA`
     expect(isValidIdentityChecksum(corrupt)).toBe(false)
   })
 })

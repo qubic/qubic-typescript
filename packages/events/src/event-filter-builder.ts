@@ -51,10 +51,20 @@ export function eventFilter(): EventFilterBuilder {
     build(): EventFilter {
       return { ...state }
     },
+    /**
+     * Converts this filter to a Bob-compatible filter.
+     *
+     * **Limitation:** The Bob API only supports a single `logType` value, so
+     * when multiple types are specified via {@link ofTypes}, only the first
+     * type is forwarded. The remaining types must be filtered client-side.
+     */
     toBobFilter(): BobLogFilter {
       const f: BobLogFilter = {}
       if (state.identity !== undefined) f.identity = state.identity
       if (state.contractIndex !== undefined) f.contractIndex = state.contractIndex
+      // Bob API limitation: logType is a single value, not an array.
+      // Only the first requested type is sent; remaining types are
+      // dropped and must be handled by client-side filtering.
       const lt = state.logTypes?.[0]
       if (lt !== undefined) f.logType = lt
       if (state.fromTick !== undefined) f.fromTick = state.fromTick

@@ -1,0 +1,47 @@
+---
+title: isValidIdentityChecksum
+description: Validates the shape and checksum of a Qubic identity string, returning true only for structurally valid identities.
+---
+
+## Signature
+
+```ts
+isValidIdentityChecksum(identity: string): identity is Identity
+```
+
+## Purpose
+
+Returns `true` when the identity has valid shape (60 uppercase characters) and a correct K12-based checksum. This is a type guard that narrows `string` to `Identity`.
+
+Unlike the structural brand helpers in `@qubic.org/types` (e.g. `toIdentity`), this function performs the full round-trip checksum validation used by the Qubic identity format. Use it to validate user input without throwing.
+
+```ts
+import { isValidIdentityChecksum } from "@qubic.org/crypto"
+
+const input = "CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL"
+
+if (isValidIdentityChecksum(input)) {
+  // input is typed as Identity here
+  console.log("Valid identity:", input)
+} else {
+  console.log("Invalid identity checksum")
+}
+```
+
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `identity` | `string` | The string to validate |
+
+## Returns
+
+`identity is Identity` — `true` if the string is exactly 60 uppercase ASCII characters with a valid K12 checksum. TypeScript narrows the type to `Identity` when the result is `true`.
+
+## How it differs from `toIdentity`
+
+| | `toIdentity` | `isValidIdentityChecksum` |
+|---|---|---|
+| On invalid input | Throws `InvalidIdentityError` | Returns `false` |
+| Checksum validation | No (structural only) | Yes (full K12 round-trip) |
+| Use case | Known-good literals | User-supplied or external input |

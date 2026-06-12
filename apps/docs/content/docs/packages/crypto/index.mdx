@@ -49,9 +49,10 @@ pnpm add @qubic.org/crypto
 
 | Page | What's covered |
 |---|---|
-| [Key derivation](./key-derivation) | `publicKeyFromSeed`, `identityFromSeed`, `identityToPublicKey`, `publicKeyToIdentity` |
-| [Hashing](./hashing) | `K12` — KangarooTwelve variable-output hash |
-| [Signing](./signing) | `sign`, `verify` — SchnorrQ transaction signing |
+| [Key derivation](./identity-from-seed) | `publicKeyFromSeed`, `deriveIdentityFromSeed`, `identityToPublicKey`, `publicKeyToIdentity` |
+| [Identity checksum](./is-valid-identity-checksum) | `isValidIdentityChecksum` — validate identity checksum |
+| [Hashing](./k12) | `k12` — KangarooTwelve variable-output hash |
+| [Signing](./sign) | `sign`, `verify` — SchnorrQ transaction signing |
 
 ### All exports
 
@@ -59,16 +60,34 @@ pnpm add @qubic.org/crypto
 import {
   // Key derivation
   publicKeyFromSeed,
-  identityFromSeed,
+  deriveIdentityFromSeed,
   identityToPublicKey,
   publicKeyToIdentity,
+  contractIndexToIdentity,
+
+  // Identity validation
+  isValidIdentityChecksum,
 
   // Hashing
-  K12,
+  k12,
 
   // Signing
   sign,
   verify,
+
+  // Random
+  generateRandomSeed,
+  getRandomBytes,
+
+  // Types
+  type Brand,
+  type Identity,
+  type Seed,
+
+  // Errors
+  InvalidIdentityError,
+  InvalidSeedError,
+  QubicError,
 } from "@qubic.org/crypto"
 ```
 
@@ -106,8 +125,8 @@ import { toSeed } from "@qubic.org/types"
 const seed   = toSeed("aaaa...") // 55-char seed
 const digest = new Uint8Array(32) // transaction digest bytes
 
-const signature = await sign(seed, digest)   // Uint8Array (64 bytes)
-const valid     = await verify(publicKey, digest, signature) // boolean
+const signature = await sign(digest, seed)   // Uint8Array (64 bytes)
+const valid     = verify(digest, signature, publicKey) // boolean
 ```
 
 ### Convert between identity and public key

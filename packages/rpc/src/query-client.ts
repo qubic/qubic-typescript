@@ -62,8 +62,15 @@ export function createQueryClient(options: QueryClientOptions = {}) {
       )
       if (!r.ok) return r
       const v = r.value as Record<string, unknown>
-      if (v['tickNumber'] == null || v['epoch'] == null || v['intervalInitialTick'] == null || v['logTickNumber'] == null) {
-        return err(new QubicRpcError(-2, '/getLastProcessedTick', 'missing required fields in response'))
+      if (
+        v.tickNumber == null ||
+        v.epoch == null ||
+        v.intervalInitialTick == null ||
+        v.logTickNumber == null
+      ) {
+        return err(
+          new QubicRpcError(-2, '/getLastProcessedTick', 'missing required fields in response'),
+        )
       }
       return ok(
         v as {
@@ -114,7 +121,8 @@ export function createQueryClient(options: QueryClientOptions = {}) {
       )
       if (!r.ok) return r
       const td = (r.value as { tickData?: QueryTickData }).tickData
-      if (td == null) return err(new QubicRpcError(-2, '/getTickData', 'missing tickData in response'))
+      if (td == null)
+        return err(new QubicRpcError(-2, '/getTickData', 'missing tickData in response'))
       return ok(td)
     },
 
@@ -129,7 +137,10 @@ export function createQueryClient(options: QueryClientOptions = {}) {
       )
       if (!r.ok) return r
       const tx = (r.value as { transaction?: QueryTransaction }).transaction
-      if (tx == null) return err(new QubicRpcError(-2, '/getTransactionByHash', 'missing transaction in response'))
+      if (tx == null)
+        return err(
+          new QubicRpcError(-2, '/getTransactionByHash', 'missing transaction in response'),
+        )
       return ok(tx)
     },
 
@@ -150,7 +161,8 @@ export function createQueryClient(options: QueryClientOptions = {}) {
         hits?: Hits
         validForTick?: number
       }
-      if (v.hits == null) return err(new QubicRpcError(-2, '/getTransactionsForIdentity', 'missing hits in response'))
+      if (v.hits == null)
+        return err(new QubicRpcError(-2, '/getTransactionsForIdentity', 'missing hits in response'))
       return ok({
         transactions: v.transactions ?? [],
         hits: v.hits,
@@ -188,7 +200,8 @@ export function createQueryClient(options: QueryClientOptions = {}) {
         hits?: Hits
         validForTick?: number
       }
-      if (v.hits == null) return err(new QubicRpcError(-2, '/getEventLogs', 'missing hits in response'))
+      if (v.hits == null)
+        return err(new QubicRpcError(-2, '/getEventLogs', 'missing hits in response'))
       return ok({
         eventLogs: v.eventLogs ?? [],
         hits: v.hits,

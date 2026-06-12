@@ -397,6 +397,11 @@ export function buildPayloadManual(
         `buildPayloadManual does not support '${f.type}' fields — use buildPayload with a full BinaryField descriptor instead`,
       )
     }
+    if (f.type === 'id') {
+      throw new PayloadBuildError(
+        `buildPayloadManual does not support 'id' fields — use buildPayload with an identityToPublicKey parameter instead`,
+      )
+    }
     totalSize += f.value instanceof Uint8Array ? f.value.byteLength : (sizes[f.type] ?? 0)
   }
   const buf = new Uint8Array(totalSize)

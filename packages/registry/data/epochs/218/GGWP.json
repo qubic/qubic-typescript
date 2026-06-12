@@ -1,0 +1,705 @@
+{
+  "contractIndex": 28,
+  "contractName": "GGWP",
+  "contractAddress": "CBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARUCN",
+  "epoch": 218,
+  "structs": {},
+  "procedures": [
+    {
+      "kind": "procedure",
+      "inputType": 1,
+      "name": "DepositRevenue",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 2,
+      "name": "AddClanMember",
+      "inputFields": [
+        {
+          "name": "memberAddress",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "rank",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 40,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 3,
+      "name": "RemoveClanMember",
+      "inputFields": [
+        {
+          "name": "memberAddress",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 32,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 4,
+      "name": "SetClanRank",
+      "inputFields": [
+        {
+          "name": "memberAddress",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "rank",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 40,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 5,
+      "name": "SetAdmin",
+      "inputFields": [
+        {
+          "name": "newAdmin",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 32,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 6,
+      "name": "SetExcludeAddress",
+      "inputFields": [
+        {
+          "name": "slot",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "address",
+          "type": "id",
+          "offset": 8,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 40,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 7,
+      "name": "Stake",
+      "inputFields": [
+        {
+          "name": "numberOfShares",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 8,
+      "name": "RequestUnstake",
+      "inputFields": [
+        {
+          "name": "numberOfShares",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 9,
+      "name": "FinalizeUnstake",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 10,
+      "name": "DepositStakingRewards",
+      "inputFields": [
+        {
+          "name": "numberOfShares",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 11,
+      "name": "ClaimStakingRewards",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "claimedAmount",
+          "type": "uint64",
+          "offset": 4,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 12
+    },
+    {
+      "kind": "procedure",
+      "inputType": 12,
+      "name": "ProposeGovChange",
+      "inputFields": [
+        {
+          "name": "targetType",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        },
+        {
+          "name": "newAddress",
+          "type": "id",
+          "offset": 1,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "proposalIndex",
+          "type": "uint64",
+          "offset": 4,
+          "byteLength": 8
+        },
+        {
+          "name": "passed",
+          "type": "uint8",
+          "offset": 12,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 33,
+      "outputSize": 13
+    },
+    {
+      "kind": "procedure",
+      "inputType": 13,
+      "name": "VoteGovChange",
+      "inputFields": [
+        {
+          "name": "proposalIndex",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "approve",
+          "type": "uint8",
+          "offset": 8,
+          "byteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "passed",
+          "type": "uint8",
+          "offset": 4,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 9,
+      "outputSize": 5
+    }
+  ],
+  "functions": [
+    {
+      "kind": "function",
+      "inputType": 1,
+      "name": "GetStatus",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "holderCount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "totalTokensSnapshot",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "clanMemberCount",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "clanWeightedTotal",
+          "type": "uint64",
+          "offset": 24,
+          "byteLength": 8
+        },
+        {
+          "name": "pendingRevenue",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "reinvestmentFund",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "execReserveFund",
+          "type": "uint64",
+          "offset": 48,
+          "byteLength": 8
+        },
+        {
+          "name": "totalDistributed",
+          "type": "uint64",
+          "offset": 56,
+          "byteLength": 8
+        },
+        {
+          "name": "totalDeposited",
+          "type": "uint64",
+          "offset": 64,
+          "byteLength": 8
+        },
+        {
+          "name": "lastPayoutTick",
+          "type": "uint64",
+          "offset": 72,
+          "byteLength": 8
+        },
+        {
+          "name": "lastDistributionEpoch",
+          "type": "uint64",
+          "offset": 80,
+          "byteLength": 8
+        },
+        {
+          "name": "adminAddress",
+          "type": "id",
+          "offset": 88,
+          "byteLength": 32
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 120
+    },
+    {
+      "kind": "function",
+      "inputType": 2,
+      "name": "GetHolderInfo",
+      "inputFields": [
+        {
+          "name": "holderAddress",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "tokenBalance",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "isHolder",
+          "type": "uint32",
+          "offset": 8,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 32,
+      "outputSize": 12
+    },
+    {
+      "kind": "function",
+      "inputType": 3,
+      "name": "GetClanMemberInfo",
+      "inputFields": [
+        {
+          "name": "memberAddress",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "rank",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "isMember",
+          "type": "uint32",
+          "offset": 8,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 32,
+      "outputSize": 12
+    },
+    {
+      "kind": "function",
+      "inputType": 4,
+      "name": "GetShareholderInfo",
+      "inputFields": [
+        {
+          "name": "shareholderAddress",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "shares",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "isShareholder",
+          "type": "uint32",
+          "offset": 8,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 32,
+      "outputSize": 12
+    },
+    {
+      "kind": "function",
+      "inputType": 5,
+      "name": "GetStakingInfo",
+      "inputFields": [
+        {
+          "name": "stakerAddress",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "stakedAmount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "pendingRewards",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "unstakeAmount",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "unstakeEpoch",
+          "type": "uint64",
+          "offset": 24,
+          "byteLength": 8
+        },
+        {
+          "name": "totalStaked",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "stakingRewardPool",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "isStaker",
+          "type": "uint32",
+          "offset": 48,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 32,
+      "outputSize": 52
+    },
+    {
+      "kind": "function",
+      "inputType": 6,
+      "name": "GetExcludeAddresses",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "address1",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "address2",
+          "type": "id",
+          "offset": 32,
+          "byteLength": 32
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 64
+    },
+    {
+      "kind": "function",
+      "inputType": 7,
+      "name": "GetDistributionPreview",
+      "inputFields": [
+        {
+          "name": "amount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "holderShare",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "shareholderShare",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "clanShare",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "reinvestShare",
+          "type": "uint64",
+          "offset": 24,
+          "byteLength": 8
+        },
+        {
+          "name": "execReserveShare",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 40
+    },
+    {
+      "kind": "function",
+      "inputType": 8,
+      "name": "GetGovProposal",
+      "inputFields": [
+        {
+          "name": "proposalIndex",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "status",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        },
+        {
+          "name": "targetType",
+          "type": "uint8",
+          "offset": 1,
+          "byteLength": 1
+        },
+        {
+          "name": "proposedAddress",
+          "type": "id",
+          "offset": 2,
+          "byteLength": 32
+        },
+        {
+          "name": "proposalId",
+          "type": "uint64",
+          "offset": 34,
+          "byteLength": 8
+        },
+        {
+          "name": "proposalEpoch",
+          "type": "uint64",
+          "offset": 42,
+          "byteLength": 8
+        },
+        {
+          "name": "yesShares",
+          "type": "uint64",
+          "offset": 50,
+          "byteLength": 8
+        },
+        {
+          "name": "totalShares",
+          "type": "uint64",
+          "offset": 58,
+          "byteLength": 8
+        },
+        {
+          "name": "requiredShares",
+          "type": "uint64",
+          "offset": 66,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 74
+    }
+  ]
+}

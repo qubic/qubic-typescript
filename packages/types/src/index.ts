@@ -9,4 +9,13 @@ export {
   InvalidTxHashError,
   QubicError,
 } from './errors.js'
-export type { Asset, AssetOrder, ComputorList, TickInfo } from './protocol.js'
+export type {
+  Asset,
+  AssetOrder,
+  ComputorList,
+  CurrentTickInfo,
+  EntityRecord,
+  ExchangePublicPeers,
+  RespondEntity,
+  TickInfo,
+} from './protocol.js'

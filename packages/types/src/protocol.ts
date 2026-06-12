@@ -7,6 +7,36 @@ export interface TickInfo {
   initialTick: number
 }
 
+export interface CurrentTickInfo {
+  tickDuration: number
+  epoch: number
+  tick: number
+  numberOfAlignedVotes: number
+  numberOfMisalignedVotes: number
+  initialTick: number
+}
+
+export interface EntityRecord {
+  /** 32-byte public key. */
+  publicKey: Uint8Array
+  incomingAmount: bigint
+  outgoingAmount: bigint
+  numberOfIncomingTransfers: number
+  numberOfOutgoingTransfers: number
+  latestIncomingTransferTick: number
+  latestOutgoingTransferTick: number
+}
+
+export interface RespondEntity {
+  entity: EntityRecord
+  tick: number
+  spectrumIndex: number
+}
+
+export interface ExchangePublicPeers {
+  peers: string[]
+}
+
 export interface Asset {
   issuer: Identity
   /** Up to 7 characters; padded with null bytes in binary encoding. */

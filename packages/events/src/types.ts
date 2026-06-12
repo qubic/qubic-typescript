@@ -71,6 +71,8 @@ export interface SpectrumStatsData {
   dustThresholdBurnAll: bigint
   dustThresholdBurnHalf: bigint
   numberOfEntities: number
+  /** 48 category population counts from the core node. */
+  entityCategoryPopulations: number[]
 }
 
 export interface AssetOwnershipManagingContractChangeData {

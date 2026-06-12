@@ -124,12 +124,17 @@ function decodeDustBurning(v: DataView, logType: number): DustBurningData {
 }
 
 function decodeSpectrumStats(v: DataView, logType: number): SpectrumStatsData {
-  assertMinSize(logType, v.byteLength, 28)
+  assertMinSize(logType, v.byteLength, 224)
+  const entityCategoryPopulations: number[] = []
+  for (let i = 0; i < 48; i++) {
+    entityCategoryPopulations.push(v.getUint32(28 + i * 4, true))
+  }
   return {
     totalAmount: v.getBigUint64(0, true),
     dustThresholdBurnAll: v.getBigUint64(8, true),
     dustThresholdBurnHalf: v.getBigUint64(16, true),
     numberOfEntities: v.getUint32(24, true),
+    entityCategoryPopulations,
   }
 }
 

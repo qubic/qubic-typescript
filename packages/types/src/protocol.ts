@@ -38,7 +38,7 @@ export interface CurrentTickInfo {
  *   6 × m256i digests + 2 × m256i transaction digests
  *   signature(64 bytes)
  *
- * Total: 8 + 8 + 2×4 + 2×4 + 6×32 + 2×32 + 64 = 360 bytes
+ * Total: 8 + 8 + 2×4 + 2×4 + 6×32 + 2×32 + 64 = 352 bytes
  */
 export interface TickVote {
   computorIndex: number
@@ -255,6 +255,13 @@ export interface SystemInfo {
 
   totalSpectrumAmount: bigint
   currentEntityBalanceDustThreshold: bigint
+
+  targetTickVoteSignature: number
+  computorPacketSignature: bigint
+  solutionAdditionalThreshold: bigint
+  _reserve2: bigint
+  _reserve3: bigint
+  _reserve4: bigint
 }
 
 // ── Request/response header ──────────────────────────────────────────────────

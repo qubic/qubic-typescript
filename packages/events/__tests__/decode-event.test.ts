@@ -104,17 +104,23 @@ describe('decodeEvent', () => {
 
   // ── SPECTRUM_STATS ────────────────────────────────────────────────────────
 
-  test('SPECTRUM_STATS decodes totals and entity count', () => {
+  test('SPECTRUM_STATS decodes totals, entity count, and category populations', () => {
     const buf = new Uint8Array(224)
     writeUint64LE(buf, 0, 1_000_000_000n)
     writeUint64LE(buf, 8, 1000n)
     writeUint64LE(buf, 16, 500n)
     writeUint32LE(buf, 24, 12345)
+    // Set first and last category population
+    writeUint32LE(buf, 28, 100)
+    writeUint32LE(buf, 28 + 47 * 4, 200)
 
     const event = decodeEvent(makeEvent(LOG_TYPE.SPECTRUM_STATS, buf))
     if (event.logType === LOG_TYPE.SPECTRUM_STATS) {
       expect(event.data.totalAmount).toBe(1_000_000_000n)
       expect(event.data.numberOfEntities).toBe(12345)
+      expect(event.data.entityCategoryPopulations).toHaveLength(48)
+      expect(event.data.entityCategoryPopulations[0]).toBe(100)
+      expect(event.data.entityCategoryPopulations[47]).toBe(200)
     }
   })
 

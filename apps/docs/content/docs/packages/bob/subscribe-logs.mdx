@@ -6,9 +6,9 @@ description: Emits raw log events matching a filter as an AsyncIterable; the bas
 ## Signature
 
 ```ts
-bob.subscribeLogs(
+bob.subscription.subscribeLogs(
   filter?: BobLogFilter,
-  options?: SubscribeLogsOptions,
+  options?: { startLogId?: bigint; startEpoch?: number; signal?: AbortSignal },
 ): AsyncIterable<SubscriptionEvent<BobLogEvent>>
 ```
 

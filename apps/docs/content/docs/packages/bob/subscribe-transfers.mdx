@@ -6,9 +6,9 @@ description: Emits decoded QU transfer events as structured objects, without nee
 ## Signature
 
 ```ts
-bob.subscribeTransfers(
+bob.subscription.subscribeTransfers(
   filter?: BobTransferFilter,
-  options?: SubscribeOptions,
+  options?: { startLogId?: bigint; signal?: AbortSignal },
 ): AsyncIterable<SubscriptionEvent<BobTransferEvent>>
 ```
 

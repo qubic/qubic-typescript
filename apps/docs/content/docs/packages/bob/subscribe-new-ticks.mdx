@@ -6,12 +6,12 @@ description: Emits a notification on every new tick as an AsyncIterable of Subsc
 ## Signature
 
 ```ts
-bob.subscribeNewTicks(options?: SubscribeOptions): AsyncIterable<SubscriptionEvent<BobTickNotification>>
+bob.subscription.subscribeNewTicks(options?: { signal?: AbortSignal }): AsyncIterable<SubscriptionEvent<BobTickNotification>>
 ```
 
 ## Purpose
 
-Emits a notification on every new tick. No historical replay.
+Emits a notification on every new tick. On reconnect, the client may replay buffered ticks with `isCatchUp: true` before resuming the live stream.
 
 ```ts
 import { createBobClient } from "@qubic.org/bob"

@@ -61,7 +61,7 @@ pnpm add @qubic.org/tx
 | Page | What's covered |
 |---|---|
 | [Build transaction](./build-transaction) | `buildTransaction` — assemble the binary transaction header |
-| [Sign transaction](./sign-transaction) | `signTransaction`, `encodeTransaction`, `hashTransaction`, `verifyTransaction` |
+| [Sign transaction](./sign-transaction) | `signTransaction`, `encodeTransaction`, `computeTransactionHash`, `verifyTransactionSignature` |
 | [Payload](./payload) | `buildPayload`, `readField`, `PayloadField` — structured contract input encoding |
 
 ### All exports
@@ -74,13 +74,25 @@ import {
   encodeTransaction,
 
   // Utilities
-  hashTransaction,
-  verifyTransaction,
+  computeTransactionHash,
+  verifyTransactionSignature,
 
   // Payload codec
   buildPayload,
-  readField,
   type PayloadField,
+
+  // Binary reader/writer
+  BinaryReader,
+  BinaryWriter,
+
+  // Types
+  type TransactionInput,
+  type DecodedTransaction,
+
+  // Errors
+  InvalidTransactionError,
+  PayloadTooLargeError,
+  TickInThePastError,
 } from "@qubic.org/tx"
 ```
 
@@ -92,22 +104,20 @@ import {
 
 ```ts
 import { buildTransaction, signTransaction, encodeTransaction } from "@qubic.org/tx"
-import { publicKeyFromSeed, identityToPublicKey } from "@qubic.org/crypto"
-import { createLiveClient } from "@qubic.org/rpc"
+import { publicKeyFromSeed } from "@qubic.org/crypto"
 import { toSeed, toIdentity } from "@qubic.org/types"
+import { createLiveClient } from "@qubic.org/rpc"
 
 const live = createLiveClient()
 const { tick } = await live.getTickInfo()
 
 const seed = toSeed("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-const sourcePublicKey      = publicKeyFromSeed(seed)
-const destinationPublicKey = identityToPublicKey(
-  toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
-)
+const source = publicKeyFromSeed(seed)
+const destination = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
 
 const unsigned = buildTransaction({
-  sourcePublicKey,
-  destinationPublicKey,
+  source,
+  destination,
   amount: 1_000_000n,
   targetTick: tick + 5,
   inputType: 0,
@@ -124,14 +134,13 @@ console.log(`Broadcast to ${result.peersBroadcastedTo} peers`)
 
 ```ts
 import { buildTransaction, signTransaction, encodeTransaction, buildPayload } from "@qubic.org/tx"
-import { publicKeyFromSeed, identityToPublicKey } from "@qubic.org/crypto"
-import { toSeed, toIdentity } from "@qubic.org/types"
+import { contractIndexToIdentity } from "@qubic.org/crypto"
+import { toSeed } from "@qubic.org/types"
 
 const seed = toSeed("aaaa...")
-const sourcePublicKey = publicKeyFromSeed(seed)
 
 // Zero-address destination for SC calls
-const destinationPublicKey = new Uint8Array(32)
+const destination = new Uint8Array(32)
 
 // Build a simple payload manually (use @qubic.org/contracts for ABI-typed encoding)
 const payload = buildPayload([
@@ -139,8 +148,8 @@ const payload = buildPayload([
 ], { amount: 10_000_000n })
 
 const unsigned = buildTransaction({
-  sourcePublicKey,
-  destinationPublicKey,
+  source: seed,
+  destination,
   amount: 10_000_000n,
   targetTick: tick + 5,
   inputType: 6,     // Qearn LOCK_INPUT_TYPE

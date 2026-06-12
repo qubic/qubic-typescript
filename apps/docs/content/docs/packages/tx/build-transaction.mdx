@@ -9,19 +9,17 @@ description: Construct the unsigned binary header for a Qubic transaction.
 
 ```ts
 import { buildTransaction } from "@qubic.org/tx"
-import { publicKeyFromSeed } from "@qubic.org/crypto"
-import { toSeed } from "@qubic.org/types"
+import { toSeed, toIdentity } from "@qubic.org/types"
 
 const seed = toSeed("...")
-const sourcePublicKey = publicKeyFromSeed(seed)
-const destinationPublicKey = new Uint8Array(32) // zero = contract calls
+const recipient = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
 
 const unsigned = buildTransaction({
-  sourcePublicKey,
-  destinationPublicKey,
+  source: seed,               // Identity string
+  destination: recipient,     // Identity string (or Uint8Array public key)
   amount: 1_000_000n,
   targetTick: currentTick + 5,
-  inputType: 0,              // 0 = plain transfer
+  inputType: 0,               // 0 = plain transfer
 })
 // unsigned is Uint8Array (80 bytes for a plain transfer)
 ```
@@ -30,8 +28,8 @@ const unsigned = buildTransaction({
 
 | Name | Type | Description |
 |---|---|---|
-| `sourcePublicKey` | `Uint8Array` | 32-byte sender public key |
-| `destinationPublicKey` | `Uint8Array` | 32-byte recipient public key |
+| `source` | `Identity \| Uint8Array` | Sender identifier — 60-char uppercase Identity or 32-byte public key |
+| `destination` | `Identity \| Uint8Array` | Recipient identifier — 60-char uppercase Identity or 32-byte public key |
 | `amount` | `bigint` | Transfer amount in QU |
 | `targetTick` | `number` | Tick by which the node must process the transaction |
 | `inputType` | `number` | 0 for transfers; procedure index for contract calls |
@@ -51,7 +49,7 @@ const { tick } = await live.getTickInfo()
 const targetTick = tick + 5  // deadline: process within the next 5 ticks
 ```
 
-Setting `targetTick` too low (e.g. `tick + 1`) risks rejection if the network is even slightly ahead of your clock. Setting it higher (e.g. `tick + 20`) gives more leeway but means the transaction sits pending longer before expiring if something goes wrong. The `PROTOCOL.TICKS_TO_EXPIRY` constant from `@qubic.org/types` defaults to `20` — a reasonable default for most conditions.
+Setting `targetTick` too low (e.g. `tick + 1`) risks rejection if the network is even slightly ahead of your clock. Setting it higher (e.g. `tick + 20`) gives more leeway but means the transaction sits pending longer before expiring if something goes wrong. A buffer of 5–20 ticks is a reasonable default for most conditions.
 
 ---
 
@@ -71,11 +69,11 @@ Setting `targetTick` too low (e.g. `tick + 1`) risks rejection if the network is
 ## Plain transfer vs contract call
 
 For a **plain transfer** (identity to identity):
-- `destinationPublicKey` = recipient's public key (from `identityToPublicKey`)
+- `destination` = recipient's `Identity` or their 32-byte public key
 - `inputType` = `0`
 - `inputSize` = `0`, no `payload`
 
 For a **contract call** (SC transaction):
-- `destinationPublicKey` = 32 zero bytes (the contract's canonical address)
+- `destination` = the contract's `Identity` (or 32 zero bytes via `new Uint8Array(32)`)
 - `inputType` = the procedure's input type constant
 - `payload` = encoded procedure input from a `build*Input` function (`inputSize` is computed automatically)

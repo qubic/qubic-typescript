@@ -26,7 +26,7 @@ Every Qubic transaction follows the same pipeline:
 import { buildTransaction, signTransaction, encodeTransaction } from "@qubic.org/tx"
 import { createLiveClient } from "@qubic.org/rpc"
 
-const unsigned = buildTransaction({ sourcePublicKey, destinationPublicKey, amount, targetTick, inputType })
+const unsigned = buildTransaction({ source, destination, amount, targetTick, inputType })
 const signed   = await signTransaction(unsigned, seed)
 const encoded  = encodeTransaction(signed)
 
@@ -64,7 +64,7 @@ The format is the same for both. The difference is in how you fill the fields:
 
 | Field | QU transfer | Smart contract call |
 |---|---|---|
-| `destinationPublicKey` | recipient's public key | 32 zero bytes (zero-address) |
+| `destination` | recipient's public key or Identity | 32 zero bytes (zero-address) or contract Identity |
 | `amount` | QU to send | QU to attach (can be 0) |
 | `inputType` | `0` | procedure's input type number |
 | `payload` | omitted | encoded procedure input |
@@ -72,8 +72,8 @@ The format is the same for both. The difference is in how you fill the fields:
 ```ts
 // QU transfer
 const unsigned = buildTransaction({
-  sourcePublicKey,
-  destinationPublicKey: recipientPubKey,
+  source: senderPubKey,
+  destination: recipientIdentity,
   amount: 1_000_000n,
   targetTick: tick + 5,
   inputType: 0,
@@ -81,8 +81,8 @@ const unsigned = buildTransaction({
 
 // Smart contract call
 const unsigned = buildTransaction({
-  sourcePublicKey,
-  destinationPublicKey: new Uint8Array(32), // zero address
+  source: senderPubKey,
+  destination: new Uint8Array(32), // zero address
   amount: 10_000_000n,
   targetTick: tick + 5,
   inputType: 6,     // e.g. Qearn lock_input

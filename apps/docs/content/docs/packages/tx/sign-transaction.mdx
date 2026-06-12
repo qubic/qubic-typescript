@@ -92,8 +92,8 @@ const tickResult = await live.getTickInfo()
 if (!tickResult.ok) throw tickResult.error
 
 const unsigned = buildTransaction({
-  sourcePublicKey: publicKeyFromSeed(seed),
-  destinationPublicKey: new Uint8Array(32),
+  source: publicKeyFromSeed(seed),
+  destination: new Uint8Array(32),
   amount: 0n,
   targetTick: tickResult.value.tick + 5,
   inputType: 0,

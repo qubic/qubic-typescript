@@ -155,7 +155,9 @@ describe('callContractFunction', () => {
       structs: {},
       input: { epoch: 137 },
       identityToPublicKey: () => new Uint8Array(32),
-      publicKeyToIdentity: () => { throw new Error('unreachable') },
+      publicKeyToIdentity: () => {
+        throw new Error('unreachable')
+      },
     })
 
     expect(result.ok).toBe(true)
@@ -179,7 +181,9 @@ describe('callContractFunction', () => {
       structs: {},
       input: { epoch: 137 },
       identityToPublicKey: () => new Uint8Array(32),
-      publicKeyToIdentity: () => { throw new Error('unreachable') },
+      publicKeyToIdentity: () => {
+        throw new Error('unreachable')
+      },
     })
 
     expect(result.ok).toBe(false)
@@ -205,7 +209,9 @@ describe('callContractFunction', () => {
       structs: {},
       input: { epoch: 200 },
       identityToPublicKey: () => new Uint8Array(32),
-      publicKeyToIdentity: () => { throw new Error('unreachable') },
+      publicKeyToIdentity: () => {
+        throw new Error('unreachable')
+      },
     })
 
     const req = capturedReq as { contractIndex?: number; inputType?: number; inputSize?: number }

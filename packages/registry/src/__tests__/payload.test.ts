@@ -4,7 +4,9 @@ import type { BinaryField, NamedStruct } from '../types.js'
 
 const NO_STRUCTS: Record<string, NamedStruct> = {}
 const identity = (s: string) => new Uint8Array(32).fill(s.charCodeAt(0))
-const pkToId = (_pk: Uint8Array): string => { throw new Error('pkToId should not be called') }
+const pkToId = (_pk: Uint8Array): string => {
+  throw new Error('pkToId should not be called')
+}
 
 const UNLOCK_FIELDS: BinaryField[] = [
   { name: 'amount', type: 'uint64', offset: 0, byteLength: 8 },

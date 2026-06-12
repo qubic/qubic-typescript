@@ -99,14 +99,7 @@ export function createWallet(seed: Seed): Wallet {
       return build(destination, amount, targetTick, currentTick, 0, new Uint8Array(0))
     },
 
-    buildScTransaction({
-      destination,
-      amount,
-      targetTick,
-      currentTick,
-      inputType,
-      payload,
-    }) {
+    buildScTransaction({ destination, amount, targetTick, currentTick, inputType, payload }) {
       return build(destination, amount, targetTick, currentTick, inputType, payload)
     },
   }

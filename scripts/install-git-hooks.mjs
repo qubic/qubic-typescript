@@ -1,10 +1,10 @@
-import { execSync } from 'node:child_process';
-import { chmodSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
+import { execSync } from 'node:child_process'
+import { chmodSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { dirname, resolve } from 'node:path'
 
 const hookContents = `#!/bin/sh
 bunx --bun commitlint --edit "$1"
-`;
+`
 
 function getHooksPath() {
   try {
@@ -12,31 +12,31 @@ function getHooksPath() {
       cwd: process.cwd(),
       encoding: 'utf8',
       stdio: ['ignore', 'pipe', 'ignore'],
-    }).trim();
+    }).trim()
   } catch {
-    return undefined;
+    return undefined
   }
 }
 
-const hooksPath = getHooksPath();
+const hooksPath = getHooksPath()
 
 if (!hooksPath) {
-  console.info('[INFO] No git repository found, skipping hook install');
-  process.exit(0);
+  console.info('[INFO] No git repository found, skipping hook install')
+  process.exit(0)
 }
 
-const hookPath = resolve(process.cwd(), hooksPath, 'commit-msg');
-mkdirSync(dirname(hookPath), { recursive: true });
+const hookPath = resolve(process.cwd(), hooksPath, 'commit-msg')
+mkdirSync(dirname(hookPath), { recursive: true })
 
 try {
   if (readFileSync(hookPath, 'utf8') === hookContents) {
-    chmodSync(hookPath, 0o755);
-    process.exit(0);
+    chmodSync(hookPath, 0o755)
+    process.exit(0)
   }
 } catch {
   // Hook does not exist yet.
 }
 
-writeFileSync(hookPath, hookContents);
-chmodSync(hookPath, 0o755);
-console.info('[INFO] Installed commit-msg hook');
+writeFileSync(hookPath, hookContents)
+chmodSync(hookPath, 0o755)
+console.info('[INFO] Installed commit-msg hook')

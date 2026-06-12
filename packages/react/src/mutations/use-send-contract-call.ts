@@ -51,14 +51,7 @@ export function useSendContractCall(): UseMutationResult<
   const { getWallet } = useVaultSigning()
 
   return useMutation({
-    mutationFn: async ({
-      from,
-      inputType,
-      payload,
-      amount = 0n,
-      destination,
-      tickOffset = 5,
-    }) => {
+    mutationFn: async ({ from, inputType, payload, amount = 0n, destination, tickOffset = 5 }) => {
       const wallet = getWallet(from)
       if (wallet === undefined) throw new Error(`No wallet for identity: ${from}`)
       const tickR = await liveClient.getTickInfo()

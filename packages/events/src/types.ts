@@ -1,4 +1,5 @@
 import type { CustomMessageSubtype, Identity, LogType } from '@qubic.org/types'
+import { CUSTOM_MESSAGE_OP, LOG_TYPE, customMessageOpLabel } from '@qubic.org/types'
 
 export type {
   CustomMessageSubtype,
@@ -9,7 +10,7 @@ export type {
   StartEpochCustomMessage,
   UnknownCustomMessage,
 } from '@qubic.org/types'
-export { CUSTOM_MESSAGE_OP, customMessageOpLabel, LOG_TYPE } from '@qubic.org/types'
+export { CUSTOM_MESSAGE_OP, LOG_TYPE, customMessageOpLabel }
 
 // ── Event data interfaces ─────────────────────────────────────────────────────
 

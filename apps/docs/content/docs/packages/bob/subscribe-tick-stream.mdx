@@ -6,7 +6,7 @@ description: Emits full tick data including the list of transaction hashes for e
 ## Signature
 
 ```ts
-bob.subscribeTickStream(options?: SubscribeOptions): AsyncIterable<SubscriptionEvent<BobTickData>>
+bob.subscribeTickStream(options?: SubscribeOptions): AsyncIterable<SubscriptionEvent<BobIndexedTick>>
 ```
 
 ## Purpose
@@ -28,9 +28,9 @@ for await (const event of bob.subscription.subscribeTickStream()) {
 
 ## Returns
 
-`AsyncIterable<SubscriptionEvent<BobTickData>>`
+`AsyncIterable<SubscriptionEvent<BobIndexedTick>>`
 
-### `BobTickData` fields
+### `BobIndexedTick` fields
 
 | Field | Type | Description |
 |---|---|---|

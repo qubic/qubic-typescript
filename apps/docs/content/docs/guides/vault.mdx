@@ -59,14 +59,16 @@ for (const identity of unlockedVault.identities) {
 Create a wallet from an unlocked vault identity to sign:
 
 ```ts
-import { createWalletFromVault } from "@qubic.org/wallet"
+import { createWallet } from "@qubic.org/wallet"
 import { createLiveClient } from "@qubic.org/rpc"
 import { toIdentity } from "@qubic.org/types"
 
 const live = createLiveClient()
-const { tick } = await live.getTickInfo()
+const tickResult = await live.getTickInfo()
+if (!tickResult.ok) throw tickResult.error
+const { tick } = tickResult.value
 
-const wallet = createWalletFromVault(unlockedVault, unlockedVault.identities[0])
+const wallet = createWallet(unlockedVault[0])
 
 const { encoded, hash } = await wallet.buildTransaction({
   destination: toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL"),
@@ -75,16 +77,17 @@ const { encoded, hash } = await wallet.buildTransaction({
   currentTick: tick,
 })
 
-await live.broadcastTransaction(encoded)
+const result = await live.broadcastTransaction(encoded)
+if (!result.ok) throw result.error
 ```
 
 ## Add seeds to an existing vault
 
 ```ts
-import { addSeedToVault } from "@qubic.org/wallet"
+import { addToVault, generateSeed } from "@qubic.org/wallet"
 
 const newSeed = generateSeed()
-const updatedVault = await addSeedToVault(vault, newSeed, "my-strong-password")
+const updatedVault = await addToVault(vault, "my-strong-password", newSeed)
 ```
 
 Re-export and persist the updated vault data after adding seeds.
@@ -166,7 +169,7 @@ import {
   exportVault,
   importVault,
   unlockVault,
-  createWalletFromVault,
+  createWallet,
 } from "@qubic.org/wallet"
 import { createLiveClient } from "@qubic.org/rpc"
 import { toIdentity } from "@qubic.org/types"
@@ -174,7 +177,7 @@ import { writeFileSync, readFileSync } from "node:fs"
 
 // 1. Create and persist vault
 const seed = generateSeed()
-const vault = await createVault({ password: "hunter2", seeds: [seed] })
+const vault = await createVault("hunter2", [seed])
 writeFileSync("vault.json", exportVault(vault))
 
 // 2. Later: load and unlock
@@ -183,8 +186,10 @@ const unlocked = await unlockVault(loaded, "hunter2")
 
 // 3. Sign and broadcast a transfer
 const live = createLiveClient()
-const { tick } = await live.getTickInfo()
-const wallet = createWalletFromVault(unlocked, unlocked.identities[0])
+const tickResult = await live.getTickInfo()
+if (!tickResult.ok) throw tickResult.error
+const { tick } = tickResult.value
+const wallet = createWallet(unlocked[0])
 
 const { encoded, hash } = await wallet.buildTransaction({
   destination: toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL"),
@@ -194,5 +199,6 @@ const { encoded, hash } = await wallet.buildTransaction({
 })
 
 const result = await live.broadcastTransaction(encoded)
-console.log(`TX ${hash} broadcast to ${result.peersBroadcastedTo} peers`)
+if (!result.ok) throw result.error
+console.log(`TX ${hash} broadcast to ${result.value.peersBroadcastedTo} peers`)
 ```

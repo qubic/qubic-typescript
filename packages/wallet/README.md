@@ -24,7 +24,7 @@ console.log(wallet.identity)   // 60-char uppercase Qubic identity
 console.log(wallet.publicKey)  // 32-byte Uint8Array
 ```
 
-### `wallet.buildTransfer(params)`
+### `wallet.buildTransaction(params)`
 
 Builds and signs a plain QU transfer.
 
@@ -33,7 +33,7 @@ import { toSeed } from '@qubic.org/wallet'
 import type { Identity } from '@qubic.org/types'
 
 const wallet = createWallet(toSeed('your55charlowercaseseed...'))
-const { encoded, hash, bytes } = await wallet.buildTransfer({
+const { encoded, hash, bytes } = await wallet.buildTransaction({
   destination: 'ABCDEF...' as Identity,
   amount: 1_000_000n,       // in QU
   targetTick: tick + 5,
@@ -45,7 +45,7 @@ const { encoded, hash, bytes } = await wallet.buildTransfer({
 // bytes: raw signed Uint8Array
 ```
 
-### `wallet.buildScTransaction(params)`
+### `wallet.buildContractCall(params)`
 
 Builds and signs a smart contract procedure call.
 
@@ -54,7 +54,7 @@ import { qearn } from '@qubic.org/contracts'
 
 const payload = qearn.buildLockInput({ amount: 10_000_000n })
 
-const { encoded } = await wallet.buildScTransaction({
+const { encoded } = await wallet.buildContractCall({
   destination: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' as Identity,
   amount: 10_000_000n,
   targetTick: tick + 5,

@@ -16,7 +16,7 @@ export interface SignedTransaction {
   bytes: Uint8Array
 }
 
-export interface TransferParams {
+export interface TransactionParams {
   /** Recipient identity (60-character uppercase). */
   destination: Identity
   /** Amount in QU. Use `0n` for contract calls. */
@@ -30,12 +30,12 @@ export interface TransferParams {
   currentTick?: number
 }
 
-export interface ScTransactionParams extends Omit<TransferParams, 'destination'> {
+export interface ContractCallParams extends Omit<TransactionParams, 'destination'> {
   /** SC procedure input type index. */
   inputType: number
   /** Encoded SC payload bytes. */
   payload: Uint8Array
-  /** Destination identity. Use `contractIndexToIdentity(contractIndex)` from `@qubic.org/crypto`. */
+  /** Contract identity. Use `contractIndexToIdentity(contractIndex)` from `@qubic.org/crypto`. */
   destination: Identity
 }
 
@@ -45,9 +45,9 @@ export interface Wallet {
   /** Derived 32-byte compressed FourQ public key. */
   readonly publicKey: Uint8Array
   /** Builds and signs a plain QU transfer. */
-  buildTransfer(params: TransferParams): Promise<SignedTransaction>
+  buildTransaction(params: TransactionParams): Promise<SignedTransaction>
   /** Builds and signs a smart contract procedure call. */
-  buildScTransaction(params: ScTransactionParams): Promise<SignedTransaction>
+  buildContractCall(params: ContractCallParams): Promise<SignedTransaction>
 }
 
 /**
@@ -59,7 +59,7 @@ export interface Wallet {
  * @example
  * ```ts
  * const wallet = createWallet(seed)
- * const { encoded } = await wallet.buildTransfer({ destination, amount: 100n, targetTick })
+ * const { encoded } = await wallet.buildTransaction({ destination, amount: 100n, targetTick })
  * ```
  */
 export function createWallet(seed: Seed): Wallet {
@@ -95,11 +95,11 @@ export function createWallet(seed: Seed): Wallet {
     identity,
     publicKey,
 
-    buildTransfer({ destination, amount, targetTick, currentTick }) {
+    buildTransaction({ destination, amount, targetTick, currentTick }) {
       return build(destination, amount, targetTick, currentTick, 0, new Uint8Array(0))
     },
 
-    buildScTransaction({ destination, amount, targetTick, currentTick, inputType, payload }) {
+    buildContractCall({ destination, amount, targetTick, currentTick, inputType, payload }) {
       return build(destination, amount, targetTick, currentTick, inputType, payload)
     },
   }

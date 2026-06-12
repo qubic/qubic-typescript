@@ -111,7 +111,7 @@ const wallet = createWallet(toSeed('yourfiftyfivecharacterlowercaseseedgoeshere1
 
 const payload = qearn.buildLockInput({ amount: 10_000_000n })
 
-const { encoded } = await wallet.buildScTransaction({
+const { encoded } = await wallet.buildContractCall({
   destination: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' as Identity,
   amount: 10_000_000n,
   targetTick: tickInfo.tick + 5,
@@ -358,3 +358,4 @@ graph LR
 - [TypeDoc](https://typedoc.org) for docs — `bunx typedoc`
 - [Changesets](https://github.com/changesets/changesets) for releases — `bun run changeset`
 - Conventional commits enforced by commitlint
+int

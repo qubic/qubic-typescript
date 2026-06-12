@@ -29,9 +29,9 @@ describe('createWallet', () => {
     expect(w1.identity).not.toBe(w2.identity)
   })
 
-  test('buildTransfer produces a verifiable signed transaction', async () => {
+  test('buildTransaction produces a verifiable signed transaction', async () => {
     const wallet = createWallet(SEED)
-    const { bytes, hash, encoded } = await wallet.buildTransfer({
+    const { bytes, hash, encoded } = await wallet.buildTransaction({
       destination: DEST,
       amount: 100n,
       targetTick: 20_000_000,
@@ -44,9 +44,9 @@ describe('createWallet', () => {
     expect(verifyTransactionSignature(bytes)).toBe(true)
   })
 
-  test('buildTransfer with zero amount', async () => {
+  test('buildTransaction with zero amount', async () => {
     const wallet = createWallet(SEED)
-    const { bytes } = await wallet.buildTransfer({
+    const { bytes } = await wallet.buildTransaction({
       destination: DEST,
       amount: 0n,
       targetTick: 20_000_000,
@@ -54,10 +54,10 @@ describe('createWallet', () => {
     expect(verifyTransactionSignature(bytes)).toBe(true)
   })
 
-  test('buildScTransaction embeds payload and verifies', async () => {
+  test('buildContractCall embeds payload and verifies', async () => {
     const wallet = createWallet(SEED)
     const payload = new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8])
-    const { bytes } = await wallet.buildScTransaction({
+    const { bytes } = await wallet.buildContractCall({
       destination: DEST,
       amount: 0n,
       targetTick: 20_000_000,
@@ -67,10 +67,10 @@ describe('createWallet', () => {
     expect(verifyTransactionSignature(bytes)).toBe(true)
   })
 
-  test('buildTransfer with currentTick validation: throws when targetTick <= currentTick', async () => {
+  test('buildTransaction with currentTick validation: throws when targetTick <= currentTick', async () => {
     const wallet = createWallet(SEED)
     await expect(
-      wallet.buildTransfer({
+      wallet.buildTransaction({
         destination: DEST,
         amount: 0n,
         targetTick: 100,
@@ -79,11 +79,11 @@ describe('createWallet', () => {
     ).rejects.toThrow()
   })
 
-  test('buildTransfer hash is deterministic for same inputs', async () => {
+  test('buildTransaction hash is deterministic for same inputs', async () => {
     const wallet = createWallet(SEED)
     const params = { destination: DEST, amount: 50n, targetTick: 20_000_000 }
-    const a = await wallet.buildTransfer(params)
-    const b = await wallet.buildTransfer(params)
+    const a = await wallet.buildTransaction(params)
+    const b = await wallet.buildTransaction(params)
     expect(a.hash).toBe(b.hash)
   })
 })

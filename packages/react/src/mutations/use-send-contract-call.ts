@@ -58,7 +58,7 @@ export function useSendContractCall(): UseMutationResult<
       if (!tickR.ok) throw tickR.error
       const { tick } = tickR.value
       if (tick === undefined) throw new Error('getTickInfo returned no tick')
-      const { encoded } = await wallet.buildScTransaction({
+      const { encoded } = await wallet.buildContractCall({
         destination,
         amount,
         targetTick: tick + tickOffset,

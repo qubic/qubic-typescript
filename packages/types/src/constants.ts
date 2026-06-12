@@ -60,5 +60,4 @@ export const PROTOCOL = {
   IDENTITY_LENGTH: 60,
   SEED_LENGTH: 55,
   TX_HASH_LENGTH: 60,
-  TICKS_TO_EXPIRY: 20,
 } as const satisfies Record<string, number>

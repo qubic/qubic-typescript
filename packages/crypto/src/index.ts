@@ -3,7 +3,6 @@ export {
   InvalidIdentityError,
   InvalidSeedError,
   QubicError,
-  SignatureVerificationError,
 } from './errors.js'
 export { k12 } from './k12.js'
 export { generateRandomSeed, getRandomBytes } from './random.js'

@@ -298,3 +298,78 @@ export interface RequestedQuorumTick {
   /** Bitfield of which computor votes are requested. */
   voteFlags: Uint8Array
 }
+
+// ── Custom message protocol types ──────────────────────────────────────────
+
+/**
+ * Custom message operation codes emitted by the Qubic core node.
+ *
+ * These 8-byte little-endian values occupy the first field of a
+ * `DummyCustomMessage` struct (see `logging.h` in the core node).
+ * The ASCII tag in the comment is what the numeric value encodes.
+ */
+export const CUSTOM_MESSAGE_OP = {
+  /** Epoch transition: start of a new epoch. (ASCII: STA_EPOC) */
+  START_EPOCH: 4850183582582395987n,
+  /** Epoch transition: end of the current epoch. (ASCII: END_EPOC) */
+  END_EPOCH: 4850183582582591045n,
+  /** Dividend distribution started. (ASCII: STA_DDIV) */
+  START_DISTRIBUTE_DIVIDENDS: 6217575821008262227n,
+  /** Dividend distribution ended. (ASCII: END_DDIV) */
+  END_DISTRIBUTE_DIVIDENDS: 6217575821008457285n,
+} as const satisfies Record<string, bigint>
+
+export type CustomMessageOp = (typeof CUSTOM_MESSAGE_OP)[keyof typeof CUSTOM_MESSAGE_OP]
+
+/**
+ * Maps a raw 8-byte operation code to the human-readable tag, or `undefined`
+ * if the code is not one of the four known protocol messages.
+ */
+export function customMessageOpLabel(
+  op: bigint,
+): (keyof typeof CUSTOM_MESSAGE_OP) | undefined {
+  for (const [key, value] of Object.entries(CUSTOM_MESSAGE_OP)) {
+    if (value === op) return key as keyof typeof CUSTOM_MESSAGE_OP
+  }
+  return undefined
+}
+
+/** Marker: the core node has started a new epoch. */
+export interface StartEpochCustomMessage {
+  kind: 'startEpoch'
+}
+
+/** Marker: the current epoch has ended. */
+export interface EndEpochCustomMessage {
+  kind: 'endEpoch'
+}
+
+/** Marker: the core node has started distributing dividends. */
+export interface StartDistributeDividendsCustomMessage {
+  kind: 'startDistributeDividends'
+}
+
+/** Marker: the core node has finished distributing dividends. */
+export interface EndDistributeDividendsCustomMessage {
+  kind: 'endDistributeDividends'
+}
+
+/** A custom message with an unrecognized operation code. */
+export interface UnknownCustomMessage {
+  kind: 'unknown'
+  /** Raw 8-byte operation code. */
+  messageType: bigint
+  /** Any bytes after the 8-byte type field. */
+  payload: Uint8Array
+}
+
+/**
+ * Discriminated union of all known custom message subtypes plus an
+ * `unknown` fallback for messages the core node may add in the future.
+ */
+export type CustomMessageSubtype =
+  | StartEpochCustomMessage
+  | EndEpochCustomMessage
+  | StartDistributeDividendsCustomMessage
+  | EndDistributeDividendsCustomMessage
+  | UnknownCustomMessage

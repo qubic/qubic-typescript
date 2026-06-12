@@ -88,7 +88,7 @@ Qubic TCP uses 8-byte length-prefixed frames:
 [size: 3 bytes LE] [type: 1 byte] [dejavu: 4 bytes LE] [payload: size-8 bytes]
 ```
 
-Requests are serialised per connection — only one is in flight at a time. The node responds with zero or more typed packets followed by an `END_RESPONSE` (type 35). A `TRY_AGAIN` (type 36) response causes an automatic 1-second retry.
+Requests are serialised per connection — only one is in flight at a time. The node responds with zero or more typed packets followed by an `END_RESPONSE` (type 35). A `TRY_AGAIN` (type 54) response causes an automatic 1-second retry.
 
 ## Low-level access
 

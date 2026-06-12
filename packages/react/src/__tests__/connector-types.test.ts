@@ -77,13 +77,14 @@ describe('connector type interfaces', () => {
   })
 
   test('SendTransactionResult extends SignTransactionResult', () => {
+    const broadcast: SendTransactionResult['broadcast'] = { transactionId: 'net456' }
     const result: SendTransactionResult = {
       txId: 'abc123',
       targetTick: 12345,
       txBytesBase64: 'base64data',
       txBytesHex: 'hexdata',
       networkTxId: 'net456',
-      broadcast: { transactionId: 'net456' } as any,
+      broadcast,
     }
 
     // Inherited fields from SignTransactionResult
@@ -110,6 +111,7 @@ describe('connector type interfaces', () => {
 
   test('WalletConnector interface has all required members', () => {
     // Verify the interface compiles and has the expected shape by creating a conforming object
+    const broadcast: SendTransactionResult['broadcast'] = { transactionId: '' }
     const connector: WalletConnector = {
       id: 'test-connector',
       isAvailable: () => true,
@@ -122,7 +124,7 @@ describe('connector type interfaces', () => {
         txBytesBase64: '',
         txBytesHex: '',
         networkTxId: '',
-        broadcast: {} as any,
+        broadcast,
       }),
       signTransaction: async () => ({
         txId: '',

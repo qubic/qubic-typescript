@@ -228,7 +228,9 @@ async function buildEpochRefs(
       console.log(`Loaded ${map.size} epoch→tag refs from ${EPOCH_REFS_PATH}`)
       return map
     }
-    console.log(`Cached epoch-refs only go to ${maxCachedEpoch}, need ${requiredMaxEpoch} — refreshing…`)
+    console.log(
+      `Cached epoch-refs only go to ${maxCachedEpoch}, need ${requiredMaxEpoch} — refreshing…`,
+    )
   } catch {
     // Build fresh
   }
@@ -627,7 +629,9 @@ async function getLastKnownEpoch(): Promise<number> {
     const refs = JSON.parse(readFileSync(EPOCH_REFS_PATH, 'utf-8')) as Record<string, string>
     const maxRef = Math.max(...Object.keys(refs).map(Number))
     if (!Number.isNaN(maxRef)) return maxRef
-  } catch { /* no refs */ }
+  } catch {
+    /* no refs */
+  }
 
   // 2. Fall back to highest epoch snapshot dir
   const dirs = existsSync(EPOCHS_DIR)
@@ -644,7 +648,8 @@ async function fetchCurrentEpoch(rpcUrl: string): Promise<number> {
   if (!res.ok) throw new Error(`RPC error: ${res.status} ${res.statusText}`)
   const data = (await res.json()) as { tickInfo?: { epoch?: number } }
   const epoch = data.tickInfo?.epoch
-  if (epoch === undefined || epoch === null) throw new Error('Could not read epoch from RPC response')
+  if (epoch === undefined || epoch === null)
+    throw new Error('Could not read epoch from RPC response')
   return epoch
 }
 

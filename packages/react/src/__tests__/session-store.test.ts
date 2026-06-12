@@ -1,5 +1,12 @@
 import { beforeEach, describe, expect, test } from 'bun:test'
 
+declare global {
+  interface GlobalThis {
+    indexedDB: ReturnType<typeof mockIndexedDB>
+    sessionStorage: MemorySessionStorage
+  }
+}
+
 // ── Minimal IndexedDB / sessionStorage mocks ─────────────────────────────────
 
 class MemoryObjectStore {
@@ -102,8 +109,8 @@ function mockIndexedDB() {
 
 // Set up globals before importing the module under test.
 const mockStorage = new MemorySessionStorage()
-;(globalThis as any).indexedDB = mockIndexedDB()
-;(globalThis as any).sessionStorage = mockStorage
+globalThis.indexedDB = mockIndexedDB()
+globalThis.sessionStorage = mockStorage
 
 const { saveSession, restoreSession, clearSession } = await import('../vault/session-store.js')
 const { toSeed } = await import('@qubic.org/types')

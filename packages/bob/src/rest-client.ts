@@ -1,5 +1,6 @@
 import createClient from 'openapi-fetch'
 import type { components, paths } from './__generated__/bob-schema.d.ts'
+import { DEFAULT_BOB_BASE_URL } from './constants.js'
 import { BobRpcError } from './errors.js'
 import { type Result, err, ok } from './result.js'
 
@@ -15,8 +16,6 @@ export type BobAsset = components['schemas']['AssetResponse']
 export type BobEpochInfo = components['schemas']['EpochInfoResponse']
 export type BobTx = components['schemas']['TransactionResponse']
 export type BobTickResponse = components['schemas']['TickResponse']
-
-const DEFAULT_BASE_URL = 'http://localhost:40420'
 
 function sig(signal: AbortSignal | undefined): { signal: AbortSignal } | Record<never, never> {
   return signal ? { signal } : {}
@@ -45,7 +44,7 @@ async function unwrap<T>(
 /** Creates a type-safe REST client for the Bob indexer API. */
 export function createBobRestClient(options: BobRestClientOptions = {}) {
   const client = createClient<paths>({
-    baseUrl: options.baseUrl ?? DEFAULT_BASE_URL,
+    baseUrl: options.baseUrl ?? DEFAULT_BOB_BASE_URL,
     ...(options.fetch ? { fetch: options.fetch } : {}),
   })
   const signal = options.signal

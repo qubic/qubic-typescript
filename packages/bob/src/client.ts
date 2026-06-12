@@ -1,3 +1,4 @@
+import { DEFAULT_BOB_BASE_URL } from './constants.js'
 import { createBobRestClient } from './rest-client.js'
 import type { BobRestClient, BobRestClientOptions } from './rest-client.js'
 import { createBobRpcClient } from './rpc-client.js'
@@ -31,11 +32,14 @@ export interface BobClient {
  * ```ts
  * const bob = createBobClient({ baseUrl: 'http://bob.example.com', wsUrl: 'ws://bob.example.com' })
  * const status = await bob.rest.getStatus()
- * bob.subscription.onTick(({ data }) => console.log(data.tick))
+ * for await (const event of bob.subscription.subscribeNewTicks()) {
+ *   console.log(event.data.tick)
+ *   break
+ * }
  * ```
  */
 export function createBobClient(options: BobClientOptions = {}): BobClient {
-  const baseUrl = options.baseUrl ?? 'http://localhost:40420'
+  const baseUrl = options.baseUrl ?? DEFAULT_BOB_BASE_URL
   const wsUrl = options.wsUrl ?? baseUrl.replace(/^http/, 'ws')
 
   return {

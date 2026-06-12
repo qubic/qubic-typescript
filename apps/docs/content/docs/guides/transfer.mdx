@@ -40,7 +40,7 @@ A wallet holds your identity and signs transactions. Pass a 55-character lowerca
 ```ts
 import { createWallet } from "@qubic.org/wallet"
 
-const wallet = createWallet("your_seed_here_aaaaaa...")
+const wallet = createWallet("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 console.log("Identity:", wallet.identity)
 ```
 
@@ -136,7 +136,7 @@ console.log(`Broadcast to ${result.peersBroadcastedTo} peers`)
 Run it:
 
 ```bash
-SEED=your_seed bun transfer.ts
+SEED=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa bun transfer.ts
 ```
 
 ## Confirming the transaction

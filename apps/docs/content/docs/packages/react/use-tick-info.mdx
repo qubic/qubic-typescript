@@ -50,6 +50,8 @@ The standard pattern is to add a small buffer to the current tick when building 
 ```tsx
 import { useTickInfo } from "@qubic.org/react"
 import { useSendTransaction } from "@qubic.org/react"
+import { contractIndexToIdentity } from "@qubic.org/crypto"
+import { QEARN_CONTRACT_INDEX } from "@qubic.org/contracts"
 
 function SendButton() {
   const { data: tickInfo } = useTickInfo()
@@ -58,7 +60,7 @@ function SendButton() {
   function handleSend() {
     if (!tickInfo) return
     send({
-      destination: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      destination: contractIndexToIdentity(QEARN_CONTRACT_INDEX),
       amount: 1_000_000n,
       targetTick: tickInfo.tick + 5,
     })

@@ -31,13 +31,12 @@ Builds and signs a plain QU transfer. Returns `{ encoded, hash, bytes }`.
 ```ts
 import { createWallet, generateSeed } from '@qubic.org/wallet'
 import type { TransactionParams, SignedTransaction } from '@qubic.org/wallet'
-import type { Identity } from '@qubic.org/types'
 
 const wallet = createWallet(generateSeed())
 const currentTick = 20_000_000
 
 const result: SignedTransaction = await wallet.buildTransaction({
-  destination: 'BZBQFLLBNCXEMGLOBHUVFTLUPLVCPQUASSILFABOFFBCADQSSUPNWLZBQEXK' as Identity,
+  destination: 'BZBQFLLBNCXEMGLOBHUVFTLUPLVCPQUASSILFABOFFBCADQSSUPNWLZBQEXK',
   amount: 1_000_000n,
   targetTick: currentTick + 5,
   currentTick,        // optional -- throws if targetTick <= currentTick
@@ -56,7 +55,6 @@ Builds and signs a smart contract procedure call.
 import { createWallet, generateSeed } from '@qubic.org/wallet'
 import type { SignedTransaction } from '@qubic.org/wallet'
 import { qearn } from '@qubic.org/contracts'
-import type { Identity } from '@qubic.org/types'
 
 const wallet = createWallet(generateSeed())
 const currentTick = 20_000_000
@@ -64,7 +62,7 @@ const currentTick = 20_000_000
 const payload = qearn.buildLockInput({ amount: 10_000_000n })
 
 const result: SignedTransaction = await wallet.buildContractCall({
-  destination: 'BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARMID' as Identity,
+  destination: 'JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVKHO',
   amount: 10_000_000n,
   targetTick: currentTick + 5,
   inputType: 6,

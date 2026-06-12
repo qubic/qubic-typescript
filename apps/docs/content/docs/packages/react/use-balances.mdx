@@ -9,9 +9,11 @@ description: Fetches QU balances for multiple identities in parallel using QUtil
 
 ```tsx
 import { useBalances } from "@qubic.org/react"
+import { contractIndexToIdentity } from "@qubic.org/crypto"
+import { QEARN_CONTRACT_INDEX } from "@qubic.org/contracts"
 
 const WATCHED: Identity[] = [
-  toIdentity("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"),
+  contractIndexToIdentity(QEARN_CONTRACT_INDEX),
   toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL"),
 ]
 

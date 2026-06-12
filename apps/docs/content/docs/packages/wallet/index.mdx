@@ -89,7 +89,7 @@ import {
 ```ts
 import { createWallet, generateSeed } from "@qubic.org/wallet"
 import { createLiveClient } from "@qubic.org/rpc"
-import { toIdentity } from "@qubic.org/types"
+import { contractIndexToIdentity } from "@qubic.org/crypto"
 
 const live   = createLiveClient()
 const wallet = createWallet(generateSeed())
@@ -132,14 +132,14 @@ console.log("Wallet identity:", wallet.identity)
 import { createWallet, generateSeed } from "@qubic.org/wallet"
 import { qearn } from "@qubic.org/contracts"
 import { createLiveClient } from "@qubic.org/rpc"
-import { toIdentity } from "@qubic.org/types"
+import { contractIndexToIdentity } from "@qubic.org/crypto"
 
 const live   = createLiveClient()
 const wallet = createWallet(generateSeed())
 const { tick } = await live.getTickInfo()
 
 const payload     = qearn.buildLockInput({ amount: 10_000_000n })
-const destination = toIdentity("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+const destination = contractIndexToIdentity(qearn.contractIndex)
 
 const { encoded, hash } = await wallet.buildContractCall({
   destination,

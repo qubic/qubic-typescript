@@ -37,7 +37,7 @@ const tick = await requestCurrentTickInfo(conn)
 console.log(tick.epoch, tick.tick, tick.initialTick)
 
 // Entity balance
-const pk = identityToPublicKey('BZBQFLLBNCXEMGLOBHUVGPQVZEJYLR...')
+const pk = identityToPublicKey('BZBQFLLBNCXEMGLOBHUVFTLUPLVCPQUASSILFABOFFBCADQSSUPNWLZBQEXK')
 const { entity, identity } = await requestEntity(conn, pk)
 console.log(identity, entity.incomingAmount - entity.outgoingAmount)
 

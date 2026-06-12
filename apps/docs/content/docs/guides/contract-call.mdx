@@ -75,12 +75,10 @@ The builder throws `PayloadBuildError` synchronously on bad input (wrong types, 
 `buildScTransaction` constructs the transaction, sets the correct contract destination identity, and signs it with your seed:
 
 ```ts
-import { toIdentity } from "@qubic.org/types"
+import { contractIndexToIdentity } from "@qubic.org/crypto"
 
-// All SC calls go to the zero-address for the given contract index.
-// buildScTransaction derives this automatically from contractIndex.
 const { encoded, hash } = await wallet.buildContractCall({
-  destination: toIdentity("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"),
+  destination: contractIndexToIdentity(QEARN_CONTRACT_INDEX),
   amount: 10_000_000n,
   targetTick: tick + 5,
   currentTick: tick,
@@ -128,7 +126,7 @@ console.log(qearn.LOCK_INPUT_TYPE)  // 6
 import { qearn } from "@qubic.org/contracts"
 import { createWallet } from "@qubic.org/wallet"
 import { createLiveClient } from "@qubic.org/rpc"
-import { toIdentity } from "@qubic.org/types"
+import { contractIndexToIdentity } from "@qubic.org/crypto"
 
 const live = createLiveClient()
 const wallet = createWallet(process.env.SEED!)
@@ -137,7 +135,7 @@ const { tick } = await live.getTickInfo()
 const payload = qearn.buildLockInput({ amount: 10_000_000n })
 
 const { encoded, hash } = await wallet.buildContractCall({
-  destination: toIdentity("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"),
+  destination: contractIndexToIdentity(qearn.contractIndex),
   amount: 10_000_000n,
   targetTick: tick + 5,
   currentTick: tick,
@@ -153,7 +151,7 @@ console.log(`Broadcast to ${result.peersBroadcastedTo} peers`)
 Run it:
 
 ```bash
-SEED=your_seed bun qearn-lock.ts
+SEED=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa bun qearn-lock.ts
 ```
 
 ## Other contracts

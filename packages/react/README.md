@@ -110,7 +110,7 @@ function SendPanel() {
       disabled={isPending || !identities[0]}
       onClick={() => send({
         from: identities[0]!,
-        destination: '...' as Identity,
+        destination: 'BZBQFLLBNCXEMGLOBHUVFTLUPLVCPQUASSILFABOFFBCADQSSUPNWLZBQEXK',
         amount: 1_000_000n,
       })}
     >

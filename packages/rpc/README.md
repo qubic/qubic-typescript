@@ -212,7 +212,7 @@ if (tickResult.ok) {
   console.log('Current tick:', tickResult.value.tick)
 }
 
-const balanceResult = await live.getBalance('YOURIDENTITYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
+const balanceResult = await live.getBalance('BZBQFLLBNCXEMGLOBHUVFTLUPLVCPQUASSILFABOFFBCADQSSUPNWLZBQEXK')
 if (balanceResult.ok) {
   console.log('Balance:', balanceResult.value.balance) // bigint
 }
@@ -223,10 +223,11 @@ if (balanceResult.ok) {
 ```ts
 import { createLiveClient } from '@qubic.org/rpc'
 import { buildTransaction, signTransaction, encodeTransaction } from '@qubic.org/tx'
-import { publicKeyFromSeed, identityToPublicKey } from '@qubic.org/crypto'
-import { toSeed, toIdentity, PROTOCOL } from '@qubic.org/types'
+import { deriveIdentityFromSeed } from '@qubic.org/crypto'
+import { toSeed } from '@qubic.org/types'
 
-const seed = toSeed('yourseedaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+const seed = toSeed('a'.repeat(55))
+const source = deriveIdentityFromSeed(seed)
 const live = createLiveClient()
 
 const tickResult = await live.getTickInfo()
@@ -234,12 +235,10 @@ if (!tickResult.ok) throw tickResult.error
 const tick = tickResult.value.tick!
 
 const txBytes = buildTransaction({
-  sourcePublicKey: publicKeyFromSeed(seed),
-  destinationPublicKey: identityToPublicKey(
-    toIdentity('RECIPIENTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
-  ),
+  source,
+  destination: 'BZBQFLLBNCXEMGLOBHUVFTLUPLVCPQUASSILFABOFFBCADQSSUPNWLZBQEXK',
   amount: 1_000_000n,
-  targetTick: tick + PROTOCOL.TICKS_TO_EXPIRY,
+  targetTick: tick + 5,
   inputType: 0,
   currentTick: tick,
 })
@@ -261,7 +260,7 @@ const query = createQueryClient()
 
 const result = await query.getEventLogs({
   filters: {
-    source: 'YOURIDENTITYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+    source: 'BZBQFLLBNCXEMGLOBHUVFTLUPLVCPQUASSILFABOFFBCADQSSUPNWLZBQEXK',
     logType: '0',
   },
   ranges: {

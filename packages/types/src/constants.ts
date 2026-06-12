@@ -60,4 +60,21 @@ export const PROTOCOL = {
   IDENTITY_LENGTH: 60,
   SEED_LENGTH: 55,
   TX_HASH_LENGTH: 60,
+
+  /** Total number of computors in the network. */
+  NUMBER_OF_COMPUTORS: 676,
+  /** Quorum threshold: 2/3 + 1 of computors. */
+  QUORUM: 451,
+  /** Max transactions per tick (must be 2^N). */
+  NUMBER_OF_TRANSACTIONS_PER_TICK: 4096,
+  /** Max number of smart contracts. */
+  MAX_NUMBER_OF_CONTRACTS: 1024,
+  /** Number of peers exchanged in EXCHANGE_PUBLIC_PEERS. */
+  NUMBER_OF_EXCHANGED_PEERS: 4,
+  /** Request/response header size in bytes. */
+  HEADER_SIZE: 8,
+  /** Spectrum Merkle tree depth. */
+  SPECTRUM_DEPTH: 24,
+  /** Assets Merkle tree depth. */
+  ASSETS_DEPTH: 24,
 } as const satisfies Record<string, number>

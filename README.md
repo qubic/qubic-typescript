@@ -70,7 +70,6 @@ graph TD
 ```ts
 import { generateSeed, createWallet, createVault, unlockVault } from '@qubic.org/wallet'
 import { createLiveClient } from '@qubic.org/rpc'
-import type { Identity } from '@qubic.org/types'
 
 const live = createLiveClient()
 const { tickInfo } = await live.getTickInfo()
@@ -87,7 +86,7 @@ const wallet = createWallet(storedSeed)
 console.log(wallet.identity) // 60-char Qubic identity
 
 const { encoded } = await wallet.buildTransfer({
-  destination: 'BZBQFLLBNCXEMGLOBHUVGPQVZEJYLR...' as Identity,
+  destination: 'BZBQFLLBNCXEMGLOBHUVFTLUPLVCPQUASSILFABOFFBCADQSSUPNWLZBQEXK',
   amount: 1_000_000n,
   targetTick: tickInfo.tick + 5,
   currentTick: tickInfo.tick,
@@ -103,16 +102,16 @@ console.log('peers:', result.peersBroadcastedTo)
 import { createWallet, toSeed } from '@qubic.org/wallet'
 import { createLiveClient } from '@qubic.org/rpc'
 import { qearn } from '@qubic.org/contracts'
-import type { Identity } from '@qubic.org/types'
+import { contractIndexToIdentity } from '@qubic.org/crypto'
 
 const live = createLiveClient()
 const { tickInfo } = await live.getTickInfo()
-const wallet = createWallet(toSeed('yourfiftyfivecharacterlowercaseseedgoeshere1234567'))
+const wallet = createWallet(toSeed('a'.repeat(55)))
 
 const payload = qearn.buildLockInput({ amount: 10_000_000n })
 
 const { encoded } = await wallet.buildContractCall({
-  destination: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' as Identity,
+  destination: contractIndexToIdentity(9),
   amount: 10_000_000n,
   targetTick: tickInfo.tick + 5,
   currentTick: tickInfo.tick,
@@ -150,12 +149,11 @@ if (result.ok) {
 ```ts
 import { subscribeQuTransfers, subscribeAssetEvents, eventFilter, LOG_TYPE } from '@qubic.org/events'
 import { createBobSubscriptionClient } from '@qubic.org/bob'
-import type { Identity } from '@qubic.org/types'
 
 const bob = createBobSubscriptionClient({ wsUrl: 'wss://bob.qubic.org/v1/ws' })
 
 // Stream QU transfers to/from a specific identity — decoded and typed
-for await (const event of subscribeQuTransfers(bob, { identity: 'BZBQFLL...' as Identity })) {
+for await (const event of subscribeQuTransfers(bob, { identity: 'BZBQFLLBNCXEMGLOBHUVFTLUPLVCPQUASSILFABOFFBCADQSSUPNWLZBQEXK' })) {
   const { source, destination, amount } = event.data.data
   console.log(`${source} → ${destination}: ${amount} QU at tick ${event.data.tick}`)
 }
@@ -178,7 +176,6 @@ for await (const event of subscribeAssetEvents(bob, filter)) {
 ```ts
 import { createNodePool, requestCurrentTickInfo, requestEntity, broadcastTransaction } from '@qubic.org/tcp'
 import { identityToPublicKey } from '@qubic.org/crypto'
-import type { Identity } from '@qubic.org/types'
 
 const pool = createNodePool([
   'node1.qubic.org',
@@ -190,7 +187,7 @@ const pool = createNodePool([
 const { epoch, tick } = await requestCurrentTickInfo(pool)
 
 // Entity balance directly from a peer
-const pk = identityToPublicKey('BZBQFLLBNCXEMGLOBHUVGPQVZEJYLR...' as Identity)
+const pk = identityToPublicKey('BZBQFLLBNCXEMGLOBHUVFTLUPLVCPQUASSILFABOFFBCADQSSUPNWLZBQEXK')
 const { entity, identity } = await requestEntity(pool, pk)
 console.log(identity, entity.incomingAmount - entity.outgoingAmount)
 
@@ -234,7 +231,7 @@ export function App() {
 
 function Dashboard() {
   const { isConnected, account, connect, disconnect, connectors } = useWallet()
-  const { data: balance } = useBalance(account?.identity as Identity | undefined)
+  const { data: balance } = useBalance(account?.identity)
   const { data: round } = useContractQuery(qearnGetStateOfRound, { epoch: 213 })
 
   if (!isConnected) {

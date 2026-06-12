@@ -147,7 +147,7 @@ export function toAffine(P: PointR1): PointR1 {
   return { X, Y, Z: fqOne(), Ta: fqCopy(X), Tb: fqCopy(Y) }
 }
 
-export function bytesToBigInt(b: Uint8Array): bigint {
+export function bytesToBigIntLE(b: Uint8Array): bigint {
   let res = 0n
   for (let i = 0; i < b.length; i++) res |= BigInt(b[i] as number) << BigInt(8 * i)
   return res
@@ -224,8 +224,8 @@ function mLSBRecoding(L: Int8Array, k: Uint8Array): void {
   const view = new DataView(k.buffer, k.byteOffset, 32)
   m[0] = view.getBigUint64(0, true)
   m[1] = view.getBigUint64(8, true)
-  m[2] = bytesToBigInt(k.slice(16, 24))
-  m[3] = bytesToBigInt(k.slice(24, 32))
+  m[2] = bytesToBigIntLE(k.slice(16, 24))
+  m[3] = bytesToBigIntLE(k.slice(24, 32))
   m[4] = 0n
 
   condAddOrderN(m)

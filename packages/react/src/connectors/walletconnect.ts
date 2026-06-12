@@ -266,7 +266,7 @@ export function createWalletConnectConnector(
       })
     },
 
-    async signMessage(message: unknown): Promise<SignMessageResult> {
+    async signMessage(message: string): Promise<SignMessageResult> {
       const topic = getSavedTopic()
       if (!topic) throw new Error('WalletConnect: not connected')
       const client = await getClient()

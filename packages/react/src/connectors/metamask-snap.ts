@@ -5,6 +5,7 @@ import type {
   SendTransactionResult,
   SignMessageResult,
   SignTransactionResult,
+  TransactionRequest,
   WalletAccount,
   WalletConnector,
   WalletConnectorEvent,
@@ -167,7 +168,7 @@ export function createMetaMaskSnapConnector(
       }
     },
 
-    async sendTransaction(tx: unknown): Promise<SendTransactionResult> {
+    async sendTransaction(tx: TransactionRequest): Promise<SendTransactionResult> {
       if (!options.broadcast) {
         throw new Error(
           'MetaMask Snap connector: provide a `broadcast` function in options to use sendTransaction',
@@ -178,8 +179,8 @@ export function createMetaMaskSnapConnector(
       return { ...signed, networkTxId, broadcast }
     },
 
-    async signMessage(message: unknown): Promise<SignMessageResult> {
-      return invokeSnap<SignMessageResult>('signMessage', { ...(message as object), accountIndex })
+    async signMessage(message: string): Promise<SignMessageResult> {
+      return invokeSnap<SignMessageResult>('signMessage', { message, accountIndex })
     },
 
     on(event: WalletConnectorEvent, callback: EventCallback): () => void {

@@ -1,6 +1,18 @@
 import type { BroadcastTransactionResponse } from '@qubic.org/rpc'
 import type { Identity } from '@qubic.org/types'
 
+/** Parameters for building and sending a transaction. */
+export interface TransactionRequest {
+  /** Destination identity (60-char uppercase Qubic ID). */
+  destination: string
+  /** Amount to transfer (as a string to preserve precision). */
+  amount: string
+  /** Optional input type discriminator. */
+  inputType?: number
+  /** Optional base64-encoded payload bytes. */
+  payload?: string
+}
+
 export interface WalletAccount {
   identity: Identity
   name?: string
@@ -47,9 +59,9 @@ export interface WalletConnector {
   connect(options?: ConnectOptions): Promise<WalletAccount>
   getAccount(): Promise<WalletAccount | null>
   disconnect(): Promise<void>
-  sendTransaction(tx: unknown): Promise<SendTransactionResult>
-  signTransaction(tx: unknown): Promise<SignTransactionResult>
-  signMessage(message: unknown): Promise<SignMessageResult>
+  sendTransaction(tx: TransactionRequest): Promise<SendTransactionResult>
+  signTransaction(tx: TransactionRequest): Promise<SignTransactionResult>
+  signMessage(message: string): Promise<SignMessageResult>
   /** Subscribe to a wallet event. Returns an unsubscribe function. */
   on(event: WalletConnectorEvent, callback: (payload: unknown) => void): () => void
 }

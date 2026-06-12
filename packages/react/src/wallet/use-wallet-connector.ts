@@ -4,6 +4,7 @@ import type {
   SendTransactionResult,
   SignMessageResult,
   SignTransactionResult,
+  TransactionRequest,
   WalletAccount,
   WalletConnector,
 } from '../connectors/connector.js'
@@ -27,9 +28,9 @@ export interface WalletConnectorState {
    */
   connect(options?: ConnectOptions): Promise<void>
   disconnect(): Promise<void>
-  sendTransaction(tx: unknown): Promise<SendTransactionResult>
-  signTransaction(tx: unknown): Promise<SignTransactionResult>
-  signMessage(message: unknown): Promise<SignMessageResult>
+  sendTransaction(tx: TransactionRequest): Promise<SendTransactionResult>
+  signTransaction(tx: TransactionRequest): Promise<SignTransactionResult>
+  signMessage(message: string): Promise<SignMessageResult>
 }
 
 /**
@@ -131,11 +132,11 @@ export function useWalletConnector(connector: WalletConnector): WalletConnectorS
     }
   }, [connector])
 
-  const sendTransaction = useCallback((tx: unknown) => connector.sendTransaction(tx), [connector])
+  const sendTransaction = useCallback((tx: TransactionRequest) => connector.sendTransaction(tx), [connector])
 
-  const signTransaction = useCallback((tx: unknown) => connector.signTransaction(tx), [connector])
+  const signTransaction = useCallback((tx: TransactionRequest) => connector.signTransaction(tx), [connector])
 
-  const signMessage = useCallback((message: unknown) => connector.signMessage(message), [connector])
+  const signMessage = useCallback((message: string) => connector.signMessage(message), [connector])
 
   return {
     isAvailable,

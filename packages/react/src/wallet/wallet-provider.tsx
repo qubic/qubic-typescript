@@ -13,6 +13,7 @@ import type {
   SendTransactionResult,
   SignMessageResult,
   SignTransactionResult,
+  TransactionRequest,
   WalletAccount,
   WalletConnector,
 } from '../connectors/connector.js'
@@ -37,9 +38,9 @@ export interface WalletContextValue {
    */
   connect(connectorId: string, options?: ConnectOptions): Promise<void>
   disconnect(): Promise<void>
-  sendTransaction(tx: unknown): Promise<SendTransactionResult>
-  signTransaction(tx: unknown): Promise<SignTransactionResult>
-  signMessage(message: unknown): Promise<SignMessageResult>
+  sendTransaction(tx: TransactionRequest): Promise<SendTransactionResult>
+  signTransaction(tx: TransactionRequest): Promise<SignTransactionResult>
+  signMessage(message: string): Promise<SignMessageResult>
 }
 
 const WalletContext = createContext<WalletContextValue | undefined>(undefined)
@@ -210,7 +211,7 @@ export function WalletProvider({
   }, [activeConnector, clearSubs, storageKey])
 
   const sendTransaction = useCallback(
-    (tx: unknown): Promise<SendTransactionResult> => {
+    (tx: TransactionRequest): Promise<SendTransactionResult> => {
       if (!activeConnector) throw new Error('WalletProvider: no active connector')
       return activeConnector.sendTransaction(tx)
     },
@@ -218,7 +219,7 @@ export function WalletProvider({
   )
 
   const signTransaction = useCallback(
-    (tx: unknown): Promise<SignTransactionResult> => {
+    (tx: TransactionRequest): Promise<SignTransactionResult> => {
       if (!activeConnector) throw new Error('WalletProvider: no active connector')
       return activeConnector.signTransaction(tx)
     },
@@ -226,7 +227,7 @@ export function WalletProvider({
   )
 
   const signMessage = useCallback(
-    (message: unknown): Promise<SignMessageResult> => {
+    (message: string): Promise<SignMessageResult> => {
       if (!activeConnector) throw new Error('WalletProvider: no active connector')
       return activeConnector.signMessage(message)
     },

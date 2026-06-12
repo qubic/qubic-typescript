@@ -18,6 +18,7 @@ export type { WalletConnectConnectorOptions } from './connectors/walletconnect.j
 export { createMetaMaskSnapConnector, DEFAULT_SNAP_ID } from './connectors/metamask-snap.js'
 export type { MetaMaskSnapConnectorOptions } from './connectors/metamask-snap.js'
 export type {
+  TransactionRequest,
   WalletAccount,
   WalletConnector,
   WalletConnectorEvent,

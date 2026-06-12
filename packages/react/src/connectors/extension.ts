@@ -4,6 +4,7 @@ import type {
   SendTransactionResult,
   SignMessageResult,
   SignTransactionResult,
+  TransactionRequest,
   WalletAccount,
   WalletConnector,
   WalletConnectorEvent,
@@ -62,15 +63,15 @@ export const extensionConnector: WalletConnector = {
     await getProvider().disconnect()
   },
 
-  sendTransaction(tx: unknown): Promise<SendTransactionResult> {
+  sendTransaction(tx: TransactionRequest): Promise<SendTransactionResult> {
     return getProvider().sendTransaction(tx)
   },
 
-  signTransaction(tx: unknown): Promise<SignTransactionResult> {
+  signTransaction(tx: TransactionRequest): Promise<SignTransactionResult> {
     return getProvider().signTransaction(tx)
   },
 
-  signMessage(message: unknown): Promise<SignMessageResult> {
+  signMessage(message: string): Promise<SignMessageResult> {
     return getProvider().signMessage(message)
   },
 
@@ -78,3 +79,4 @@ export const extensionConnector: WalletConnector = {
     return getProvider().on(event, callback)
   },
 }
+

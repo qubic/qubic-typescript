@@ -187,12 +187,15 @@ Reconnect uses exponential backoff (1s → 2s → 4s → 8s → 30s). On reconne
 
 ```ts
 import { createBobRpcClient } from '@qubic.org/bob'
+import { toIdentity } from '@qubic.org/types'
 
 const bob = createBobRpcClient({ endpoint: 'http://localhost:40420' })
+const identity = toIdentity('BZBQFLLBNCXEMGLOBHUVFTLUPLVCPQUASSILFABOFFBCADQSSUPNWLZBQEXK')
 
-const result = await bob.getBalance('BZBQFLLBNCXEMGLOBHUVGPKHZALRYIZMDRCU...')
+const result = await bob.getBalance(identity)
 if (result.ok) {
-  console.log('balance:', result.value)
+  const balance: bigint = result.value
+  console.log('balance:', balance)
 }
 ```
 
@@ -200,7 +203,11 @@ if (result.ok) {
 
 ```ts
 import { createBobRpcClient } from '@qubic.org/bob'
-import { buildQearnGetStateOfRoundInput, decodeQearnGetStateOfRoundOutput } from '@qubic.org/contracts'
+import {
+  buildQearnGetStateOfRoundInput,
+  decodeQearnGetStateOfRoundOutput,
+} from '@qubic.org/contracts'
+import type { QearnGetStateOfRoundOutput } from '@qubic.org/contracts'
 
 const bob = createBobRpcClient({ endpoint: 'http://localhost:40420' })
 
@@ -209,7 +216,9 @@ const b64 = Buffer.from(inputPayload).toString('base64')
 
 const result = await bob.querySmartContract(9, 3, b64)
 if (result.ok) {
-  const output = decodeQearnGetStateOfRoundOutput(Buffer.from(result.value, 'base64'))
+  const output: QearnGetStateOfRoundOutput = decodeQearnGetStateOfRoundOutput(
+    Buffer.from(result.value, 'base64'),
+  )
   console.log('state:', output.state)
 }
 ```
@@ -218,6 +227,7 @@ if (result.ok) {
 
 ```ts
 import { createBobRestClient } from '@qubic.org/bob'
+import type { BobEpochInfo, BobStatus } from '@qubic.org/bob'
 
 const rest = createBobRestClient({ baseUrl: 'http://localhost:40420' })
 
@@ -226,8 +236,14 @@ const [status, epochInfo] = await Promise.all([
   rest.getEpochInfo(212),
 ])
 
-if (status.ok) console.log(status.value)
-if (epochInfo.ok) console.log(epochInfo.value)
+if (status.ok) {
+  const value: BobStatus = status.value
+  console.log(value)
+}
+if (epochInfo.ok) {
+  const value: BobEpochInfo = epochInfo.value
+  console.log(value)
+}
 ```
 
 ### Subscribe to live log events
@@ -235,7 +251,7 @@ if (epochInfo.ok) console.log(epochInfo.value)
 ```ts
 import { createBobSubscriptionClient } from '@qubic.org/bob'
 
-const sub = createBobSubscriptionClient({ wsUrl: 'ws://localhost:40420/ws' })
+const sub = createBobSubscriptionClient({ wsUrl: 'ws://localhost:40420' })
 
 const ac = new AbortController()
 
@@ -251,7 +267,7 @@ sub.close()
 
 ```ts
 const sub = createBobSubscriptionClient({
-  wsUrl: 'ws://localhost:40420/ws',
+  wsUrl: 'ws://localhost:40420',
   onReconnect: (attempt, lastLogId) => {
     console.log(`reconnect attempt ${attempt}, resuming from logId ${lastLogId}`)
   },

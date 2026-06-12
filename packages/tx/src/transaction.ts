@@ -1,6 +1,7 @@
 import { identityToPublicKey, k12, sign, verify } from '@qubic.org/crypto'
 import { PROTOCOL, isIdentity, toBase64 } from '@qubic.org/types'
 import type { Base64, Identity, Seed, TxHash } from '@qubic.org/types'
+import { InvalidIdentityError } from '@qubic.org/types'
 import { BinaryReader } from './binary-reader.js'
 import { BinaryWriter } from './binary-writer.js'
 import { InvalidTransactionError, PayloadTooLargeError, TickInThePastError } from './errors.js'
@@ -54,13 +55,17 @@ export interface DecodedTransaction {
 export function buildTransaction(input: TransactionInput): Uint8Array {
   const payload = input.payload ?? new Uint8Array(0)
   const sourcePublicKey =
-    typeof input.source === 'string' && isIdentity(input.source)
-      ? identityToPublicKey(input.source)
-      : (input.source as Uint8Array)
+    typeof input.source === 'string'
+      ? isIdentity(input.source)
+        ? identityToPublicKey(input.source)
+        : (() => { throw new InvalidIdentityError(input.source as string) })()
+      : input.source
   const destinationPublicKey =
-    typeof input.destination === 'string' && isIdentity(input.destination)
-      ? identityToPublicKey(input.destination)
-      : (input.destination as Uint8Array)
+    typeof input.destination === 'string'
+      ? isIdentity(input.destination)
+        ? identityToPublicKey(input.destination)
+        : (() => { throw new InvalidIdentityError(input.destination as string) })()
+      : input.destination
 
   if (sourcePublicKey.byteLength !== PROTOCOL.PUBLIC_KEY_SIZE) {
     throw new InvalidTransactionError(

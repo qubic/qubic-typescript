@@ -2,7 +2,7 @@ import { BobConnectionError, BobSubscriptionError } from './errors.js'
 import type {
   BobLogEvent,
   BobLogFilter,
-  BobTickData,
+  BobIndexedTick,
   BobTickNotification,
   BobTransferEvent,
   BobTransferFilter,
@@ -294,7 +294,7 @@ export function createBobSubscriptionClient(
     },
 
     subscribeTickStream(opts) {
-      return subscribe<BobTickData>({
+      return subscribe<BobIndexedTick>({
         topic: 'tickStream',
         params: [],
         ...(opts?.signal ? { signal: opts.signal } : {}),

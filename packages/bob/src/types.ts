@@ -38,7 +38,8 @@ export interface BobTickNotification {
   epoch: number
 }
 
-export interface BobTickData {
+/** Tick metadata as indexed by the Bob indexer. Not to be confused with the core protocol TickData. */
+export interface BobIndexedTick {
   tick: number
   epoch: number
   transactions: TxHash[]

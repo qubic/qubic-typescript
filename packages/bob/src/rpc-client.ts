@@ -11,7 +11,7 @@ import type {
   BobQuTransferFilter,
   BobRestLogEvent,
   BobRpcEpochInfo,
-  BobTickData,
+  BobIndexedTick,
   BobTickLogRange,
   BobTransaction,
   BobTransferEvent,
@@ -287,7 +287,7 @@ export function createBobRpcClient(options: BobRpcClientOptions): BobRpcClient {
     },
 
     getTickByNumber(tick, includeTx, options) {
-      return call<BobTickData>(
+      return call<BobIndexedTick>(
         'qubic_getTickByNumber',
         [String(tick), includeTx ?? false],
         options?.signal,

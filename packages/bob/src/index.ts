@@ -32,7 +32,7 @@ export type {
   BobLogFilter,
   BobQuTransferFilter,
   BobRestLogEvent,
-  BobTickData,
+  BobIndexedTick,
   BobTickLogRange,
   BobTickNotification,
   BobTransaction,

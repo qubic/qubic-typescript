@@ -2,7 +2,7 @@ import createClient from 'openapi-fetch'
 import type { components, paths } from './__generated__/bob-schema.d.ts'
 import { DEFAULT_BOB_BASE_URL } from './constants.js'
 import { BobRpcError } from './errors.js'
-import { type Result, err, ok } from './result.js'
+import { type Result, err, ok } from '@qubic.org/types'
 
 export type BobRestClientOptions = {
   baseUrl?: string

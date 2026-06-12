@@ -15,11 +15,11 @@ type WindowQubic = {
   connect(): Promise<{ connected: true; origin: string }>
   getAccount(): Promise<{ identity: string; name?: string } | null>
   disconnect(): Promise<{ disconnected: true }>
-  sendTransaction(tx: unknown): Promise<SendTransactionResult>
-  signTransaction(tx: unknown): Promise<SignTransactionResult>
-  signMessage(message: unknown): Promise<SignMessageResult>
-  on(event: string, callback: (payload: unknown) => void): () => void
-  off(event: string, callback: (payload: unknown) => void): void
+  sendTransaction(tx: TransactionRequest): Promise<SendTransactionResult>
+  signTransaction(tx: TransactionRequest): Promise<SignTransactionResult>
+  signMessage(message: string): Promise<SignMessageResult>
+  on(event: string, callback: (...args: unknown[]) => void): () => void
+  off(event: string, callback: (...args: unknown[]) => void): void
 }
 
 type WindowWithQubic = typeof globalThis & { qubic?: WindowQubic }
@@ -75,8 +75,7 @@ export const extensionConnector: WalletConnector = {
     return getProvider().signMessage(message)
   },
 
-  on(event: WalletConnectorEvent, callback: (payload: unknown) => void): () => void {
+  on(event: WalletConnectorEvent, callback: (...args: unknown[]) => void): () => void {
     return getProvider().on(event, callback)
   },
 }
-

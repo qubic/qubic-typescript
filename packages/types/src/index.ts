@@ -35,3 +35,5 @@ export type {
   UnknownCustomMessage,
 } from './protocol.js'
 export { CUSTOM_MESSAGE_OP, customMessageOpLabel } from './protocol.js'
+export { err, ok } from './result.js'
+export type { Err, Ok, Result } from './result.js'

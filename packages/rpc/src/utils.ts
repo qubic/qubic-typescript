@@ -3,8 +3,8 @@ import type { LiveClient, LiveClientOptions } from './live-client.js'
 import { createLiveClient } from './live-client.js'
 import { createQueryClient } from './query-client.js'
 import type { QueryClient, QueryClientOptions } from './query-client.js'
-import { err } from './result.js'
-import type { Result } from './result.js'
+import { err } from '@qubic.org/types'
+import type { Result } from '@qubic.org/types'
 
 export interface QubicClient {
   live: LiveClient

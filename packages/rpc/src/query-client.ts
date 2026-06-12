@@ -1,9 +1,9 @@
+import { err, ok } from '@qubic.org/types'
+import type { Result } from '@qubic.org/types'
 import createClient from 'openapi-fetch'
 import { sig, unwrap } from './_utils.js'
 import { QubicRpcError } from './errors.js'
 import type { components, paths } from './query-schema'
-import { err, ok } from './result.js'
-import type { Result } from './result.js'
 
 export type QueryClientOptions = {
   baseUrl?: string
@@ -61,7 +61,12 @@ export function createQueryClient(options: QueryClientOptions = {}) {
         '/getLastProcessedTick',
       )
       if (!r.ok) return r
-      const v = r.value as Record<string, unknown>
+      const v = r.value as {
+        tickNumber?: number
+        epoch?: number
+        intervalInitialTick?: number
+        logTickNumber?: number
+      }
       if (
         v.tickNumber == null ||
         v.epoch == null ||

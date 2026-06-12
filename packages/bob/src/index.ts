@@ -14,8 +14,8 @@ export type {
 } from './rest-client.js'
 export { createBobRpcClient } from './rpc-client.js'
 export type { BobRpcClient, BobRpcClientOptions } from './rpc-client.js'
-export { err, ok } from './result.js'
-export type { Err, Ok, Result } from './result.js'
+export { err, ok } from '@qubic.org/types'
+export type { Err, Ok, Result } from '@qubic.org/types'
 export { createBobSubscriptionClient } from './subscription-client.js'
 export type {
   BobSubscriptionClient,

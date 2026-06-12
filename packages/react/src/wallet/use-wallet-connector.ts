@@ -1,3 +1,4 @@
+import type { Identity } from '@qubic.org/types'
 import { useCallback, useEffect, useState } from 'react'
 import type {
   ConnectOptions,
@@ -84,7 +85,7 @@ export function useWalletConnector(connector: WalletConnector): WalletConnectorS
       if (payload && typeof payload === 'object') {
         const record = payload as Partial<WalletAccount>
         if (typeof record.identity === 'string') {
-          const acc: WalletAccount = { identity: record.identity }
+          const acc: WalletAccount = { identity: record.identity as Identity }
           if (record.name) acc.name = record.name
           setAccount(acc)
           return
@@ -132,9 +133,15 @@ export function useWalletConnector(connector: WalletConnector): WalletConnectorS
     }
   }, [connector])
 
-  const sendTransaction = useCallback((tx: TransactionRequest) => connector.sendTransaction(tx), [connector])
+  const sendTransaction = useCallback(
+    (tx: TransactionRequest) => connector.sendTransaction(tx),
+    [connector],
+  )
 
-  const signTransaction = useCallback((tx: TransactionRequest) => connector.signTransaction(tx), [connector])
+  const signTransaction = useCallback(
+    (tx: TransactionRequest) => connector.signTransaction(tx),
+    [connector],
+  )
 
   const signMessage = useCallback((message: string) => connector.signMessage(message), [connector])
 

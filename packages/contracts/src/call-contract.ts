@@ -3,7 +3,7 @@ import { buildPayload, decodePayload } from '@qubic.org/registry'
 import type { QubicRpcError } from '@qubic.org/rpc'
 import type { QuerySmartContractRequest, QuerySmartContractResponse } from '@qubic.org/rpc'
 import type { Result } from '@qubic.org/rpc'
-import { ok } from './result.js'
+import { ok } from '@qubic.org/types'
 
 export interface SmartContractCaller {
   querySmartContract(

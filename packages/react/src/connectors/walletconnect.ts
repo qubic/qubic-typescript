@@ -4,6 +4,7 @@ import type {
   SendTransactionResult,
   SignMessageResult,
   SignTransactionResult,
+  TransactionRequest,
   WalletAccount,
   WalletConnector,
   WalletConnectorEvent,
@@ -49,7 +50,7 @@ interface WcAccount {
   alias?: string
 }
 
-type EventCallback = (payload: unknown) => void
+type EventCallback = (...args: unknown[]) => void
 
 export interface WalletConnectConnectorOptions {
   /**
@@ -244,7 +245,7 @@ export function createWalletConnectConnector(
       }
     },
 
-    async sendTransaction(tx: unknown): Promise<SendTransactionResult> {
+    async sendTransaction(tx: TransactionRequest): Promise<SendTransactionResult> {
       const topic = getSavedTopic()
       if (!topic) throw new Error('WalletConnect: not connected')
       const client = await getClient()
@@ -255,7 +256,7 @@ export function createWalletConnectConnector(
       })
     },
 
-    async signTransaction(tx: unknown): Promise<SignTransactionResult> {
+    async signTransaction(tx: TransactionRequest): Promise<SignTransactionResult> {
       const topic = getSavedTopic()
       if (!topic) throw new Error('WalletConnect: not connected')
       const client = await getClient()
@@ -277,7 +278,7 @@ export function createWalletConnectConnector(
       })
     },
 
-    on(event: WalletConnectorEvent, callback: EventCallback): () => void {
+    on(event: WalletConnectorEvent, callback: (...args: unknown[]) => void): () => void {
       const set = listeners.get(event) ?? new Set()
       set.add(callback)
       listeners.set(event, set)

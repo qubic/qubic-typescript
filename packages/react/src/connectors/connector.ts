@@ -63,5 +63,5 @@ export interface WalletConnector {
   signTransaction(tx: TransactionRequest): Promise<SignTransactionResult>
   signMessage(message: string): Promise<SignMessageResult>
   /** Subscribe to a wallet event. Returns an unsubscribe function. */
-  on(event: WalletConnectorEvent, callback: (payload: unknown) => void): () => void
+  on(event: WalletConnectorEvent, callback: (...args: unknown[]) => void): () => void
 }

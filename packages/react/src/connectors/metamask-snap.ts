@@ -62,7 +62,7 @@ async function hasSnapsSupport(): Promise<boolean> {
   }
 }
 
-type EventCallback = (payload: unknown) => void
+type EventCallback = (...args: unknown[]) => void
 
 /**
  * WalletConnector implementation for the Qubic MetaMask Snap.
@@ -148,7 +148,7 @@ export function createMetaMaskSnapConnector(
       for (const cb of listeners.get('disconnect') ?? []) cb(undefined)
     },
 
-    async signTransaction(tx: unknown): Promise<SignTransactionResult> {
+    async signTransaction(tx: TransactionRequest): Promise<SignTransactionResult> {
       const result = await invokeSnap<{
         txId?: string
         targetTick?: number

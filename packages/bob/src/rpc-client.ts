@@ -1,7 +1,7 @@
 import { isIdentity } from '@qubic.org/types'
 import type { Base64, Identity, TxHash } from '@qubic.org/types'
 import { BobRpcError } from './errors.js'
-import { type Result, err, ok } from './result.js'
+import { type Result, err, ok } from '@qubic.org/types'
 import type {
   BobAllAssetTransferFilter,
   BobAssetTransferFilter,
@@ -315,7 +315,12 @@ export function createBobRpcClient(options: BobRpcClientOptions): BobRpcClient {
       try {
         balance = BigInt(r.value.balance)
       } catch {
-        return err(new BobRpcError(-32603, `invalid balance value in getAssetBalance response: ${String(r.value.balance)}`))
+        return err(
+          new BobRpcError(
+            -32603,
+            `invalid balance value in getAssetBalance response: ${String(r.value.balance)}`,
+          ),
+        )
       }
       return ok({
         ...r.value,
@@ -345,7 +350,10 @@ export function createBobRpcClient(options: BobRpcClientOptions): BobRpcClient {
           try {
             amount = BigInt(item.amount)
           } catch {
-            throw new BobRpcError(-32603, `invalid amount value in getAssets response: ${String(item.amount)}`)
+            throw new BobRpcError(
+              -32603,
+              `invalid amount value in getAssets response: ${String(item.amount)}`,
+            )
           }
           return {
             ...item,
@@ -370,7 +378,12 @@ export function createBobRpcClient(options: BobRpcClientOptions): BobRpcClient {
       const r = await call<Raw>('qubic_getEpochInfo', [epoch], options?.signal)
       if (!r.ok) return r
       const v = r.value
-      if (v.epoch == null || v.initialTick == null || v.endTick == null || v.lastIndexedTick == null) {
+      if (
+        v.epoch == null ||
+        v.initialTick == null ||
+        v.endTick == null ||
+        v.lastIndexedTick == null
+      ) {
         return err(new BobRpcError(-32603, 'missing required fields in getEpochInfo response'))
       }
       return ok({

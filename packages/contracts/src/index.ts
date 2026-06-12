@@ -1,5 +1,5 @@
-export type { Result, Ok, Err } from './result.js'
-export { ok, err } from './result.js'
+export type { Result, Ok, Err } from '@qubic.org/types'
+export { ok, err } from '@qubic.org/types'
 export type {
   SmartContractCaller,
   CallContractFunctionOptions,

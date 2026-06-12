@@ -3,7 +3,7 @@ import type { BinaryField, FieldValue, NamedStruct } from '@qubic.org/registry'
 import { buildPayload, decodePayload } from '@qubic.org/registry'
 import type { QubicRpcError } from '@qubic.org/rpc'
 import { type ContractCall, type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
-import type { Result } from '../result.js'
+import type { Result } from '@qubic.org/types'
 
 export const VOTTUN_BRIDGE_CONTRACT_INDEX = 25
 

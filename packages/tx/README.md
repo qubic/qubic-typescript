@@ -136,12 +136,12 @@ All three errors carry structured context:
 ```ts
 import { buildTransaction, signTransaction, encodeTransaction } from '@qubic.org/tx'
 import { publicKeyFromSeed, identityToPublicKey } from '@qubic.org/crypto'
-import { toSeed, toIdentity } from '@qubic.org/types'
+import { PROTOCOL, toSeed, toIdentity } from '@qubic.org/types'
 
-const seed = toSeed('mysecrettwentyfivecharacterseeeed...')
+const seed = toSeed('a'.repeat(PROTOCOL.SEED_LENGTH))
 const sourcePublicKey = publicKeyFromSeed(seed)
 const destinationPublicKey = identityToPublicKey(
-  toIdentity('DESTIDENTITYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
+  toIdentity('BZBQFLLBNCXEMGLOBHUVFTLUPLVCPQUASSILFABOFFBCADQSSUPNWLZBQEXK'),
 )
 
 // currentTick obtained from live.getTickInfo()
@@ -167,9 +167,9 @@ const encoded = encodeTransaction(signedTx)
 ```ts
 import { buildTransaction, signTransaction, encodeTransaction, buildPayload } from '@qubic.org/tx'
 import { publicKeyFromSeed } from '@qubic.org/crypto'
-import { toSeed, CONTRACT_INDEX, PROTOCOL } from '@qubic.org/types'
+import { PROTOCOL, toSeed } from '@qubic.org/types'
 
-const seed = toSeed('myseedaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+const seed = toSeed('a'.repeat(PROTOCOL.SEED_LENGTH))
 const sourcePublicKey = publicKeyFromSeed(seed)
 
 // Contract destination is all-zeros for SC calls

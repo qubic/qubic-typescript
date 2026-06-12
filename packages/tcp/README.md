@@ -88,7 +88,12 @@ Qubic TCP uses 8-byte length-prefixed frames:
 [size: 3 bytes LE] [type: 1 byte] [dejavu: 4 bytes LE] [payload: size-8 bytes]
 ```
 
-Requests are serialised per connection — only one is in flight at a time. The node responds with zero or more typed packets followed by an `END_RESPONSE` (type 35). A `TRY_AGAIN` (type 54) response causes an automatic 1-second retry.
+- **dejavu** — a cryptographically random non-zero `uint32` generated per request. Pass `0` explicitly for broadcast semantics (forwarded to peers). When omitted, `encodeHeader` auto-generates a random value via `crypto.randomBytes`.
+- Requests are serialised per connection — only one is in flight at a time.
+- The node responds with zero or more typed packets followed by an `END_RESPONSE` (type 35).
+- A `TRY_AGAIN` (type 54) response causes an automatic 1-second retry.
+
+`MESSAGE_TYPE` covers all entries from the upstream `network_message_type.h`, including log queries, asset queries, oracle data, custom mining, tx status (addon), and special commands.
 
 ## Low-level access
 

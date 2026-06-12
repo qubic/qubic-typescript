@@ -135,7 +135,7 @@ const bobFilter = eventFilter()
   .toBobFilter()
 
 for await (const event of bob.subscription.subscribeLogs(bobFilter)) {
-  // raw BobLogEvent — call decodeEvent if you need typed data
+  // raw BobLogEvent — decode with decodeEvent from @qubic.org/events for typed data
 }
 ```
 

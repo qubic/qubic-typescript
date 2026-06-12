@@ -16,7 +16,7 @@ Every event has the same outer structure:
 }
 ```
 
-Decode a raw `BobLogEvent` to get this structure:
+Decode a raw `RawQubicLogEvent` to get this structure:
 
 ```ts
 import { decodeEvent } from "@qubic.org/events"
@@ -204,14 +204,44 @@ typed.data.firstQueryTimestamp  // bigint — timestamp of first query
 
 ### `CUSTOM_MESSAGE` (255)
 
-Fires for contract-specific events that don't fit any standard type. The `data` field is a raw `Uint8Array` — decode it using the contract's ABI via `@qubic.org/registry`.
+Fires for structured custom messages from the core node. The `data` field is decoded into a `CustomMessageData` object with an 8-byte operation code and remaining payload.
 
 ```ts
 if (typed.logType === LOG_TYPE.CUSTOM_MESSAGE) {
-  const raw: Uint8Array = typed.data
-  // decode with registry
+  typed.data.messageType  // bigint — 8-byte operation code
+  typed.data.payload       // Uint8Array — remaining payload bytes
 }
 ```
+
+Use `CUSTOM_MESSAGE_TYPE` from `@qubic.org/events` to match known custom message types:
+
+```ts
+import { CUSTOM_MESSAGE_TYPE } from "@qubic.org/events"
+
+if (typed.data.messageType === CUSTOM_MESSAGE_TYPE.START_EPOCH) {
+  console.log("Epoch started at tick", typed.tick)
+} else if (typed.data.messageType === CUSTOM_MESSAGE_TYPE.START_DISTRIBUTE_DIVIDENDS) {
+  console.log("Dividend distribution started at tick", typed.tick)
+}
+```
+
+### `CustomMessageData` type
+
+```ts
+interface CustomMessageData {
+  messageType: bigint      // 8-byte operation code
+  payload: Uint8Array      // remaining bytes after the type field
+}
+```
+
+The `CUSTOM_MESSAGE_TYPE` constant provides named values:
+
+| Name | Value | Description |
+|---|---|---|
+| `START_EPOCH` | `4850183582582395987n` | Epoch transition: start of a new epoch |
+| `END_EPOCH` | `4850183582582591045n` | Epoch transition: end of current epoch |
+| `START_DISTRIBUTE_DIVIDENDS` | `6217575821008262227n` | Dividend distribution started |
+| `END_DISTRIBUTE_DIVIDENDS` | `6217575821008457285n` | Dividend distribution ended |
 
 ---
 

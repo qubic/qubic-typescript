@@ -3,7 +3,7 @@ title: Decode event
 description: decodeEvent — parse a raw BobLogEvent into a typed discriminated union.
 ---
 
-`decodeEvent` takes a raw `BobLogEvent` from `bob.subscription.subscribeLogs`, decodes its binary `data` field, and returns a `TypedEvent` discriminated on `logType`.
+`decodeEvent` takes a raw `RawQubicLogEvent` (with `tick`, `logType`, and a base64 `data` field), decodes the binary payload, and returns a `TypedEvent` discriminated on `logType`.
 
 ## `decodeEvent(event)`
 
@@ -18,7 +18,7 @@ const typed = decodeEvent(rawEvent)
 
 | Name | Type | Description |
 |---|---|---|
-| `event` | `BobLogEvent` | Raw log event from `subscribeLogs` or the archive client |
+| `event` | `RawQubicLogEvent` | Raw log event with `tick`, `logType`, and base64 `data` field |
 
 **Returns** `TypedEvent` — a discriminated union with `logType`, `tick`, and `data` fields.
 
@@ -102,7 +102,7 @@ type TypedEvent =
   | { logType: 13;  tick: number; data: ContractReserveDeductionData }
   | { logType: 14;  tick: number; data: OracleQueryStatusData }
   | { logType: 15;  tick: number; data: OracleSubscriberLogMessageData }
-  | { logType: 255; tick: number; data: Uint8Array }  // CUSTOM_MESSAGE
+  | { logType: 255; tick: number; data: CustomMessageData }  // CUSTOM_MESSAGE
 ```
 
 ---
@@ -227,10 +227,19 @@ typed.data.firstQueryTimestamp   // bigint
 ### `CUSTOM_MESSAGE` (255)
 
 ```ts
-typed.data  // Uint8Array — contract-specific binary payload
+typed.data.messageType  // bigint — 8-byte operation code (see CUSTOM_MESSAGE_TYPE constants)
+typed.data.payload       // Uint8Array — remaining payload bytes after the type field
 ```
 
-Decode `CUSTOM_MESSAGE` payloads with `decodePayload` from `@qubic.org/registry`.
+Use `CUSTOM_MESSAGE_TYPE` from `@qubic.org/events` to match known custom message types:
+
+```ts
+import { CUSTOM_MESSAGE_TYPE } from "@qubic.org/events"
+
+if (typed.data.messageType === CUSTOM_MESSAGE_TYPE.START_EPOCH) {
+  console.log("New epoch starting at tick", typed.tick)
+}
+```
 
 ---
 

@@ -7,17 +7,17 @@ description: Typed event decoding and chainable filter builder for Qubic smart c
 
 ### Raw logs vs typed events
 
-A Bob event log (`"eventLogs"` subscription) delivers `BobLogEvent` objects with a numeric `eventType` and a base64-encoded binary `eventData`. You have to know the format of each type to do anything useful with it.
+A Qubic event log delivers raw log events with a numeric `logType` and a base64-encoded binary `data` field (as `RawQubicLogEvent`). You have to know the format of each type to do anything useful with it.
 
 `decodeEvent` handles that decoding:
 
 ```ts
 // Before: raw
-event.eventType   // 0
-event.eventData   // "AAAAAAAAAA..." (base64)
+rawEvent.logType   // 0
+rawEvent.data      // "AAAAAAAAAA..." (base64)
 
 // After: typed
-const typed = decodeEvent(event)
+const typed = decodeEvent(rawEvent)
 if (typed.logType === LOG_TYPE.QU_TRANSFER) {
   typed.data.source       // Identity
   typed.data.destination  // Identity
@@ -29,7 +29,7 @@ TypeScript narrows `typed.data` based on `logType` — no manual casting.
 
 ### 16 event types
 
-`@qubic.org/events` covers all 16 Qubic log types plus `CUSTOM_MESSAGE` (255): QU transfers, asset events, contract messages, burn events, spectrum stats, oracle events, and more.
+`@qubic.org/events` covers all 16 Qubic log types plus `CUSTOM_MESSAGE` (255): QU transfers, asset events, contract messages, burn events, spectrum stats, oracle events, custom messages, and more. `CUSTOM_MESSAGE` events are decoded into `CustomMessageData` with an 8-byte operation code.
 
 ### Filter builder
 
@@ -77,6 +77,7 @@ import {
   subscribeContractLogs,
   subscribeAllEvents,
   LOG_TYPE,
+  CUSTOM_MESSAGE_TYPE,
   EventDecodeError,
 } from "@qubic.org/events"
 ```
@@ -93,7 +94,7 @@ import {
 | `3` | `ASSET_POSSESSION_CHANGE` | `issuer`, `assetName`, `owner`, `newPossessor` |
 | `4–7` | Contract messages | `contractIndex`, `message` |
 | `8` | `BURNING` | `sourceId`, `amount` |
-| `255` | `CUSTOM_MESSAGE` | `Uint8Array` |
+| `255` | `CUSTOM_MESSAGE` | `messageType`, `payload` |
 
 ---
 

@@ -4,8 +4,13 @@ import { InvalidVaultError, VaultDecryptionError } from './errors.js'
 
 const VAULT_VERSION = 1
 const PBKDF2_ITERATIONS = 600_000
+/** Minimum iterations accepted during decryption to prevent downgrade attacks. */
+const MIN_PBKDF2_ITERATIONS = 100_000
 const SALT_BYTES = 16
 const IV_BYTES = 12
+
+const textEncoder = new TextEncoder()
+const textDecoder = new TextDecoder()
 
 interface VaultPayload {
   seeds: string[]
@@ -37,10 +42,9 @@ async function deriveKey(
   salt: Uint8Array<ArrayBuffer>,
   iterations: number,
 ): Promise<CryptoKey> {
-  const enc = new TextEncoder()
   const baseKey = await globalThis.crypto.subtle.importKey(
     'raw',
-    enc.encode(password),
+    textEncoder.encode(password),
     'PBKDF2',
     false,
     ['deriveKey'],
@@ -63,7 +67,7 @@ async function encryptPayload(
   const key = await deriveKey(password, salt, PBKDF2_ITERATIONS)
 
   const payload: VaultPayload = { seeds: seeds as string[] }
-  const plaintext = new TextEncoder().encode(JSON.stringify(payload))
+  const plaintext = textEncoder.encode(JSON.stringify(payload))
   const ciphertext = new Uint8Array(
     await globalThis.crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, plaintext),
   )
@@ -83,6 +87,12 @@ async function decryptPayload(vaultData: VaultData, password: string): Promise<S
     throw new InvalidVaultError('malformed hex fields')
   }
 
+  if (salt.byteLength < SALT_BYTES) throw new InvalidVaultError(`salt must be at least ${SALT_BYTES} bytes`)
+  if (iv.byteLength !== IV_BYTES) throw new InvalidVaultError(`IV must be exactly ${IV_BYTES} bytes`)
+  if (vaultData.iterations < MIN_PBKDF2_ITERATIONS) {
+    throw new InvalidVaultError(`iterations must be at least ${MIN_PBKDF2_ITERATIONS}`)
+  }
+
   const key = await deriveKey(password, salt, vaultData.iterations)
 
   let plaintext: ArrayBuffer
@@ -94,7 +104,7 @@ async function decryptPayload(vaultData: VaultData, password: string): Promise<S
 
   let payload: VaultPayload
   try {
-    payload = JSON.parse(new TextDecoder().decode(plaintext)) as VaultPayload
+    payload = JSON.parse(textDecoder.decode(plaintext)) as VaultPayload
   } catch (e) {
     throw new VaultDecryptionError({ cause: e })
   }

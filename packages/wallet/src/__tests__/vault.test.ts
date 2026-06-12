@@ -80,4 +80,22 @@ describe('exportVault / importVault', () => {
     const unsupported = { ...vault, version: 99 }
     await expect(unlockVault(unsupported, PASSWORD)).rejects.toThrow(InvalidVaultError)
   })
+
+  test('low iteration count throws InvalidVaultError', async () => {
+    const vault = await createVault(PASSWORD, [SEED_A])
+    const weak = { ...vault, iterations: 1 }
+    await expect(unlockVault(weak, PASSWORD)).rejects.toThrow(InvalidVaultError)
+  })
+
+  test('short salt throws InvalidVaultError', async () => {
+    const vault = await createVault(PASSWORD, [SEED_A])
+    const shortSalt = { ...vault, salt: 'aabb' }
+    await expect(unlockVault(shortSalt, PASSWORD)).rejects.toThrow(InvalidVaultError)
+  })
+
+  test('wrong IV length throws InvalidVaultError', async () => {
+    const vault = await createVault(PASSWORD, [SEED_A])
+    const badIv = { ...vault, iv: 'aabb' }
+    await expect(unlockVault(badIv, PASSWORD)).rejects.toThrow(InvalidVaultError)
+  })
 })

@@ -47,6 +47,9 @@ export interface QIPCreateICOInput {
   saleAmountForPhase3: bigint
   percent1: number
   startEpoch: number
+  burnRemainingTokens: number
+  isVested: number
+  vestingPeriod: number
 }
 
 const QIP_CREATE_ICO_INPUT_FIELDS: BinaryField[] = [
@@ -114,6 +117,24 @@ const QIP_CREATE_ICO_INPUT_FIELDS: BinaryField[] = [
     name: 'startEpoch',
     type: 'uint32',
     offset: 124,
+    byteLength: 4,
+  },
+  {
+    name: 'burnRemainingTokens',
+    type: 'uint8',
+    offset: 128,
+    byteLength: 1,
+  },
+  {
+    name: 'isVested',
+    type: 'uint8',
+    offset: 129,
+    byteLength: 1,
+  },
+  {
+    name: 'vestingPeriod',
+    type: 'uint32',
+    offset: 130,
     byteLength: 4,
   },
 ]
@@ -246,6 +267,46 @@ export function decodeQIPTransferShareManagementRightsOutput(
   return decodePayload(data, QIP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QIPTransferShareManagementRightsOutput
 }
 
+export const QIP_RETURN_FUNDS_INPUT_TYPE = 4
+
+export interface QIPReturnFundsInput {
+  indexOfICO: number
+}
+
+const QIP_RETURN_FUNDS_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'indexOfICO',
+    type: 'uint32',
+    offset: 0,
+    byteLength: 4,
+  },
+]
+
+export function buildQIPReturnFundsInput(
+  input: QIPReturnFundsInput,
+): ContractCall {
+  return { contractIndex: QIP_CONTRACT_INDEX, inputType: QIP_RETURN_FUNDS_INPUT_TYPE, payload: buildPayload(QIP_RETURN_FUNDS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
+}
+
+export interface QIPReturnFundsOutput {
+  returnCode: number
+}
+
+const QIP_RETURN_FUNDS_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'returnCode',
+    type: 'sint32',
+    offset: 0,
+    byteLength: 4,
+  },
+]
+
+export function decodeQIPReturnFundsOutput(
+  data: Uint8Array,
+): QIPReturnFundsOutput {
+  return decodePayload(data, QIP_RETURN_FUNDS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QIPReturnFundsOutput
+}
+
 export const QIP_GET_ICO_INFO_INPUT_TYPE = 1
 export const QIP_GET_ICO_INFO_INPUT_SIZE = 4
 
@@ -284,6 +345,9 @@ export interface QIPGetICOInfoOutput {
   remainingAmountForPhase3: bigint
   percent1: number
   startEpoch: number
+  burnRemainingTokens: number
+  isVested: number
+  vestingPeriod: number
 }
 
 const QIP_GET_ICO_INFO_OUTPUT_FIELDS: BinaryField[] = [
@@ -377,6 +441,24 @@ const QIP_GET_ICO_INFO_OUTPUT_FIELDS: BinaryField[] = [
     offset: 180,
     byteLength: 4,
   },
+  {
+    name: 'burnRemainingTokens',
+    type: 'uint8',
+    offset: 184,
+    byteLength: 1,
+  },
+  {
+    name: 'isVested',
+    type: 'uint8',
+    offset: 185,
+    byteLength: 1,
+  },
+  {
+    name: 'vestingPeriod',
+    type: 'uint32',
+    offset: 186,
+    byteLength: 4,
+  },
 ]
 
 export function decodeQIPGetICOInfoOutput(
@@ -413,5 +495,7 @@ export const qIP = {
   decodeBuyTokenOutput: decodeQIPBuyTokenOutput,
   buildTransferShareManagementRightsInput: buildQIPTransferShareManagementRightsInput,
   decodeTransferShareManagementRightsOutput: decodeQIPTransferShareManagementRightsOutput,
+  buildReturnFundsInput: buildQIPReturnFundsInput,
+  decodeReturnFundsOutput: decodeQIPReturnFundsOutput,
 }
 

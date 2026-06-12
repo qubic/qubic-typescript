@@ -40,29 +40,60 @@ export async function createNodeConnection(
   const timeoutMs = options.timeoutMs ?? 10_000
 
   let socket: Socket | null = null
-  let buf = new Uint8Array(0)
+  const chunks: Uint8Array[] = []
+  let chunksLen = 0
   let pending: PendingRequest | null = null
   const queue: Array<() => void> = []
   let processing = false
 
   function appendBuf(data: Buffer) {
-    const next = new Uint8Array(buf.length + data.length)
-    next.set(buf)
-    next.set(new Uint8Array(data.buffer, data.byteOffset, data.byteLength), buf.length)
-    buf = next
+    chunks.push(new Uint8Array(data.buffer, data.byteOffset, data.byteLength))
+    chunksLen += data.length
     parseMessages()
   }
 
+  /** Consolidate chunks into a single contiguous buffer when needed. */
+  function consolidate(): Uint8Array {
+    if (chunks.length === 0) return new Uint8Array(0)
+    if (chunks.length === 1) return chunks[0] as Uint8Array
+    const result = new Uint8Array(chunksLen)
+    let offset = 0
+    for (const chunk of chunks) {
+      result.set(chunk, offset)
+      offset += chunk.length
+    }
+    chunks.length = 0
+    chunks.push(result)
+    return result
+  }
+
+  /** Remove the first `n` consumed bytes from the chunk list. */
+  function consume(n: number) {
+    let remaining = n
+    while (remaining > 0 && chunks.length > 0) {
+      const chunk = chunks[0] as Uint8Array
+      if (chunk.length <= remaining) {
+        remaining -= chunk.length
+        chunks.shift()
+      } else {
+        chunks[0] = chunk.subarray(remaining)
+        remaining = 0
+      }
+    }
+    chunksLen -= n
+  }
+
   function parseMessages() {
-    while (buf.length >= HEADER_SIZE) {
+    while (chunksLen >= HEADER_SIZE) {
+      const buf = consolidate()
       const { size, type } = decodeHeader(buf)
       if (size < HEADER_SIZE) {
         destroySocket(new QubicTcpConnectionError(hostname, 'Malformed header: size < 8'))
         return
       }
-      if (buf.length < size) return
+      if (chunksLen < size) return
       const payload = buf.slice(HEADER_SIZE, size)
-      buf = buf.slice(size)
+      consume(size)
       onMessage(type, payload)
     }
   }

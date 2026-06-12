@@ -16,15 +16,16 @@ bun add @qubic.org/events
 
 - `@qubic.org/types` — `LOG_TYPE`, `LogType`, `Identity`, `Base64`
 - `@qubic.org/crypto` — public key → identity conversion for binary payloads
-- `@qubic.org/bob` — `BobSubscriptionClient`, `BobLogEvent`
+- `@qubic.org/bob` — only required for the optional subscription helpers
 
 ## Decoding a raw event
 
 ```ts
 import { decodeEvent, LOG_TYPE } from '@qubic.org/events'
+import type { RawQubicLogEvent } from '@qubic.org/events'
 
-// BobLogEvent comes from bob.subscribeLogs()
-const typed = decodeEvent(bobLogEvent)
+const rawEvent: RawQubicLogEvent = bobLogEvent
+const typed = decodeEvent(rawEvent)
 
 if (typed.logType === LOG_TYPE.QU_TRANSFER) {
   console.log(typed.data.source)       // Identity (60-char string)
@@ -100,7 +101,7 @@ All 17 log types from the Qubic protocol are decoded with fully typed data inter
 | 13 | `CONTRACT_RESERVE_DEDUCTION` | `ContractReserveDeductionData` |
 | 14 | `ORACLE_QUERY_STATUS_CHANGE` | `OracleQueryStatusData` |
 | 15 | `ORACLE_SUBSCRIBER_LOG_MESSAGE` | `OracleSubscriberLogMessageData` |
-| 255 | `CUSTOM_MESSAGE` | `Uint8Array` |
+| 255 | `CUSTOM_MESSAGE` | `CustomMessageData` |
 
 ## See also
 

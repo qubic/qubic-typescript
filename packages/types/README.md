@@ -127,6 +127,35 @@ interface TickInfo {
   initialTick: number
 }
 
+interface CurrentTickInfo {
+  tickDuration: number
+  epoch: number
+  tick: number
+  numberOfAlignedVotes: number
+  numberOfMisalignedVotes: number
+  initialTick: number
+}
+
+interface EntityRecord {
+  publicKey: Uint8Array
+  incomingAmount: bigint
+  outgoingAmount: bigint
+  numberOfIncomingTransfers: number
+  numberOfOutgoingTransfers: number
+  latestIncomingTransferTick: number
+  latestOutgoingTransferTick: number
+}
+
+interface RespondEntity {
+  entity: EntityRecord
+  tick: number
+  spectrumIndex: number
+}
+
+interface ExchangePublicPeers {
+  peers: string[]
+}
+
 interface Asset {
   issuer: Identity
   name: string            // up to 7 characters

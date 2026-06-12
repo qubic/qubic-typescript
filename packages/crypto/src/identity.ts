@@ -100,6 +100,21 @@ export function identityToPublicKey(identity: Identity): Uint8Array {
   return publicKey
 }
 
+/**
+ * Returns true when the identity has valid shape and checksum.
+ *
+ * Unlike the structural brand helpers in `@qubic.org/types`, this performs the
+ * full round-trip checksum validation used by the Qubic identity format.
+ */
+export function isValidIdentityChecksum(identity: string): identity is Identity {
+  try {
+    identityToPublicKey(identity as Identity)
+    return true
+  } catch {
+    return false
+  }
+}
+
 function encodeChecksum(publicKey: Uint8Array): number[] {
   const checksumBytes = k12(publicKey, 3)
   let checksum =

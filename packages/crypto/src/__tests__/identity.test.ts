@@ -4,6 +4,7 @@ import { InvalidIdentityError, InvalidSeedError } from '../errors.js'
 import {
   deriveIdentityFromSeed,
   identityToPublicKey,
+  isValidIdentityChecksum,
   publicKeyFromSeed,
   publicKeyToIdentity,
 } from '../index.js'
@@ -55,6 +56,21 @@ describe('publicKeyToIdentity / identityToPublicKey', () => {
     const identity = deriveIdentityFromSeed(KNOWN_SEED)
     const corrupt = (identity.slice(0, 59) + (identity[59] === 'A' ? 'B' : 'A')) as Identity
     expect(() => identityToPublicKey(corrupt)).toThrow(InvalidIdentityError)
+  })
+
+  test('isValidIdentityChecksum returns true for valid identities', () => {
+    const identity = deriveIdentityFromSeed(KNOWN_SEED)
+    expect(isValidIdentityChecksum(identity)).toBe(true)
+  })
+
+  test('isValidIdentityChecksum returns false for malformed identities', () => {
+    expect(isValidIdentityChecksum('ABCDEF')).toBe(false)
+  })
+
+  test('isValidIdentityChecksum returns false for bad checksum', () => {
+    const identity = deriveIdentityFromSeed(KNOWN_SEED)
+    const corrupt = identity.slice(0, 56) + 'AAAA'
+    expect(isValidIdentityChecksum(corrupt)).toBe(false)
   })
 })
 

@@ -1,6 +1,6 @@
-import { k12, sign, verify } from '@qubic.org/crypto'
-import { PROTOCOL, toBase64 } from '@qubic.org/types'
-import type { Base64, Seed, TxHash } from '@qubic.org/types'
+import { identityToPublicKey, k12, sign, verify } from '@qubic.org/crypto'
+import { PROTOCOL, isIdentity, toBase64 } from '@qubic.org/types'
+import type { Base64, Identity, Seed, TxHash } from '@qubic.org/types'
 import { BinaryReader } from './binary-reader.js'
 import { BinaryWriter } from './binary-writer.js'
 import { InvalidTransactionError, PayloadTooLargeError, TickInThePastError } from './errors.js'
@@ -10,10 +10,17 @@ const SIG_SIZE = PROTOCOL.SIGNATURE_SIZE // 64
 const PK_SIZE = PROTOCOL.PUBLIC_KEY_SIZE // 32
 
 export interface TransactionInput {
-  /** 32-byte compressed FourQ public key of the sender. */
-  sourcePublicKey: Uint8Array
-  /** 32-byte public key of the recipient; all-zeros for contract calls. */
-  destinationPublicKey: Uint8Array
+  /**
+   * Sender identifier. Provide either a 60-character uppercase Identity
+   * or a 32-byte compressed FourQ public key.
+   */
+  source: Identity | Uint8Array
+  /**
+   * Recipient identifier. Provide either a 60-character uppercase Identity
+   * or a 32-byte public key. Use an all-zeros public key or the explicit
+   * contract identity for contract calls.
+   */
+  destination: Identity | Uint8Array
   /** Transfer amount in QU (signed 64-bit LE). Use `0n` for most contract calls. */
   amount: bigint
   /** The tick at which this transaction should execute. */
@@ -45,20 +52,28 @@ export interface DecodedTransaction {
  * @throws {TickInThePastError} If `currentTick` is provided and `targetTick ≤ currentTick`.
  * @example
  * ```ts
- * const txBytes = buildTransaction({ sourcePublicKey, destinationPublicKey, amount: 100n, targetTick: tick + 5, inputType: 0 })
+ * const txBytes = buildTransaction({ source: myIdentity, destination: recipientIdentity, amount: 100n, targetTick: tick + 5, inputType: 0 })
  * ```
  */
 export function buildTransaction(input: TransactionInput): Uint8Array {
   const payload = input.payload ?? new Uint8Array(0)
+  const sourcePublicKey =
+    typeof input.source === 'string' && isIdentity(input.source)
+      ? identityToPublicKey(input.source)
+      : (input.source as Uint8Array)
+  const destinationPublicKey =
+    typeof input.destination === 'string' && isIdentity(input.destination)
+      ? identityToPublicKey(input.destination)
+      : (input.destination as Uint8Array)
 
-  if (input.sourcePublicKey.byteLength !== PK_SIZE) {
+  if (sourcePublicKey.byteLength !== PK_SIZE) {
     throw new InvalidTransactionError(
-      `sourcePublicKey must be exactly ${PK_SIZE} bytes, got ${input.sourcePublicKey.byteLength}`,
+      `source must resolve to exactly ${PK_SIZE} bytes, got ${sourcePublicKey.byteLength}`,
     )
   }
-  if (input.destinationPublicKey.byteLength !== PK_SIZE) {
+  if (destinationPublicKey.byteLength !== PK_SIZE) {
     throw new InvalidTransactionError(
-      `destinationPublicKey must be exactly ${PK_SIZE} bytes, got ${input.destinationPublicKey.byteLength}`,
+      `destination must resolve to exactly ${PK_SIZE} bytes, got ${destinationPublicKey.byteLength}`,
     )
   }
   if (payload.byteLength > PROTOCOL.MAX_INPUT_SIZE) {
@@ -69,8 +84,8 @@ export function buildTransaction(input: TransactionInput): Uint8Array {
   }
 
   const writer = new BinaryWriter(HEADER_SIZE + payload.byteLength)
-  writer.writeBytes(input.sourcePublicKey)
-  writer.writeBytes(input.destinationPublicKey)
+  writer.writeBytes(sourcePublicKey)
+  writer.writeBytes(destinationPublicKey)
   writer.writeInt64(input.amount)
   writer.writeUint32(input.targetTick)
   writer.writeUint16(input.inputType)

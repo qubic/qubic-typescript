@@ -75,8 +75,8 @@ export function createWallet(seed: Seed): Wallet {
     payload: Uint8Array,
   ): Promise<SignedTransaction> {
     const txBytes = buildTransaction({
-      sourcePublicKey: publicKey,
-      destinationPublicKey: identityToPublicKey(destination),
+      source: publicKey,
+      destination: identityToPublicKey(destination),
       amount,
       targetTick,
       inputType,

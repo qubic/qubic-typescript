@@ -16,8 +16,8 @@ const ZERO_PK = new Uint8Array(32)
 const DEST_PK = new Uint8Array(32).fill(1)
 
 const BASE_INPUT = {
-  sourcePublicKey: ZERO_PK,
-  destinationPublicKey: DEST_PK,
+  source: ZERO_PK,
+  destination: DEST_PK,
   amount: 100n,
   targetTick: 1000,
   inputType: 0,
@@ -39,8 +39,8 @@ describe('buildTransaction', () => {
     const srcPk = new Uint8Array(32).fill(2)
     const dstPk = new Uint8Array(32).fill(3)
     const tx = buildTransaction({
-      sourcePublicKey: srcPk,
-      destinationPublicKey: dstPk,
+      source: srcPk,
+      destination: dstPk,
       amount: 42n,
       targetTick: 9999,
       inputType: 7,
@@ -109,7 +109,7 @@ describe('verifyTransactionSignature', () => {
     // Use real derived public key so the signature is verifiable
     const { publicKeyFromSeed } = await import('@qubic.org/crypto')
     const srcPk = publicKeyFromSeed(SEED)
-    const tx = buildTransaction({ ...BASE_INPUT, sourcePublicKey: srcPk })
+    const tx = buildTransaction({ ...BASE_INPUT, source: srcPk })
     const signed = await signTransaction(tx, SEED)
     expect(verifyTransactionSignature(signed)).toBe(true)
   })
@@ -117,7 +117,7 @@ describe('verifyTransactionSignature', () => {
   test('returns false for tampered signature', async () => {
     const { publicKeyFromSeed } = await import('@qubic.org/crypto')
     const srcPk = publicKeyFromSeed(SEED)
-    const tx = buildTransaction({ ...BASE_INPUT, sourcePublicKey: srcPk })
+    const tx = buildTransaction({ ...BASE_INPUT, source: srcPk })
     const signed = await signTransaction(tx, SEED)
     signed[signed.byteLength - 1] ^= 0xff
     expect(verifyTransactionSignature(signed)).toBe(false)
@@ -152,8 +152,8 @@ describe('decodeTransaction', () => {
     const dstPk = new Uint8Array(32).fill(6)
     const payload = new Uint8Array([0xde, 0xad])
     const tx = buildTransaction({
-      sourcePublicKey: srcPk,
-      destinationPublicKey: dstPk,
+      source: srcPk,
+      destination: dstPk,
       amount: 999n,
       targetTick: 12345,
       inputType: 3,

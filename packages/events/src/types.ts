@@ -1,4 +1,4 @@
-import type { Identity } from '@qubic.org/types'
+import type { Identity, LogType } from '@qubic.org/types'
 import type { LOG_TYPE } from '@qubic.org/types'
 
 export type { LogType } from '@qubic.org/types'
@@ -106,6 +106,14 @@ export interface OracleSubscriberLogMessageData {
   firstQueryTimestamp: bigint
 }
 
+export type CustomMessageData = Uint8Array
+
+export interface RawQubicLogEvent {
+  tick: number
+  logType: LogType
+  data: string
+}
+
 // ── EventFilter ───────────────────────────────────────────────────────────────
 
 export interface EventFilter {
@@ -179,4 +187,4 @@ export type TypedEvent =
       tick: number
       data: OracleSubscriberLogMessageData
     }
-  | { logType: typeof LOG_TYPE.CUSTOM_MESSAGE; tick: number; data: Uint8Array }
+  | { logType: typeof LOG_TYPE.CUSTOM_MESSAGE; tick: number; data: CustomMessageData }

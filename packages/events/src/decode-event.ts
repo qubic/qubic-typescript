@@ -1,4 +1,3 @@
-import type { BobLogEvent } from '@qubic.org/bob'
 import { publicKeyToIdentity } from '@qubic.org/crypto'
 import { LOG_TYPE } from '@qubic.org/types'
 import { EventDecodeError } from './errors.js'
@@ -14,6 +13,7 @@ import type {
   OracleSubscriberLogMessageData,
   QuTransferData,
   SmartContractMessageData,
+  RawQubicLogEvent,
   SpectrumStatsData,
   TypedEvent,
 } from './types.js'
@@ -203,10 +203,14 @@ function decodeOracleSubscriberLogMessage(
 // ── Public API ────────────────────────────────────────────────────────────────
 
 /**
- * Decodes a BobLogEvent's raw binary payload into a fully typed TypedEvent.
+ * Decodes a raw Qubic log event's binary payload into a fully typed TypedEvent.
+ *
+ * The input is transport-agnostic. Bob log events are structurally compatible,
+ * but callers from other transports can pass the same `{ tick, logType, data }` shape.
+ *
  * @throws {EventDecodeError} if the payload is too short or the logType is unknown.
  */
-export function decodeEvent(event: BobLogEvent): TypedEvent {
+export function decodeEvent(event: RawQubicLogEvent): TypedEvent {
   if (typeof event.data !== 'string') {
     throw new EventDecodeError(event.logType, 'event.data is not a string')
   }

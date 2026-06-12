@@ -14,7 +14,6 @@ import {
   fpMul,
   fpNeg,
   fpSgn,
-  fpSgnFn,
   fpSqr,
   fpSub,
   fpToBytes,
@@ -22,13 +21,6 @@ import {
 } from './fp.js'
 
 export type FqElement = [bigint, bigint]
-
-export function fqSgnFn(a: FqElement): bigint {
-  const s0 = fpSgnFn(a[0])
-  const s1 = fpSgnFn(a[1])
-  const useS0 = s0 * s0
-  return s0 * useS0 + s1 * (1n - useS0)
-}
 
 export function fqSgn(a: FqElement): number {
   const s0 = fpSgn(a[0])

@@ -8,7 +8,7 @@
   "sideEffects": false,
   "exports": {
     ".": {
-      "bun": "./dist/index.js",
+      "bun": "./src/index.ts",
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
@@ -20,7 +20,7 @@
     "./registry.json": "./data/registry.json",
     "./schema.json": "./data/schema.json"
   },
-  "files": ["dist", "data"],
+  "files": ["dist", "src", "data"],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc --noEmit",

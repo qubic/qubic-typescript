@@ -34,8 +34,6 @@ const ORDER_GENERATOR = [
   0x0029cbc14e5e0a72n,
 ]
 
-export const ORDER = 0x0029cbc14e5e0a72f05397829cbc14e5dfbd004dfe0f79992fb2540ec7768ce7n
-
 export interface PointR1 {
   X: FqElement
   Y: FqElement
@@ -106,31 +104,11 @@ export function pointAdd(P: PointR1, Q: PointR2): PointR1 {
   return { X: fqMul(e, f), Y: fqMul(g, hh), Z: fqMul(f, g), Ta: e, Tb: hh }
 }
 
-export function pointMixAdd(P: PointR1, Q: PointR3): PointR1 {
-  const cc = fqMul(P.Ta, P.Tb)
-  const h = fqSub(P.Y, P.X)
-  const bb = fqAdd(P.Y, P.X)
-  const a = fqMul(h, Q.subYX)
-  const bv = fqMul(bb, Q.addYX)
-  const e = fqSub(bv, a)
-  const hh = fqAdd(bv, a)
-  const dd = fqAdd(P.Z, P.Z)
-  const c2 = fqMul(cc, Q.dt2)
-  const f = fqSub(dd, c2)
-  const g = fqAdd(dd, c2)
-  return { X: fqMul(e, f), Y: fqMul(g, hh), Z: fqMul(f, g), Ta: e, Tb: hh }
-}
-
 export function toR2(P: PointR1): PointR2 {
   const t = fqMul(P.Ta, P.Tb)
   const dt = fqMul(t, PARAM_D)
   const dt2 = fqAdd(dt, dt)
   return { addYX: fqAdd(P.Y, P.X), subYX: fqSub(P.Y, P.X), z2: fqAdd(P.Z, P.Z), dt2 }
-}
-
-export function toR3(Q: PointR1): PointR3 {
-  const r2 = toR2(Q)
-  return { addYX: r2.addYX, subYX: r2.subYX, dt2: r2.dt2 }
 }
 
 function r3Cmov(a: PointR3, b: PointR3, flag: number): PointR3 {
@@ -393,14 +371,6 @@ export function isOnCurve(P: PointR1): boolean {
 
   const diff = fqSub(lhs, rhs)
   return fqIsZero(diff)
-}
-
-export function bigIntToBytes(val: bigint, length = 32): Uint8Array {
-  const res = new Uint8Array(length)
-  for (let i = 0; i < length; i++) {
-    res[i] = Number((val >> BigInt(i * 8)) & 0xffn)
-  }
-  return res
 }
 
 // Re-export for GLV usage (unused currently, kept for future fixed-base optimization)

@@ -176,7 +176,7 @@ All other contracts export the same structure with names derived from their cont
 import { createLiveClient } from '@qubic.org/rpc'
 import { qearnGetStateOfRound } from '@qubic.org/contracts'
 
-const live = createLiveClient({ baseUrl: 'https://rpc.qubic.org' })
+const live = createLiveClient()
 
 const result = await qearnGetStateOfRound(live, { epoch: 212 })
 
@@ -193,7 +193,7 @@ if (result.ok) {
 import { createLiveClient } from '@qubic.org/rpc'
 import { qearn } from '@qubic.org/contracts'
 
-const live = createLiveClient({ baseUrl: 'https://rpc.qubic.org' })
+const live = createLiveClient()
 
 const result = await qearn.getStatsPerEpoch(live, { epoch: 212 })
 if (result.ok) {
@@ -231,7 +231,7 @@ import { qearnGetUserLockedInfo } from '@qubic.org/contracts'
 
 const result = await qearnGetUserLockedInfo(
   live,
-  { user: 'BZBQFLLBNCXEMGLOBHUVGPKHZALRYIZMDRCU...', epoch: 212 },
+  { user: 'BZBQFLLBNCXEMGLOBHUVFTLUPLVCPQUASSILFABOFFBCADQSSUPNWLZBQEXK', epoch: 212 },
   { identityToPublicKey, publicKeyToIdentity },
 )
 ```

@@ -1,5 +1,5 @@
 import { publicKeyToIdentity } from '@qubic.org/crypto'
-import { LOG_TYPE } from '@qubic.org/types'
+import { CUSTOM_MESSAGE_OP, LOG_TYPE } from '@qubic.org/types'
 import { EventDecodeError } from './errors.js'
 import type {
   AssetIssuanceData,
@@ -8,12 +8,13 @@ import type {
   AssetPossessionManagingContractChangeData,
   BurningData,
   ContractReserveDeductionData,
+  CustomMessageData,
   DustBurningData,
   OracleQueryStatusData,
   OracleSubscriberLogMessageData,
   QuTransferData,
-  SmartContractMessageData,
   RawQubicLogEvent,
+  SmartContractMessageData,
   SpectrumStatsData,
   TypedEvent,
 } from './types.js'
@@ -200,6 +201,24 @@ function decodeOracleSubscriberLogMessage(
   }
 }
 
+function decodeCustomMessage(v: DataView, logType: number): CustomMessageData {
+  assertMinSize(logType, v.byteLength, 8)
+  const opCode = v.getBigUint64(0, true)
+
+  if (opCode === CUSTOM_MESSAGE_OP.START_EPOCH) return { kind: 'startEpoch' }
+  if (opCode === CUSTOM_MESSAGE_OP.END_EPOCH) return { kind: 'endEpoch' }
+  if (opCode === CUSTOM_MESSAGE_OP.START_DISTRIBUTE_DIVIDENDS)
+    return { kind: 'startDistributeDividends' }
+  if (opCode === CUSTOM_MESSAGE_OP.END_DISTRIBUTE_DIVIDENDS)
+    return { kind: 'endDistributeDividends' }
+
+  return {
+    kind: 'unknown',
+    messageType: opCode,
+    payload: new Uint8Array(v.buffer, v.byteOffset + 8, v.byteLength - 8),
+  }
+}
+
 // ── Public API ────────────────────────────────────────────────────────────────
 
 /**
@@ -252,7 +271,7 @@ export function decodeEvent(event: RawQubicLogEvent): TypedEvent {
     case LOG_TYPE.ORACLE_SUBSCRIBER_LOG_MESSAGE:
       return { logType, tick, data: decodeOracleSubscriberLogMessage(v, logType) }
     case LOG_TYPE.CUSTOM_MESSAGE:
-      return { logType, tick, data: bytes }
+      return { logType, tick, data: decodeCustomMessage(v, logType) }
     default:
       throw new EventDecodeError(logType, 'unknown log type')
   }

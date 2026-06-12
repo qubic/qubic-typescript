@@ -101,7 +101,41 @@ All 17 log types from the Qubic protocol are decoded with fully typed data inter
 | 13 | `CONTRACT_RESERVE_DEDUCTION` | `ContractReserveDeductionData` |
 | 14 | `ORACLE_QUERY_STATUS_CHANGE` | `OracleQueryStatusData` |
 | 15 | `ORACLE_SUBSCRIBER_LOG_MESSAGE` | `OracleSubscriberLogMessageData` |
-| 255 | `CUSTOM_MESSAGE` | `CustomMessageData` |
+| 255 | `CUSTOM_MESSAGE` | `CustomMessageData` (discriminated union) |
+
+### CustomMessage subtypes
+
+`CUSTOM_MESSAGE` (log type 255) is a discriminated union. The `kind` field tells you which subtype was decoded:
+
+| `kind` | Op code | Meaning |
+|--------|---------|---------|
+| `startEpoch` | `STA_EPOC` | Epoch started — first log of the epoch |
+| `endEpoch` | `END_EPOC` | Epoch ended — last log of the epoch |
+| `startDistributeDividends` | `STA_DDIV` | Dividend distribution started |
+| `endDistributeDividends` | `END_DDIV` | Dividend distribution ended |
+| `unknown` | *(any other)* | Unknown subtype — carries `messageType` (bigint) and `payload` (Uint8Array) |
+
+The op codes are defined as `CUSTOM_MESSAGE_OP` in `@qubic.org/types` and re-exported from this package.
+
+```ts
+import { decodeEvent, LOG_TYPE, CUSTOM_MESSAGE_OP } from '@qubic.org/events'
+
+const event = decodeEvent(rawEvent)
+if (event.logType === LOG_TYPE.CUSTOM_MESSAGE) {
+  switch (event.data.kind) {
+    case 'startEpoch':
+      console.log('Epoch started at tick', event.tick)
+      break
+    case 'endDistributeDividends':
+      console.log('Dividends distributed')
+      break
+    case 'unknown':
+      console.log('Unknown custom message', event.data.messageType)
+      console.log('Extra payload bytes', event.data.payload.length)
+      break
+  }
+}
+```
 
 ## See also
 

@@ -1,8 +1,23 @@
-import type { Identity, LogType } from '@qubic.org/types'
-import type { LOG_TYPE } from '@qubic.org/types'
+import type {
+  CustomMessageSubtype,
+  EndDistributeDividendsCustomMessage,
+  EndEpochCustomMessage,
+  Identity,
+  LogType,
+  StartDistributeDividendsCustomMessage,
+  StartEpochCustomMessage,
+  UnknownCustomMessage,
+} from '@qubic.org/types'
 
-export type { LogType } from '@qubic.org/types'
-export { LOG_TYPE } from '@qubic.org/types'
+export type {
+  CustomMessageSubtype,
+  EndDistributeDividendsCustomMessage,
+  EndEpochCustomMessage,
+  StartDistributeDividendsCustomMessage,
+  StartEpochCustomMessage,
+  UnknownCustomMessage,
+} from '@qubic.org/types'
+export { CUSTOM_MESSAGE_OP, customMessageOpLabel, LOG_TYPE } from '@qubic.org/types'
 
 // ── Event data interfaces ─────────────────────────────────────────────────────
 
@@ -106,7 +121,17 @@ export interface OracleSubscriberLogMessageData {
   firstQueryTimestamp: bigint
 }
 
-export type CustomMessageData = Uint8Array
+// ── CustomMessage subtypes ────────────────────────────────────────────────────
+
+/**
+ * A decoded custom message event (log type 255).
+ *
+ * The `kind` discriminant identifies the message subtype. Known protocol
+ * messages (epoch transitions, dividend distribution) carry no extra
+ * payload. Unknown messages include the raw `messageType` and any
+ * trailing `payload` bytes.
+ */
+export type CustomMessageData = CustomMessageSubtype
 
 export interface RawQubicLogEvent {
   tick: number

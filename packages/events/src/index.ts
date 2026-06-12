@@ -16,6 +16,7 @@ export type {
   BurningData,
   ContractReserveDeductionData,
   CustomMessageData,
+  CustomMessageSubtype,
   DustBurningData,
   EventFilter,
   LogType,
@@ -27,4 +28,4 @@ export type {
   SpectrumStatsData,
   TypedEvent,
 } from './types.js'
-export { LOG_TYPE } from './types.js'
+export { CUSTOM_MESSAGE_OP, customMessageOpLabel, LOG_TYPE } from './types.js'

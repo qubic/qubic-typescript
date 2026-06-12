@@ -150,13 +150,88 @@ describe('decodeEvent', () => {
 
   // ── CUSTOM_MESSAGE ────────────────────────────────────────────────────────
 
-  test('CUSTOM_MESSAGE returns raw bytes', () => {
-    const buf = new Uint8Array(8).fill(0xab)
+  test('CUSTOM_MESSAGE START_EPOCH decodes to startEpoch kind', () => {
+    const buf = new Uint8Array(8)
+    const view = new DataView(buf.buffer)
+    view.setBigUint64(0, 4850183582582395987n, true) // START_EPOCH
+
     const event = decodeEvent(makeEvent(LOG_TYPE.CUSTOM_MESSAGE, buf))
     if (event.logType === LOG_TYPE.CUSTOM_MESSAGE) {
-      expect(event.data).toBeInstanceOf(Uint8Array)
-      expect(event.data[0]).toBe(0xab)
+      expect(event.data.kind).toBe('startEpoch')
     }
+  })
+
+  test('CUSTOM_MESSAGE END_EPOCH decodes to endEpoch kind', () => {
+    const buf = new Uint8Array(8)
+    const view = new DataView(buf.buffer)
+    view.setBigUint64(0, 4850183582582591045n, true) // END_EPOCH
+
+    const event = decodeEvent(makeEvent(LOG_TYPE.CUSTOM_MESSAGE, buf))
+    if (event.logType === LOG_TYPE.CUSTOM_MESSAGE) {
+      expect(event.data.kind).toBe('endEpoch')
+    }
+  })
+
+  test('CUSTOM_MESSAGE START_DISTRIBUTE_DIVIDENDS decodes correctly', () => {
+    const buf = new Uint8Array(8)
+    const view = new DataView(buf.buffer)
+    view.setBigUint64(0, 6217575821008262227n, true) // START_DISTRIBUTE_DIVIDENDS
+
+    const event = decodeEvent(makeEvent(LOG_TYPE.CUSTOM_MESSAGE, buf))
+    if (event.logType === LOG_TYPE.CUSTOM_MESSAGE) {
+      expect(event.data.kind).toBe('startDistributeDividends')
+    }
+  })
+
+  test('CUSTOM_MESSAGE END_DISTRIBUTE_DIVIDENDS decodes correctly', () => {
+    const buf = new Uint8Array(8)
+    const view = new DataView(buf.buffer)
+    view.setBigUint64(0, 6217575821008457285n, true) // END_DISTRIBUTE_DIVIDENDS
+
+    const event = decodeEvent(makeEvent(LOG_TYPE.CUSTOM_MESSAGE, buf))
+    if (event.logType === LOG_TYPE.CUSTOM_MESSAGE) {
+      expect(event.data.kind).toBe('endDistributeDividends')
+    }
+  })
+
+  test('CUSTOM_MESSAGE with unknown type falls back to unknown kind', () => {
+    const buf = new Uint8Array(16)
+    const view = new DataView(buf.buffer)
+    view.setBigUint64(0, 9999999999999n, true) // unknown op code
+    buf[8] = 0xaa
+    buf[9] = 0xbb
+
+    const event = decodeEvent(makeEvent(LOG_TYPE.CUSTOM_MESSAGE, buf))
+    if (event.logType === LOG_TYPE.CUSTOM_MESSAGE) {
+      expect(event.data.kind).toBe('unknown')
+      if (event.data.kind === 'unknown') {
+        expect(event.data.messageType).toBe(9999999999999n)
+        expect(event.data.payload).toBeInstanceOf(Uint8Array)
+        expect(event.data.payload).toHaveLength(8)
+        expect(event.data.payload[0]).toBe(0xaa)
+      }
+    }
+  })
+
+  test('CUSTOM_MESSAGE with no extra payload and unknown type', () => {
+    const buf = new Uint8Array(8)
+    const view = new DataView(buf.buffer)
+    view.setBigUint64(0, 12345n, true) // unknown op code
+
+    const event = decodeEvent(makeEvent(LOG_TYPE.CUSTOM_MESSAGE, buf))
+    if (event.logType === LOG_TYPE.CUSTOM_MESSAGE) {
+      expect(event.data.kind).toBe('unknown')
+      if (event.data.kind === 'unknown') {
+        expect(event.data.messageType).toBe(12345n)
+        expect(event.data.payload).toHaveLength(0)
+      }
+    }
+  })
+
+  test('CUSTOM_MESSAGE throws on short payload (< 8 bytes)', () => {
+    expect(() => decodeEvent(makeEvent(LOG_TYPE.CUSTOM_MESSAGE, new Uint8Array(4)))).toThrow(
+      EventDecodeError,
+    )
   })
 
   // ── unknown type ──────────────────────────────────────────────────────────

@@ -52,9 +52,12 @@ Encodes a 32-byte compressed FourQ public key into the 60-character uppercase Qu
 
 ```ts
 function identityToPublicKey(identity: Identity): Uint8Array
+function isValidIdentityChecksum(identity: string): identity is Identity
 ```
 
 Decodes a 60-character identity back to its 32-byte public key. Validates the 4-character checksum and throws `InvalidIdentityError` if it does not match.
+
+`isValidIdentityChecksum` exposes the same checksum validation as a non-throwing type guard for callers that need full identity validation while `@qubic.org/types` remains structurally branded.
 
 ### Signing and verification
 
@@ -83,7 +86,6 @@ Returns `n` cryptographically secure random bytes from `globalThis.crypto.getRan
 ```ts
 class InvalidSeedError    extends QubicError  // code: 'INVALID_SEED'
 class InvalidIdentityError extends QubicError // code: 'INVALID_IDENTITY'
-class SignatureVerificationError extends QubicError // code: 'SIGNATURE_VERIFICATION_FAILED'
 ```
 
 `deriveIdentityFromSeed`, `publicKeyFromSeed`, and `sign` throw `InvalidSeedError` if the seed is not exactly 55 lowercase ASCII letters. `identityToPublicKey` throws `InvalidIdentityError` if the identity is malformed or the checksum fails.
@@ -119,13 +121,27 @@ const valid = verify(digest, signature, publicKey)
 console.log('Signature valid:', valid)  // true
 ```
 
+### Validate an identity checksum
+
+```ts
+import { deriveIdentityFromSeed, isValidIdentityChecksum } from '@qubic.org/crypto'
+import { toSeed } from '@qubic.org/types'
+
+const seed = toSeed('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+const identity = deriveIdentityFromSeed(seed)
+
+console.log(isValidIdentityChecksum(identity)) // true
+console.log(isValidIdentityChecksum(identity.slice(0, 56) + 'AAAA')) // false
+```
+
 ### Decode an identity to its public key
 
 ```ts
-import { identityToPublicKey, publicKeyToIdentity } from '@qubic.org/crypto'
-import { toIdentity } from '@qubic.org/types'
+import { deriveIdentityFromSeed, identityToPublicKey, publicKeyToIdentity } from '@qubic.org/crypto'
+import { toSeed } from '@qubic.org/types'
 
-const identity = toIdentity('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
+const seed = toSeed('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+const identity = deriveIdentityFromSeed(seed)
 const publicKey = identityToPublicKey(identity)
 console.log('Public key bytes:', publicKey)  // Uint8Array(32)
 

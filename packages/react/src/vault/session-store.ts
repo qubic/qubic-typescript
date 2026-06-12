@@ -42,32 +42,44 @@ function openDb(): Promise<IDBDatabase> {
 
 async function idbPut(keyId: string, key: CryptoKey): Promise<void> {
   const db = await openDb()
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE_NAME, 'readwrite')
-    tx.objectStore(STORE_NAME).put(key, keyId)
-    tx.oncomplete = () => resolve()
-    tx.onerror = () => reject(tx.error)
-  })
+  try {
+    await new Promise<void>((resolve, reject) => {
+      const tx = db.transaction(STORE_NAME, 'readwrite')
+      tx.objectStore(STORE_NAME).put(key, keyId)
+      tx.oncomplete = () => resolve()
+      tx.onerror = () => reject(tx.error)
+    })
+  } finally {
+    db.close()
+  }
 }
 
 async function idbGet(keyId: string): Promise<CryptoKey | undefined> {
   const db = await openDb()
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE_NAME, 'readonly')
-    const req = tx.objectStore(STORE_NAME).get(keyId)
-    req.onsuccess = () => resolve(req.result as CryptoKey | undefined)
-    req.onerror = () => reject(req.error)
-  })
+  try {
+    return await new Promise<CryptoKey | undefined>((resolve, reject) => {
+      const tx = db.transaction(STORE_NAME, 'readonly')
+      const req = tx.objectStore(STORE_NAME).get(keyId)
+      req.onsuccess = () => resolve(req.result as CryptoKey | undefined)
+      req.onerror = () => reject(req.error)
+    })
+  } finally {
+    db.close()
+  }
 }
 
 async function idbDelete(keyId: string): Promise<void> {
   const db = await openDb()
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE_NAME, 'readwrite')
-    tx.objectStore(STORE_NAME).delete(keyId)
-    tx.oncomplete = () => resolve()
-    tx.onerror = () => reject(tx.error)
-  })
+  try {
+    await new Promise<void>((resolve, reject) => {
+      const tx = db.transaction(STORE_NAME, 'readwrite')
+      tx.objectStore(STORE_NAME).delete(keyId)
+      tx.oncomplete = () => resolve()
+      tx.onerror = () => reject(tx.error)
+    })
+  } finally {
+    db.close()
+  }
 }
 
 // ── Session record ────────────────────────────────────────────────────────────

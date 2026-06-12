@@ -13,7 +13,7 @@ export class QubicTcpConnectionError extends QubicTcpError {
     cause?: unknown,
   ) {
     super(`TCP connection to ${hostname} failed: ${message}`, {
-      cause: cause as Record<string, unknown>,
+      cause: { cause },
     })
   }
 }

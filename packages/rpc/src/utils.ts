@@ -61,7 +61,11 @@ export async function waitForTick(
     if (Date.now() >= deadline) return err(new QubicRpcError(-1, 'waitForTick', 'Timed out'))
 
     const r = await live.getTickInfo(signal !== undefined ? { signal } : undefined)
-    if (!r.ok) return r
+    if (!r.ok) {
+      console.warn('waitForTick: getTickInfo error, retrying:', r.error.message)
+      await delay(intervalMs, signal)
+      continue
+    }
     if ((r.value.tick ?? 0) >= targetTick) return { ok: true, value: targetTick }
 
     await delay(intervalMs, signal)

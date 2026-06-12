@@ -41,18 +41,17 @@ function ConnectButton() {
 | `isConnected` | `boolean` | True when an account is available. |
 | `connect` | `(connectorId: string, options?) => Promise<void>` | Connect using the given connector ID string. |
 | `disconnect` | `() => Promise<void>` | Disconnect the current wallet. |
-| `signTransaction` | `(txBytes: Uint8Array) => Promise<Uint8Array>` | Sign a transaction and return the signed bytes. |
+| `signTransaction` | `(tx: TransactionRequest) => Promise<SignTransactionResult>` | Sign a transaction request without broadcasting. |
 
 ## Connect modal pattern
 
-Render a list of available connectors so the user can choose:
+Render the connectors registered in `WalletProvider` and let the user choose one:
 
 ```tsx
-import { useWallet, useWalletConnector } from "@qubic.org/react"
+import { useWallet } from "@qubic.org/react"
 
 function ConnectModal() {
-  const { connect } = useWallet()
-  const { connectors, pending, error } = useWalletConnector()
+  const { connectors, connect, isConnecting, error } = useWallet()
 
   return (
     <div>
@@ -61,7 +60,7 @@ function ConnectModal() {
         <button
           key={connector.id}
           onClick={() => connect(connector.id)}
-          disabled={pending}
+          disabled={isConnecting}
         >
           {connector.id}
         </button>
@@ -74,21 +73,23 @@ function ConnectModal() {
 
 ## Signing a transaction
 
-`signTransaction` signs bytes in place and returns the signed `Uint8Array`. Build the unsigned bytes first with `@qubic.org/tx`, then pass them to the wallet:
+`signTransaction` signs a connector-level transaction request and returns the signed payload metadata. Use this when the wallet backend owns the signing flow.
 
 ```tsx
 import { useWallet } from "@qubic.org/react"
-import { buildTransaction } from "@qubic.org/tx"
 
 function SendForm() {
   const { signTransaction, account } = useWallet()
 
-  async function handleSend() {
-    const txBytes = buildTransaction({ /* ... */ })
-    const signed = await signTransaction(txBytes)
-    // broadcast `signed` with the RPC client
+  async function handleSign() {
+    if (!account) return
+    const signed = await signTransaction({
+      destination: 'BZBQFLLBNCXEMGLOBHUVFTLUPLVCPQUASSILFABOFFBCADQSSUPNWLZBQEXK',
+      amount: '1000',
+    })
+    console.log(signed.txBytesHex)
   }
 
-  return <button onClick={handleSend}>Send</button>
+  return <button onClick={handleSign}>Sign</button>
 }
 ```

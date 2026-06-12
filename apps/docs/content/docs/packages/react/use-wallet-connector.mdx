@@ -1,36 +1,35 @@
 ---
 title: useWalletConnector
-description: Returns the registered connectors and the current connection status — use it to build a connect wallet modal.
+description: Manage connection state for one specific wallet connector.
 ---
 
-`useWalletConnector` gives you the list of connectors registered in `WalletProvider`. Use it to render a connection picker.
+`useWalletConnector(connector)` manages the lifecycle for a single connector instance, without requiring `WalletProvider`. Use it when you only need one backend such as the browser extension.
 
-## `useWalletConnector()`
+## `useWalletConnector(connector)`
 
 ```tsx
-import { useWalletConnector, useWallet } from "@qubic.org/react"
+import { extensionConnector, useWalletConnector } from "@qubic.org/react"
 
-function WalletPicker() {
-  const { connectors, pending, error } = useWalletConnector()
-  const { connect } = useWallet()
+function ConnectButton() {
+  const { isAvailable, isConnected, isConnecting, account, connect, disconnect, error } =
+    useWalletConnector(extensionConnector)
 
-  const available = connectors.filter((c) => c.isAvailable())
+  if (!isAvailable) return <p>Install the Qubic extension.</p>
 
-  if (available.length === 0) {
-    return <p>No wallets detected. Install the Qubic browser extension.</p>
+  if (!isConnected) {
+    return (
+      <button onClick={() => connect()} disabled={isConnecting}>
+        {isConnecting ? "Connecting…" : "Connect"}
+      </button>
+    )
   }
 
   return (
-    <ul>
-      {available.map((connector) => (
-        <li key={connector.id}>
-          <button onClick={() => connect(connector.id)} disabled={pending}>
-            {connector.id}
-          </button>
-        </li>
-      ))}
-      {error && <p>Error: {error.message}</p>}
-    </ul>
+    <div>
+      <p>{account?.name ?? account?.identity}</p>
+      <button onClick={disconnect}>Disconnect</button>
+      {error && <p>{error.message}</p>}
+    </div>
   )
 }
 ```
@@ -39,16 +38,15 @@ function WalletPicker() {
 
 | Field | Type | Description |
 |---|---|---|
-| `connectors` | `WalletConnector[]` | All connectors passed to `WalletProvider`. Includes unavailable ones — filter with `c.isAvailable()` before rendering. |
-| `pending` | `boolean` | True while a connection is in progress. |
-| `error` | `Error \| null` | Error from the most recent failed connection attempt. |
+| `isAvailable` | `boolean` | Whether the connector backend is present in this environment. |
+| `isConnected` | `boolean` | True when an account is connected. |
+| `isConnecting` | `boolean` | True while `connect()` is in progress. |
+| `account` | `WalletAccount \| null` | Connected account or `null`. |
+| `error` | `Error \| undefined` | Error from the last connect/disconnect attempt. |
+| `connect` | `(options?) => Promise<void>` | Connect the selected backend. |
+| `disconnect` | `() => Promise<void>` | Disconnect the active session. |
+| `sendTransaction` | `(tx) => Promise<SendTransactionResult>` | Ask the connector to sign and send a transaction request. |
+| `signTransaction` | `(tx) => Promise<SignTransactionResult>` | Ask the connector to sign a transaction request without broadcasting. |
+| `signMessage` | `(message: string) => Promise<SignMessageResult>` | Sign an arbitrary message string. |
 
-## Filtering for the current environment
-
-`isAvailable()` returns `false` during SSR and when the required browser extension or provider is absent. Always filter before rendering connect options:
-
-```tsx
-const available = connectors.filter((c) => c.isAvailable())
-```
-
-The full connector list is still useful if you want to show grayed-out buttons with install links for connectors that aren't available yet.
+For a multi-connector app-wide context, use `WalletProvider` + `useWallet()` instead.

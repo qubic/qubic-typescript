@@ -245,6 +245,7 @@ const queryClient = new QueryClient()
 Register your wallet backends once and wrap your app. The primary runnable example below uses the browser extension and MetaMask Snap only. Components call `useWallet()` with no arguments — no connector plumbing in every component.
 
 ```tsx
+import { createLiveClient, createQueryClient } from '@qubic.org/rpc'
 import {
   QubicProvider,
   WalletProvider,
@@ -253,14 +254,14 @@ import {
 } from '@qubic.org/react'
 
 // Create connectors outside the component tree (stable references)
+const live = createLiveClient()
+const archive = createQueryClient()
+
 const connectors = [
   extensionConnector,
-
-  }),
-
   createMetaMaskSnapConnector({
     broadcast: async (signedBase64) => {
-      const result = await liveClient.broadcastTransaction(signedBase64)
+      const result = await live.broadcastTransaction(signedBase64)
       if (!result.ok) throw result.error
       return { networkTxId: result.value.transactionId ?? '', broadcast: result.value }
     },
@@ -291,7 +292,6 @@ Single hook for all wallet state. Works with any connector registered in `Wallet
 import { useWallet } from '@qubic.org/react'
 
 function ConnectModal() {
-  const [qrUri, setQrUri] = useState<string>()
   const { connectors, isConnected, isConnecting, account, activeConnector, connect, disconnect, error } = useWallet()
 
   if (isConnected) {
@@ -310,12 +310,11 @@ function ConnectModal() {
         <button
           key={c.id}
           disabled={isConnecting}
-          onClick={() => connect(c.id, c.id === 'walletconnect' ? { onUri: setQrUri } : undefined)}
+          onClick={() => connect(c.id)}
         >
           {c.id}
         </button>
       ))}
-      {qrUri && <QRCode value={qrUri} />}
       {error && <p>{error.message}</p>}
     </div>
   )
@@ -329,12 +328,15 @@ function SendPanel() {
   const { isConnected, sendTransaction, signMessage } = useWallet()
 
   const handleSend = async () => {
-    const result = await sendTransaction({ toIdentity: '…', amount: '1000', inputType: 0 })
+    const result = await sendTransaction({
+      destination: 'BZBQFLLBNCXEMGLOBHUVFTLUPLVCPQUASSILFABOFFBCADQSSUPNWLZBQEXK',
+      amount: '1000',
+    })
     console.log(result.networkTxId)
   }
 
   const handleSign = async () => {
-    const result = await signMessage({ message: 'hello qubic' })
+    const result = await signMessage('hello qubic')
     console.log(result.signatureHex)
   }
 }

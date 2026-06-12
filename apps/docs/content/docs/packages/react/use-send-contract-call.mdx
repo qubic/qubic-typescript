@@ -5,7 +5,7 @@ description: Mutation hook for calling a smart contract procedure.
 
 TanStack `useMutation` wrapper that signs and broadcasts a smart contract procedure call. Returns standard mutation state alongside `mutate` and `mutateAsync`.
 
-Requires either `VaultProvider` or `WalletProvider` as an ancestor.
+Requires `VaultProvider` and `QubicProvider` as ancestors.
 
 ## Signature
 
@@ -30,7 +30,7 @@ function useSendContractCall(): {
   isPending: boolean
   isSuccess: boolean
   isError: boolean
-  error: QubicRpcError | null
+  error: Error | null
   reset(): void
 }
 ```

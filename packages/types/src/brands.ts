@@ -16,6 +16,11 @@ export type HexPublicKey = Brand<string, 'HexPublicKey'>
 
 /**
  * Validates and brands a string as an Identity.
+ *
+ * This package only performs structural validation here: exactly 60 uppercase
+ * ASCII letters. It does not verify the Qubic checksum. For complete identity
+ * validation, round-trip through `identityToPublicKey` from `@qubic.org/crypto`.
+ *
  * @throws {InvalidIdentityError} If not exactly 60 uppercase ASCII letters.
  */
 export function toIdentity(s: string): Identity {
@@ -43,14 +48,22 @@ export function toTxHash(s: string): TxHash {
 
 /**
  * Validates and brands a string as Base64.
- * @throws {InvalidBase64Error} If not a valid base64 string.
+ *
+ * This is a structural base64 check only: alphabet, padding shape, and length.
+ * It does not guarantee canonical decoding behavior across runtimes.
+ *
+ * @throws {InvalidBase64Error} If not a structurally valid base64 string.
  */
 export function toBase64(s: string): Base64 {
   if (!/^[A-Za-z0-9+/]*={0,2}$/.test(s) || s.length % 4 !== 0) throw new InvalidBase64Error(s)
   return s as Base64
 }
 
-/** Returns true if `s` is a valid Qubic identity (60 uppercase ASCII letters). */
+/**
+ * Returns true if `s` has the structural shape of a Qubic identity.
+ *
+ * This does not verify the Qubic checksum.
+ */
 export function isIdentity(s: string): s is Identity {
   return s.length === 60 && /^[A-Z]+$/.test(s)
 }

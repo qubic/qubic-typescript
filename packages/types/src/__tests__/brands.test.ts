@@ -27,6 +27,10 @@ describe('toIdentity', () => {
   test('rejects digits', () => {
     expect(() => toIdentity('1'.repeat(60))).toThrow(InvalidIdentityError)
   })
+
+  test('only checks identity structure, not checksum', () => {
+    expect(() => toIdentity('A'.repeat(60))).not.toThrow()
+  })
 })
 
 describe('toSeed', () => {

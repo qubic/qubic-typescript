@@ -1,3 +1,4 @@
+import { isIdentity } from '@qubic.org/types'
 import type { Base64, Identity, TxHash } from '@qubic.org/types'
 import { BobRpcError } from './errors.js'
 import { type Result, err, ok } from './result.js'
@@ -263,7 +264,12 @@ export function createBobRpcClient(options: BobRpcClientOptions): BobRpcClient {
 
     async getBalance(identity, options) {
       const r = await call<number | string>('qubic_getBalance', [identity], options?.signal)
-      return r.ok ? ok(BigInt(r.value)) : r
+      if (!r.ok) return r
+      try {
+        return ok(BigInt(r.value))
+      } catch {
+        return err(new BobRpcError(-32603, `invalid balance value: ${String(r.value)}`))
+      }
     },
 
     getTransactionByHash(hash, options) {
@@ -302,11 +308,20 @@ export function createBobRpcClient(options: BobRpcClientOptions): BobRpcClient {
         options?.signal,
       )
       if (!r.ok) return r
+      if (!isIdentity(r.value.identity) || !isIdentity(r.value.issuer)) {
+        return err(new BobRpcError(-32603, 'invalid identity format in getAssetBalance response'))
+      }
+      let balance: bigint
+      try {
+        balance = BigInt(r.value.balance)
+      } catch {
+        return err(new BobRpcError(-32603, `invalid balance value in getAssetBalance response: ${String(r.value.balance)}`))
+      }
       return ok({
         ...r.value,
         identity: r.value.identity as Identity,
         issuer: r.value.issuer as Identity,
-        balance: BigInt(r.value.balance),
+        balance,
       })
     },
 
@@ -319,13 +334,26 @@ export function createBobRpcClient(options: BobRpcClientOptions): BobRpcClient {
       }
       const r = await call<RawItem[]>('qubic_getAssets', [identity], options?.signal)
       if (!r.ok) return r
+      for (const item of r.value) {
+        if (!isIdentity(item.identity) || !isIdentity(item.issuer)) {
+          return err(new BobRpcError(-32603, 'invalid identity format in getAssets response'))
+        }
+      }
       return ok(
-        r.value.map((item) => ({
-          ...item,
-          identity: item.identity as Identity,
-          issuer: item.issuer as Identity,
-          amount: BigInt(item.amount),
-        })),
+        r.value.map((item) => {
+          let amount: bigint
+          try {
+            amount = BigInt(item.amount)
+          } catch {
+            throw new BobRpcError(-32603, `invalid amount value in getAssets response: ${String(item.amount)}`)
+          }
+          return {
+            ...item,
+            identity: item.identity as Identity,
+            issuer: item.issuer as Identity,
+            amount,
+          }
+        }),
       )
     },
 
@@ -341,11 +369,15 @@ export function createBobRpcClient(options: BobRpcClientOptions): BobRpcClient {
       }
       const r = await call<Raw>('qubic_getEpochInfo', [epoch], options?.signal)
       if (!r.ok) return r
+      const v = r.value
+      if (v.epoch == null || v.initialTick == null || v.endTick == null || v.lastIndexedTick == null) {
+        return err(new BobRpcError(-32603, 'missing required fields in getEpochInfo response'))
+      }
       return ok({
-        ...r.value,
-        endTickStartLogId: BigInt(r.value.endTickStartLogId),
-        endTickEndLogId: BigInt(r.value.endTickEndLogId),
-        latestLogId: BigInt(r.value.latestLogId),
+        ...v,
+        endTickStartLogId: BigInt(v.endTickStartLogId),
+        endTickEndLogId: BigInt(v.endTickEndLogId),
+        latestLogId: BigInt(v.latestLogId),
       } as BobRpcEpochInfo)
     },
 
@@ -368,6 +400,9 @@ export function createBobRpcClient(options: BobRpcClientOptions): BobRpcClient {
       const params = epoch !== undefined ? [epoch] : []
       const r = await call<Raw>('qubic_getComputors', params, options?.signal)
       if (!r.ok) return r
+      if (!Array.isArray(r.value.identities)) {
+        return err(new BobRpcError(-32603, 'missing identities in getComputors response'))
+      }
       return ok({ epoch: r.value.epoch, identities: r.value.identities as Identity[] })
     },
 

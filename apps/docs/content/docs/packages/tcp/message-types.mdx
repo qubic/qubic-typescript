@@ -12,14 +12,94 @@ import { MESSAGE_TYPE, DEFAULT_PORT } from "@qubic.org/tcp"
 ## Constants
 
 ```ts
-MESSAGE_TYPE.EXCHANGE_PUBLIC_PEERS      // 0  — peer discovery
-MESSAGE_TYPE.BROADCAST_TRANSACTION      // 24 — send a signed transaction
-MESSAGE_TYPE.REQUEST_CURRENT_TICK_INFO  // 27 — ask for current tick/epoch
-MESSAGE_TYPE.RESPOND_CURRENT_TICK_INFO  // 28 — response to tick info request
-MESSAGE_TYPE.REQUEST_ENTITY             // 31 — ask for identity balance/nonce
-MESSAGE_TYPE.RESPOND_ENTITY             // 32 — response to entity request
-MESSAGE_TYPE.END_RESPONSE               // 35 — signals end of response stream
-MESSAGE_TYPE.TRY_AGAIN                  // 54 — server busy, retry in 1s
+// Peer discovery
+MESSAGE_TYPE.EXCHANGE_PUBLIC_PEERS              // 0
+
+// Broadcasting
+MESSAGE_TYPE.BROADCAST_MESSAGE                  // 1
+MESSAGE_TYPE.BROADCAST_COMPUTORS                // 2
+MESSAGE_TYPE.BROADCAST_TICK                     // 3
+MESSAGE_TYPE.BROADCAST_FUTURE_TICK_DATA         // 8
+MESSAGE_TYPE.BROADCAST_TRANSACTION              // 24
+
+// Computor queries
+MESSAGE_TYPE.REQUEST_COMPUTORS                  // 11
+MESSAGE_TYPE.REQUEST_QUORUM_TICK                // 14
+
+// Tick data
+MESSAGE_TYPE.REQUEST_TICK_DATA                  // 16
+MESSAGE_TYPE.REQUEST_CURRENT_TICK_INFO          // 27
+MESSAGE_TYPE.RESPOND_CURRENT_TICK_INFO          // 28
+MESSAGE_TYPE.REQUEST_TICK_TRANSACTIONS          // 29
+
+// Transaction queries
+MESSAGE_TYPE.REQUEST_TRANSACTION_INFO           // 26
+MESSAGE_TYPE.BROADCAST_TRANSACTION              // 24
+
+// Entity
+MESSAGE_TYPE.REQUEST_ENTITY                     // 31
+MESSAGE_TYPE.RESPOND_ENTITY                     // 32
+
+// Contract IPO
+MESSAGE_TYPE.REQUEST_CONTRACT_IPO               // 33
+MESSAGE_TYPE.RESPOND_CONTRACT_IPO               // 34
+
+// Protocol control
+MESSAGE_TYPE.END_RESPONSE                       // 35
+MESSAGE_TYPE.TRY_AGAIN                          // 54
+
+// Assets
+MESSAGE_TYPE.REQUEST_ISSUED_ASSETS              // 36
+MESSAGE_TYPE.RESPOND_ISSUED_ASSETS              // 37
+MESSAGE_TYPE.REQUEST_OWNED_ASSETS               // 38
+MESSAGE_TYPE.RESPOND_OWNED_ASSETS               // 39
+MESSAGE_TYPE.REQUEST_POSSESSED_ASSETS           // 40
+MESSAGE_TYPE.RESPOND_POSSESSED_ASSETS           // 41
+MESSAGE_TYPE.REQUEST_ASSETS                     // 52
+MESSAGE_TYPE.RESPOND_ASSETS                     // 53
+
+// Contract functions
+MESSAGE_TYPE.REQUEST_CONTRACT_FUNCTION          // 42
+MESSAGE_TYPE.RESPOND_CONTRACT_FUNCTION          // 43
+
+// Logging
+MESSAGE_TYPE.REQUEST_LOG                        // 44
+MESSAGE_TYPE.RESPOND_LOG                        // 45
+MESSAGE_TYPE.REQUEST_LOG_ID_RANGE_FROM_TX       // 48
+MESSAGE_TYPE.RESPOND_LOG_ID_RANGE_FROM_TX       // 49
+MESSAGE_TYPE.REQUEST_ALL_LOG_ID_RANGES_FROM_TX  // 50
+MESSAGE_TYPE.RESPOND_ALL_LOG_ID_RANGES_FROM_TX  // 51
+
+// System info
+MESSAGE_TYPE.REQUEST_SYSTEM_INFO                // 46
+MESSAGE_TYPE.RESPOND_SYSTEM_INFO                // 47
+
+// Pruning and log state
+MESSAGE_TYPE.REQUEST_PRUNING_LOG                // 56
+MESSAGE_TYPE.RESPOND_PRUNING_LOG                // 57
+MESSAGE_TYPE.REQUEST_LOG_STATE_DIGEST           // 58
+MESSAGE_TYPE.RESPOND_LOG_STATE_DIGEST           // 59
+
+// Active IPOs
+MESSAGE_TYPE.REQUEST_ACTIVE_IPOS                // 64
+MESSAGE_TYPE.RESPOND_ACTIVE_IPO                 // 65
+
+// Oracle
+MESSAGE_TYPE.REQUEST_ORACLE_DATA                // 66
+MESSAGE_TYPE.RESPOND_ORACLE_DATA                // 67
+MESSAGE_TYPE.ORACLE_MACHINE_QUERY               // 190  (core node ↔ Oracle Machine)
+MESSAGE_TYPE.ORACLE_MACHINE_REPLY               // 191  (core node ↔ Oracle Machine)
+
+// Custom mining
+MESSAGE_TYPE.BROADCAST_CUSTOM_MINING_TASK       // 68
+MESSAGE_TYPE.BROADCAST_CUSTOM_MINING_SOLUTION   // 69
+
+// TX addon
+MESSAGE_TYPE.REQUEST_TX_STATUS                  // 201  (tx addon only)
+MESSAGE_TYPE.RESPOND_TX_STATUS                  // 202  (tx addon only)
+
+// Special
+MESSAGE_TYPE.SPECIAL_COMMAND                    // 255
 ```
 
 `DEFAULT_PORT` is `21841` — the standard Qubic TCP port.

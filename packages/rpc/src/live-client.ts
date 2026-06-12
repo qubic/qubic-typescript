@@ -270,6 +270,16 @@ export function createLiveClient(options: LiveClientOptions = {}) {
       if (!r.ok) return r
       return ok(r.value.ipos ?? [])
     },
+
+    /**
+     * Returns the current block height (tick info).
+     * @deprecated Use {@link getTickInfo} instead — this endpoint is deprecated upstream.
+     */
+    async getBlockHeight(opts?: Opts): Promise<Result<LiveTickInfo, QubicRpcError>> {
+      const r = await unwrap(client.GET('/block-height', { ...s(opts) }), '/block-height')
+      if (!r.ok) return r
+      return ok(r.value.blockHeight as LiveTickInfo)
+    },
   }
 }
 

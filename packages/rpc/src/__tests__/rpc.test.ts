@@ -91,6 +91,16 @@ describe('createLiveClient', () => {
     expect(result.value).toEqual([])
   })
 
+  test('getBlockHeight returns tickInfo (deprecated)', async () => {
+    const blockHeight = { tick: 2000, epoch: 6, duration: 3, initialTick: 1800 }
+    const live = createLiveClient({ fetch: mockFetch({ blockHeight }) })
+    const result = await live.getBlockHeight()
+    expect(result.ok).toBe(true)
+    if (!result.ok) return
+    expect(result.value.tick).toBe(2000)
+    expect(result.value.epoch).toBe(6)
+  })
+
   test('returns err Result on HTTP error', async () => {
     const live = createLiveClient({ fetch: mockFetch({ message: 'not found' }, 404) })
     const result = await live.getTickInfo()

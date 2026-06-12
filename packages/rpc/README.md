@@ -26,48 +26,48 @@ type LiveClientOptions = {
 function createLiveClient(options?: LiveClientOptions): LiveClient
 ```
 
-Returns a client object for the live v1 API. All methods return typed promises and throw `QubicRpcError` on non-2xx responses.
+Returns a client object for the live v1 API. All methods return `Promise<Result<T, QubicRpcError>>` — check `result.ok` before accessing `result.value`.
 
 #### Live client methods
 
 ```ts
-getTickInfo(): Promise<LiveTickInfo>
+getTickInfo(): Promise<Result<LiveTickInfo, QubicRpcError>>
 ```
 Returns the current tick number, epoch, tick duration and initial tick of the epoch.
 
 ```ts
-getBalance(identity: string): Promise<LiveBalance>
+getBalance(identity: string): Promise<Result<QubicBalance, QubicRpcError>>
 ```
-Returns the balance and transfer history for the given identity string.
+Returns the balance and transfer history for the given identity string. Numeric amounts are converted to `bigint`.
 
 ```ts
-broadcastTransaction(encodedTransaction: string): Promise<BroadcastTransactionResponse>
+broadcastTransaction(encodedTransaction: string): Promise<Result<BroadcastTransactionResponse, QubicRpcError>>
 ```
 Broadcasts a base64-encoded signed transaction. Use `encodeTransaction` from `@qubic.org/tx` to produce the encoded string. Returns the peer count that accepted the transaction and the assigned transaction ID.
 
 ```ts
-querySmartContract(req: QuerySmartContractRequest): Promise<QuerySmartContractResponse>
+querySmartContract(req: QuerySmartContractRequest): Promise<Result<QuerySmartContractResponse, QubicRpcError>>
 ```
 Calls a smart contract read-only function. The request carries the contract index, input type, and base64-encoded input data. The response carries base64-encoded output data.
 
 ```ts
-getIssuedAssets(identity: string): Promise<IssuedAsset[]>
-getOwnedAssets(identity: string): Promise<OwnedAsset[]>
-getPossessedAssets(identity: string): Promise<PossessedAsset[]>
+getIssuedAssets(identity: string): Promise<Result<IssuedAsset[], QubicRpcError>>
+getOwnedAssets(identity: string): Promise<Result<OwnedAsset[], QubicRpcError>>
+getPossessedAssets(identity: string): Promise<Result<PossessedAsset[], QubicRpcError>>
 ```
 Return assets issued by, owned by, or possessed by the given identity, respectively.
 
 ```ts
-getAssetIssuances(filter?: { issuerIdentity?: string; assetName?: string }): Promise<AssetIssuance[]>
-getAssetIssuanceByIndex(index: number): Promise<AssetIssuance>
+getAssetIssuances(filter?: { issuerIdentity?: string; assetName?: string }): Promise<Result<AssetIssuance[], QubicRpcError>>
+getAssetIssuanceByIndex(index: number): Promise<Result<AssetIssuance, QubicRpcError>>
 
 getAssetOwnerships(filter?: {
   issuerIdentity?: string
   assetName?: string
   ownerIdentity?: string
   ownershipManagingContract?: number
-}): Promise<AssetOwnership[]>
-getAssetOwnershipByIndex(index: number): Promise<AssetOwnership>
+}): Promise<Result<AssetOwnership[], QubicRpcError>>
+getAssetOwnershipByIndex(index: number): Promise<Result<AssetOwnership, QubicRpcError>>
 
 getAssetPossessions(filter?: {
   issuerIdentity?: string
@@ -76,15 +76,21 @@ getAssetPossessions(filter?: {
   possessorIdentity?: string
   ownershipManagingContract?: number
   possessionManagingContract?: number
-}): Promise<AssetPossession[]>
-getAssetPossessionByIndex(index: number): Promise<AssetPossession>
+}): Promise<Result<AssetPossession[], QubicRpcError>>
+getAssetPossessionByIndex(index: number): Promise<Result<AssetPossession, QubicRpcError>>
 ```
 Filtered and index-based asset record lookups across the three ownership tiers (issuance, ownership, possession).
 
 ```ts
-getActiveIpos(): Promise<Ipo[]>
+getActiveIpos(): Promise<Result<Ipo[], QubicRpcError>>
 ```
 Returns all currently active initial public offerings on the Qubic network.
+
+```ts
+/** @deprecated Use getTickInfo() instead. */
+getBlockHeight(): Promise<Result<LiveTickInfo, QubicRpcError>>
+```
+Returns tick info via the deprecated `/block-height` endpoint. Prefer `getTickInfo()`.
 
 ### `createQueryClient`
 
@@ -103,55 +109,55 @@ Returns a client object for the archive query v1 API.
 #### Query client methods
 
 ```ts
-getLastProcessedTick(): Promise<{
+getLastProcessedTick(): Promise<Result<{
   tickNumber: number
   epoch: number
   intervalInitialTick: number
   logTickNumber: number
-}>
+}, QubicRpcError>>
 ```
 Returns the most recent tick indexed by the archive.
 
 ```ts
-getProcessedTickIntervals(): Promise<ProcessedTickInterval[]>
+getProcessedTickIntervals(): Promise<Result<ProcessedTickInterval[], QubicRpcError>>
 ```
 Returns the contiguous tick intervals that have been processed.
 
 ```ts
-getComputorListsForEpoch(epoch: number): Promise<QueryComputorList[]>
+getComputorListsForEpoch(epoch: number): Promise<Result<QueryComputorList[], QubicRpcError>>
 ```
 Returns all computor lists for the given epoch.
 
 ```ts
-getTickData(tickNumber: number): Promise<QueryTickData>
+getTickData(tickNumber: number): Promise<Result<QueryTickData, QubicRpcError>>
 ```
 Returns full tick data including transaction hashes, computor signature, and spectra root.
 
 ```ts
-getTransactionByHash(hash: string): Promise<QueryTransaction>
+getTransactionByHash(hash: string): Promise<Result<QueryTransaction, QubicRpcError>>
 ```
 Fetches a single transaction by its 60-character lowercase hash.
 
 ```ts
-getTransactionsForIdentity(req: GetTransactionsForIdentityRequest): Promise<{
+getTransactionsForIdentity(req: GetTransactionsForIdentityRequest): Promise<Result<{
   transactions: QueryTransaction[]
   hits: Hits
   validForTick: number
-}>
+}, QubicRpcError>>
 ```
 Returns paginated transactions for an identity with optional tick range and type filters.
 
 ```ts
-getTransactionsForTick(tickNumber: number): Promise<QueryTransaction[]>
+getTransactionsForTick(tickNumber: number): Promise<Result<QueryTransaction[], QubicRpcError>>
 ```
 Returns all transactions included in the given tick.
 
 ```ts
-getEventLogs(req: GetEventLogsRequest): Promise<{
+getEventLogs(req: GetEventLogsRequest): Promise<Result<{
   eventLogs: QueryEvent[]
   hits: Hits
   validForTick: number
-}>
+}, QubicRpcError>>
 ```
 Queries event logs (QU transfers, asset events, contract messages, etc.) with rich filtering by log type, identity, tick range, and pagination.
 
@@ -165,13 +171,18 @@ class QubicRpcError extends QubicError {
 }
 ```
 
-Thrown by every client method on a non-2xx response. The `status` and `endpoint` fields make it easy to branch on specific failure modes (e.g. `404` identity not found vs. `503` node overload).
+Returned (inside `Result.error`) on any non-2xx response. The `status` and `endpoint` fields make it easy to branch on specific failure modes (e.g. `404` identity not found vs. `503` node overload).
 
 ### Exported types
 
 ```ts
+// Result type (returned by all methods)
+type Result<T, E> = Ok<T> | Err<E>
+type Ok<T> = { readonly ok: true; readonly value: T }
+type Err<E> = { readonly ok: false; readonly error: E }
+
 // Live client types
-type LiveBalance, LiveTickInfo
+type LiveBalance, LiveTickInfo, QubicBalance
 type BroadcastTransactionRequest, BroadcastTransactionResponse
 type QuerySmartContractRequest, QuerySmartContractResponse
 type IssuedAsset, OwnedAsset, PossessedAsset
@@ -196,11 +207,15 @@ import { createLiveClient } from '@qubic.org/rpc'
 
 const live = createLiveClient()
 
-const tickInfo = await live.getTickInfo()
-console.log('Current tick:', tickInfo.tick)
+const tickResult = await live.getTickInfo()
+if (tickResult.ok) {
+  console.log('Current tick:', tickResult.value.tick)
+}
 
-const balance = await live.getBalance('YOURIDENTITYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
-console.log('Balance:', balance)
+const balanceResult = await live.getBalance('YOURIDENTITYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
+if (balanceResult.ok) {
+  console.log('Balance:', balanceResult.value.balance) // bigint
+}
 ```
 
 ### Build and broadcast a transaction
@@ -214,7 +229,9 @@ import { toSeed, toIdentity, PROTOCOL } from '@qubic.org/types'
 const seed = toSeed('yourseedaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
 const live = createLiveClient()
 
-const { tick } = await live.getTickInfo()
+const tickResult = await live.getTickInfo()
+if (!tickResult.ok) throw tickResult.error
+const tick = tickResult.value.tick!
 
 const txBytes = buildTransaction({
   sourcePublicKey: publicKeyFromSeed(seed),
@@ -229,49 +246,51 @@ const txBytes = buildTransaction({
 
 const signedTx = await signTransaction(txBytes, seed)
 const encoded = encodeTransaction(signedTx)
-const result = await live.broadcastTransaction(encoded)
-console.log('Broadcast result:', result)
+const broadcastResult = await live.broadcastTransaction(encoded)
+if (broadcastResult.ok) {
+  console.log('Broadcast to', broadcastResult.value.peersBroadcasted, 'peers')
+}
 ```
 
 ### Query event logs for QU transfers
 
 ```ts
 import { createQueryClient } from '@qubic.org/rpc'
-import { LOG_TYPE } from '@qubic.org/types'
 
 const query = createQueryClient()
 
-const { eventLogs, hits } = await query.getEventLogs({
-  logType: LOG_TYPE.QU_TRANSFER,
-  identity: 'YOURIDENTITYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-  startTick: 18_490_000,
-  endTick: 18_500_000,
-  pageSize: 50,
-  page: 0,
+const result = await query.getEventLogs({
+  filters: {
+    source: 'YOURIDENTITYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+    logType: '0',
+  },
+  ranges: {
+    tickNumber: { min: '18490000', max: '18500000' },
+  },
+  pagination: { offset: 0, size: 50 },
 })
 
-console.log(`Found ${hits.totalCount} transfers, showing ${eventLogs.length}`)
+if (result.ok) {
+  console.log(`Found ${result.value.hits.total} transfers, showing ${result.value.eventLogs.length}`)
+}
 ```
 
 ## Error handling
 
-All methods throw `QubicRpcError` when the HTTP response is not 2xx. Catch it to distinguish RPC failures from unexpected runtime errors:
+All methods return `Result<T, QubicRpcError>` instead of throwing. Check `.ok` before accessing `.value`:
 
 ```ts
-import { createLiveClient, QubicRpcError } from '@qubic.org/rpc'
+import { createLiveClient } from '@qubic.org/rpc'
 
 const live = createLiveClient()
 
-try {
-  const balance = await live.getBalance(identity)
-} catch (err) {
-  if (err instanceof QubicRpcError) {
-    console.error(`HTTP ${err.status} on ${err.endpoint}`)
-    // err.status === 404: identity not found
-    // err.status === 503: node overloaded
-  } else {
-    throw err  // network failure, abort, etc.
-  }
+const result = await live.getBalance(identity)
+if (!result.ok) {
+  console.error(`HTTP ${result.error.status} on ${result.error.endpoint}`)
+  // result.error.status === 404: identity not found
+  // result.error.status === 503: node overloaded
+} else {
+  console.log('Balance:', result.value.balance)
 }
 ```
 

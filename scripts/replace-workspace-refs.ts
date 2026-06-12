@@ -19,16 +19,18 @@ for (const entry of readdirSync(packagesDir, { withFileTypes: true })) {
   } catch {}
 }
 
-const WORKSPACE_RE = /^workspace:[*^~]$/
+const WORKSPACE_RE = /^workspace:([*^~])$/
 
 function replaceDeps(deps: Record<string, string> | undefined): boolean {
   if (!deps) return false
   let changed = false
   for (const [name, range] of Object.entries(deps)) {
-    if (WORKSPACE_RE.test(range)) {
+    const match = WORKSPACE_RE.exec(range)
+    if (match) {
       const version = versionMap.get(name)
       if (version) {
-        deps[name] = `^${version}`
+        const prefix = match[1] === '*' ? '^' : match[1]
+        deps[name] = `${prefix}${version}`
         changed = true
       }
     }

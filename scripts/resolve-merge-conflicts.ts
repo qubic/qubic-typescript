@@ -28,6 +28,7 @@ for (const rel of files) {
 
   if (rel.endsWith('package.json')) {
     execSync(`git checkout --ours -- "${rel}"`, { cwd: root })
+    execSync(`git add "${rel}"`, { cwd: root })
     console.log(`package.json  ours  ${rel}`)
     continue
   }

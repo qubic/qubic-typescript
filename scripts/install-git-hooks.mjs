@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { execSync } from 'node:child_process'
 import { chmodSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
@@ -10,7 +11,7 @@ function getHooksPath() {
   try {
     return execSync('git rev-parse --git-path hooks', {
       cwd: process.cwd(),
-      encoding: 'utf8',
+      encoding: 'utf-8',
       stdio: ['ignore', 'pipe', 'ignore'],
     }).trim()
   } catch {
@@ -29,7 +30,7 @@ const hookPath = resolve(process.cwd(), hooksPath, 'commit-msg')
 mkdirSync(dirname(hookPath), { recursive: true })
 
 try {
-  if (readFileSync(hookPath, 'utf8') === hookContents) {
+  if (readFileSync(hookPath, 'utf-8') === hookContents) {
     chmodSync(hookPath, 0o755)
     process.exit(0)
   }

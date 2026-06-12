@@ -33,14 +33,16 @@ describe('framing', () => {
     expect(view.getUint32(4, true)).toBe(0xdeadbeef)
   })
 
-  test('encodeHeader auto-increments non-zero dejavu', () => {
-    const h1 = encodeHeader(0, 0)
-    const h2 = encodeHeader(0, 0)
-    const dv1 = new DataView(h1.buffer).getUint32(4, true)
-    const dv2 = new DataView(h2.buffer).getUint32(4, true)
-    expect(dv1).toBeGreaterThan(0)
-    expect(dv2).toBeGreaterThan(0)
-    expect(dv2).not.toBe(dv1)
+  test('encodeHeader generates random non-zero dejavu', () => {
+    const values = new Set<number>()
+    for (let i = 0; i < 10; i++) {
+      const h = encodeHeader(0, 0)
+      const dv = new DataView(h.buffer).getUint32(4, true)
+      expect(dv).toBeGreaterThan(0)
+      values.add(dv)
+    }
+    // 10 crypto-random u32 values should all be distinct
+    expect(values.size).toBe(10)
   })
 
   test('encodeHeader throws for oversized payload', () => {

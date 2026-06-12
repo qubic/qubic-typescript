@@ -7,6 +7,8 @@
  *   [4–7]  dejavu:  4-byte LE uint32 — 0 = broadcast to peers; non-zero = direct request
  */
 
+import { randomBytes } from 'node:crypto'
+
 export const HEADER_SIZE = 8
 
 export interface DecodedHeader {
@@ -16,12 +18,12 @@ export interface DecodedHeader {
   dejavu: number
 }
 
-let dejavuCounter = 1
-
-/** Returns the next non-zero dejavu value for outgoing requests. */
+/** Returns a cryptographically random non-zero dejavu value for outgoing requests. */
 function nextDejavu(): number {
-  const v = dejavuCounter
-  dejavuCounter = (dejavuCounter + 1) >>> 0 || 1
+  let v: number
+  do {
+    v = new DataView(randomBytes(4).buffer).getUint32(0, true)
+  } while (v === 0)
   return v
 }
 

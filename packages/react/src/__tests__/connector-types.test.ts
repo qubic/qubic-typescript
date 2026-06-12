@@ -1,19 +1,20 @@
-import { describe, test, expect } from 'bun:test'
+import { describe, expect, test } from 'bun:test'
 import type {
-  TransactionRequest,
-  WalletAccount,
-  SignTransactionResult,
+  ConnectOptions,
   SendTransactionResult,
   SignMessageResult,
+  SignTransactionResult,
+  TransactionRequest,
+  WalletAccount,
   WalletConnector,
   WalletConnectorEvent,
-  ConnectOptions,
 } from '../connectors/connector.js'
 
 describe('connector type interfaces', () => {
   test('TransactionRequest has required fields (destination, amount)', () => {
     const tx: TransactionRequest = {
-      destination: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+      destination:
+        'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
       amount: '1000',
     }
 
@@ -27,7 +28,8 @@ describe('connector type interfaces', () => {
 
   test('TransactionRequest optional fields are accepted', () => {
     const tx: TransactionRequest = {
-      destination: 'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+      destination:
+        'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
       amount: '500',
       inputType: 1,
       payload: 'base64encoded',
@@ -39,7 +41,8 @@ describe('connector type interfaces', () => {
 
   test('WalletAccount has required field (identity)', () => {
     const account: WalletAccount = {
-      identity: 'CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC',
+      identity:
+        'CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC',
     }
 
     expect(account.identity).toBeTypeOf('string')

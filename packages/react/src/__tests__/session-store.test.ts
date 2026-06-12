@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeEach } from 'bun:test'
+import { beforeEach, describe, expect, test } from 'bun:test'
 
 // ── Minimal IndexedDB / sessionStorage mocks ─────────────────────────────────
 
@@ -168,7 +168,7 @@ describe('vault/session-store', () => {
 
     const raw = mockStorage.getItem('bad-cipher-key')!
     const record = JSON.parse(raw)
-    record.ciphertext = 'ff' + record.ciphertext.slice(2)
+    record.ciphertext = `ff${record.ciphertext.slice(2)}`
     mockStorage.setItem('bad-cipher-key', JSON.stringify(record))
 
     const result = await restoreSession('bad-cipher-key')

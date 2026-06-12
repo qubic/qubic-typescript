@@ -135,4 +135,42 @@ describe('createBobRpcClient', () => {
     const result = await client.getChainId({ signal: controller.signal })
     expect(result.ok).toBe(false)
   })
+
+  test('getTickByNumber returns BobIndexedTick with all fields', async () => {
+    const tick = {
+      tickNumber: 12500000,
+      epoch: 150,
+      computorIndex: 42,
+      signature: '0xdeadbeef',
+      tickHash: '0xabcdef',
+      timestamp: 1705312245,
+      timestampISO: '2025-01-15T10:30:45Z',
+      millisecond: 500,
+      timelock: '0x1234',
+      transactionCount: 2,
+      transactions: ['aaaa', 'bbbb'],
+      previousTickHash: '0xprev',
+    }
+    const client = createBobRpcClient({
+      endpoint: ENDPOINT,
+      retries: 0,
+      fetch: mockFetch({ jsonrpc: '2.0', id: 1, result: tick }),
+    })
+    const result = await client.getTickByNumber(12500000, false)
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      expect(result.value.tickNumber).toBe(12500000)
+      expect(result.value.epoch).toBe(150)
+      expect(result.value.computorIndex).toBe(42)
+      expect(result.value.signature).toBe('0xdeadbeef')
+      expect(result.value.tickHash).toBe('0xabcdef')
+      expect(result.value.timestamp).toBe(1705312245)
+      expect(result.value.timestampISO).toBe('2025-01-15T10:30:45Z')
+      expect(result.value.millisecond).toBe(500)
+      expect(result.value.timelock).toBe('0x1234')
+      expect(result.value.transactionCount).toBe(2)
+      expect(result.value.transactions).toEqual(['aaaa', 'bbbb'])
+      expect(result.value.previousTickHash).toBe('0xprev')
+    }
+  })
 })

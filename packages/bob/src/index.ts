@@ -35,6 +35,7 @@ export type {
   BobIndexedTick,
   BobTickLogRange,
   BobTickNotification,
+  BobTickTransaction,
   BobTransaction,
   BobTransferEvent,
   BobTransferFilter,

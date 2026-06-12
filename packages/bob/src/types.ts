@@ -38,19 +38,49 @@ export interface BobTickNotification {
   epoch: number
 }
 
-/** Tick metadata as indexed by the Bob indexer. Not to be confused with the core protocol TickData. */
-export interface BobIndexedTick {
-  tick: number
-  epoch: number
-  transactions: TxHash[]
+/** Full transaction object returned inside a tick when `includeTransactions=true`. */
+export interface BobTickTransaction {
+  hash: TxHash
+  from: Identity
+  to: Identity
+  amount: bigint
+  inputType: number
+  inputSize: number
+  inputData: string
 }
 
+/**
+ * Tick metadata as indexed by the Bob indexer.
+ * Not to be confused with the core protocol TickData.
+ *
+ * When fetched with `includeTransactions=false`, `transactions` is `TxHash[]`.
+ * When fetched with `includeTransactions=true`, `transactions` is `BobTickTransaction[]`.
+ */
+export interface BobIndexedTick {
+  tickNumber: number
+  epoch: number
+  computorIndex: number
+  signature: string
+  tickHash: string
+  timestamp: number
+  timestampISO: string
+  millisecond: number
+  timelock: string
+  transactionCount: number
+  transactions: TxHash[] | BobTickTransaction[]
+  previousTickHash: string
+}
+
+/** Transaction as returned by `qubic_getTransactionByHash`. */
 export interface BobTransaction {
   hash: TxHash
-  tick: number
-  source: Identity
-  destination: Identity
+  from: Identity
+  to: Identity
   amount: bigint
+  tick: number
+  inputType: number
+  inputSize: number
+  inputData: string
 }
 
 /** Epoch info as returned by qubic_getEpochInfo (RPC, with bigint log IDs). */

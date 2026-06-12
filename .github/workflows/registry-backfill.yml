@@ -2,7 +2,7 @@ name: Registry Backfill
 
 on:
   schedule:
-    # Wednesdays at 14:00 UTC — 2 h after the epoch change at 12:00 UTC
+    # Wednesdays at 14:00 UTC, after the weekly epoch change
     - cron: '0 14 * * 3'
   workflow_dispatch:
     inputs:
@@ -62,13 +62,9 @@ jobs:
           if [ -n "$TO_EPOCH_INPUT" ]; then
             TO=$TO_EPOCH_INPUT
           else
-            # Derive current epoch from the latest qubic/core tag (v1.N.x → epoch N)
-            LATEST_TAG=$(curl -sf \
-              -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-              "https://api.github.com/repos/qubic/core/tags?per_page=1" \
-              | bun -e "const d = await Bun.stdin.json(); console.log(d[0]?.name ?? '')")
-            TO=$(echo "$LATEST_TAG" | sed 's/^v[0-9]*\.\([0-9]*\)\.[0-9]*/\1/')
-            [ -z "$TO" ] && TO=9999
+            TO=$(curl -sf https://rpc.qubic.org/live/v1/tick-info \
+              | bun -e "const d = await Bun.stdin.json(); console.log(d?.tickInfo?.epoch ?? '')")
+            [ -z "$TO" ] && { echo 'Failed to determine current epoch from RPC'; exit 1; }
           fi
 
           echo "from=$FROM" >> "$GITHUB_OUTPUT"
@@ -79,10 +75,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          bun packages/registry/scripts/backfill.ts \
-            --from-epoch ${{ steps.epochs.outputs.from }} \
-            --to-epoch   ${{ steps.epochs.outputs.to }} \
-            --token      "$GITHUB_TOKEN"
+          if [ -n "${{ github.event.inputs.from_epoch }}" ] || [ -n "${{ github.event.inputs.to_epoch }}" ]; then
+            bun packages/registry/scripts/backfill.ts \
+              --from-epoch ${{ steps.epochs.outputs.from }} \
+              --to-epoch   ${{ steps.epochs.outputs.to }} \
+              --token      "$GITHUB_TOKEN"
+          else
+            bun packages/registry/scripts/backfill.ts \
+              --catch-up \
+              --token "$GITHUB_TOKEN"
+          fi
 
       - name: Regenerate contract wrappers
         run: bun packages/contracts/scripts/generate.ts

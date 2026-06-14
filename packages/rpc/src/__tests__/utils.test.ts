@@ -1,13 +1,7 @@
 import { describe, expect, test } from 'bun:test'
 import { QubicRpcError } from '../errors.js'
-import {
-  createQubicClient,
-  waitForTick,
-  pollUntilConfirmed,
-  estimateTargetTick,
-} from '../utils.js'
-import type { LiveClient } from '../live-client.js'
 import { createLiveClient } from '../live-client.js'
+import { createQubicClient, estimateTargetTick, pollUntilConfirmed, waitForTick } from '../utils.js'
 
 function mockFetch(body: unknown, status = 200): (input: Request) => Promise<Response> {
   return async () =>

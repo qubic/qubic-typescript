@@ -106,7 +106,9 @@ describe('createBobRestClient - additional endpoints', () => {
     const failingFetch = async () => {
       throw new TypeError('fetch failed')
     }
-    const client = createBobRestClient({ fetch: failingFetch as (input: Request) => Promise<Response> })
+    const client = createBobRestClient({
+      fetch: failingFetch as (input: Request) => Promise<Response>,
+    })
     const result = await client.getStatus()
     expect(result.ok).toBe(false)
     if (!result.ok) {

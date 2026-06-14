@@ -483,7 +483,9 @@ describe('createBobRpcClient - getEpochInfo', () => {
     const client = createBobRpcClient({
       endpoint: ENDPOINT,
       retries: 0,
-      fetch: mockFetch(rpcResult({ epoch: null, initialTick: null, endTick: null, lastIndexedTick: null })),
+      fetch: mockFetch(
+        rpcResult({ epoch: null, initialTick: null, endTick: null, lastIndexedTick: null }),
+      ),
     })
     const result = await client.getEpochInfo(1)
     expect(result.ok).toBe(false)
@@ -576,7 +578,11 @@ describe('createBobRpcClient - getQuTransfers', () => {
       retries: 0,
       fetch: mockFetch(rpcResult(raw)),
     })
-    const result = await client.getQuTransfers({ identity: 'AAA' as never, fromTick: 100, toTick: 200 })
+    const result = await client.getQuTransfers({
+      identity: 'AAA' as never,
+      fromTick: 100,
+      toTick: 200,
+    })
     expect(result.ok).toBe(true)
     if (result.ok) expect(result.value[0].logId).toBe(77n)
   })
@@ -623,13 +629,22 @@ describe('createBobRpcClient - getAllAssetTransfers', () => {
 
 describe('createBobRpcClient - getAssetBalance', () => {
   test('converts balance to bigint and validates identities', async () => {
-    const raw = { identity: 'A'.repeat(60), issuer: 'B'.repeat(60), assetName: 'TOKEN', balance: '500' }
+    const raw = {
+      identity: 'A'.repeat(60),
+      issuer: 'B'.repeat(60),
+      assetName: 'TOKEN',
+      balance: '500',
+    }
     const client = createBobRpcClient({
       endpoint: ENDPOINT,
       retries: 0,
       fetch: mockFetch(rpcResult(raw)),
     })
-    const result = await client.getAssetBalance('A'.repeat(60) as never, 'B'.repeat(60) as never, 'TOKEN')
+    const result = await client.getAssetBalance(
+      'A'.repeat(60) as never,
+      'B'.repeat(60) as never,
+      'TOKEN',
+    )
     expect(result.ok).toBe(true)
     if (result.ok) {
       expect(result.value.balance).toBe(500n)
@@ -644,7 +659,11 @@ describe('createBobRpcClient - getAssetBalance', () => {
       retries: 0,
       fetch: mockFetch(rpcResult(raw)),
     })
-    const result = await client.getAssetBalance('A'.repeat(60) as never, 'B'.repeat(60) as never, 'T')
+    const result = await client.getAssetBalance(
+      'A'.repeat(60) as never,
+      'B'.repeat(60) as never,
+      'T',
+    )
     expect(result.ok).toBe(false)
     if (!result.ok) expect(result.error.message).toContain('invalid identity format')
   })
@@ -656,7 +675,11 @@ describe('createBobRpcClient - getAssetBalance', () => {
       retries: 0,
       fetch: mockFetch(rpcResult(raw)),
     })
-    const result = await client.getAssetBalance('A'.repeat(60) as never, 'B'.repeat(60) as never, 'T')
+    const result = await client.getAssetBalance(
+      'A'.repeat(60) as never,
+      'B'.repeat(60) as never,
+      'T',
+    )
     expect(result.ok).toBe(false)
     if (!result.ok) expect(result.error.message).toContain('invalid balance value')
   })

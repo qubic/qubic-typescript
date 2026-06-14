@@ -91,7 +91,7 @@ describe('toBase64', () => {
   // --- New padding edge case tests ---
 
   test('accepts strings needing 0 padding chars (length divisible by 4, no padding)', () => {
-    // "sure" encodes to "c3VyZQ==" but "surem" -> "c3VyZW0=" ... 
+    // "sure" encodes to "c3VyZQ==" but "surem" -> "c3VyZW0=" ...
     // 3 bytes -> 4 base64 chars, no padding: e.g. btoa('abc') = 'YWJj'
     expect(() => toBase64('YWJj')).not.toThrow() // btoa('abc') = 'YWJj', 0 pad chars
     expect(toBase64('YWJj')).toBe('YWJj')
@@ -116,9 +116,9 @@ describe('toBase64', () => {
   })
 
   test('rejects strings with wrong length (not multiple of 4)', () => {
-    expect(() => toBase64('YWJ')).toThrow(InvalidBase64Error)   // 3 chars
-    expect(() => toBase64('YW')).toThrow(InvalidBase64Error)     // 2 chars
-    expect(() => toBase64('Y')).toThrow(InvalidBase64Error)      // 1 char
+    expect(() => toBase64('YWJ')).toThrow(InvalidBase64Error) // 3 chars
+    expect(() => toBase64('YW')).toThrow(InvalidBase64Error) // 2 chars
+    expect(() => toBase64('Y')).toThrow(InvalidBase64Error) // 1 char
   })
 
   test('rejects strings with padding in wrong position', () => {

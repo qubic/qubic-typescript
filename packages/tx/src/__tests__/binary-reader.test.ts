@@ -45,9 +45,9 @@ describe('BinaryReader', () => {
 
   test('readUint64 reads max value', () => {
     const view = new DataView(new ArrayBuffer(8))
-    view.setBigUint64(0, 0xFFFFFFFFFFFFFFFFn, true)
+    view.setBigUint64(0, 0xffffffffffffffffn, true)
     const reader = new BinaryReader(new Uint8Array(view.buffer))
-    expect(reader.readUint64()).toBe(0xFFFFFFFFFFFFFFFFn)
+    expect(reader.readUint64()).toBe(0xffffffffffffffffn)
   })
 
   test('readBytes returns a slice of the requested length', () => {

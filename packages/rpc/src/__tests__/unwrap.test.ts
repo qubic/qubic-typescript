@@ -1,9 +1,12 @@
 import { describe, expect, test } from 'bun:test'
-import { unwrap, sig } from '../_utils.js'
+import { sig, unwrap } from '../_utils.js'
 import { QubicRpcError } from '../errors.js'
 
 // Helper to build a fake openapi-fetch response shape
-function fakeResponse<T>(data: T, status: number = 200): Promise<{ data?: T; error?: unknown; response: Response }> {
+function fakeResponse<T>(
+  data: T,
+  status = 200,
+): Promise<{ data?: T; error?: unknown; response: Response }> {
   const response = new Response(JSON.stringify(data), {
     status,
     headers: { 'Content-Type': 'application/json' },

@@ -1,8 +1,8 @@
-import { describe, expect, test, afterEach } from 'bun:test'
-import { createServer, type Server, type Socket as NetSocket } from 'node:net'
+import { afterEach, describe, expect, test } from 'bun:test'
+import { type Socket as NetSocket, type Server, createServer } from 'node:net'
+import { createNodeConnection } from '../src/connection.js'
 import { HEADER_SIZE, encodeHeader } from '../src/framing.js'
 import { MESSAGE_TYPE } from '../src/message-types.js'
-import { createNodeConnection } from '../src/connection.js'
 
 /**
  * Helper: build a framed response message (header + payload).
@@ -45,9 +45,7 @@ function createTestServer() {
     })
   })
 
-  const listenPromise = new Promise<void>((resolve) =>
-    server.listen(0, '127.0.0.1', resolve),
-  )
+  const listenPromise = new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve))
 
   return {
     server,
@@ -81,7 +79,9 @@ describe('createNodeConnection', () => {
 
   afterEach(() => {
     for (const s of servers) {
-      try { s.close() } catch {}
+      try {
+        s.close()
+      } catch {}
     }
     servers = []
   })
@@ -255,11 +255,9 @@ describe('createNodeConnection', () => {
     const controller = new AbortController()
     controller.abort()
 
-    const requestPromise = conn.request(
-      MESSAGE_TYPE.REQUEST_ENTITY,
-      undefined,
-      { signal: controller.signal },
-    )
+    const requestPromise = conn.request(MESSAGE_TYPE.REQUEST_ENTITY, undefined, {
+      signal: controller.signal,
+    })
 
     await expect(requestPromise).rejects.toThrow('Aborted')
     conn.close()
@@ -277,14 +275,8 @@ describe('createNodeConnection', () => {
     })
 
     // Set up server to handle multiple requests sequentially
-    let requestCount = 0
-    const socket = ts.sockets[0]! // This won't be available yet...
-
-    // We need to handle this differently since the socket isn't available until connection
-    // Let's use a server-side handler that auto-replies with END_RESPONSE
     ts.server.on('connection', (s) => {
       s.on('data', () => {
-        requestCount++
         s.write(buildResponse(MESSAGE_TYPE.END_RESPONSE))
       })
     })
@@ -374,11 +366,9 @@ describe('createNodeConnection', () => {
     })
 
     const controller = new AbortController()
-    const requestPromise = conn.request(
-      MESSAGE_TYPE.REQUEST_ENTITY,
-      undefined,
-      { signal: controller.signal },
-    )
+    const requestPromise = conn.request(MESSAGE_TYPE.REQUEST_ENTITY, undefined, {
+      signal: controller.signal,
+    })
 
     // Wait for request to be sent
     await ts.waitForData()

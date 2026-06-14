@@ -281,11 +281,7 @@ export function createBobRpcClient(options: BobRpcClientOptions): BobRpcClient {
     },
 
     querySmartContract(params, options) {
-      return call<Base64>(
-        'qubic_querySmartContract',
-        [params],
-        options?.signal,
-      )
+      return call<Base64>('qubic_querySmartContract', [params], options?.signal)
     },
 
     async getTransactionReceipt(hash, options) {

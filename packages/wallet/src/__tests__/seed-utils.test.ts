@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test'
 import { InvalidSeedError } from '@qubic.org/types'
-import { generateSeed, validateSeed, toSeed } from '../seed-utils.js'
+import { generateSeed, toSeed, validateSeed } from '../seed-utils.js'
 
 describe('generateSeed', () => {
   test('returns a 55-character lowercase string', () => {
@@ -50,7 +50,7 @@ describe('validateSeed', () => {
   })
 
   test('alphanumeric mix returns false', () => {
-    expect(validateSeed('a'.repeat(50) + '12345')).toBe(false)
+    expect(validateSeed(`${'a'.repeat(50)}12345`)).toBe(false)
   })
 
   test('empty string returns false', () => {
@@ -58,15 +58,15 @@ describe('validateSeed', () => {
   })
 
   test('special characters return false', () => {
-    expect(validateSeed('a'.repeat(54) + '!')).toBe(false)
+    expect(validateSeed(`${'a'.repeat(54)}!`)).toBe(false)
   })
 
   test('spaces return false', () => {
-    expect(validateSeed('a'.repeat(54) + ' ')).toBe(false)
+    expect(validateSeed(`${'a'.repeat(54)} `)).toBe(false)
   })
 
   test('unicode characters return false', () => {
-    expect(validateSeed('a'.repeat(54) + 'ñ')).toBe(false)
+    expect(validateSeed(`${'a'.repeat(54)}ñ`)).toBe(false)
   })
 
   test('single character returns false', () => {
@@ -102,6 +102,6 @@ describe('toSeed', () => {
   })
 
   test('throws InvalidSeedError for special characters', () => {
-    expect(() => toSeed('a'.repeat(54) + '@')).toThrow(InvalidSeedError)
+    expect(() => toSeed(`${'a'.repeat(54)}@`)).toThrow(InvalidSeedError)
   })
 })

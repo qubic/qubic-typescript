@@ -861,7 +861,7 @@ describe('cross-contract consistency', () => {
       indices.set(val, existing)
     }
     // Known shared indices: msvault + multisignvault both = 11, qip + qubicicoportal both = 18
-    for (const [idx, names] of indices) {
+    for (const [, names] of indices) {
       if (names.length > 1) {
         // These are the known duplicates
         const sorted = [...names].sort()

@@ -164,12 +164,7 @@ describe('error discrimination', () => {
     ]
 
     const codes = errors.map((e) => e.code)
-    expect(codes).toEqual([
-      'INVALID_IDENTITY',
-      'INVALID_SEED',
-      'INVALID_TX_HASH',
-      'INVALID_BASE64',
-    ])
+    expect(codes).toEqual(['INVALID_IDENTITY', 'INVALID_SEED', 'INVALID_TX_HASH', 'INVALID_BASE64'])
   })
 
   test('errors can be distinguished by name property', () => {

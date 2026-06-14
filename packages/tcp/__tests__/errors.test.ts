@@ -1,9 +1,5 @@
 import { describe, expect, test } from 'bun:test'
-import {
-  QubicTcpError,
-  QubicTcpConnectionError,
-  QubicTcpTimeoutError,
-} from '../src/errors.js'
+import { QubicTcpConnectionError, QubicTcpError, QubicTcpTimeoutError } from '../src/errors.js'
 
 describe('QubicTcpError', () => {
   test('is an instance of Error', () => {
@@ -21,9 +17,7 @@ describe('QubicTcpError', () => {
 describe('QubicTcpConnectionError', () => {
   test('formats message with hostname', () => {
     const err = new QubicTcpConnectionError('node1.example.com', 'connection refused')
-    expect(err.message).toBe(
-      'TCP connection to node1.example.com failed: connection refused',
-    )
+    expect(err.message).toBe('TCP connection to node1.example.com failed: connection refused')
     expect(err.hostname).toBe('node1.example.com')
   })
 

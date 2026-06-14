@@ -1,15 +1,15 @@
 import { describe, expect, test } from 'bun:test'
 import type { Identity, Seed } from '../brands.js'
 import { InvalidIdentityError, InvalidSeedError } from '../errors.js'
+import { deriveKeys } from '../identity.js'
 import {
+  contractIndexToIdentity,
   deriveIdentityFromSeed,
   identityToPublicKey,
   isValidIdentityChecksum,
   publicKeyFromSeed,
   publicKeyToIdentity,
-  contractIndexToIdentity,
 } from '../index.js'
-import { deriveKeys } from '../identity.js'
 
 const KNOWN_SEED = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' as Seed
 

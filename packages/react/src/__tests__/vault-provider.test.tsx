@@ -1,5 +1,4 @@
 import { describe, expect, test } from 'bun:test'
-import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { VaultProvider, useVaultState } from '../vault/vault-provider.js'
 import type { VaultStateValue } from '../vault/vault-provider.js'
@@ -49,11 +48,7 @@ describe('useVaultState', () => {
 
     function Consumer() {
       captured = useVaultState()
-      return (
-        <span>
-          {captured.isUnlocked ? 'unlocked' : 'locked'}
-        </span>
-      )
+      return <span>{captured.isUnlocked ? 'unlocked' : 'locked'}</span>
     }
 
     const html = renderToStaticMarkup(

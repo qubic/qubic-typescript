@@ -3,8 +3,8 @@ import type { BobLogEvent } from '@qubic.org/bob'
 import type { Identity } from '@qubic.org/types'
 import { LOG_TYPE } from '@qubic.org/types'
 import { decodeEvent } from '../src/decode-event.js'
-import { eventFilter } from '../src/event-filter-builder.js'
 import { EventDecodeError } from '../src/errors.js'
+import { eventFilter } from '../src/event-filter-builder.js'
 
 // ── helpers ───────────────────────────────────────────────────────────────────
 
@@ -452,9 +452,7 @@ describe('decodeEvent', () => {
     buf[82] = 0x53 // 'S'
     buf[83] = 0x54 // 'T'
 
-    const event = decodeEvent(
-      makeEvent(LOG_TYPE.ASSET_OWNERSHIP_MANAGING_CONTRACT_CHANGE, buf),
-    )
+    const event = decodeEvent(makeEvent(LOG_TYPE.ASSET_OWNERSHIP_MANAGING_CONTRACT_CHANGE, buf))
     expect(event.logType).toBe(LOG_TYPE.ASSET_OWNERSHIP_MANAGING_CONTRACT_CHANGE)
     if (event.logType === LOG_TYPE.ASSET_OWNERSHIP_MANAGING_CONTRACT_CHANGE) {
       expect(typeof event.data.owner).toBe('string')
@@ -470,9 +468,7 @@ describe('decodeEvent', () => {
 
   test('ASSET_OWNERSHIP_MANAGING_CONTRACT_CHANGE throws on short payload', () => {
     expect(() =>
-      decodeEvent(
-        makeEvent(LOG_TYPE.ASSET_OWNERSHIP_MANAGING_CONTRACT_CHANGE, new Uint8Array(10)),
-      ),
+      decodeEvent(makeEvent(LOG_TYPE.ASSET_OWNERSHIP_MANAGING_CONTRACT_CHANGE, new Uint8Array(10))),
     ).toThrow(EventDecodeError)
   })
 
@@ -492,9 +488,7 @@ describe('decodeEvent', () => {
     buf[114] = 0x4c // 'L'
     buf[115] = 0x44 // 'D'
 
-    const event = decodeEvent(
-      makeEvent(LOG_TYPE.ASSET_POSSESSION_MANAGING_CONTRACT_CHANGE, buf),
-    )
+    const event = decodeEvent(makeEvent(LOG_TYPE.ASSET_POSSESSION_MANAGING_CONTRACT_CHANGE, buf))
     expect(event.logType).toBe(LOG_TYPE.ASSET_POSSESSION_MANAGING_CONTRACT_CHANGE)
     if (event.logType === LOG_TYPE.ASSET_POSSESSION_MANAGING_CONTRACT_CHANGE) {
       expect(typeof event.data.possessor).toBe('string')
@@ -627,9 +621,7 @@ describe('eventFilter', () => {
   })
 
   test('ofTypes sets logTypes array', () => {
-    const filter = eventFilter()
-      .ofTypes(LOG_TYPE.QU_TRANSFER, LOG_TYPE.BURNING)
-      .build()
+    const filter = eventFilter().ofTypes(LOG_TYPE.QU_TRANSFER, LOG_TYPE.BURNING).build()
     expect(filter.logTypes).toEqual([LOG_TYPE.QU_TRANSFER, LOG_TYPE.BURNING])
   })
 
@@ -655,10 +647,7 @@ describe('eventFilter', () => {
       .build()
 
     expect(filter.identity).toBe(id)
-    expect(filter.logTypes).toEqual([
-      LOG_TYPE.ASSET_ISSUANCE,
-      LOG_TYPE.ASSET_OWNERSHIP_CHANGE,
-    ])
+    expect(filter.logTypes).toEqual([LOG_TYPE.ASSET_ISSUANCE, LOG_TYPE.ASSET_OWNERSHIP_CHANGE])
     expect(filter.contractIndex).toBe(3)
     expect(filter.fromTick).toBe(500)
     expect(filter.toTick).toBe(1000)
@@ -705,9 +694,7 @@ describe('eventFilter', () => {
   })
 
   test('toBobFilter with single logType', () => {
-    const bobFilter = eventFilter()
-      .ofTypes(LOG_TYPE.SPECTRUM_STATS)
-      .toBobFilter()
+    const bobFilter = eventFilter().ofTypes(LOG_TYPE.SPECTRUM_STATS).toBobFilter()
 
     expect(bobFilter.logType).toBe(LOG_TYPE.SPECTRUM_STATS)
   })

@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test'
-import { BinaryWriter } from '../binary-writer.js'
 import { BinaryReader } from '../binary-reader.js'
+import { BinaryWriter } from '../binary-writer.js'
 
 describe('BinaryWriter', () => {
   test('writeUint8 writes a single byte', () => {
@@ -25,7 +25,9 @@ describe('BinaryWriter', () => {
   test('writeInt64 writes signed 64-bit little-endian value', () => {
     const writer = new BinaryWriter(8)
     writer.writeInt64(-1n)
-    expect(writer.getBytes()).toEqual(new Uint8Array([0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]))
+    expect(writer.getBytes()).toEqual(
+      new Uint8Array([0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]),
+    )
   })
 
   test('writeInt64 writes positive bigint', () => {
@@ -44,9 +46,9 @@ describe('BinaryWriter', () => {
 
   test('writeUint64 writes max value', () => {
     const writer = new BinaryWriter(8)
-    writer.writeUint64(0xFFFFFFFFFFFFFFFFn)
+    writer.writeUint64(0xffffffffffffffffn)
     const reader = new BinaryReader(writer.getBytes())
-    expect(reader.readUint64()).toBe(0xFFFFFFFFFFFFFFFFn)
+    expect(reader.readUint64()).toBe(0xffffffffffffffffn)
   })
 
   test('writeBytes writes raw bytes', () => {
@@ -135,18 +137,18 @@ describe('BinaryWriter', () => {
     const writer = new BinaryWriter(25)
     writer.writeUint8(0x42)
     writer.writeUint16(0x1234)
-    writer.writeUint32(0xDEADBEEF)
+    writer.writeUint32(0xdeadbeef)
     writer.writeInt64(-100n)
     writer.writeUint64(999999999999n)
-    writer.writeBytes(new Uint8Array([0xCA, 0xFE]))
+    writer.writeBytes(new Uint8Array([0xca, 0xfe]))
 
     const reader = new BinaryReader(writer.getBytes())
     expect(reader.readUint8()).toBe(0x42)
     expect(reader.readUint16()).toBe(0x1234)
-    expect(reader.readUint32()).toBe(0xDEADBEEF)
+    expect(reader.readUint32()).toBe(0xdeadbeef)
     expect(reader.readInt64()).toBe(-100n)
     expect(reader.readUint64()).toBe(999999999999n)
-    expect(reader.readBytes(2)).toEqual(new Uint8Array([0xCA, 0xFE]))
+    expect(reader.readBytes(2)).toEqual(new Uint8Array([0xca, 0xfe]))
     expect(reader.remaining).toBe(0)
   })
 })

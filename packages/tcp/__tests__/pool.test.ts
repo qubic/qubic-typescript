@@ -1,5 +1,5 @@
-import { describe, expect, test, afterEach } from 'bun:test'
-import { createServer, type Server } from 'node:net'
+import { afterEach, describe, expect, test } from 'bun:test'
+import { type Server, createServer } from 'node:net'
 import { HEADER_SIZE, encodeHeader } from '../src/framing.js'
 import { MESSAGE_TYPE } from '../src/message-types.js'
 import { createNodePool } from '../src/pool.js'
@@ -79,7 +79,9 @@ describe('createNodePool', () => {
 
   afterEach(() => {
     for (const s of servers) {
-      try { s.close() } catch {}
+      try {
+        s.close()
+      } catch {}
     }
     servers = []
   })
@@ -180,10 +182,7 @@ describe('createNodePool', () => {
     //
     // Simplest: use one working server, but first try with an IP that fails fast.
     // On Linux, connecting to 0.0.0.0 should fail immediately.
-    const pool = createNodePool(
-      ['0.0.0.0', '127.0.0.1'],
-      { port: working.port, timeoutMs: 2000 },
-    )
+    const pool = createNodePool(['0.0.0.0', '127.0.0.1'], { port: working.port, timeoutMs: 2000 })
 
     const result = await pool.request(MESSAGE_TYPE.REQUEST_ENTITY)
     expect(result).toEqual([])
@@ -192,10 +191,7 @@ describe('createNodePool', () => {
 
   test('throws when all peers fail', async () => {
     // Port 1 should be refused immediately on localhost
-    const pool = createNodePool(
-      ['127.0.0.1'],
-      { port: 1, maxRetries: 0, timeoutMs: 500 },
-    )
+    const pool = createNodePool(['127.0.0.1'], { port: 1, maxRetries: 0, timeoutMs: 500 })
 
     await expect(pool.request(MESSAGE_TYPE.REQUEST_ENTITY)).rejects.toThrow()
     pool.close()
@@ -203,10 +199,11 @@ describe('createNodePool', () => {
 
   test('respects maxRetries option', async () => {
     // All peers on port 1 (refused). maxRetries=1 means 2 total attempts.
-    const pool = createNodePool(
-      ['127.0.0.1', 'localhost'],
-      { port: 1, maxRetries: 1, timeoutMs: 500 },
-    )
+    const pool = createNodePool(['127.0.0.1', 'localhost'], {
+      port: 1,
+      maxRetries: 1,
+      timeoutMs: 500,
+    })
 
     await expect(pool.request(MESSAGE_TYPE.REQUEST_ENTITY)).rejects.toThrow()
     pool.close()

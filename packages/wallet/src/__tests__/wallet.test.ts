@@ -2,6 +2,7 @@ import { describe, expect, test } from 'bun:test'
 import { deriveIdentityFromSeed } from '@qubic.org/crypto'
 import { verifyTransactionSignature } from '@qubic.org/tx'
 import type { Seed } from '@qubic.org/types'
+import { InvalidSeedError } from '@qubic.org/types'
 import { createWallet } from '../wallet.js'
 
 const SEED = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' as Seed
@@ -85,5 +86,25 @@ describe('createWallet', () => {
     const a = await wallet.buildTransaction(params)
     const b = await wallet.buildTransaction(params)
     expect(a.hash).toBe(b.hash)
+  })
+
+  test('throws InvalidSeedError for too-short seed', () => {
+    expect(() => createWallet('a'.repeat(54) as Seed)).toThrow(InvalidSeedError)
+  })
+
+  test('throws InvalidSeedError for too-long seed', () => {
+    expect(() => createWallet('a'.repeat(56) as Seed)).toThrow(InvalidSeedError)
+  })
+
+  test('throws InvalidSeedError for uppercase seed', () => {
+    expect(() => createWallet('A'.repeat(55) as Seed)).toThrow(InvalidSeedError)
+  })
+
+  test('throws InvalidSeedError for numeric seed', () => {
+    expect(() => createWallet('1'.repeat(55) as Seed)).toThrow(InvalidSeedError)
+  })
+
+  test('throws InvalidSeedError for empty string', () => {
+    expect(() => createWallet('' as Seed)).toThrow(InvalidSeedError)
   })
 })

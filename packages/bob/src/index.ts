@@ -37,6 +37,7 @@ export type {
   BobTickNotification,
   BobTickTransaction,
   BobTransaction,
+  BobTransactionReceipt,
   BobTransferEvent,
   BobTransferFilter,
 } from './types.js'

@@ -245,6 +245,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/ipos/{contractIndex}/bids": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                contractIndex: number;
+            };
+            cookie?: never;
+        };
+        /**
+         * Get Contract IPO Bids
+         * @description Returns the bid information for a given IPO active in the current epoch.
+         */
+        get: operations["QubicLiveService_GetContractIpoBids"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/ipos/active": {
         parameters: {
             query?: never;
@@ -438,6 +460,9 @@ export interface components {
             transactionId?: string;
         };
         /** @description GetActiveIposResponse */
+        GetContractIpoBidsResponse: {
+            bidData?: components["schemas"]["IpoBidData"];
+        };
         GetActiveIposResponse: {
             ipos?: components["schemas"]["Ipo"][];
         };
@@ -454,6 +479,20 @@ export interface components {
             tickInfo?: components["schemas"]["TickInfo"];
         };
         /** @description IPO */
+        IpoBid: {
+            identity?: string;
+            amount?: string;
+        };
+        /** @description IpoBidData */
+        IpoBidData: {
+            /** Format: uint32 */
+            contractIndex?: number;
+            /** Format: uint32 */
+            tickNumber?: number;
+            bids?: {
+                [key: string]: components["schemas"]["IpoBid"];
+            };
+        };
         Ipo: {
             /**
              * Format: uint32
@@ -861,6 +900,28 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["BroadcastTransactionResponse"];
+                };
+            };
+        };
+    };
+    QubicLiveService_GetContractIpoBids: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                contractIndex: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetContractIpoBidsResponse"];
                 };
             };
         };

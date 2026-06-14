@@ -31,6 +31,7 @@ describe('createBobClient', () => {
     expect(typeof client.rpc.getCurrentEpoch).toBe('function')
     expect(typeof client.rpc.getTickByNumber).toBe('function')
     expect(typeof client.rpc.broadcastTransaction).toBe('function')
+    expect(typeof client.rpc.getTransactionReceipt).toBe('function')
   })
 
   test('subscription sub-client has expected methods and connectionStatus', () => {

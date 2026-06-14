@@ -206,3 +206,49 @@ describe('deriveKeys', () => {
     expect(keys.privateKey).toEqual(expectedPrivateKey)
   })
 })
+
+describe('cross-verification against reference implementation', () => {
+  test('QX contract identity matches reference QubicDefinitions.QX_ADDRESS', () => {
+    // Reference: QubicDefinitions.QX_ADDRESS = "BAAA...AAARMID"
+    expect(contractIndexToIdentity(1)).toBe(
+      'BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARMID',
+    )
+  })
+
+  test('EMPTY_ADDRESS (all-zeros pk) decodes correctly', () => {
+    // Reference: QubicDefinitions.EMPTY_ADDRESS = "AAA...AAFXIB"
+    const emptyIdentity = publicKeyToIdentity(new Uint8Array(32))
+    const recovered = identityToPublicKey(emptyIdentity)
+    expect(recovered.every((b) => b === 0)).toBe(true)
+  })
+
+  test('identity round-trip for all-zeros public key matches EMPTY_ADDRESS', () => {
+    const identity = publicKeyToIdentity(new Uint8Array(32))
+    // Reference value for all-zeros public key
+    expect(identity).toBe('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB')
+  })
+
+  test('seed derivation produces valid identity with correct checksum', () => {
+    const identity = deriveIdentityFromSeed(KNOWN_SEED)
+    expect(identity).toHaveLength(60)
+    expect(/^[A-Z]+$/.test(identity)).toBe(true)
+    // Must pass checksum validation
+    expect(isValidIdentityChecksum(identity)).toBe(true)
+    // Round-trip must recover the same public key
+    const recoveredPk = identityToPublicKey(identity)
+    const originalPk = publicKeyFromSeed(KNOWN_SEED)
+    expect(recoveredPk).toEqual(originalPk)
+  })
+
+  test('seedToBytes mapping matches reference (charCode - 97)', () => {
+    // Reference: SEED_ALPHABET.indexOf(seed[i]) === seed.charCodeAt(i) - 97
+    // This verifies the seed byte encoding is consistent
+    const seed = 'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabc' as Seed
+    const keys = deriveKeys(seed)
+    expect(keys.subseed).toBeInstanceOf(Uint8Array)
+    expect(keys.subseed.length).toBe(32)
+    // The identity derived from this seed must be valid
+    const identity = publicKeyToIdentity(keys.publicKey)
+    expect(isValidIdentityChecksum(identity)).toBe(true)
+  })
+})

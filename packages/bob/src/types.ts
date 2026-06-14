@@ -1,7 +1,7 @@
 import type { Base64, Identity, LogType, TxHash } from '@qubic.org/types'
 
 export interface BobLogFilter {
-  contractIndex?: number
+  scIndex?: number
   logType?: LogType
   identity?: Identity
   fromTick?: number
@@ -105,9 +105,23 @@ export interface BobRestLogEvent {
   message: unknown
 }
 
+/** Transaction receipt as returned by qubic_getTransactionReceipt. */
+export interface BobTransactionReceipt {
+  hash: TxHash
+  from: Identity
+  to: Identity
+  amount: bigint
+  tick: number
+  inputType: number
+  inputSize: number
+  inputData: string
+  /** Logs emitted by the transaction (present when the server returns them). */
+  logs?: BobRestLogEvent[]
+}
+
 /** Filter for qubic_findLogIds. */
 export interface BobFindLogFilter {
-  contractIndex: number
+  scIndex: number
   logType: number
   fromTick: number
   toTick: number

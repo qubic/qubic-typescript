@@ -61,7 +61,7 @@ export function eventFilter(): EventFilterBuilder {
     toBobFilter(): BobLogFilter {
       const f: BobLogFilter = {}
       if (state.identity !== undefined) f.identity = state.identity
-      if (state.contractIndex !== undefined) f.contractIndex = state.contractIndex
+      if (state.contractIndex !== undefined) f.scIndex = state.contractIndex
       // Bob API limitation: logType is a single value, not an array.
       // Only the first requested type is sent; remaining types are
       // dropped and must be handled by client-side filtering.

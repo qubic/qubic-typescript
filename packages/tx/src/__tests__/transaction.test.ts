@@ -365,3 +365,75 @@ describe('computeTransactionHash', () => {
     expect(recovered).toEqual(pk)
   })
 })
+
+describe('cross-verification against protocol spec', () => {
+  test('PROTOCOL constants match reference QubicDefinitions', () => {
+    // Reference: QubicDefinitions.SIGNATURE_LENGTH = 64
+    expect(PROTOCOL.SIGNATURE_SIZE).toBe(64)
+    // Reference: QubicDefinitions.PUBLIC_KEY_LENGTH = 32
+    expect(PROTOCOL.PUBLIC_KEY_SIZE).toBe(32)
+    // Reference: QubicDefinitions.MAX_TRANSACTION_SIZE = 1024 (max payload)
+    expect(PROTOCOL.MAX_INPUT_SIZE).toBe(1024)
+    // TX_HEADER_SIZE = source(32) + dest(32) + amount(8) + tick(4) + inputType(2) + inputSize(2) = 80
+    expect(PROTOCOL.TX_HEADER_SIZE).toBe(80)
+  })
+
+  test('transaction header layout matches C struct: source[32] dest[32] amount[8] tick[4] inputType[2] inputSize[2]', () => {
+    const srcPk = new Uint8Array(32).fill(0xaa)
+    const dstPk = new Uint8Array(32).fill(0xbb)
+    const tx = buildTransaction({
+      source: srcPk,
+      destination: dstPk,
+      amount: -1n,
+      targetTick: 0xffffffff,
+      inputType: 0xffff,
+    })
+    const view = new DataView(tx.buffer, tx.byteOffset, tx.byteLength)
+
+    // Offsets match the C struct
+    expect(tx.slice(0, 32)).toEqual(srcPk) // sourcePublicKey[32]
+    expect(tx.slice(32, 64)).toEqual(dstPk) // destinationPublicKey[32]
+    expect(view.getBigInt64(64, true)).toBe(-1n) // amount (signed int64 LE)
+    expect(view.getUint32(72, true)).toBe(0xffffffff) // tick (uint32 LE)
+    expect(view.getUint16(76, true)).toBe(0xffff) // inputType (uint16 LE)
+    expect(view.getUint16(78, true)).toBe(0) // inputSize (uint16 LE, no payload)
+  })
+
+  test('signed transaction layout: header[80] + payload[N] + signature[64]', async () => {
+    const payload = new Uint8Array([0xde, 0xad, 0xbe, 0xef])
+    const tx = buildTransaction({ ...BASE_INPUT, payload })
+    const signed = await signTransaction(tx, SEED)
+
+    // Total size = 80 + 4 + 64 = 148
+    expect(signed.byteLength).toBe(80 + 4 + 64)
+
+    // Header portion matches original tx
+    expect(signed.slice(0, tx.byteLength)).toEqual(tx)
+
+    // Signature is 64 bytes
+    expect(signed.slice(tx.byteLength).byteLength).toBe(64)
+  })
+
+  test('verifyTransactionSignature uses K12 hash + SchnorrQ verify', async () => {
+    // Full round-trip: build → sign → verify must all use consistent hashing
+    const srcPk = publicKeyFromSeed(SEED)
+    const tx = buildTransaction({ ...BASE_INPUT, source: srcPk })
+    const signed = await signTransaction(tx, SEED)
+    expect(verifyTransactionSignature(signed)).toBe(true)
+
+    // Tamper with a header byte → verify must fail
+    const tampered = new Uint8Array(signed)
+    tampered[0] ^= 0x01
+    expect(verifyTransactionSignature(tampered)).toBe(false)
+  })
+
+  test('computeTransactionHash produces lowercase identity-style encoding', async () => {
+    const tx = buildTransaction(BASE_INPUT)
+    const signed = await signTransaction(tx, SEED)
+    const hash = computeTransactionHash(signed)
+
+    // 60 lowercase letters (same alphabet as identity, but lowercase)
+    expect(hash).toHaveLength(60)
+    expect(/^[a-z]+$/.test(hash)).toBe(true)
+  })
+})

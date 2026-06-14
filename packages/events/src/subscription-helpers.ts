@@ -14,7 +14,7 @@ function toBobFilter(filter?: EventFilter) {
   if (!filter) return undefined
   const f: Parameters<BobSubscriptionClient['subscribeLogs']>[0] = {}
   if (filter.identity !== undefined) f.identity = filter.identity
-  if (filter.contractIndex !== undefined) f.contractIndex = filter.contractIndex
+  if (filter.contractIndex !== undefined) f.scIndex = filter.contractIndex
   const lt = filterToLogType(filter)
   if (lt !== undefined) f.logType = lt
   if (filter.fromTick !== undefined) f.fromTick = filter.fromTick

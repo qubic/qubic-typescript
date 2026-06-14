@@ -15,6 +15,7 @@ import type {
   BobRpcEpochInfo,
   BobTickLogRange,
   BobTransaction,
+  BobTransactionReceipt,
   BobTransferEvent,
   BobTransferFilter,
 } from './types.js'
@@ -56,11 +57,14 @@ export interface BobRpcClient {
   ): Promise<Result<BobTransaction, BobRpcError>>
   /** Calls a smart contract read-only function. */
   querySmartContract(
-    contractIndex: number,
-    funcNumber: number,
-    data: Base64,
+    params: { nonce: number; scIndex: number; funcNumber: number; data: string },
     options?: { signal?: AbortSignal },
   ): Promise<Result<Base64, BobRpcError>>
+  /** Returns a transaction receipt including logs emitted by the transaction. */
+  getTransactionReceipt(
+    hash: TxHash,
+    options?: { signal?: AbortSignal },
+  ): Promise<Result<BobTransactionReceipt, BobRpcError>>
   /** Broadcasts a signed transaction; returns the transaction hash. */
   broadcastTransaction(
     signedTxHex: string,
@@ -276,12 +280,54 @@ export function createBobRpcClient(options: BobRpcClientOptions): BobRpcClient {
       return call<BobTransaction>('qubic_getTransactionByHash', [hash], options?.signal)
     },
 
-    querySmartContract(contractIndex, funcNumber, data, options) {
+    querySmartContract(params, options) {
       return call<Base64>(
         'qubic_querySmartContract',
-        [contractIndex, funcNumber, data],
+        [params],
         options?.signal,
       )
+    },
+
+    async getTransactionReceipt(hash, options) {
+      type Raw = {
+        hash: string
+        from: string
+        to: string
+        amount: number | string
+        tick: number
+        inputType: number
+        inputSize: number
+        inputData: string
+        logs?: Array<{
+          logId: number | string
+          tick: number
+          epoch: number
+          scIndex: number
+          logType: number
+          message: unknown
+        }>
+      }
+      const r = await call<Raw>('qubic_getTransactionReceipt', [hash], options?.signal)
+      if (!r.ok) return r
+      const v = r.value
+      return ok({
+        hash: v.hash as TxHash,
+        from: v.from as Identity,
+        to: v.to as Identity,
+        amount: BigInt(v.amount),
+        tick: v.tick,
+        inputType: v.inputType,
+        inputSize: v.inputSize,
+        inputData: v.inputData,
+        ...(v.logs
+          ? {
+              logs: v.logs.map((e) => ({
+                ...e,
+                logId: BigInt(e.logId),
+              })) as BobRestLogEvent[],
+            }
+          : {}),
+      } as BobTransactionReceipt)
     },
 
     broadcastTransaction(signedTxHex, options) {

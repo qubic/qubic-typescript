@@ -12,7 +12,7 @@ function k12Hash64(data: Uint8Array): Uint8Array {
   return k12(data, 64)
 }
 
-function bytesToBigIntBE(bytes: Uint8Array): bigint {
+function bytesToBigIntLE(bytes: Uint8Array): bigint {
   let res = 0n
   for (let i = bytes.length - 1; i >= 0; i--) {
     res = (res << 8n) | BigInt(bytes[i] as number)
@@ -51,7 +51,7 @@ export function sign(
   const tempHash = k12Hash64(temp)
 
   const rScalarBytes = tempHash.slice(0, 32)
-  const rValue = bytesToBigIntBE(rScalarBytes) % ORDER
+  const rValue = bytesToBigIntLE(rScalarBytes) % ORDER
   const pointR = scalarBaseMult(rScalarBytes)
   const pointREncoding = pointMarshal(pointR)
 
@@ -61,8 +61,8 @@ export function sign(
   finalTemp.set(messageDigest, 64)
   const finalHash = k12Hash64(finalTemp)
 
-  const kValue = bytesToBigIntBE(finalHash.slice(0, 32)) % ORDER
-  const aValue = bytesToBigIntBE(subSeedHash.slice(0, 32)) % ORDER
+  const kValue = bytesToBigIntLE(finalHash.slice(0, 32)) % ORDER
+  const aValue = bytesToBigIntLE(subSeedHash.slice(0, 32)) % ORDER
 
   let sValue = (rValue - ((kValue * aValue) % ORDER)) % ORDER
   sValue += ORDER & (sValue >> 255n)
@@ -93,7 +93,7 @@ export function verify(
 
   const pointREncoding = signature.slice(0, 32)
   const sBytes = signature.slice(32, 64)
-  const sValue = bytesToBigIntBE(sBytes)
+  const sValue = bytesToBigIntLE(sBytes)
   // Reject non-canonical scalars: S must be strictly less than the curve order.
   // Accepting S in [r, 2^246) would allow a second valid signature S' = S + r for
   // the same message, producing a different tx hash and bypassing dedup.

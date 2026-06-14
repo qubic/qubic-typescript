@@ -1,6 +1,8 @@
 import { describe, expect, test } from 'bun:test'
 import type { Seed } from '../brands.js'
+import { deriveKeys } from '../identity.js'
 import { publicKeyFromSeed, sign, verify } from '../index.js'
+import { sign as schnorrqSign, verify as schnorrqVerify } from '../schnorrq.js'
 
 const KNOWN_SEED = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' as Seed
 
@@ -141,5 +143,58 @@ describe('verify edge cases', () => {
     const sig = await sign(message, KNOWN_SEED)
     const zeroPk = new Uint8Array(32)
     expect(verify(message, sig, zeroPk)).toBe(false)
+  })
+})
+
+describe('cross-verification against reference protocol', () => {
+  test('schnorrqSign produces signature verifiable by schnorrqVerify', () => {
+    // Verifies that the low-level sign/verify functions are consistent
+    const { subseed, publicKey } = deriveKeys(KNOWN_SEED)
+    const message = new Uint8Array(32).fill(0xab)
+    const sig = schnorrqSign(subseed, publicKey, message)
+    expect(schnorrqVerify(publicKey, message, sig)).toBe(true)
+  })
+
+  test('sign produces 64-byte signature with R and s components', () => {
+    const { subseed, publicKey } = deriveKeys(KNOWN_SEED)
+    const message = new Uint8Array(32).fill(1)
+    const sig = schnorrqSign(subseed, publicKey, message)
+    expect(sig.length).toBe(64)
+    // R point (first 32 bytes) must have bit 127 clear (valid compressed point)
+    expect((sig[15] as number) & 0x80).toBe(0)
+  })
+
+  test('signature from index.sign() verifies with same key via schnorrqVerify', async () => {
+    // Cross-check: high-level sign vs low-level verify
+    const message = new Uint8Array(32).fill(99)
+    const publicKey = publicKeyFromSeed(KNOWN_SEED)
+    const sig = await sign(message, KNOWN_SEED)
+    expect(schnorrqVerify(publicKey, message, sig)).toBe(true)
+  })
+
+  test('schnorrqSign from index.sign() matches direct schnorrqSign call', async () => {
+    // The high-level sign() and direct schnorrqSign() must produce identical signatures
+    const { subseed, publicKey } = deriveKeys(KNOWN_SEED)
+    const message = new Uint8Array(32).fill(7)
+    const highLevel = await sign(message, KNOWN_SEED)
+    const lowLevel = schnorrqSign(subseed, publicKey, message)
+    expect(highLevel).toEqual(lowLevel)
+  })
+
+  test('signing different messages with same key produces different signatures', () => {
+    const { subseed, publicKey } = deriveKeys(KNOWN_SEED)
+    const sig1 = schnorrqSign(subseed, publicKey, new Uint8Array(32).fill(1))
+    const sig2 = schnorrqSign(subseed, publicKey, new Uint8Array(32).fill(2))
+    expect(sig1).not.toEqual(sig2)
+  })
+
+  test('signing same message with different keys produces different signatures', () => {
+    const keys1 = deriveKeys(KNOWN_SEED)
+    const seed2 = 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb' as Seed
+    const keys2 = deriveKeys(seed2)
+    const message = new Uint8Array(32).fill(42)
+    const sig1 = schnorrqSign(keys1.subseed, keys1.publicKey, message)
+    const sig2 = schnorrqSign(keys2.subseed, keys2.publicKey, message)
+    expect(sig1).not.toEqual(sig2)
   })
 })

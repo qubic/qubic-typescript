@@ -672,7 +672,7 @@ describe('eventFilter', () => {
     expect(a).not.toBe(b)
   })
 
-  test('toBobFilter includes identity, contractIndex, fromTick, toTick', () => {
+  test('toBobFilter includes identity, scIndex, fromTick, toTick', () => {
     const id = 'CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC' as Identity
     const bobFilter = eventFilter()
       .forIdentity(id)
@@ -682,7 +682,7 @@ describe('eventFilter', () => {
       .toBobFilter()
 
     expect(bobFilter.identity).toBe(id)
-    expect(bobFilter.contractIndex).toBe(5)
+    expect(bobFilter.scIndex).toBe(5)
     expect(bobFilter.fromTick).toBe(100)
     expect(bobFilter.toTick).toBe(200)
   })

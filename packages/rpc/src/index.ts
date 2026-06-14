@@ -21,6 +21,8 @@ export type {
   AssetOwnership,
   AssetPossession,
   Ipo,
+  IpoBid,
+  IpoBidData,
 } from './live-client.js'
 export { createQueryClient } from './query-client.js'
 export type {

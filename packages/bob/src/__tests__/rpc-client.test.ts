@@ -122,10 +122,10 @@ describe('createBobRpcClient', () => {
         })
       },
     })
-    await client.getLogs({ contractIndex: 1, fromTick: 100 })
+    await client.getLogs({ scIndex: 1, fromTick: 100 })
     const body = capturedBody as { method: string; params: unknown[] }
     expect(body.method).toBe('qubic_getLogs')
-    expect(body.params[0]).toEqual({ contractIndex: 1, fromTick: 100 })
+    expect(body.params[0]).toEqual({ scIndex: 1, fromTick: 100 })
   })
 
   test('AbortSignal cancels request', async () => {
@@ -351,15 +351,30 @@ describe('createBobRpcClient - getTransactionByHash', () => {
 })
 
 describe('createBobRpcClient - querySmartContract', () => {
-  test('returns base64 result', async () => {
+  test('querySmartContract passes object params with nonce', async () => {
+    let capturedBody: unknown
     const client = createBobRpcClient({
       endpoint: ENDPOINT,
       retries: 0,
-      fetch: mockFetch(rpcResult('AQIDBA==')),
+      fetch: async (_url, init) => {
+        capturedBody = JSON.parse(init?.body as string)
+        return new Response(JSON.stringify(rpcResult('AQIDBA==')), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        })
+      },
     })
-    const result = await client.querySmartContract(1, 2, 'AAAA' as never)
+    const result = await client.querySmartContract({
+      nonce: 42,
+      scIndex: 1,
+      funcNumber: 2,
+      data: 'AAAA',
+    })
     expect(result.ok).toBe(true)
     if (result.ok) expect(result.value).toBe('AQIDBA==')
+    const body = capturedBody as { method: string; params: unknown[] }
+    expect(body.method).toBe('qubic_querySmartContract')
+    expect(body.params).toEqual([{ nonce: 42, scIndex: 1, funcNumber: 2, data: 'AAAA' }])
   })
 })
 
@@ -500,7 +515,7 @@ describe('createBobRpcClient - findLogIds', () => {
       fetch: mockFetch(rpcResult([1, 2, '3'])),
     })
     const result = await client.findLogIds({
-      contractIndex: 1,
+      scIndex: 1,
       logType: 0,
       fromTick: 100,
       toTick: 200,
@@ -743,6 +758,34 @@ describe('createBobRpcClient - getTickByNumber', () => {
     await client.getTickByNumber(456, undefined)
     const body = capturedBody as { params: unknown[] }
     expect(body.params).toEqual(['456', false])
+  })
+})
+
+describe('createBobRpcClient - getTransactionReceipt', () => {
+  test('returns receipt with logs and converts logId/bigint', async () => {
+    const receipt = {
+      hash: 'abc',
+      from: 'FROMID',
+      to: 'TOID',
+      amount: 100,
+      tick: 5000,
+      inputType: 0,
+      inputSize: 0,
+      inputData: '',
+      logs: [{ logId: '77', tick: 5000, epoch: 150, scIndex: 1, logType: 0, message: {} }],
+    }
+    const client = createBobRpcClient({
+      endpoint: ENDPOINT,
+      retries: 0,
+      fetch: mockFetch(rpcResult(receipt)),
+    })
+    const result = await client.getTransactionReceipt('abc' as never)
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      expect(result.value.hash).toBe('abc')
+      expect(result.value.logs).toHaveLength(1)
+      expect(result.value.logs![0].logId).toBe(77n)
+    }
   })
 })
 

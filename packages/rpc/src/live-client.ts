@@ -24,6 +24,8 @@ export type AssetIssuance = components['schemas']['AssetIssuance']
 export type AssetOwnership = components['schemas']['AssetOwnership']
 export type AssetPossession = components['schemas']['AssetPossession']
 export type Ipo = components['schemas']['Ipo']
+export type IpoBid = components['schemas']['IpoBid']
+export type IpoBidData = components['schemas']['IpoBidData']
 
 /** Mapped balance type with numeric string fields converted to bigint. */
 export interface QubicBalance {
@@ -273,6 +275,26 @@ export function createLiveClient(options: LiveClientOptions = {}) {
       const r = await unwrap(client.GET('/ipos/active', { ...s(opts) }), '/ipos/active')
       if (!r.ok) return r
       return ok(r.value.ipos ?? [])
+    },
+
+    /** Returns bid information for a given IPO active in the current epoch. */
+    async getContractIpoBids(
+      contractIndex: number,
+      opts?: Opts,
+    ): Promise<Result<IpoBidData, QubicRpcError>> {
+      const r = await unwrap(
+        client.GET('/ipos/{contractIndex}/bids', {
+          params: { path: { contractIndex } },
+          ...s(opts),
+        }),
+        `/ipos/${contractIndex}/bids`,
+      )
+      if (!r.ok) return r
+      if (r.value.bidData == null)
+        return err(
+          new QubicRpcError(-2, `/ipos/${contractIndex}/bids`, 'missing bidData in response'),
+        )
+      return ok(r.value.bidData as IpoBidData)
     },
 
     /**

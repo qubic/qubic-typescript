@@ -71,6 +71,12 @@
       "linter": {
         "enabled": false
       }
+    },
+    {
+      "include": ["**/contracts/src/__tests__/contracts.test.ts"],
+      "formatter": {
+        "enabled": false
+      }
     }
   ],
   "files": {

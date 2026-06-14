@@ -309,9 +309,7 @@ describe('qx struct payload encoding', () => {
   })
 
   test('buildQxIssueAssetInput encodes fields correctly', async () => {
-    const { buildQxIssueAssetInput } = (await getContractModule('qx.js')) as typeof import(
-      '../__generated__/qx.js',
-    )
+    const { buildQxIssueAssetInput } = (await getContractModule('qx.js')) as typeof import('../__generated__/qx.js')
     const call = buildQxIssueAssetInput({
       assetName: 0xabcdn,
       numberOfShares: 999n,
@@ -330,9 +328,7 @@ describe('qx struct payload encoding', () => {
   })
 
   test('decodeQxIssueAssetOutput decodes issuedNumberOfShares', async () => {
-    const { decodeQxIssueAssetOutput } = (await getContractModule('qx.js')) as typeof import(
-      '../__generated__/qx.js',
-    )
+    const { decodeQxIssueAssetOutput } = (await getContractModule('qx.js')) as typeof import('../__generated__/qx.js')
     const data = new Uint8Array(8)
     new DataView(data.buffer).setBigInt64(0, 5000n, true)
     const output = decodeQxIssueAssetOutput(data)
@@ -403,17 +399,13 @@ describe('qswap struct payload encoding', () => {
     )) as typeof import('../__generated__/qswap.js')
     // qswapFees is an async function, but the namespace should have Fees
     // Test the namespace
-    const { qswap } = (await getContractModule('qswap.js')) as typeof import(
-      '../__generated__/qswap.js',
-    )
+    const { qswap } = (await getContractModule('qswap.js')) as typeof import('../__generated__/qswap.js')
     expect(qswap.contractIndex).toBe(QSWAP_CONTRACT_INDEX)
     expect(typeof qswapFees).toBe('function')
   })
 
   test('decodeQswapFeesOutput decodes multiple uint32 fields', async () => {
-    const { decodeQswapFeesOutput } = (await getContractModule('qswap.js')) as typeof import(
-      '../__generated__/qswap.js',
-    )
+    const { decodeQswapFeesOutput } = (await getContractModule('qswap.js')) as typeof import('../__generated__/qswap.js')
     // 8 fields * 4 bytes = 32 bytes
     const data = new Uint8Array(32)
     const view = new DataView(data.buffer)
@@ -793,9 +785,7 @@ describe('qbay contract payload encoding', () => {
   })
 
   test('decodeQbayBuyOutput decodes returnCode', async () => {
-    const { decodeQbayBuyOutput } = (await getContractModule('qbay.js')) as typeof import(
-      '../__generated__/qbay.js',
-    )
+    const { decodeQbayBuyOutput } = (await getContractModule('qbay.js')) as typeof import('../__generated__/qbay.js')
     const data = new Uint8Array(4)
     new DataView(data.buffer).setUint32(0, 0, true)
     expect(decodeQbayBuyOutput(data).returnCode).toBe(0)
@@ -819,9 +809,7 @@ describe('qvault contract payload encoding', () => {
   })
 
   test('decodeQVAULTStakeOutput decodes returnCode', async () => {
-    const { decodeQVAULTStakeOutput } = (await getContractModule('qvault.js')) as typeof import(
-      '../__generated__/qvault.js',
-    )
+    const { decodeQVAULTStakeOutput } = (await getContractModule('qvault.js')) as typeof import('../__generated__/qvault.js')
     const data = new Uint8Array(4)
     new DataView(data.buffer).setInt32(0, -1, true)
     expect(decodeQVAULTStakeOutput(data).returnCode).toBe(-1)
@@ -842,9 +830,7 @@ describe('qvault contract payload encoding', () => {
   })
 
   test('qVAULT namespace has many function references', async () => {
-    const { qVAULT } = (await getContractModule('qvault.js')) as typeof import(
-      '../__generated__/qvault.js',
-    )
+    const { qVAULT } = (await getContractModule('qvault.js')) as typeof import('../__generated__/qvault.js')
     expect(qVAULT.contractIndex).toBe(10)
     expect(typeof qVAULT.getData).toBe('function')
     expect(typeof qVAULT.getStakedAmountAndVotingPower).toBe('function')

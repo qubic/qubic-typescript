@@ -9,7 +9,7 @@ function makeMockLiveClient() {
   return {
     getTickInfo: async () => ({ tick: 0 }),
     getBalance: async () => ({ balance: '0' }),
-  } as any // LiveClient is a complex inferred type; cast for testing
+  } as unknown as ReturnType<typeof makeMockLiveClient>
 }
 
 // ── Tests ───────────────────────────────────────────────────────────────────
@@ -64,7 +64,9 @@ describe('useQubic', () => {
 
   test('returns archiveClient when provided', () => {
     const liveClient = makeMockLiveClient()
-    const archiveClient = { query: async () => ({}) } as any
+    const archiveClient = {
+      query: async () => ({}),
+    } as unknown as QubicContextValue['archiveClient']
     let captured: QubicContextValue | null = null
 
     function Consumer() {

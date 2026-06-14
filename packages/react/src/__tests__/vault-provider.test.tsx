@@ -12,7 +12,7 @@ function makeMockVaultData() {
     iv: '00112233',
     ct: 'encrypted_payload',
     version: 1,
-  } as any
+  } as unknown as EncryptedPayload
 }
 
 // ── Tests ───────────────────────────────────────────────────────────────────

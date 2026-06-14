@@ -74,3 +74,72 @@ describe('sign / verify', () => {
     expect(sig1).toEqual(sig2)
   })
 })
+
+describe('verify edge cases', () => {
+  test('wrong-length signature returns false', async () => {
+    const message = new Uint8Array(32).fill(1)
+    const publicKey = publicKeyFromSeed(KNOWN_SEED)
+
+    // Too short (32 bytes instead of 64) — throws RangeError from FourQ internals
+    const shortSig = new Uint8Array(32)
+    expect(() => verify(message, shortSig, publicKey)).toThrow()
+
+    // Too long (128 bytes instead of 64) — returns false (extra bytes ignored)
+    const longSig = new Uint8Array(128)
+    expect(verify(message, longSig, publicKey)).toBe(false)
+
+    // Empty signature — short input also throws
+    const emptySig = new Uint8Array(0)
+    expect(() => verify(message, emptySig, publicKey)).toThrow()
+  })
+
+  test('wrong-length publicKey returns false', async () => {
+    const message = new Uint8Array(32).fill(1)
+    const sig = await sign(message, KNOWN_SEED)
+
+    // Too short (16 bytes instead of 32)
+    const shortPk = new Uint8Array(16)
+    expect(verify(message, sig, shortPk)).toBe(false)
+
+    // Too long (64 bytes instead of 32)
+    const longPk = new Uint8Array(64)
+    expect(verify(message, sig, longPk)).toBe(false)
+
+    // Empty public key
+    const emptyPk = new Uint8Array(0)
+    expect(verify(message, sig, emptyPk)).toBe(false)
+  })
+
+  test('empty message can be signed and verified', async () => {
+    const emptyMessage = new Uint8Array(0)
+    const publicKey = publicKeyFromSeed(KNOWN_SEED)
+    const sig = await sign(emptyMessage, KNOWN_SEED)
+
+    expect(sig).toBeInstanceOf(Uint8Array)
+    expect(sig.length).toBe(64)
+    expect(verify(emptyMessage, sig, publicKey)).toBe(true)
+  })
+
+  test('empty message signature does not verify with different message', async () => {
+    const emptyMessage = new Uint8Array(0)
+    const nonEmptyMessage = new Uint8Array(32).fill(1)
+    const publicKey = publicKeyFromSeed(KNOWN_SEED)
+    const sig = await sign(emptyMessage, KNOWN_SEED)
+
+    expect(verify(nonEmptyMessage, sig, publicKey)).toBe(false)
+  })
+
+  test('all-zero signature returns false', async () => {
+    const message = new Uint8Array(32).fill(1)
+    const publicKey = publicKeyFromSeed(KNOWN_SEED)
+    const zeroSig = new Uint8Array(64)
+    expect(verify(message, zeroSig, publicKey)).toBe(false)
+  })
+
+  test('all-zero publicKey returns false for a real signature', async () => {
+    const message = new Uint8Array(32).fill(1)
+    const sig = await sign(message, KNOWN_SEED)
+    const zeroPk = new Uint8Array(32)
+    expect(verify(message, sig, zeroPk)).toBe(false)
+  })
+})

@@ -1,6 +1,11 @@
 import { describe, expect, test } from 'bun:test'
 import { isIdentity, isSeed, isTxHash, toBase64, toIdentity, toSeed, toTxHash } from '../brands.js'
-import { InvalidIdentityError, InvalidSeedError, InvalidTxHashError } from '../errors.js'
+import {
+  InvalidBase64Error,
+  InvalidIdentityError,
+  InvalidSeedError,
+  InvalidTxHashError,
+} from '../errors.js'
 
 const VALID_IDENTITY = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB'
 const VALID_SEED = 'a'.repeat(55)
@@ -81,6 +86,68 @@ describe('toBase64', () => {
 
   test('rejects invalid characters', () => {
     expect(() => toBase64('hello!')).toThrow()
+  })
+
+  // --- New padding edge case tests ---
+
+  test('accepts strings needing 0 padding chars (length divisible by 4, no padding)', () => {
+    // "sure" encodes to "c3VyZQ==" but "surem" -> "c3VyZW0=" ... 
+    // 3 bytes -> 4 base64 chars, no padding: e.g. btoa('abc') = 'YWJj'
+    expect(() => toBase64('YWJj')).not.toThrow() // btoa('abc') = 'YWJj', 0 pad chars
+    expect(toBase64('YWJj')).toBe('YWJj')
+  })
+
+  test('accepts strings needing 1 padding char', () => {
+    // btoa('ab') = 'YWI=' — 1 padding char
+    expect(() => toBase64('YWI=')).not.toThrow()
+    expect(toBase64('YWI=')).toBe('YWI=')
+  })
+
+  test('accepts strings needing 2 padding chars', () => {
+    // btoa('a') = 'YQ==' — 2 padding chars
+    expect(() => toBase64('YQ==')).not.toThrow()
+    expect(toBase64('YQ==')).toBe('YQ==')
+  })
+
+  test('accepts empty string as valid base64', () => {
+    // Empty string: length 0, 0 % 4 === 0, passes regex
+    expect(() => toBase64('')).not.toThrow()
+    expect(toBase64('')).toBe('')
+  })
+
+  test('rejects strings with wrong length (not multiple of 4)', () => {
+    expect(() => toBase64('YWJ')).toThrow(InvalidBase64Error)   // 3 chars
+    expect(() => toBase64('YW')).toThrow(InvalidBase64Error)     // 2 chars
+    expect(() => toBase64('Y')).toThrow(InvalidBase64Error)      // 1 char
+  })
+
+  test('rejects strings with padding in wrong position', () => {
+    expect(() => toBase64('=YWJ')).toThrow(InvalidBase64Error)
+    expect(() => toBase64('Y=WJ')).toThrow(InvalidBase64Error)
+  })
+
+  test('rejects strings with more than 2 padding chars', () => {
+    expect(() => toBase64('Y===')).toThrow(InvalidBase64Error)
+  })
+
+  test('accepts base64 with + and / characters', () => {
+    // btoa('i\xB7\xBB') = 'abc/' (conceptual) — test + and / in the alphabet
+    expect(() => toBase64('ab+/')).not.toThrow()
+    expect(() => toBase64('a/c=')).not.toThrow()
+  })
+
+  test('rejects base64url characters (- and _)', () => {
+    expect(() => toBase64('ab-_')).toThrow(InvalidBase64Error)
+  })
+
+  test('rejects whitespace in base64', () => {
+    expect(() => toBase64('YW Jj')).toThrow(InvalidBase64Error)
+    expect(() => toBase64('YWJj\n')).toThrow(InvalidBase64Error)
+  })
+
+  test('accepts longer valid base64 strings', () => {
+    // btoa('Hello, World!') = 'SGVsbG8sIFdvcmxkIQ=='
+    expect(() => toBase64('SGVsbG8sIFdvcmxkIQ==')).not.toThrow()
   })
 })
 

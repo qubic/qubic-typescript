@@ -30,9 +30,19 @@ const CONTRACT_META: {
   { name: 'random', module: 'random.js', index: 3, namespace: 'random' },
   { name: 'qutil', module: 'qutil.js', index: 4, namespace: 'qUtil' },
   { name: 'mylastmatch', module: 'mylastmatch.js', index: 5, namespace: 'myLastMatch' },
-  { name: 'generalquorumproposal', module: 'generalquorumproposal.js', index: 6, namespace: 'generalQuorumProposal' },
+  {
+    name: 'generalquorumproposal',
+    module: 'generalquorumproposal.js',
+    index: 6,
+    namespace: 'generalQuorumProposal',
+  },
   { name: 'supplywatcher', module: 'supplywatcher.js', index: 7, namespace: 'supplyWatcher' },
-  { name: 'computorcontrolledfund', module: 'computorcontrolledfund.js', index: 8, namespace: 'computorControlledFund' },
+  {
+    name: 'computorcontrolledfund',
+    module: 'computorcontrolledfund.js',
+    index: 8,
+    namespace: 'computorControlledFund',
+  },
   { name: 'qearn', module: 'qearn.js', index: 9, namespace: 'qearn' },
   { name: 'qvault', module: 'qvault.js', index: 10, namespace: 'qVAULT' },
   { name: 'msvault', module: 'msvault.js', index: 11, namespace: 'msVault' },
@@ -217,9 +227,7 @@ describe('parameterized: every contract has at least one builder function', () =
     if (meta.name === 'mylastmatch' || meta.name === 'supplywatcher') continue // empty contracts
     test(`${meta.name} exports a buildXxxInput function`, async () => {
       const mod = await getContractModule(meta.module)
-      const buildKeys = Object.keys(mod).filter(
-        (k) => k.startsWith('build') && k.endsWith('Input'),
-      )
+      const buildKeys = Object.keys(mod).filter((k) => k.startsWith('build') && k.endsWith('Input'))
       expect(buildKeys.length).toBeGreaterThan(0)
     })
   }
@@ -260,9 +268,7 @@ describe('parameterized: builder and decoder are functions', () => {
     test(`${meta.name} builder and decoder are callable functions`, async () => {
       const mod = await getContractModule(meta.module)
 
-      const buildKeys = Object.keys(mod).filter(
-        (k) => k.startsWith('build') && k.endsWith('Input'),
-      )
+      const buildKeys = Object.keys(mod).filter((k) => k.startsWith('build') && k.endsWith('Input'))
       const decodeKeys = Object.keys(mod).filter(
         (k) => k.startsWith('decode') && k.endsWith('Output'),
       )
@@ -289,7 +295,7 @@ describe('parameterized: builder and decoder are functions', () => {
 describe('qx struct payload encoding', () => {
   test('buildQxIssueAssetInput returns correct ContractCall', async () => {
     const { buildQxIssueAssetInput, QX_CONTRACT_INDEX, QX_ISSUE_ASSET_INPUT_TYPE } =
-      await getContractModule('qx.js') as typeof import('../__generated__/qx.js')
+      (await getContractModule('qx.js')) as typeof import('../__generated__/qx.js')
     const call = buildQxIssueAssetInput({
       assetName: 12345n,
       numberOfShares: 1_000_000n,
@@ -303,16 +309,18 @@ describe('qx struct payload encoding', () => {
   })
 
   test('buildQxIssueAssetInput encodes fields correctly', async () => {
-    const { buildQxIssueAssetInput } = await getContractModule('qx.js') as typeof import('../__generated__/qx.js')
+    const { buildQxIssueAssetInput } = (await getContractModule('qx.js')) as typeof import(
+      '../__generated__/qx.js',
+    )
     const call = buildQxIssueAssetInput({
-      assetName: 0xABCDn,
+      assetName: 0xabcdn,
       numberOfShares: 999n,
       unitOfMeasurement: 10n,
       numberOfDecimalPlaces: 2,
     })
     const view = new DataView(call.payload.buffer, call.payload.byteOffset)
     // assetName at offset 0, uint64 LE
-    expect(view.getBigUint64(0, true)).toBe(0xABCDn)
+    expect(view.getBigUint64(0, true)).toBe(0xabcdn)
     // numberOfShares at offset 8, sint64 LE
     expect(view.getBigInt64(8, true)).toBe(999n)
     // unitOfMeasurement at offset 16, uint64 LE
@@ -322,7 +330,9 @@ describe('qx struct payload encoding', () => {
   })
 
   test('decodeQxIssueAssetOutput decodes issuedNumberOfShares', async () => {
-    const { decodeQxIssueAssetOutput } = await getContractModule('qx.js') as typeof import('../__generated__/qx.js')
+    const { decodeQxIssueAssetOutput } = (await getContractModule('qx.js')) as typeof import(
+      '../__generated__/qx.js',
+    )
     const data = new Uint8Array(8)
     new DataView(data.buffer).setBigInt64(0, 5000n, true)
     const output = decodeQxIssueAssetOutput(data)
@@ -330,7 +340,9 @@ describe('qx struct payload encoding', () => {
   })
 
   test('buildQxTransferShareManagementRightsInput encodes struct field', async () => {
-    const { buildQxTransferShareManagementRightsInput } = await getContractModule('qx.js') as typeof import('../__generated__/qx.js')
+    const { buildQxTransferShareManagementRightsInput } = (await getContractModule(
+      'qx.js',
+    )) as typeof import('../__generated__/qx.js')
     const call = buildQxTransferShareManagementRightsInput({
       asset: { issuer: 'A'.repeat(55), assetName: 42n },
       numberOfShares: 100n,
@@ -349,7 +361,7 @@ describe('qx struct payload encoding', () => {
 describe('escrow struct payload encoding', () => {
   test('buildEscrowAcceptDealInput encodes sint64 index', async () => {
     const { buildEscrowAcceptDealInput, ESCROW_CONTRACT_INDEX, ESCROW_ACCEPT_DEAL_INPUT_TYPE } =
-      await getContractModule('escrow.js') as typeof import('../__generated__/escrow.js')
+      (await getContractModule('escrow.js')) as typeof import('../__generated__/escrow.js')
     const call = buildEscrowAcceptDealInput({ index: 42n })
     expect(call.contractIndex).toBe(ESCROW_CONTRACT_INDEX)
     expect(call.inputType).toBe(ESCROW_ACCEPT_DEAL_INPUT_TYPE)
@@ -359,8 +371,9 @@ describe('escrow struct payload encoding', () => {
   })
 
   test('decodeEscrowTransferShareManagementRightsOutput decodes transferredShares', async () => {
-    const { decodeEscrowTransferShareManagementRightsOutput } =
-      await getContractModule('escrow.js') as typeof import('../__generated__/escrow.js')
+    const { decodeEscrowTransferShareManagementRightsOutput } = (await getContractModule(
+      'escrow.js',
+    )) as typeof import('../__generated__/escrow.js')
     const data = new Uint8Array(8)
     new DataView(data.buffer).setBigInt64(0, 555n, true)
     const output = decodeEscrowTransferShareManagementRightsOutput(data)
@@ -375,7 +388,7 @@ describe('escrow struct payload encoding', () => {
 describe('qswap struct payload encoding', () => {
   test('buildQswapCreatePoolInput encodes id + uint64', async () => {
     const { buildQswapCreatePoolInput, QSWAP_CONTRACT_INDEX, QSWAP_CREATE_POOL_INPUT_TYPE } =
-      await getContractModule('qswap.js') as typeof import('../__generated__/qswap.js')
+      (await getContractModule('qswap.js')) as typeof import('../__generated__/qswap.js')
     const idToPk = (_id: string) => new Uint8Array(32)
     const call = buildQswapCreatePoolInput({ assetIssuer: 'X'.repeat(55), assetName: 7n }, idToPk)
     expect(call.contractIndex).toBe(QSWAP_CONTRACT_INDEX)
@@ -385,29 +398,33 @@ describe('qswap struct payload encoding', () => {
   })
 
   test('buildQswapFeesInput (no input) uses empty payload', async () => {
-    const { qswapFees, QSWAP_CONTRACT_INDEX } =
-      await getContractModule('qswap.js') as typeof import('../__generated__/qswap.js')
+    const { qswapFees, QSWAP_CONTRACT_INDEX } = (await getContractModule(
+      'qswap.js',
+    )) as typeof import('../__generated__/qswap.js')
     // qswapFees is an async function, but the namespace should have Fees
     // Test the namespace
-    const { qswap } = await getContractModule('qswap.js') as typeof import('../__generated__/qswap.js')
+    const { qswap } = (await getContractModule('qswap.js')) as typeof import(
+      '../__generated__/qswap.js',
+    )
     expect(qswap.contractIndex).toBe(QSWAP_CONTRACT_INDEX)
     expect(typeof qswapFees).toBe('function')
   })
 
   test('decodeQswapFeesOutput decodes multiple uint32 fields', async () => {
-    const { decodeQswapFeesOutput } =
-      await getContractModule('qswap.js') as typeof import('../__generated__/qswap.js')
+    const { decodeQswapFeesOutput } = (await getContractModule('qswap.js')) as typeof import(
+      '../__generated__/qswap.js',
+    )
     // 8 fields * 4 bytes = 32 bytes
     const data = new Uint8Array(32)
     const view = new DataView(data.buffer)
-    view.setUint32(0, 100, true)   // assetIssuanceFee
-    view.setUint32(4, 200, true)   // poolCreationFee
-    view.setUint32(8, 300, true)   // transferFee
-    view.setUint32(12, 400, true)  // swapFee
-    view.setUint32(16, 500, true)  // shareholderFee
-    view.setUint32(20, 600, true)  // investRewardsFee
-    view.setUint32(24, 700, true)  // qxFee
-    view.setUint32(28, 800, true)  // burnFee
+    view.setUint32(0, 100, true) // assetIssuanceFee
+    view.setUint32(4, 200, true) // poolCreationFee
+    view.setUint32(8, 300, true) // transferFee
+    view.setUint32(12, 400, true) // swapFee
+    view.setUint32(16, 500, true) // shareholderFee
+    view.setUint32(20, 600, true) // investRewardsFee
+    view.setUint32(24, 700, true) // qxFee
+    view.setUint32(28, 800, true) // burnFee
     const output = decodeQswapFeesOutput(data)
     expect(output.assetIssuanceFee).toBe(100)
     expect(output.poolCreationFee).toBe(200)
@@ -427,10 +444,10 @@ describe('qswap struct payload encoding', () => {
 describe('random contract payload encoding', () => {
   test('buildRandomBuyEntropyInput encodes uint8 + uint16 + id', async () => {
     const { buildRandomBuyEntropyInput, RANDOM_CONTRACT_INDEX, RANDOM_BUY_ENTROPY_INPUT_TYPE } =
-      await getContractModule('random.js') as typeof import('../__generated__/random.js')
+      (await getContractModule('random.js')) as typeof import('../__generated__/random.js')
     const idToPk = (_id: string) => {
       const pk = new Uint8Array(32)
-      pk[0] = 0xFF
+      pk[0] = 0xff
       return pk
     }
     const call = buildRandomBuyEntropyInput(
@@ -447,15 +464,16 @@ describe('random contract payload encoding', () => {
   })
 
   test('decodeRandomBuyEntropyOutput decodes 512-byte entropy', async () => {
-    const { decodeRandomBuyEntropyOutput } =
-      await getContractModule('random.js') as typeof import('../__generated__/random.js')
+    const { decodeRandomBuyEntropyOutput } = (await getContractModule(
+      'random.js',
+    )) as typeof import('../__generated__/random.js')
     const data = new Uint8Array(512)
-    data[0] = 0xAA
-    data[511] = 0xBB
+    data[0] = 0xaa
+    data[511] = 0xbb
     const output = decodeRandomBuyEntropyOutput(data)
     expect(output.entropy.byteLength).toBe(512)
-    expect(output.entropy[0]).toBe(0xAA)
-    expect(output.entropy[511]).toBe(0xBB)
+    expect(output.entropy[0]).toBe(0xaa)
+    expect(output.entropy[511]).toBe(0xbb)
   })
 })
 
@@ -465,8 +483,11 @@ describe('random contract payload encoding', () => {
 
 describe('nostromo contract payload encoding', () => {
   test('buildNostromoRegisterInTierInput encodes uint32', async () => {
-    const { buildNostromoRegisterInTierInput, NOSTROMO_CONTRACT_INDEX, NOSTROMO_REGISTER_IN_TIER_INPUT_TYPE } =
-      await getContractModule('nostromo.js') as typeof import('../__generated__/nostromo.js')
+    const {
+      buildNostromoRegisterInTierInput,
+      NOSTROMO_CONTRACT_INDEX,
+      NOSTROMO_REGISTER_IN_TIER_INPUT_TYPE,
+    } = (await getContractModule('nostromo.js')) as typeof import('../__generated__/nostromo.js')
     const call = buildNostromoRegisterInTierInput({ tierLevel: 3 })
     expect(call.contractIndex).toBe(NOSTROMO_CONTRACT_INDEX)
     expect(call.inputType).toBe(NOSTROMO_REGISTER_IN_TIER_INPUT_TYPE)
@@ -476,16 +497,20 @@ describe('nostromo contract payload encoding', () => {
   })
 
   test('decodeNostromoRegisterInTierOutput decodes tierLevel', async () => {
-    const { decodeNostromoRegisterInTierOutput } =
-      await getContractModule('nostromo.js') as typeof import('../__generated__/nostromo.js')
+    const { decodeNostromoRegisterInTierOutput } = (await getContractModule(
+      'nostromo.js',
+    )) as typeof import('../__generated__/nostromo.js')
     const data = new Uint8Array(4)
     new DataView(data.buffer).setUint32(0, 5, true)
     expect(decodeNostromoRegisterInTierOutput(data).tierLevel).toBe(5)
   })
 
   test('buildNostromoClaimTokenInput encodes uint64 + uint32', async () => {
-    const { buildNostromoClaimTokenInput, NOSTROMO_CONTRACT_INDEX, NOSTROMO_CLAIM_TOKEN_INPUT_TYPE } =
-      await getContractModule('nostromo.js') as typeof import('../__generated__/nostromo.js')
+    const {
+      buildNostromoClaimTokenInput,
+      NOSTROMO_CONTRACT_INDEX,
+      NOSTROMO_CLAIM_TOKEN_INPUT_TYPE,
+    } = (await getContractModule('nostromo.js')) as typeof import('../__generated__/nostromo.js')
     const call = buildNostromoClaimTokenInput({ amount: 1000n, indexOfFundraising: 7 })
     expect(call.contractIndex).toBe(NOSTROMO_CONTRACT_INDEX)
     expect(call.inputType).toBe(NOSTROMO_CLAIM_TOKEN_INPUT_TYPE)
@@ -741,8 +766,11 @@ describe('callContractFunction', () => {
 
 describe('qbay contract payload encoding', () => {
   test('buildQbaySettingCFBAndQubicPriceInput encodes two uint64 fields', async () => {
-    const { buildQbaySettingCFBAndQubicPriceInput, QBAY_CONTRACT_INDEX, QBAY_SETTING_CFB_AND_QUBIC_PRICE_INPUT_TYPE } =
-      await getContractModule('qbay.js') as typeof import('../__generated__/qbay.js')
+    const {
+      buildQbaySettingCFBAndQubicPriceInput,
+      QBAY_CONTRACT_INDEX,
+      QBAY_SETTING_CFB_AND_QUBIC_PRICE_INPUT_TYPE,
+    } = (await getContractModule('qbay.js')) as typeof import('../__generated__/qbay.js')
     const call = buildQbaySettingCFBAndQubicPriceInput({ CFBPrice: 100n, QubicPrice: 200n })
     expect(call.contractIndex).toBe(QBAY_CONTRACT_INDEX)
     expect(call.inputType).toBe(QBAY_SETTING_CFB_AND_QUBIC_PRICE_INPUT_TYPE)
@@ -754,7 +782,7 @@ describe('qbay contract payload encoding', () => {
 
   test('buildQbuyBuyInput encodes uint32 + uint8', async () => {
     const { buildQbayBuyInput, QBAY_CONTRACT_INDEX, QBAY_BUY_INPUT_TYPE } =
-      await getContractModule('qbay.js') as typeof import('../__generated__/qbay.js')
+      (await getContractModule('qbay.js')) as typeof import('../__generated__/qbay.js')
     const call = buildQbayBuyInput({ NFTid: 42, methodOfPayment: 1 })
     expect(call.contractIndex).toBe(QBAY_CONTRACT_INDEX)
     expect(call.inputType).toBe(QBAY_BUY_INPUT_TYPE)
@@ -765,8 +793,9 @@ describe('qbay contract payload encoding', () => {
   })
 
   test('decodeQbayBuyOutput decodes returnCode', async () => {
-    const { decodeQbayBuyOutput } =
-      await getContractModule('qbay.js') as typeof import('../__generated__/qbay.js')
+    const { decodeQbayBuyOutput } = (await getContractModule('qbay.js')) as typeof import(
+      '../__generated__/qbay.js',
+    )
     const data = new Uint8Array(4)
     new DataView(data.buffer).setUint32(0, 0, true)
     expect(decodeQbayBuyOutput(data).returnCode).toBe(0)
@@ -780,7 +809,7 @@ describe('qbay contract payload encoding', () => {
 describe('qvault contract payload encoding', () => {
   test('buildQVAULTStakeInput encodes uint32 amount', async () => {
     const { buildQVAULTStakeInput, QVAULT_CONTRACT_INDEX, QVAULT_STAKE_INPUT_TYPE } =
-      await getContractModule('qvault.js') as typeof import('../__generated__/qvault.js')
+      (await getContractModule('qvault.js')) as typeof import('../__generated__/qvault.js')
     const call = buildQVAULTStakeInput({ amount: 5000 })
     expect(call.contractIndex).toBe(QVAULT_CONTRACT_INDEX)
     expect(call.inputType).toBe(QVAULT_STAKE_INPUT_TYPE)
@@ -790,8 +819,9 @@ describe('qvault contract payload encoding', () => {
   })
 
   test('decodeQVAULTStakeOutput decodes returnCode', async () => {
-    const { decodeQVAULTStakeOutput } =
-      await getContractModule('qvault.js') as typeof import('../__generated__/qvault.js')
+    const { decodeQVAULTStakeOutput } = (await getContractModule('qvault.js')) as typeof import(
+      '../__generated__/qvault.js',
+    )
     const data = new Uint8Array(4)
     new DataView(data.buffer).setInt32(0, -1, true)
     expect(decodeQVAULTStakeOutput(data).returnCode).toBe(-1)
@@ -799,7 +829,7 @@ describe('qvault contract payload encoding', () => {
 
   test('buildQVAULTSubmitGPInput encodes 256-byte url array', async () => {
     const { buildQVAULTSubmitGPInput, QVAULT_CONTRACT_INDEX, QVAULT_SUBMIT_GP_INPUT_TYPE } =
-      await getContractModule('qvault.js') as typeof import('../__generated__/qvault.js')
+      (await getContractModule('qvault.js')) as typeof import('../__generated__/qvault.js')
     const url = new Array(256).fill(0) as number[]
     url[0] = 104 // 'h'
     url[1] = 116 // 't'
@@ -812,7 +842,9 @@ describe('qvault contract payload encoding', () => {
   })
 
   test('qVAULT namespace has many function references', async () => {
-    const { qVAULT } = await getContractModule('qvault.js') as typeof import('../__generated__/qvault.js')
+    const { qVAULT } = (await getContractModule('qvault.js')) as typeof import(
+      '../__generated__/qvault.js',
+    )
     expect(qVAULT.contractIndex).toBe(10)
     expect(typeof qVAULT.getData).toBe('function')
     expect(typeof qVAULT.getStakedAmountAndVotingPower).toBe('function')
@@ -865,10 +897,12 @@ describe('cross-contract consistency', () => {
       if (names.length > 1) {
         // These are the known duplicates
         const sorted = [...names].sort()
-        expect([
-          ['msvault', 'multisignvault'],
-          ['qip', 'qubicicoportal'],
-        ].some((pair) => pair[0] === sorted[0] && pair[1] === sorted[1])).toBe(true)
+        expect(
+          [
+            ['msvault', 'multisignvault'],
+            ['qip', 'qubicicoportal'],
+          ].some((pair) => pair[0] === sorted[0] && pair[1] === sorted[1]),
+        ).toBe(true)
       }
     }
   })
@@ -886,9 +920,7 @@ describe('cross-contract consistency', () => {
   test('all builder functions return objects with contractIndex matching module', async () => {
     for (const meta of CONTRACT_META) {
       const mod = await getContractModule(meta.module)
-      const buildKeys = Object.keys(mod).filter(
-        (k) => k.startsWith('build') && k.endsWith('Input'),
-      )
+      const buildKeys = Object.keys(mod).filter((k) => k.startsWith('build') && k.endsWith('Input'))
 
       for (const key of buildKeys) {
         const fn = mod[key] as ((...args: unknown[]) => unknown) | undefined

@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test'
-import { identityToPublicKey, publicKeyToIdentity } from '@qubic.org/crypto'
-import { PROTOCOL, toSeed } from '@qubic.org/types'
+import { identityToPublicKey, publicKeyFromSeed, publicKeyToIdentity } from '@qubic.org/crypto'
+import { PROTOCOL, toIdentity, toSeed } from '@qubic.org/types'
 import { InvalidTransactionError, PayloadTooLargeError, TickInThePastError } from '../errors.js'
 import {
   buildTransaction,
@@ -14,6 +14,10 @@ import {
 const SEED = toSeed('a'.repeat(55))
 const ZERO_PK = new Uint8Array(32)
 const DEST_PK = new Uint8Array(32).fill(1)
+
+// Valid 60-char uppercase identity derived from known public keys
+const SRC_IDENTITY = toIdentity(publicKeyToIdentity(new Uint8Array(32).fill(0xaa)))
+const DST_IDENTITY = toIdentity(publicKeyToIdentity(new Uint8Array(32).fill(0xbb)))
 
 const BASE_INPUT = {
   source: ZERO_PK,
@@ -88,6 +92,155 @@ describe('buildTransaction', () => {
   })
 })
 
+describe('buildTransaction - identity string inputs', () => {
+  test('accepts Identity strings for source and destination', () => {
+    const tx = buildTransaction({
+      source: SRC_IDENTITY,
+      destination: DST_IDENTITY,
+      amount: 500n,
+      targetTick: 2000,
+      inputType: 0,
+    })
+    expect(tx.byteLength).toBe(PROTOCOL.TX_HEADER_SIZE)
+    // Verify the decoded source matches the identity's public key
+    const decoded = decodeTransaction(tx)
+    expect(decoded.sourcePublicKey).toEqual(identityToPublicKey(SRC_IDENTITY))
+    expect(decoded.destinationPublicKey).toEqual(identityToPublicKey(DST_IDENTITY))
+    expect(decoded.amount).toBe(500n)
+    expect(decoded.targetTick).toBe(2000)
+  })
+
+  test('accepts mixed source=Identity and destination=Uint8Array', () => {
+    const tx = buildTransaction({
+      source: SRC_IDENTITY,
+      destination: DEST_PK,
+      amount: 10n,
+      targetTick: 3000,
+      inputType: 0,
+    })
+    const decoded = decodeTransaction(tx)
+    expect(decoded.sourcePublicKey).toEqual(identityToPublicKey(SRC_IDENTITY))
+    expect(decoded.destinationPublicKey).toEqual(DEST_PK)
+  })
+
+  test('accepts mixed source=Uint8Array and destination=Identity', () => {
+    const tx = buildTransaction({
+      source: ZERO_PK,
+      destination: DST_IDENTITY,
+      amount: 20n,
+      targetTick: 4000,
+      inputType: 0,
+    })
+    const decoded = decodeTransaction(tx)
+    expect(decoded.sourcePublicKey).toEqual(ZERO_PK)
+    expect(decoded.destinationPublicKey).toEqual(identityToPublicKey(DST_IDENTITY))
+  })
+
+  test('throws InvalidIdentityError for invalid source string', () => {
+    expect(() =>
+      buildTransaction({
+        source: 'NOT_A_VALID_IDENTITY',
+        destination: DEST_PK,
+        amount: 1n,
+        targetTick: 1000,
+        inputType: 0,
+      }),
+    ).toThrow()
+  })
+
+  test('throws InvalidIdentityError for invalid destination string', () => {
+    expect(() =>
+      buildTransaction({
+        source: ZERO_PK,
+        destination: 'INVALID_DEST',
+        amount: 1n,
+        targetTick: 1000,
+        inputType: 0,
+      }),
+    ).toThrow()
+  })
+
+  test('produces same bytes for equivalent Identity and Uint8Array source', () => {
+    const pk = identityToPublicKey(SRC_IDENTITY)
+    const txFromIdentity = buildTransaction({
+      source: SRC_IDENTITY,
+      destination: DEST_PK,
+      amount: 100n,
+      targetTick: 1000,
+      inputType: 0,
+    })
+    const txFromPk = buildTransaction({
+      source: pk,
+      destination: DEST_PK,
+      amount: 100n,
+      targetTick: 1000,
+      inputType: 0,
+    })
+    expect(txFromIdentity).toEqual(txFromPk)
+  })
+
+  test('produces same bytes for equivalent Identity and Uint8Array destination', () => {
+    const pk = identityToPublicKey(DST_IDENTITY)
+    const txFromIdentity = buildTransaction({
+      source: ZERO_PK,
+      destination: DST_IDENTITY,
+      amount: 100n,
+      targetTick: 1000,
+      inputType: 0,
+    })
+    const txFromPk = buildTransaction({
+      source: ZERO_PK,
+      destination: pk,
+      amount: 100n,
+      targetTick: 1000,
+      inputType: 0,
+    })
+    expect(txFromIdentity).toEqual(txFromPk)
+  })
+
+  test('sign and verify round-trip with identity string source', async () => {
+    const srcPk = publicKeyFromSeed(SEED)
+    const srcIdentity = toIdentity(publicKeyToIdentity(srcPk))
+    const tx = buildTransaction({
+      source: srcIdentity,
+      destination: DST_IDENTITY,
+      amount: 42n,
+      targetTick: 5000,
+      inputType: 0,
+    })
+    const signed = await signTransaction(tx, SEED)
+    expect(signed.byteLength).toBe(tx.byteLength + PROTOCOL.SIGNATURE_SIZE)
+    expect(verifyTransactionSignature(signed)).toBe(true)
+  })
+
+  test('PayloadTooLargeError still works with identity string source', () => {
+    const payload = new Uint8Array(PROTOCOL.MAX_INPUT_SIZE + 1)
+    expect(() =>
+      buildTransaction({
+        source: SRC_IDENTITY,
+        destination: DST_IDENTITY,
+        amount: 0n,
+        targetTick: 1000,
+        inputType: 1,
+        payload,
+      }),
+    ).toThrow(PayloadTooLargeError)
+  })
+
+  test('TickInThePastError still works with identity string source', () => {
+    expect(() =>
+      buildTransaction({
+        source: SRC_IDENTITY,
+        destination: DST_IDENTITY,
+        amount: 0n,
+        targetTick: 100,
+        inputType: 0,
+        currentTick: 100,
+      }),
+    ).toThrow(TickInThePastError)
+  })
+})
+
 describe('signTransaction', () => {
   test('appends 64-byte signature', async () => {
     const tx = buildTransaction(BASE_INPUT)
@@ -107,7 +260,6 @@ describe('signTransaction', () => {
 describe('verifyTransactionSignature', () => {
   test('returns true for a valid signature', async () => {
     // Use real derived public key so the signature is verifiable
-    const { publicKeyFromSeed } = await import('@qubic.org/crypto')
     const srcPk = publicKeyFromSeed(SEED)
     const tx = buildTransaction({ ...BASE_INPUT, source: srcPk })
     const signed = await signTransaction(tx, SEED)
@@ -115,7 +267,6 @@ describe('verifyTransactionSignature', () => {
   })
 
   test('returns false for tampered signature', async () => {
-    const { publicKeyFromSeed } = await import('@qubic.org/crypto')
     const srcPk = publicKeyFromSeed(SEED)
     const tx = buildTransaction({ ...BASE_INPUT, source: srcPk })
     const signed = await signTransaction(tx, SEED)
@@ -171,6 +322,18 @@ describe('decodeTransaction', () => {
   test('throws InvalidTransactionError for short buffer', () => {
     expect(() => decodeTransaction(new Uint8Array(10))).toThrow(InvalidTransactionError)
   })
+
+  test('throws for buffer smaller than header size', () => {
+    expect(() => decodeTransaction(new Uint8Array(PROTOCOL.TX_HEADER_SIZE - 1))).toThrow(
+      InvalidTransactionError,
+    )
+  })
+
+  test('accepts exact header-size buffer with zero payload', () => {
+    const tx = buildTransaction(BASE_INPUT)
+    const decoded = decodeTransaction(tx)
+    expect(decoded.payload.byteLength).toBe(0)
+  })
 })
 
 describe('computeTransactionHash', () => {
@@ -190,7 +353,7 @@ describe('computeTransactionHash', () => {
     expect(computeTransactionHash(s1)).not.toBe(computeTransactionHash(s2))
   })
 
-  test('identity encoding consistency — identity uses uppercase, txHash uses lowercase', () => {
+  test('identity encoding consistency -- identity uses uppercase, txHash uses lowercase', () => {
     // Confirm that our lowercase encoding is consistent with the uppercase identity encoding
     const pk = new Uint8Array(32).fill(7)
     const identity = publicKeyToIdentity(pk)

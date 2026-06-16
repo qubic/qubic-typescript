@@ -74,22 +74,34 @@ function writeScalar(
 ): void {
   switch (type) {
     case 'uint8':
-    case 'sint8':
       if (typeof value !== 'number')
         throw new PayloadBuildError(`Field "${fieldName}": expected number`)
       view.setUint8(offset, value)
       break
+    case 'sint8':
+      if (typeof value !== 'number')
+        throw new PayloadBuildError(`Field "${fieldName}": expected number`)
+      view.setInt8(offset, value)
+      break
     case 'uint16':
-    case 'sint16':
       if (typeof value !== 'number')
         throw new PayloadBuildError(`Field "${fieldName}": expected number`)
       view.setUint16(offset, value, true)
       break
+    case 'sint16':
+      if (typeof value !== 'number')
+        throw new PayloadBuildError(`Field "${fieldName}": expected number`)
+      view.setInt16(offset, value, true)
+      break
     case 'uint32':
-    case 'sint32':
       if (typeof value !== 'number')
         throw new PayloadBuildError(`Field "${fieldName}": expected number`)
       view.setUint32(offset, value, true)
+      break
+    case 'sint32':
+      if (typeof value !== 'number')
+        throw new PayloadBuildError(`Field "${fieldName}": expected number`)
+      view.setInt32(offset, value, true)
       break
     case 'uint64':
       if (typeof value !== 'bigint')

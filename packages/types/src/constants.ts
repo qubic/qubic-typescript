@@ -48,6 +48,7 @@ export const CONTRACT_INDEX = {
   VOTTUN_BRIDGE: 25,
   QUSINO: 26,
   ESCROW: 27,
+  GGWP: 28,
 } as const satisfies Record<string, number>
 
 export type ContractIndex = (typeof CONTRACT_INDEX)[keyof typeof CONTRACT_INDEX]

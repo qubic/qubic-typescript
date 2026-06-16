@@ -13,6 +13,8 @@ import type {
   BobQuTransferFilter,
   BobRestLogEvent,
   BobRpcEpochInfo,
+  BobRpcStatus,
+  BobSyncStatus,
   BobTickLogRange,
   BobTransaction,
   BobTransactionReceipt,
@@ -33,6 +35,15 @@ export interface BobRpcClientOptions {
 export interface BobRpcClient {
   /** Returns the chain identifier string. */
   getChainId(options?: { signal?: AbortSignal }): Promise<Result<string, BobRpcError>>
+  /** Returns the node software version string. */
+  getClientVersion(options?: { signal?: AbortSignal }): Promise<Result<string, BobRpcError>>
+  /** Returns `false` when fully synced, otherwise a sync progress object. */
+  getSyncing(options?: { signal?: AbortSignal }): Promise<Result<BobSyncStatus, BobRpcError>>
+  /** Returns node status (RPC variant with challenge support). */
+  getStatus(
+    challenge?: string,
+    options?: { signal?: AbortSignal },
+  ): Promise<Result<BobRpcStatus, BobRpcError>>
   /** Returns the current tick number. */
   getTickNumber(options?: { signal?: AbortSignal }): Promise<Result<number, BobRpcError>>
   /** Returns log events matching the given filter. */
@@ -70,11 +81,25 @@ export interface BobRpcClient {
     signedTxHex: string,
     options?: { signal?: AbortSignal },
   ): Promise<Result<TxHash, BobRpcError>>
+  /** Alias of broadcastTransaction (Ethereum-style name). */
+  sendRawTransaction(
+    signedTxHex: string,
+    options?: { signal?: AbortSignal },
+  ): Promise<Result<TxHash, BobRpcError>>
   /** Returns the current epoch number. */
   getCurrentEpoch(options?: { signal?: AbortSignal }): Promise<Result<number, BobRpcError>>
   /** Returns indexed tick metadata. Pass `includeTx=true` to include full transaction objects. */
   getTickByNumber(
     tick: number,
+    includeTx: boolean | undefined,
+    options?: { signal?: AbortSignal },
+  ): Promise<Result<BobIndexedTick, BobRpcError>>
+  /**
+   * Returns indexed tick metadata by tick hash.
+   * **Note:** Currently disabled on most Bob nodes (returns METHOD_NOT_FOUND).
+   */
+  getTickByHash(
+    hash: string,
     includeTx: boolean | undefined,
     options?: { signal?: AbortSignal },
   ): Promise<Result<BobIndexedTick, BobRpcError>>
@@ -254,6 +279,19 @@ export function createBobRpcClient(options: BobRpcClientOptions): BobRpcClient {
       return call<string>('qubic_chainId', [], options?.signal)
     },
 
+    getClientVersion(options) {
+      return call<string>('qubic_clientVersion', [], options?.signal)
+    },
+
+    getSyncing(options) {
+      return call<BobSyncStatus>('qubic_syncing', [], options?.signal)
+    },
+
+    async getStatus(challenge, options) {
+      const params = challenge !== undefined ? [challenge] : []
+      return call<BobRpcStatus>('qubic_status', params, options?.signal)
+    },
+
     getTickNumber(options) {
       return call<number>('qubic_getTickNumber', [], options?.signal)
     },
@@ -330,6 +368,10 @@ export function createBobRpcClient(options: BobRpcClientOptions): BobRpcClient {
       return call<TxHash>('qubic_broadcastTransaction', [signedTxHex], options?.signal)
     },
 
+    sendRawTransaction(signedTxHex, options) {
+      return call<TxHash>('qubic_sendRawTransaction', [signedTxHex], options?.signal)
+    },
+
     getCurrentEpoch(options) {
       return call<number>('qubic_getCurrentEpoch', [], options?.signal)
     },
@@ -338,6 +380,14 @@ export function createBobRpcClient(options: BobRpcClientOptions): BobRpcClient {
       return call<BobIndexedTick>(
         'qubic_getTickByNumber',
         [String(tick), includeTx ?? false],
+        options?.signal,
+      )
+    },
+
+    getTickByHash(hash, includeTx, options) {
+      return call<BobIndexedTick>(
+        'qubic_getTickByHash',
+        [hash, includeTx ?? false],
         options?.signal,
       )
     },

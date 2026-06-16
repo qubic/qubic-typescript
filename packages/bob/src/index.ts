@@ -27,6 +27,8 @@ export type {
   BobAssetTransferFilter,
   BobComputorList,
   BobRpcEpochInfo,
+  BobRpcStatus,
+  BobSyncStatus,
   BobFindLogFilter,
   BobLogEvent,
   BobLogFilter,

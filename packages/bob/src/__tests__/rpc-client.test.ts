@@ -831,4 +831,101 @@ describe('createBobRpcClient - aborted signal', () => {
       expect(result.error.message).toBe('Request aborted')
     }
   })
+
+  test('getClientVersion returns ok with version string', async () => {
+    const client = createBobRpcClient({
+      endpoint: ENDPOINT,
+      fetch: mockFetch(rpcResult('bob/1.2.3')),
+    })
+    const result = await client.getClientVersion()
+    expect(result.ok).toBe(true)
+    if (result.ok) expect(result.value).toBe('bob/1.2.3')
+  })
+
+  test('getSyncing returns false when synced', async () => {
+    const client = createBobRpcClient({
+      endpoint: ENDPOINT,
+      fetch: mockFetch(rpcResult(false)),
+    })
+    const result = await client.getSyncing()
+    expect(result.ok).toBe(true)
+    if (result.ok) expect(result.value).toBe(false)
+  })
+
+  test('getSyncing returns sync object when not synced', async () => {
+    const syncObj = { currentTick: 100, highestTick: 200, currentEpoch: 5 }
+    const client = createBobRpcClient({
+      endpoint: ENDPOINT,
+      fetch: mockFetch(rpcResult(syncObj)),
+    })
+    const result = await client.getSyncing()
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      expect(result.value).not.toBe(false)
+      if (result.value !== false) {
+        expect(result.value.currentTick).toBe(100)
+        expect(result.value.highestTick).toBe(200)
+      }
+    }
+  })
+
+  test('getStatus returns node status', async () => {
+    const status = { currentTick: 500, currentEpoch: 10, verifiedTick: 499, bmConnections: 3 }
+    const client = createBobRpcClient({
+      endpoint: ENDPOINT,
+      fetch: mockFetch(rpcResult(status)),
+    })
+    const result = await client.getStatus()
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      expect(result.value.currentTick).toBe(500)
+      expect(result.value.bmConnections).toBe(3)
+    }
+  })
+
+  test('getStatus passes challenge param when provided', async () => {
+    let capturedBody: unknown
+    const client = createBobRpcClient({
+      endpoint: ENDPOINT,
+      retries: 0,
+      fetch: async (_url, init) => {
+        capturedBody = JSON.parse(init?.body as string)
+        return new Response(JSON.stringify(rpcResult({})), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        })
+      },
+    })
+    await client.getStatus('my-challenge')
+    expect((capturedBody as { params?: unknown[] }).params).toEqual(['my-challenge'])
+  })
+
+  test('sendRawTransaction returns tx hash', async () => {
+    const hash = 'a'.repeat(60)
+    const client = createBobRpcClient({
+      endpoint: ENDPOINT,
+      fetch: mockFetch(rpcResult(hash)),
+    })
+    const result = await client.sendRawTransaction('deadbeef')
+    expect(result.ok).toBe(true)
+    if (result.ok) expect(result.value).toBe(hash)
+  })
+
+  test('getTickByHash sends correct method and params', async () => {
+    let capturedBody: unknown
+    const client = createBobRpcClient({
+      endpoint: ENDPOINT,
+      retries: 0,
+      fetch: async (_url, init) => {
+        capturedBody = JSON.parse(init?.body as string)
+        return new Response(JSON.stringify(rpcResult({ tickNumber: 1, epoch: 1 })), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        })
+      },
+    })
+    await client.getTickByHash('0xdeadbeef', true)
+    expect((capturedBody as { method?: string }).method).toBe('qubic_getTickByHash')
+    expect((capturedBody as { params?: unknown[] }).params).toEqual(['0xdeadbeef', true])
+  })
 })

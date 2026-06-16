@@ -166,3 +166,21 @@ export interface BobComputorList {
   epoch: number
   identities: Identity[]
 }
+
+/** Sync status returned by qubic_syncing. `false` when fully synced. */
+export type BobSyncStatus =
+  | false
+  | {
+      currentTick: number
+      highestTick: number
+      currentEpoch: number
+    }
+
+/** Node status returned by qubic_status (RPC variant). */
+export interface BobRpcStatus {
+  currentTick: number
+  currentEpoch: number
+  verifiedTick: number
+  bmConnections: number
+  [key: string]: unknown
+}

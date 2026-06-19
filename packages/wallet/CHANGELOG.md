@@ -1,5 +1,28 @@
 # @qubic.org/wallet
 
+## 1.0.0
+
+### Major Changes
+
+- 782265b: - Rename `TransferParams` to `TransactionParams`
+  - Rename `ScTransactionParams` to `ContractCallParams`
+  - Validate vault seeds are array of strings after JSON parse
+
+### Patch Changes
+
+- Updated dependencies [782265b]
+- Updated dependencies [02405fa]
+- Updated dependencies [13a2267]
+- Updated dependencies [f63c873]
+- Updated dependencies [eebe912]
+- Updated dependencies [782265b]
+- Updated dependencies [782265b]
+- Updated dependencies [e5f4a1a]
+- Updated dependencies [abc3d50]
+  - @qubic.org/crypto@1.0.0
+  - @qubic.org/types@1.0.0
+  - @qubic.org/tx@1.0.0
+
 ## 0.2.7
 
 ### Patch Changes

@@ -1,5 +1,32 @@
 # @qubic.org/types
 
+## 1.0.0
+
+### Major Changes
+
+- 782265b: - Remove `TICKS_TO_EXPIRY` from `PROTOCOL` (not a protocol constant)
+  - Remove `SignatureVerificationError` (was unused)
+  - Add `Result<T,E>`, `ok()`, `err()` shared across bob/rpc/contracts
+  - Add `CurrentTickInfo`, `EntityRecord`, `RespondEntity`, `ExchangePublicPeers`, `TickData`, `TickVote`, `SystemInfo`, `Computors`, `TransactionHeader`, `RequestResponseHeader`, `ContractIPO`, `RequestedQuorumTick` protocol interfaces
+  - Add `CUSTOM_MESSAGE_OP` constants and `CustomMessageSubtype` discriminated union for epoch/dividend protocol events
+  - Add `isValidIdentityChecksum` type guard for full Qubic identity checksum validation
+
+### Minor Changes
+
+- f63c873: - **tcp**: Add request helpers and decoders for all 20 TCP message types, including oracle data queries and log/pruning helpers. Fix `decodeComputors` key offset (10→2), `requestContractFunction` header size (12→8 bytes with u16 fields), and asset decoders to read individual per-packet structs instead of count+array
+  - **types**: Add protocol constants (`MAX_MESSAGE_SIZE`, `SPECTRUM_CAPACITY`, `ASSETS_CAPACITY`, `ISSUANCE_RATE`, `MAX_AMOUNT`, `MAX_SUPPLY`, `INITIAL_TICK`, `DEFAULT_PORT`, `NUMBER_OF_SOLUTION_PROCESSORS`, `QUORUM`) and enums (`ORACLE_QUERY_TYPE`, `ORACLE_QUERY_STATUS`, `ORACLE_FLAG`, `ASSET_TYPE`, `TX_INPUT_TYPE`, `ORACLE_REQ_TYPE`, `ORACLE_RES_TYPE`)
+  - **events**: Add `subscribeBurningEvents`, `subscribeOracleEvents`, `subscribeCustomMessages` subscription helpers
+  - **react**: Add `useActiveIpos` and `useContractIpoBids` hooks
+  - **bob**: Fix `BobSyncStatus` discriminated union shape to match C++ response (`{ syncing: false }` instead of bare `false`)
+
+### Patch Changes
+
+- 02405fa: - **types**: Add `GGWP` (index 28) to `CONTRACT_INDEX` constant to match `smart_contracts.json`
+  - **bob**: Add missing JSON-RPC methods: `getClientVersion`, `getSyncing`, `getStatus`, `sendRawTransaction`, `getTickByHash` with `BobSyncStatus` and `BobRpcStatus` types
+- abc3d50: - Fix `SystemInfo` to include all 128 bytes: add `targetTickVoteSignature`, `computorPacketSignature`, `solutionAdditionalThreshold`, and 3 reserve fields
+  - Fix `SpectrumStats` decoder to read full 224-byte struct including `entityCategoryPopulations[48]`
+  - Fix `TickVote` byte count comment (360 -> 352, matching C++ `static_assert`)
+
 ## 0.2.7
 
 ### Patch Changes

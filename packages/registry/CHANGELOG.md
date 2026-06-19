@@ -1,5 +1,30 @@
 # @qubic.org/registry
 
+## 1.0.0
+
+### Major Changes
+
+- 782265b: - Validate fetched registry JSON with `validateRegistry()` after parsing
+  - Throw explicit error for `id` type in `buildPayloadManual`
+  - Add GGWP contract ABI snapshot
+  - Update QIP and Random epoch snapshots
+
+### Patch Changes
+
+- a9f2da5: Fix payload encoding for signed integer types: `sint8` now uses `setInt8`, `sint16` uses `setInt16`, `sint32` uses `setInt32` instead of their unsigned counterparts. While two's complement makes the bit patterns identical for current JS engines, the signed setters are semantically correct and future-proof.
+- caa30e3: Improve the backfill script with a `--catch-up` mode that queries the live RPC for the current epoch, refreshes stale cached epoch refs when needed, and records epoch/tag mappings through epoch 217.
+- 4574738: Add ABI snapshots and contract wrappers for epochs 214–215. QVAULT changed in epoch 214 (v1.292.0), Qswap changed in epoch 215 (v1.293.1). Fix backfill script to pre-seed prior state so single-epoch runs only write snapshots for contracts with ABI changes.
+- Updated dependencies [782265b]
+- Updated dependencies [02405fa]
+- Updated dependencies [13a2267]
+- Updated dependencies [f63c873]
+- Updated dependencies [eebe912]
+- Updated dependencies [782265b]
+- Updated dependencies [e5f4a1a]
+- Updated dependencies [abc3d50]
+  - @qubic.org/crypto@1.0.0
+  - @qubic.org/types@1.0.0
+
 ## 0.2.7
 
 ### Patch Changes

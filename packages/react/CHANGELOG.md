@@ -1,5 +1,43 @@
 # @qubic.org/react
 
+## 1.0.0
+
+### Major Changes
+
+- 782265b: - Replace connector `unknown` types with typed `TransactionRequest` interface
+  - Type `on()` event callbacks per event
+  - Close IndexedDB connections in `finally` blocks to prevent leaks
+  - Add runtime `archiveClient` null guards in query hooks
+  - Export `TransactionRequest`, `SignTransactionResult`, `SendTransactionResult`, `SignMessageResult`
+
+### Minor Changes
+
+- f63c873: - **tcp**: Add request helpers and decoders for all 20 TCP message types, including oracle data queries and log/pruning helpers. Fix `decodeComputors` key offset (10→2), `requestContractFunction` header size (12→8 bytes with u16 fields), and asset decoders to read individual per-packet structs instead of count+array
+  - **types**: Add protocol constants (`MAX_MESSAGE_SIZE`, `SPECTRUM_CAPACITY`, `ASSETS_CAPACITY`, `ISSUANCE_RATE`, `MAX_AMOUNT`, `MAX_SUPPLY`, `INITIAL_TICK`, `DEFAULT_PORT`, `NUMBER_OF_SOLUTION_PROCESSORS`, `QUORUM`) and enums (`ORACLE_QUERY_TYPE`, `ORACLE_QUERY_STATUS`, `ORACLE_FLAG`, `ASSET_TYPE`, `TX_INPUT_TYPE`, `ORACLE_REQ_TYPE`, `ORACLE_RES_TYPE`)
+  - **events**: Add `subscribeBurningEvents`, `subscribeOracleEvents`, `subscribeCustomMessages` subscription helpers
+  - **react**: Add `useActiveIpos` and `useContractIpoBids` hooks
+  - **bob**: Fix `BobSyncStatus` discriminated union shape to match C++ response (`{ syncing: false }` instead of bare `false`)
+
+### Patch Changes
+
+- Updated dependencies [782265b]
+- Updated dependencies [782265b]
+- Updated dependencies [02405fa]
+- Updated dependencies [13a2267]
+- Updated dependencies [f63c873]
+- Updated dependencies [782265b]
+- Updated dependencies [eebe912]
+- Updated dependencies [782265b]
+- Updated dependencies [782265b]
+- Updated dependencies [e5f4a1a]
+- Updated dependencies [4574738]
+- Updated dependencies [abc3d50]
+  - @qubic.org/contracts@1.0.0
+  - @qubic.org/crypto@1.0.0
+  - @qubic.org/types@1.0.0
+  - @qubic.org/rpc@1.0.0
+  - @qubic.org/wallet@1.0.0
+
 ## 0.2.7
 
 ## 0.2.6

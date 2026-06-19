@@ -1,5 +1,26 @@
 # @qubic.org/tx
 
+## 1.0.0
+
+### Major Changes
+
+- 782265b: - Rename `TransactionInput.sourcePublicKey`/`destinationPublicKey` to `source`/`destination`, now accept `Identity | Uint8Array`
+  - Throw `InvalidIdentityError` when source/destination is a non-identity string instead of silent miscast
+  - Remove `PK_SIZE`/`SIG_SIZE`/`HEADER_SIZE` aliases; use `PROTOCOL.*` constants directly
+
+### Patch Changes
+
+- Updated dependencies [782265b]
+- Updated dependencies [02405fa]
+- Updated dependencies [13a2267]
+- Updated dependencies [f63c873]
+- Updated dependencies [eebe912]
+- Updated dependencies [782265b]
+- Updated dependencies [e5f4a1a]
+- Updated dependencies [abc3d50]
+  - @qubic.org/crypto@1.0.0
+  - @qubic.org/types@1.0.0
+
 ## 0.2.7
 
 ### Patch Changes

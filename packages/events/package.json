@@ -1,6 +1,6 @@
 {
   "name": "@qubic.org/events",
-  "version": "0.2.7",
+  "version": "1.0.0",
   "license": "Anti-Military",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -20,9 +20,9 @@
     "test": "bun test"
   },
   "dependencies": {
-    "@qubic.org/bob": "^0.2.1",
-    "@qubic.org/crypto": "^0.2.1",
-    "@qubic.org/types": "^0.2.1"
+    "@qubic.org/bob": "^1.0.0",
+    "@qubic.org/crypto": "^1.0.0",
+    "@qubic.org/types": "^1.0.0"
   },
   "devDependencies": {
     "@types/node": "^25.8.0",

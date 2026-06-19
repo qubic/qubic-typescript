@@ -1,5 +1,42 @@
 # @qubic.org/events
 
+## 1.0.0
+
+### Major Changes
+
+- 782265b: - `decodeEvent` now accepts transport-agnostic `RawQubicLogEvent` instead of `BobLogEvent`
+  - Add `CustomMessageData` discriminated union with protocol subtypes (epoch start/end, dividend distribution)
+  - Subscription helpers now pass log types to Bob filter for server-side filtering
+  - Document `toBobFilter()` single-logType limitation
+
+### Minor Changes
+
+- f63c873: - **tcp**: Add request helpers and decoders for all 20 TCP message types, including oracle data queries and log/pruning helpers. Fix `decodeComputors` key offset (10→2), `requestContractFunction` header size (12→8 bytes with u16 fields), and asset decoders to read individual per-packet structs instead of count+array
+  - **types**: Add protocol constants (`MAX_MESSAGE_SIZE`, `SPECTRUM_CAPACITY`, `ASSETS_CAPACITY`, `ISSUANCE_RATE`, `MAX_AMOUNT`, `MAX_SUPPLY`, `INITIAL_TICK`, `DEFAULT_PORT`, `NUMBER_OF_SOLUTION_PROCESSORS`, `QUORUM`) and enums (`ORACLE_QUERY_TYPE`, `ORACLE_QUERY_STATUS`, `ORACLE_FLAG`, `ASSET_TYPE`, `TX_INPUT_TYPE`, `ORACLE_REQ_TYPE`, `ORACLE_RES_TYPE`)
+  - **events**: Add `subscribeBurningEvents`, `subscribeOracleEvents`, `subscribeCustomMessages` subscription helpers
+  - **react**: Add `useActiveIpos` and `useContractIpoBids` hooks
+  - **bob**: Fix `BobSyncStatus` discriminated union shape to match C++ response (`{ syncing: false }` instead of bare `false`)
+
+### Patch Changes
+
+- 13a2267: - **events**: Fix `decodeSpectrumStats` minimum payload size from 224 to 220 bytes (u64+u64+u64+u32+48×u32 = 220)
+  - **crypto**: Export `deriveKeys` and `DerivedKeys` type from package index
+- abc3d50: - Fix `SystemInfo` to include all 128 bytes: add `targetTickVoteSignature`, `computorPacketSignature`, `solutionAdditionalThreshold`, and 3 reserve fields
+  - Fix `SpectrumStats` decoder to read full 224-byte struct including `entityCategoryPopulations[48]`
+  - Fix `TickVote` byte count comment (360 -> 352, matching C++ `static_assert`)
+- Updated dependencies [782265b]
+- Updated dependencies [782265b]
+- Updated dependencies [02405fa]
+- Updated dependencies [13a2267]
+- Updated dependencies [f63c873]
+- Updated dependencies [eebe912]
+- Updated dependencies [782265b]
+- Updated dependencies [e5f4a1a]
+- Updated dependencies [abc3d50]
+  - @qubic.org/bob@1.0.0
+  - @qubic.org/crypto@1.0.0
+  - @qubic.org/types@1.0.0
+
 ## 0.2.7
 
 ## 0.2.6

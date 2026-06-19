@@ -842,18 +842,29 @@ describe('createBobRpcClient - aborted signal', () => {
     if (result.ok) expect(result.value).toBe('bob/1.2.3')
   })
 
-  test('getSyncing returns false when synced', async () => {
+  test('getSyncing returns {syncing:false} when synced', async () => {
     const client = createBobRpcClient({
       endpoint: ENDPOINT,
-      fetch: mockFetch(rpcResult(false)),
+      fetch: mockFetch(rpcResult({ syncing: false })),
     })
     const result = await client.getSyncing()
     expect(result.ok).toBe(true)
-    if (result.ok) expect(result.value).toBe(false)
+    if (result.ok) expect(result.value).toEqual({ syncing: false })
   })
 
   test('getSyncing returns sync object when not synced', async () => {
-    const syncObj = { currentTick: 100, highestTick: 200, currentEpoch: 5 }
+    const syncObj = {
+      syncing: true,
+      epoch: 5,
+      initialTick: 1000,
+      targetTickVoteSignature: 0,
+      computorListSignature: 0,
+      currentFetchingTick: 100,
+      currentFetchingLogTick: 90,
+      currentVerifyLoggingTick: 80,
+      currentIndexingTick: 70,
+      progress: 0.5,
+    }
     const client = createBobRpcClient({
       endpoint: ENDPOINT,
       fetch: mockFetch(rpcResult(syncObj)),
@@ -861,10 +872,10 @@ describe('createBobRpcClient - aborted signal', () => {
     const result = await client.getSyncing()
     expect(result.ok).toBe(true)
     if (result.ok) {
-      expect(result.value).not.toBe(false)
-      if (result.value !== false) {
-        expect(result.value.currentTick).toBe(100)
-        expect(result.value.highestTick).toBe(200)
+      expect(result.value).toHaveProperty('syncing', true)
+      if ('syncing' in result.value && result.value.syncing) {
+        expect(result.value.currentFetchingTick).toBe(100)
+        expect(result.value.progress).toBe(0.5)
       }
     }
   })

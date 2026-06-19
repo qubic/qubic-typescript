@@ -167,10 +167,11 @@ export interface BobComputorList {
   identities: Identity[]
 }
 
-/** Sync status returned by qubic_syncing. `false` when fully synced. */
+/** Sync status returned by qubic_syncing. */
 export type BobSyncStatus =
-  | false
+  | { syncing: false }
   | {
+      syncing: true
       epoch: number
       initialTick: number
       targetTickVoteSignature: number
@@ -180,7 +181,6 @@ export type BobSyncStatus =
       currentVerifyLoggingTick: number
       currentIndexingTick: number
       lastSeenNetworkTick?: number
-      syncing: true
       progress: number
     }
 

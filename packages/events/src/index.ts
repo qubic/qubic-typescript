@@ -4,7 +4,10 @@ export { eventFilter } from './event-filter-builder.js'
 export {
   subscribeAllEvents,
   subscribeAssetEvents,
+  subscribeBurningEvents,
   subscribeContractLogs,
+  subscribeCustomMessages,
+  subscribeOracleEvents,
   subscribeQuTransfers,
 } from './subscription-helpers.js'
 export type {

@@ -8,8 +8,9 @@
  */
 
 import { randomBytes } from 'node:crypto'
+import { PROTOCOL } from '@qubic.org/types'
 
-export const HEADER_SIZE = 8
+export const HEADER_SIZE = PROTOCOL.HEADER_SIZE
 
 export interface DecodedHeader {
   /** Total message size including the 8-byte header. */

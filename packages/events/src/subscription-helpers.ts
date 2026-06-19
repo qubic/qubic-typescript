@@ -92,3 +92,43 @@ export function subscribeAllEvents(
   const raw = bob.subscribeLogs(bobFilter, options)
   return decodeStream(raw)
 }
+
+/** Subscribes to burning events (BURNING + DUST_BURNING). */
+export function subscribeBurningEvents(
+  bob: BobSubscriptionClient,
+  filter?: Omit<EventFilter, 'logTypes'>,
+  options?: SubOptions,
+): AsyncIterable<SubscriptionEvent<TypedEvent>> {
+  const burningLogTypes = [LOG_TYPE.BURNING, LOG_TYPE.DUST_BURNING] as const
+  const bobFilter = toBobFilter({ ...filter, logTypes: [...burningLogTypes] })
+  const raw = bob.subscribeLogs(bobFilter, options)
+  return decodeStream(raw, burningLogTypes)
+}
+
+/** Subscribes to oracle events (ORACLE_QUERY_STATUS_CHANGE + ORACLE_SUBSCRIBER_LOG_MESSAGE). */
+export function subscribeOracleEvents(
+  bob: BobSubscriptionClient,
+  filter?: Omit<EventFilter, 'logTypes'>,
+  options?: SubOptions,
+): AsyncIterable<SubscriptionEvent<TypedEvent>> {
+  const oracleLogTypes = [
+    LOG_TYPE.ORACLE_QUERY_STATUS_CHANGE,
+    LOG_TYPE.ORACLE_SUBSCRIBER_LOG_MESSAGE,
+  ] as const
+  const bobFilter = toBobFilter({ ...filter, logTypes: [...oracleLogTypes] })
+  const raw = bob.subscribeLogs(bobFilter, options)
+  return decodeStream(raw, oracleLogTypes)
+}
+
+/** Subscribes to custom message events (CUSTOM_MESSAGE — epoch transitions, dividend distributions). */
+export function subscribeCustomMessages(
+  bob: BobSubscriptionClient,
+  filter?: Omit<EventFilter, 'logTypes'>,
+  options?: SubOptions,
+): AsyncIterable<SubscriptionEvent<TypedEvent & { logType: typeof LOG_TYPE.CUSTOM_MESSAGE }>> {
+  const bobFilter = toBobFilter({ ...filter, logTypes: [LOG_TYPE.CUSTOM_MESSAGE] })
+  const raw = bob.subscribeLogs(bobFilter, options)
+  return decodeStream(raw) as AsyncIterable<
+    SubscriptionEvent<TypedEvent & { logType: typeof LOG_TYPE.CUSTOM_MESSAGE }>
+  >
+}

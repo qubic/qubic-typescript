@@ -35,6 +35,7 @@ export { useBalances } from './queries/use-balances.js'
 export type { BalancesResult } from './queries/use-balances.js'
 export { useIssuedAssets, useOwnedAssets, usePossessedAssets } from './queries/use-assets.js'
 export { useContractQuery } from './queries/use-contract-query.js'
+export { useActiveIpos, useContractIpoBids } from './queries/use-ipo.js'
 
 // ── Data hooks — archive API ───────────────────────────────────────────────────
 export { useTransaction } from './queries/use-transaction.js'

@@ -78,4 +78,10 @@ export const PROTOCOL = {
   SPECTRUM_DEPTH: 24,
   /** Assets Merkle tree depth. */
   ASSETS_DEPTH: 24,
+  /** Max message size including header (24-bit size field). */
+  MAX_MESSAGE_SIZE: 16_777_215,
+  /** Spectrum capacity: 2^SPECTRUM_DEPTH. */
+  SPECTRUM_CAPACITY: 16_777_216,
+  /** Assets capacity: 2^ASSETS_DEPTH. */
+  ASSETS_CAPACITY: 16_777_216,
 } as const satisfies Record<string, number>

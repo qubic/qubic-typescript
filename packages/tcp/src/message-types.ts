@@ -98,3 +98,67 @@ export interface RespondEntity {
 export interface ExchangePublicPeers {
   peers: string[]
 }
+
+/** RESPOND_SYSTEM_INFO (128 bytes). */
+export interface SystemInfo {
+  version: number
+  epoch: number
+  tick: number
+  initialTick: number
+  latestCreatedTick: number
+  initialTimestamp: {
+    millisecond: number
+    second: number
+    minute: number
+    hour: number
+    day: number
+    month: number
+    year: number
+  }
+  numberOfEntities: number
+  numberOfTransactions: number
+  randomMiningSeed: Uint8Array
+  solutionThreshold: number
+  totalSpectrumAmount: bigint
+  currentEntityBalanceDustThreshold: bigint
+  targetTickVoteSignature: number
+  computorPacketSignature: bigint
+  solutionAdditionalThreshold: bigint
+}
+
+/** RESPOND_COMPUTORS — decoded computor list from BROADCAST_COMPUTORS / REQUEST_COMPUTORS. */
+export interface ComputorList {
+  epoch: number
+  /** 676 × 32-byte public keys. */
+  publicKeys: Uint8Array[]
+}
+
+/** RESPOND_CONTRACT_IPO. */
+export interface ContractIPO {
+  contractIndex: number
+  tick: number
+  /** 676 × 32-byte public keys. */
+  publicKeys: Uint8Array[]
+  /** 676 bid prices. */
+  prices: bigint[]
+}
+
+/** A single asset entry returned by RESPOND_ISSUED_ASSETS / OWNED_ASSETS / POSSESSED_ASSETS. */
+export interface AssetEntry {
+  issuerPublicKey: Uint8Array
+  numberOfShares: bigint
+  managingContractIndex: number
+  assetName: string
+  numberOfDecimalPlaces: number
+  unitOfMeasurement: string
+}
+
+/** RESPOND_CONTRACT_FUNCTION — smart contract query response. */
+export interface ContractFunctionResponse {
+  responseData: Uint8Array
+}
+
+/** RESPOND_TICK_TRANSACTIONS — list of transaction hashes for a tick. */
+export interface TickTransactions {
+  transactionHashes: Uint8Array[]
+}

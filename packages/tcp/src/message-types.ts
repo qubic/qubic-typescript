@@ -162,3 +162,17 @@ export interface ContractFunctionResponse {
 export interface TickTransactions {
   transactionHashes: Uint8Array[]
 }
+
+/** RESPOND_ORACLE_DATA header (4 bytes). */
+export interface OracleDataResponse {
+  /** Response type (maps to RespondOracleData constants). */
+  resType: number
+  /** Payload following the header (variable-length). */
+  payload: Uint8Array
+}
+
+/** RESPOND_LOG_ID_RANGE_FROM_TX (16 bytes). */
+export interface LogIdRange {
+  fromLogId: bigint
+  length: bigint
+}

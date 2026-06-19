@@ -8,7 +8,9 @@ import {
   type ContractIPO,
   type CurrentTickInfo,
   type ExchangePublicPeers,
+  type LogIdRange,
   MESSAGE_TYPE,
+  type OracleDataResponse,
   type RespondEntity,
   type SystemInfo,
   type TickTransactions,
@@ -489,4 +491,177 @@ export async function requestActiveIPOs(
   options?: { signal?: AbortSignal },
 ): Promise<Uint8Array[]> {
   return conn.request(MESSAGE_TYPE.REQUEST_ACTIVE_IPOS, undefined, options)
+}
+
+// ── Oracle data ──────────────────────────────────────────────────────────────
+
+/** Oracle request types matching C++ RequestOracleData constants. */
+export const ORACLE_REQ_TYPE = {
+  ALL_QUERY_IDS_BY_TICK: 0,
+  USER_QUERY_IDS_BY_TICK: 1,
+  CONTRACT_DIRECT_QUERY_IDS_BY_TICK: 2,
+  CONTRACT_SUBSCRIPTION_QUERY_IDS_BY_TICK: 3,
+  PENDING_QUERY_IDS: 4,
+  QUERY_AND_RESPONSE: 5,
+  SUBSCRIPTION: 6,
+  QUERY_STATISTICS: 7,
+  ORACLE_REVENUE_POINTS: 8,
+  ACTIVE_SUBSCRIPTIONS: 9,
+  ACTIVE_CONTRACT_SUBSCRIPTIONS: 10,
+} as const
+
+/** Oracle response types matching C++ RespondOracleData constants. */
+export const ORACLE_RES_TYPE = {
+  QUERY_IDS: 0,
+  QUERY_METADATA: 1,
+  QUERY_DATA: 2,
+  REPLY_DATA: 3,
+  NOTIFIED_SUBSCRIBER_CONTRACTS: 4,
+  SUBSCRIPTION: 5,
+  SUBSCRIBER: 6,
+  QUERY_STATISTICS: 7,
+  ORACLE_REVENUE_POINTS: 8,
+  TICK_RANGE: 9,
+  SUBSCRIPTION_IDS: 10,
+} as const
+
+/**
+ * Requests oracle data from the node.
+ * Request payload: reqType(u32) _padding(u32) reqTickOrId(i64) = 16 bytes.
+ * Returns all response packets, each prefixed with a 4-byte resType header.
+ */
+export async function requestOracleData(
+  conn: NodeConnection,
+  reqType: number,
+  reqTickOrId: bigint | number = 0n,
+  options?: { signal?: AbortSignal },
+): Promise<OracleDataResponse[]> {
+  const payload = new Uint8Array(16)
+  const v = new DataView(payload.buffer)
+  v.setUint32(0, reqType, true)
+  // 4 bytes padding at offset 4 (zero)
+  v.setBigInt64(8, BigInt(reqTickOrId), true)
+  const packets = await conn.request(MESSAGE_TYPE.REQUEST_ORACLE_DATA, payload, options)
+  return packets.map((packet) => {
+    if (packet.length < 4) return { resType: 0, payload: new Uint8Array(0) }
+    const rv = new DataView(packet.buffer, packet.byteOffset, packet.byteLength)
+    return {
+      resType: rv.getUint32(0, true),
+      payload: packet.slice(4),
+    }
+  })
+}
+
+// ── Log queries (admin — require passcode) ───────────────────────────────────
+
+/**
+ * Requests log events by ID range. Requires a 32-byte admin passcode.
+ * Request payload: passcode(4×u64=32B) fromID(u64) toID(u64 inclusive) = 48 bytes.
+ * Returns raw response payload(s).
+ */
+export async function requestLog(
+  conn: NodeConnection,
+  passcode: Uint8Array,
+  fromId: bigint,
+  toId: bigint,
+  options?: { signal?: AbortSignal },
+): Promise<Uint8Array[]> {
+  if (passcode.length !== 32) throw new RangeError('passcode must be 32 bytes')
+  const payload = new Uint8Array(48)
+  payload.set(passcode, 0)
+  const v = new DataView(payload.buffer)
+  v.setBigUint64(32, fromId, true)
+  v.setBigUint64(40, toId, true)
+  return conn.request(MESSAGE_TYPE.REQUEST_LOG, payload, options)
+}
+
+/**
+ * Requests log ID range for a specific transaction in a tick.
+ * Request payload: passcode(32B) tick(u32) txId(u32) = 40 bytes.
+ * Returns LogIdRange { fromLogId, length }.
+ */
+export async function requestLogIdRangeFromTx(
+  conn: NodeConnection,
+  passcode: Uint8Array,
+  tick: number,
+  txId: number,
+  options?: { signal?: AbortSignal },
+): Promise<LogIdRange> {
+  if (passcode.length !== 32) throw new RangeError('passcode must be 32 bytes')
+  const payload = new Uint8Array(40)
+  payload.set(passcode, 0)
+  const v = new DataView(payload.buffer)
+  v.setUint32(32, tick, true)
+  v.setUint32(36, txId, true)
+  const packets = await conn.request(MESSAGE_TYPE.REQUEST_LOG_ID_RANGE_FROM_TX, payload, options)
+  const first = packets[0]
+  if (!first || first.length < 16) throw new Error('No RESPOND_LOG_ID_RANGE_FROM_TX received')
+  const rv = new DataView(first.buffer, first.byteOffset, first.byteLength)
+  return {
+    fromLogId: rv.getBigInt64(0, true),
+    length: rv.getBigInt64(8, true),
+  }
+}
+
+/**
+ * Requests log ID ranges for all transactions in a tick.
+ * Request payload: passcode(32B) tick(u32) = 36 bytes.
+ * Returns raw response payload (pairs of fromLogId/length arrays).
+ */
+export async function requestAllLogIdRangesFromTick(
+  conn: NodeConnection,
+  passcode: Uint8Array,
+  tick: number,
+  options?: { signal?: AbortSignal },
+): Promise<Uint8Array[]> {
+  if (passcode.length !== 32) throw new RangeError('passcode must be 32 bytes')
+  const payload = new Uint8Array(36)
+  payload.set(passcode, 0)
+  new DataView(payload.buffer).setUint32(32, tick, true)
+  return conn.request(MESSAGE_TYPE.REQUEST_ALL_LOG_ID_RANGES_FROM_TX, payload, options)
+}
+
+/**
+ * Requests log pruning (admin). Requires a 32-byte admin passcode.
+ * Request payload: passcode(32B) fromLogId(u64) toLogId(u64) = 48 bytes.
+ * Returns the success/failure response.
+ */
+export async function requestPruningLog(
+  conn: NodeConnection,
+  passcode: Uint8Array,
+  fromLogId: bigint,
+  toLogId: bigint,
+  options?: { signal?: AbortSignal },
+): Promise<bigint> {
+  if (passcode.length !== 32) throw new RangeError('passcode must be 32 bytes')
+  const payload = new Uint8Array(48)
+  payload.set(passcode, 0)
+  const v = new DataView(payload.buffer)
+  v.setBigUint64(32, fromLogId, true)
+  v.setBigUint64(40, toLogId, true)
+  const packets = await conn.request(MESSAGE_TYPE.REQUEST_PRUNING_LOG, payload, options)
+  const first = packets[0]
+  if (!first || first.length < 8) throw new Error('No RESPOND_PRUNING_LOG received')
+  return new DataView(first.buffer, first.byteOffset, first.byteLength).getBigInt64(0, true)
+}
+
+/**
+ * Requests the log state digest for a tick (admin). Requires a 32-byte admin passcode.
+ * Request payload: passcode(32B) requestedTick(u32) = 36 bytes.
+ * Returns the 32-byte digest.
+ */
+export async function requestLogStateDigest(
+  conn: NodeConnection,
+  passcode: Uint8Array,
+  requestedTick: number,
+  options?: { signal?: AbortSignal },
+): Promise<Uint8Array> {
+  if (passcode.length !== 32) throw new RangeError('passcode must be 32 bytes')
+  const payload = new Uint8Array(36)
+  payload.set(passcode, 0)
+  new DataView(payload.buffer).setUint32(32, requestedTick, true)
+  const packets = await conn.request(MESSAGE_TYPE.REQUEST_LOG_STATE_DIGEST, payload, options)
+  const first = packets[0]
+  if (!first || first.length < 32) throw new Error('No RESPOND_LOG_STATE_DIGEST received')
+  return first.slice(0, 32)
 }

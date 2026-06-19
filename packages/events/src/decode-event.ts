@@ -124,7 +124,7 @@ function decodeDustBurning(v: DataView, logType: number): DustBurningData {
 }
 
 function decodeSpectrumStats(v: DataView, logType: number): SpectrumStatsData {
-  assertMinSize(logType, v.byteLength, 220)
+  assertMinSize(logType, v.byteLength, 224)
   const entityCategoryPopulations: number[] = []
   for (let i = 0; i < 48; i++) {
     entityCategoryPopulations.push(v.getUint32(28 + i * 4, true))

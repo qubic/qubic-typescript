@@ -169,7 +169,7 @@ function buildSnippet(call: ContractCallBase, contractIndex: number): string {
     }
 
     const broadcastStep = hasIn ? 4 : 3
-    L.push('const { encoded, hash } = await wallet.buildScTransaction({')
+    L.push('const { encoded, hash } = await wallet.buildContractCall({')
     L.push('  destination: CONTRACT_ID,')
     if (call.requiresAmount) {
       L.push('  amount: 1000n,    // requiresAmount: include invocation reward')

@@ -17,11 +17,7 @@ import { toSeed, toIdentity } from "@qubic.org/types"
 **Prepare keys**
 
 ```ts
-import { buildTransaction, signTransaction, encodeTransaction } from "@qubic.org/tx"
-import { publicKeyFromSeed } from "@qubic.org/crypto"
-import { toSeed, toIdentity } from "@qubic.org/types"
-
-const seed = toSeed("...", )
+const seed = toSeed("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 
 const source = publicKeyFromSeed(seed)  // synchronous
 const destination = toIdentity("CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL")
@@ -35,7 +31,7 @@ const unsigned = buildTransaction({
   source,
   destination,
   amount: 1_000_000n,
-  targetTick: 18500000,  // use live.getTickInfo() for the real tick
+  targetTick: tick + 5,  // use live.getTickInfo() for the real tick
   inputType: 0,
 })
 

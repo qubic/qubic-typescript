@@ -60,7 +60,7 @@ pnpm add @qubic.org/wallet
 | Page | What's covered |
 |---|---|
 | [Transfers](./transfers) | `createWallet`, `generateSeed`, `buildTransaction`, `buildContractCall` |
-| [Vault](./vault) | `createVault`, `exportVault`, `importVault`, `unlockVault`, `createWalletFromVault`, `addSeedToVault` |
+| [Vault](./create-vault) | `createVault`, `exportVault`, `importVault`, `unlockVault`, `addToVault` |
 
 ### All exports
 
@@ -72,11 +72,10 @@ import {
 
   // Vault
   createVault,
+  unlockVault,
+  addToVault,
   exportVault,
   importVault,
-  unlockVault,
-  addSeedToVault,
-  createWalletFromVault,
 } from "@qubic.org/wallet"
 ```
 
@@ -112,20 +111,23 @@ console.log(`TX ${hash} broadcast to ${result.value.peersBroadcastedTo} peers`)
 ### Store seeds in an encrypted vault
 
 ```ts
-import { createVault, addSeedToVault, exportVault, importVault, createWalletFromVault } from "@qubic.org/wallet"
-import { createWallet, generateSeed } from "@qubic.org/wallet"
+import { createVault, addToVault, exportVault, importVault, unlockVault, createWallet } from "@qubic.org/wallet"
+import { generateSeed } from "@qubic.org/wallet"
 
-// Create and populate a vault
-const vault = await createVault("my-strong-password")
-const seed  = generateSeed()
-await addSeedToVault(vault, "trading", seed)
+// Create a vault with an initial seed
+const seed = generateSeed()
+const vaultData = await createVault("my-strong-password", [seed])
 
-// Export to a portable encrypted blob (store in localStorage, file, etc.)
-const blob = await exportVault(vault)
+// Add more seeds later — returns new VaultData (immutable)
+const updatedVault = await addToVault(vaultData, "my-strong-password", generateSeed())
 
-// Later: restore and use
-const restored = await importVault(blob, "my-strong-password")
-const wallet   = createWalletFromVault(restored, "trading")
+// Export to a portable encrypted blob (store in localStorage, a file, etc.)
+const blob = exportVault(updatedVault)
+
+// Later: restore and unlock
+const restored = importVault(blob)
+const seeds = await unlockVault(restored, "my-strong-password")
+const wallet = createWallet(seeds[0])
 console.log("Wallet identity:", wallet.identity)
 ```
 

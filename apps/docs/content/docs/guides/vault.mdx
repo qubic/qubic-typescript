@@ -12,10 +12,7 @@ import { createVault, generateSeed } from "@qubic.org/wallet"
 
 const seed = generateSeed()
 
-const vault = await createVault({
-  password: "my-strong-password",
-  seeds: [seed],
-})
+const vault = await createVault("my-strong-password", [seed])
 ```
 
 `createVault` returns a `VaultData` object — a serializable blob you can store anywhere (localStorage, a file, a database). It contains no plaintext seed material.
@@ -49,8 +46,10 @@ const unlockedVault = await unlockVault(vault, "my-strong-password")
 After unlocking, iterate the identities without ever touching raw seed bytes:
 
 ```ts
-for (const identity of unlockedVault.identities) {
-  console.log("Identity:", identity)
+for (const seed of unlockedVault) {
+  // derive identity from each seed as needed
+  const wallet = createWallet(seed)
+  console.log("Identity:", wallet.identity)
 }
 ```
 
@@ -90,7 +89,7 @@ const newSeed = generateSeed()
 const updatedVault = await addToVault(vault, "my-strong-password", newSeed)
 ```
 
-Re-export and persist the updated vault data after adding seeds.
+Persist the updated vault data after adding seeds.
 
 ## React with VaultProvider
 

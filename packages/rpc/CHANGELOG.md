@@ -1,5 +1,28 @@
 # @qubic.org/rpc
 
+## 1.0.0
+
+### Major Changes
+
+- 782265b: - Add nullish checks before casting API response fields
+  - `waitForTick` retries on transient errors instead of failing immediately
+  - Add `getBlockHeight()` (deprecated, wraps `getTickInfo()`)
+  - Re-export `Result` type from `@qubic.org/types` instead of local copy
+
+### Patch Changes
+
+- eebe912: Fix package implementations against network specs and reference resource files.
+
+  - **rpc**: Add missing `getContractIpoBids` endpoint (`GET /ipos/{contractIndex}/bids`) with `IpoBid`/`IpoBidData` types
+  - **bob**: Fix `querySmartContract` params (add missing nonce, correct arg shape), add `getTransactionReceipt` method, rename `contractIndex` to `scIndex` in `BobLogFilter`/`BobFindLogFilter` to match core spec
+  - **crypto**: Rename `bytesToBigIntBE` to `bytesToBigIntLE` to reflect correct little-endian semantics
+
+- Updated dependencies [02405fa]
+- Updated dependencies [f63c873]
+- Updated dependencies [782265b]
+- Updated dependencies [abc3d50]
+  - @qubic.org/types@1.0.0
+
 ## 0.2.7
 
 ### Patch Changes

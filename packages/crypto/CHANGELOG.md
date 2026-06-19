@@ -1,5 +1,29 @@
 # @qubic.org/crypto
 
+## 1.0.0
+
+### Major Changes
+
+- 782265b: - Add `isValidIdentityChecksum()` for full Qubic identity checksum validation
+  - Rename internal `bytesToBigInt` to `bytesToBigIntLE`/`bytesToBigIntBE` for endianness clarity
+
+### Patch Changes
+
+- 13a2267: - **events**: Fix `decodeSpectrumStats` minimum payload size from 224 to 220 bytes (u64+u64+u64+u32+48×u32 = 220)
+  - **crypto**: Export `deriveKeys` and `DerivedKeys` type from package index
+- eebe912: Fix package implementations against network specs and reference resource files.
+
+  - **rpc**: Add missing `getContractIpoBids` endpoint (`GET /ipos/{contractIndex}/bids`) with `IpoBid`/`IpoBidData` types
+  - **bob**: Fix `querySmartContract` params (add missing nonce, correct arg shape), add `getTransactionReceipt` method, rename `contractIndex` to `scIndex` in `BobLogFilter`/`BobFindLogFilter` to match core spec
+  - **crypto**: Rename `bytesToBigIntBE` to `bytesToBigIntLE` to reflect correct little-endian semantics
+
+- e5f4a1a: Fix signature malleability: remove weak S < 2^246 bit-mask guard and rely solely on the strict S < curve_order check. Signatures with non-canonical scalars (S in [r, 2^246)) are now correctly rejected, closing the double-spend vector where S' = S + r would verify for the same message.
+- Updated dependencies [02405fa]
+- Updated dependencies [f63c873]
+- Updated dependencies [782265b]
+- Updated dependencies [abc3d50]
+  - @qubic.org/types@1.0.0
+
 ## 0.2.7
 
 ### Patch Changes

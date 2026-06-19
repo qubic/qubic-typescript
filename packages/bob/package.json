@@ -1,6 +1,6 @@
 {
   "name": "@qubic.org/bob",
-  "version": "0.2.7",
+  "version": "1.0.0",
   "license": "Anti-Military",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -21,7 +21,7 @@
     "test": "bun test"
   },
   "dependencies": {
-    "@qubic.org/types": "^0.2.1",
+    "@qubic.org/types": "^1.0.0",
     "openapi-fetch": "^0.17.0"
   },
   "devDependencies": {

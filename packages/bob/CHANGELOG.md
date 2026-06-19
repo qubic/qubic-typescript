@@ -1,5 +1,36 @@
 # @qubic.org/bob
 
+## 1.0.0
+
+### Major Changes
+
+- 782265b: - Rename `BobTickData` to `BobIndexedTick` with complete fields from upstream OpenAPI
+  - Complete `BobTransaction` fields
+  - Centralize default base URL to `DEFAULT_BOB_BASE_URL`
+  - Validate identity format and bigint-convertibility in RPC responses
+  - Re-export `Result` type from `@qubic.org/types` instead of local copy
+
+### Patch Changes
+
+- 02405fa: - **types**: Add `GGWP` (index 28) to `CONTRACT_INDEX` constant to match `smart_contracts.json`
+  - **bob**: Add missing JSON-RPC methods: `getClientVersion`, `getSyncing`, `getStatus`, `sendRawTransaction`, `getTickByHash` with `BobSyncStatus` and `BobRpcStatus` types
+- f63c873: - **tcp**: Add request helpers and decoders for all 20 TCP message types, including oracle data queries and log/pruning helpers. Fix `decodeComputors` key offset (10→2), `requestContractFunction` header size (12→8 bytes with u16 fields), and asset decoders to read individual per-packet structs instead of count+array
+  - **types**: Add protocol constants (`MAX_MESSAGE_SIZE`, `SPECTRUM_CAPACITY`, `ASSETS_CAPACITY`, `ISSUANCE_RATE`, `MAX_AMOUNT`, `MAX_SUPPLY`, `INITIAL_TICK`, `DEFAULT_PORT`, `NUMBER_OF_SOLUTION_PROCESSORS`, `QUORUM`) and enums (`ORACLE_QUERY_TYPE`, `ORACLE_QUERY_STATUS`, `ORACLE_FLAG`, `ASSET_TYPE`, `TX_INPUT_TYPE`, `ORACLE_REQ_TYPE`, `ORACLE_RES_TYPE`)
+  - **events**: Add `subscribeBurningEvents`, `subscribeOracleEvents`, `subscribeCustomMessages` subscription helpers
+  - **react**: Add `useActiveIpos` and `useContractIpoBids` hooks
+  - **bob**: Fix `BobSyncStatus` discriminated union shape to match C++ response (`{ syncing: false }` instead of bare `false`)
+- eebe912: Fix package implementations against network specs and reference resource files.
+
+  - **rpc**: Add missing `getContractIpoBids` endpoint (`GET /ipos/{contractIndex}/bids`) with `IpoBid`/`IpoBidData` types
+  - **bob**: Fix `querySmartContract` params (add missing nonce, correct arg shape), add `getTransactionReceipt` method, rename `contractIndex` to `scIndex` in `BobLogFilter`/`BobFindLogFilter` to match core spec
+  - **crypto**: Rename `bytesToBigIntBE` to `bytesToBigIntLE` to reflect correct little-endian semantics
+
+- Updated dependencies [02405fa]
+- Updated dependencies [f63c873]
+- Updated dependencies [782265b]
+- Updated dependencies [abc3d50]
+  - @qubic.org/types@1.0.0
+
 ## 0.2.7
 
 ### Patch Changes

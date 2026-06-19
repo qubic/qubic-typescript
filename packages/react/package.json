@@ -1,6 +1,6 @@
 {
   "name": "@qubic.org/react",
-  "version": "0.2.7",
+  "version": "1.0.0",
   "license": "Anti-Military",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -23,11 +23,11 @@
     "react": ">=18"
   },
   "dependencies": {
-    "@qubic.org/contracts": "^0.2.1",
-    "@qubic.org/crypto": "^0.2.1",
-    "@qubic.org/rpc": "^0.2.1",
-    "@qubic.org/types": "^0.2.1",
-    "@qubic.org/wallet": "^0.2.1",
+    "@qubic.org/contracts": "^1.0.0",
+    "@qubic.org/crypto": "^1.0.0",
+    "@qubic.org/rpc": "^1.0.0",
+    "@qubic.org/types": "^1.0.0",
+    "@qubic.org/wallet": "^1.0.0",
     "@tanstack/react-query": "^5.100.10"
   },
   "devDependencies": {

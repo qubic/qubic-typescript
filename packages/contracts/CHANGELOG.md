@@ -1,5 +1,34 @@
 # @qubic.org/contracts
 
+## 1.0.0
+
+### Major Changes
+
+- 782265b: - Validate decoded output keys exist before casting to `TOutput`
+  - Re-export `Result` type from `@qubic.org/types` instead of local copy
+  - Regenerate bindings from updated registry (GGWP, QIP, Random)
+
+### Patch Changes
+
+- 4574738: Add ABI snapshots and contract wrappers for epochs 214–215. QVAULT changed in epoch 214 (v1.292.0), Qswap changed in epoch 215 (v1.293.1). Fix backfill script to pre-seed prior state so single-epoch runs only write snapshots for contracts with ABI changes.
+- Updated dependencies [782265b]
+- Updated dependencies [02405fa]
+- Updated dependencies [13a2267]
+- Updated dependencies [a9f2da5]
+- Updated dependencies [f63c873]
+- Updated dependencies [782265b]
+- Updated dependencies [782265b]
+- Updated dependencies [eebe912]
+- Updated dependencies [782265b]
+- Updated dependencies [e5f4a1a]
+- Updated dependencies [caa30e3]
+- Updated dependencies [4574738]
+- Updated dependencies [abc3d50]
+  - @qubic.org/crypto@1.0.0
+  - @qubic.org/types@1.0.0
+  - @qubic.org/registry@1.0.0
+  - @qubic.org/rpc@1.0.0
+
 ## 0.2.7
 
 ### Patch Changes

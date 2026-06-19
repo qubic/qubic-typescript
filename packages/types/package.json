@@ -1,6 +1,6 @@
 {
   "name": "@qubic.org/types",
-  "version": "0.2.7",
+  "version": "1.0.0",
   "license": "Anti-Military",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

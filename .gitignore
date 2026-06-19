@@ -10,6 +10,28 @@ dist
 skills.lock
 .open-next
 
+# tsc build artifacts in source dirs
+packages/**/*.js
+packages/**/*.js.map
+packages/**/*.d.ts
+packages/**/*.d.ts.map
+apps/**/*.js
+apps/**/*.js.map
+apps/**/*.d.ts
+apps/**/*.d.ts.map
+scripts/**/*.js
+scripts/**/*.js.map
+scripts/**/*.d.ts
+scripts/**/*.d.ts.map
+
+# Generated OpenAPI schema declarations (committed)
+!packages/bob/src/__generated__/bob-schema.d.ts
+!packages/rpc/src/live-schema.d.ts
+!packages/rpc/src/query-schema.d.ts
+
+# next-env.d.ts is required by Next.js
+!apps/registry-web/next-env.d.ts
+
 # code coverage
 coverage
 *.lcov

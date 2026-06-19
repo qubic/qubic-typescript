@@ -84,4 +84,66 @@ export const PROTOCOL = {
   SPECTRUM_CAPACITY: 16_777_216,
   /** Assets capacity: 2^ASSETS_DEPTH. */
   ASSETS_CAPACITY: 16_777_216,
+  /** Issuance rate: 1e12 (base unit per coin). */
+  ISSUANCE_RATE: 1_000_000_000_000,
+  /** Maximum amount in a single transaction: ISSUANCE_RATE * 1000. */
+  MAX_AMOUNT: 1_000_000_000_000_000,
+  /** Maximum total supply: ISSUANCE_RATE * 200. */
+  MAX_SUPPLY: 200_000_000_000_000,
 } as const satisfies Record<string, number>
+
+/** Oracle query types from common_def.h. */
+export const ORACLE_QUERY_TYPE = {
+  CONTRACT_QUERY: 0,
+  CONTRACT_SUBSCRIPTION: 1,
+  USER_QUERY: 2,
+} as const
+
+/** Oracle query statuses from common_def.h. */
+export const ORACLE_QUERY_STATUS = {
+  UNKNOWN: 0,
+  PENDING: 1,
+  COMMITTED: 2,
+  SUCCESS: 3,
+  TIMEOUT: 4,
+  UNRESOLVABLE: 5,
+} as const
+
+/** Oracle status/error flags from common_def.h. */
+export const ORACLE_FLAG = {
+  REPLY_PENDING: 0x0,
+  INVALID_ORACLE: 0x1,
+  ORACLE_UNAVAIL: 0x2,
+  INVALID_TIME: 0x4,
+  INVALID_PLACE: 0x8,
+  INVALID_ARG: 0x10,
+  OM_ERROR_FLAGS: 0xff,
+  REPLY_RECEIVED: 0x100,
+  BAD_SIZE_REPLY: 0x200,
+  OM_DISAGREE: 0x400,
+  BAD_SIZE_REVEAL: 0x800,
+  FAKE_COMMITS: 0x1000,
+} as const
+
+/** Asset record types from assets.h. */
+export const ASSET_TYPE = {
+  EMPTY: 0,
+  ISSUANCE: 1,
+  OWNERSHIP: 2,
+  POSSESSION: 3,
+} as const
+
+/** Transaction input types from protocol.json. */
+export const TX_INPUT_TYPE = {
+  TRANSFER: 0,
+  VOTE_COUNTER: 1,
+  MINING_SOLUTION: 2,
+  FILE_HEADER: 3,
+  FILE_FRAGMENT: 4,
+  FILE_TRAILER: 5,
+  ORACLE_REPLY_COMMIT: 6,
+  ORACLE_REPLY_REVEAL: 7,
+  MINING_SHARE_COUNTER: 8,
+  EXECUTION_FEE_REPORT: 9,
+  ORACLE_USER_QUERY: 10,
+} as const

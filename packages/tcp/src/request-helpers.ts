@@ -182,17 +182,16 @@ export async function requestSystemInfo(
 
 /**
  * Decodes a BROADCAST_COMPUTORS / RESPOND_COMPUTORS payload.
- * Layout: epoch(u16) _unused(u32) _unused(u32) publicKeys(676×32B) signatures(64×64B) padding(128B)
- * We only extract epoch + the 676 public keys.
+ * C++ Computors struct (pragma pack 1): epoch(u16) + publicKeys(676×32B) + signature(64B) = 21698 bytes.
  */
 export function decodeComputors(payload: Uint8Array): ComputorList {
-  // Minimum: 2 + 4 + 4 + 676*32 = 21642
-  if (payload.length < 21_642)
+  // Minimum: 2 + 676*32 = 21634 (epoch + keys, ignoring signature)
+  if (payload.length < 21_634)
     throw new RangeError(`Computors payload too short: ${payload.length}`)
   const v = new DataView(payload.buffer, payload.byteOffset, payload.byteLength)
   const epoch = v.getUint16(0, true)
   const publicKeys: Uint8Array[] = []
-  const keyStart = 10 // 2 + 4 + 4
+  const keyStart = 2 // epoch is 2 bytes, pragma pack(1) so no alignment padding
   for (let i = 0; i < 676; i++) {
     publicKeys.push(payload.slice(keyStart + i * 32, keyStart + (i + 1) * 32))
   }
@@ -200,24 +199,16 @@ export function decodeComputors(payload: Uint8Array): ComputorList {
 }
 
 /**
- * Requests the computor list for a given epoch.
- * The request payload is a 2-byte epoch (u16 LE). Omit epoch to request the current epoch's list.
+ * Requests the current computor list from the node.
+ * C++ RequestComputors is a header-only request with no payload.
  * Response arrives as BROADCAST_COMPUTORS packets.
  */
 export async function requestComputors(
   conn: NodeConnection,
-  epoch?: number,
   options?: { signal?: AbortSignal },
 ): Promise<ComputorList> {
-  const payload =
-    epoch !== undefined
-      ? (() => {
-          const b = new Uint8Array(2)
-          new DataView(b.buffer).setUint16(0, epoch, true)
-          return b
-        })()
-      : undefined
-  const packets = await conn.request(MESSAGE_TYPE.REQUEST_COMPUTORS, payload, options)
+  // C++ RequestComputors has no payload fields — epoch-specific requests are not part of the protocol.
+  const packets = await conn.request(MESSAGE_TYPE.REQUEST_COMPUTORS, undefined, options)
   const first = packets[0]
   if (!first) throw new Error('No BROADCAST_COMPUTORS packet received')
   return decodeComputors(first)
@@ -279,33 +270,43 @@ function readAssetName(v: DataView, offset: number): string {
   return name
 }
 
-/**
- * Decodes an array of AssetEntry from a payload starting at `offset`.
- * Each entry: issuerPublicKey(32B) numberOfShares(i64) managingContractIndex(i64)
- *   assetName(7B) numberOfDecimalPlaces(u8) unitOfMeasurement(7B)
- * = 32 + 8 + 8 + 7 + 1 + 7 = 63 bytes
- */
-function decodeAssetEntries(payload: Uint8Array, count: number, offset: number): AssetEntry[] {
-  const v = new DataView(payload.buffer, payload.byteOffset, payload.byteLength)
-  const entries: AssetEntry[] = []
-  for (let i = 0; i < count; i++) {
-    const base = offset + i * 63
-    entries.push({
-      issuerPublicKey: payload.slice(base, base + 32),
-      numberOfShares: v.getBigInt64(base + 32, true),
-      managingContractIndex: Number(v.getBigInt64(base + 40, true)),
-      assetName: readAssetName(v, base + 48),
-      numberOfDecimalPlaces: v.getUint8(base + 55),
-      unitOfMeasurement: readAssetName(v, base + 56),
-    })
+/** Size of a single RespondIssuedAssets packet: AssetRecord(48) + tick(4) + universeIndex(4) + siblings(24×32=768) = 824. */
+const RESPOND_ISSUED_ASSET_SIZE = 48 + 4 + 4 + 24 * 32
+/** Size of a single RespondOwnedAssets packet: AssetRecord(48) + issuanceAsset(48) + tick(4) + universeIndex(4) + siblings(24×32=768) = 872. */
+const RESPOND_OWNED_ASSET_SIZE = 48 + 48 + 4 + 4 + 24 * 32
+/** Size of a single RespondPossessedAssets packet: AssetRecord(48) + ownershipAsset(48) + issuanceAsset(48) + tick(4) + universeIndex(4) + siblings(24×32=768) = 920. */
+const RESPOND_POSSESSED_ASSET_SIZE = 48 + 48 + 48 + 4 + 4 + 24 * 32
+
+/** Decodes an issuance AssetRecord (48 bytes): publicKey(32) type(1) name(7) decimalPlaces(1) unitOfMeasurement(7). */
+function decodeIssuanceAssetRecord(payload: Uint8Array, offset: number): AssetEntry {
+  const v = new DataView(payload.buffer, payload.byteOffset + offset, 48)
+  return {
+    issuerPublicKey: payload.slice(offset, offset + 32),
+    numberOfShares: 0n, // issuance records don't have numberOfShares
+    managingContractIndex: 0,
+    assetName: readAssetName(v, 33), // skip type byte at 32
+    numberOfDecimalPlaces: v.getUint8(40),
+    unitOfMeasurement: readAssetName(v, 41),
   }
-  return entries
+}
+
+/** Decodes an ownership/possession AssetRecord (48 bytes): publicKey(32) type(1) padding(1) managingContractIndex(u16) index(u32) numberOfShares(i64). */
+function decodeOwnershipAssetRecord(payload: Uint8Array, offset: number): AssetEntry {
+  const v = new DataView(payload.buffer, payload.byteOffset + offset, 48)
+  return {
+    issuerPublicKey: payload.slice(offset, offset + 32),
+    numberOfShares: v.getBigInt64(40, true),
+    managingContractIndex: v.getUint16(34, true),
+    assetName: '',
+    numberOfDecimalPlaces: 0,
+    unitOfMeasurement: '',
+  }
 }
 
 /**
  * Requests assets issued by a given identity.
- * Request payload: identity public key (32 bytes).
- * Response: RESPOND_ISSUED_ASSETS — count(u32) + entries.
+ * The node sends one RespondIssuedAssets packet per asset (824 bytes each), terminated by END_RESPONSE.
+ * Each packet: AssetRecord(48) + tick(u32) + universeIndex(u32) + siblings(24×32).
  */
 export async function requestIssuedAssets(
   conn: NodeConnection,
@@ -314,18 +315,17 @@ export async function requestIssuedAssets(
 ): Promise<AssetEntry[]> {
   if (publicKey.length !== 32) throw new RangeError('publicKey must be 32 bytes')
   const packets = await conn.request(MESSAGE_TYPE.REQUEST_ISSUED_ASSETS, publicKey, options)
-  const payload = packets[0]
-  if (!payload || payload.length < 4) return []
-  const count = new DataView(payload.buffer, payload.byteOffset, payload.byteLength).getUint32(
-    0,
-    true,
-  )
-  return decodeAssetEntries(payload, count, 4)
+  const entries: AssetEntry[] = []
+  for (const packet of packets) {
+    if (packet.length < RESPOND_ISSUED_ASSET_SIZE) continue
+    entries.push(decodeIssuanceAssetRecord(packet, 0))
+  }
+  return entries
 }
 
 /**
  * Requests assets owned by a given identity.
- * Request payload: identity public key (32 bytes).
+ * Each packet: ownershipAsset(48) + issuanceAsset(48) + tick(u32) + universeIndex(u32) + siblings(24×32).
  */
 export async function requestOwnedAssets(
   conn: NodeConnection,
@@ -334,18 +334,24 @@ export async function requestOwnedAssets(
 ): Promise<AssetEntry[]> {
   if (publicKey.length !== 32) throw new RangeError('publicKey must be 32 bytes')
   const packets = await conn.request(MESSAGE_TYPE.REQUEST_OWNED_ASSETS, publicKey, options)
-  const payload = packets[0]
-  if (!payload || payload.length < 4) return []
-  const count = new DataView(payload.buffer, payload.byteOffset, payload.byteLength).getUint32(
-    0,
-    true,
-  )
-  return decodeAssetEntries(payload, count, 4)
+  const entries: AssetEntry[] = []
+  for (const packet of packets) {
+    if (packet.length < RESPOND_OWNED_ASSET_SIZE) continue
+    const ownership = decodeOwnershipAssetRecord(packet, 0)
+    const issuance = decodeIssuanceAssetRecord(packet, 48)
+    entries.push({
+      ...ownership,
+      assetName: issuance.assetName,
+      numberOfDecimalPlaces: issuance.numberOfDecimalPlaces,
+      unitOfMeasurement: issuance.unitOfMeasurement,
+    })
+  }
+  return entries
 }
 
 /**
  * Requests assets possessed by a given identity.
- * Request payload: identity public key (32 bytes).
+ * Each packet: possessionAsset(48) + ownershipAsset(48) + issuanceAsset(48) + tick(u32) + universeIndex(u32) + siblings(24×32).
  */
 export async function requestPossessedAssets(
   conn: NodeConnection,
@@ -354,13 +360,19 @@ export async function requestPossessedAssets(
 ): Promise<AssetEntry[]> {
   if (publicKey.length !== 32) throw new RangeError('publicKey must be 32 bytes')
   const packets = await conn.request(MESSAGE_TYPE.REQUEST_POSSESSED_ASSETS, publicKey, options)
-  const payload = packets[0]
-  if (!payload || payload.length < 4) return []
-  const count = new DataView(payload.buffer, payload.byteOffset, payload.byteLength).getUint32(
-    0,
-    true,
-  )
-  return decodeAssetEntries(payload, count, 4)
+  const entries: AssetEntry[] = []
+  for (const packet of packets) {
+    if (packet.length < RESPOND_POSSESSED_ASSET_SIZE) continue
+    const possession = decodeOwnershipAssetRecord(packet, 0)
+    const issuance = decodeIssuanceAssetRecord(packet, 96)
+    entries.push({
+      ...possession,
+      assetName: issuance.assetName,
+      numberOfDecimalPlaces: issuance.numberOfDecimalPlaces,
+      unitOfMeasurement: issuance.unitOfMeasurement,
+    })
+  }
+  return entries
 }
 
 // ── Smart contract query ──────────────────────────────────────────────────────
@@ -375,7 +387,8 @@ export function decodeContractFunctionResponse(payload: Uint8Array): ContractFun
 
 /**
  * Queries a smart contract function via TCP.
- * Request payload: contractIndex(u32) inputType(u32) requestDataSize(u32) requestData(variable)
+ * Request payload: contractIndex(u32) inputType(u16) inputSize(u16) requestData(variable)
+ * Matches C++ RequestContractFunction struct (8-byte header + variable input).
  */
 export async function requestContractFunction(
   conn: NodeConnection,
@@ -384,12 +397,12 @@ export async function requestContractFunction(
   requestData: Uint8Array,
   options?: { signal?: AbortSignal },
 ): Promise<ContractFunctionResponse> {
-  const payload = new Uint8Array(12 + requestData.length)
+  const payload = new Uint8Array(8 + requestData.length)
   const v = new DataView(payload.buffer)
   v.setUint32(0, contractIndex, true)
-  v.setUint32(4, inputType, true)
-  v.setUint32(8, requestData.length, true)
-  payload.set(requestData, 12)
+  v.setUint16(4, inputType, true)
+  v.setUint16(6, requestData.length, true)
+  payload.set(requestData, 8)
   const packets = await conn.request(MESSAGE_TYPE.REQUEST_CONTRACT_FUNCTION, payload, options)
   const first = packets[0]
   if (!first) throw new Error('No RESPOND_CONTRACT_FUNCTION packet received')

@@ -171,9 +171,17 @@ export interface BobComputorList {
 export type BobSyncStatus =
   | false
   | {
-      currentTick: number
-      highestTick: number
-      currentEpoch: number
+      epoch: number
+      initialTick: number
+      targetTickVoteSignature: number
+      computorListSignature: number
+      currentFetchingTick: number
+      currentFetchingLogTick: number
+      currentVerifyLoggingTick: number
+      currentIndexingTick: number
+      lastSeenNetworkTick?: number
+      syncing: true
+      progress: number
     }
 
 /** Node status returned by qubic_status (RPC variant). */

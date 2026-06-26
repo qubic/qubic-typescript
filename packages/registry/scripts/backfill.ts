@@ -73,18 +73,155 @@ interface SmartContractsFile {
   smart_contracts: SmartContractEntry[]
 }
 
-const { smart_contracts: allContracts } = JSON.parse(
-  readFileSync(SMART_CONTRACTS_JSON, 'utf-8'),
-) as SmartContractsFile
+interface GithubContentEntry {
+  name: string
+  type: string
+}
 
-const filterNames = args.contracts?.split(',').map((s) => s.trim().toLowerCase())
-const contracts = filterNames
-  ? allContracts.filter(
-      (sc) =>
-        filterNames.includes(sc.filename.replace(/\.h$/, '').toLowerCase()) ||
-        filterNames.includes(sc.label.toLowerCase()),
+/**
+ * Loads the contract list from the local smart_contracts.json file.
+ * Falls back to fetching the contract list from the qubic/core GitHub repo
+ * when the file doesn't exist (e.g. in CI / GitHub Actions).
+ */
+async function loadContractList(): Promise<SmartContractEntry[]> {
+  // 1. Try local file first
+  if (existsSync(SMART_CONTRACTS_JSON)) {
+    const { smart_contracts } = JSON.parse(
+      readFileSync(SMART_CONTRACTS_JSON, 'utf-8'),
+    ) as SmartContractsFile
+    return smart_contracts
+  }
+
+  console.log(
+    'smart_contracts.json not found locally — fetching contract list from qubic/core…',
+  )
+
+  // 2. Fetch the src/contracts/ directory listing from qubic/core on GitHub
+  const headers: Record<string, string> = args.token
+    ? { Authorization: `Bearer ${args.token}` }
+    : {}
+  const res = await fetch(
+    'https://api.github.com/repos/qubic/core/contents/src/contracts?ref=main',
+    { headers },
+  )
+  if (!res.ok)
+    throw new Error(
+      `Failed to fetch contract list from GitHub: ${res.status} ${res.statusText}`,
     )
-  : allContracts
+  const entries = (await res.json()) as GithubContentEntry[]
+  const contractFiles = entries
+    .filter((e) => e.type === 'file' && e.name.endsWith('.h'))
+    .map((e) => e.name)
+    .filter(
+      (n) =>
+        n !== 'qpi.h' &&
+        n !== 'math_lib.h' &&
+        !n.endsWith('_old.h') &&
+        n !== 'EmptyTemplate.h' &&
+        !n.startsWith('TestExample'),
+    )
+    .sort()
+
+  // Map contract filenames to CONTRACT_INDEX values.
+  // Must stay in sync with @qubic.org/types CONTRACT_INDEX.
+  const FILENAME_TO_INDEX: Record<string, number> = {
+    Qx: 1,
+    Quottery: 2,
+    Random: 3,
+    QUtil: 4,
+    MyLastMatch: 5,
+    GeneralQuorumProposal: 6,
+    SupplyWatcher: 7,
+    ComputorControlledFund: 8,
+    Qearn: 9,
+    QVAULT: 10,
+    MsVault: 11,
+    Qbay: 12,
+    Qswap: 13,
+    Nostromo: 14,
+    Qdraw: 15,
+    RandomLottery: 16,
+    QBond: 17,
+    QIP: 18,
+    QRaffle: 19,
+    qRWA: 20,
+    QReservePool: 21,
+    QThirtyFour: 22,
+    QDuel: 23,
+    Pulse: 24,
+    VottunBridge: 25,
+    Qusino: 26,
+    Escrow: 27,
+    GGWP: 28,
+  }
+
+  // 3. Derive firstUseEpoch from existing epoch snapshots on disk
+  const firstUseEpochByIndex = new Map<number, number>()
+  if (existsSync(EPOCHS_DIR)) {
+    for (const d of readdirSync(EPOCHS_DIR, { withFileTypes: true })) {
+      if (!d.isDirectory()) continue
+      const epoch = Number(d.name)
+      if (Number.isNaN(epoch)) continue
+      for (const file of readdirSync(join(EPOCHS_DIR, d.name)).filter((f) =>
+        f.endsWith('.json'),
+      )) {
+        try {
+          const snap = JSON.parse(
+            readFileSync(join(EPOCHS_DIR, d.name, file), 'utf-8'),
+          ) as { contractIndex?: number }
+          if (snap.contractIndex !== undefined) {
+            const prev = firstUseEpochByIndex.get(snap.contractIndex)
+            if (prev === undefined || epoch < prev)
+              firstUseEpochByIndex.set(snap.contractIndex, epoch)
+          }
+        } catch {
+          /* skip unreadable snapshot */
+        }
+      }
+    }
+  }
+
+  // 4. Build the contract list
+  const list: SmartContractEntry[] = []
+  for (const filename of contractFiles) {
+    const stem = filename.replace(/\.h$/, '')
+    const index = FILENAME_TO_INDEX[stem]
+    if (index === undefined) continue // skip unknown contracts
+    list.push({
+      filename,
+      label: stem,
+      contractIndex: index,
+      firstUseEpoch: firstUseEpochByIndex.get(index) ?? 0,
+    })
+  }
+
+  if (list.length === 0)
+    throw new Error(
+      'Could not build contract list — no known contracts found in qubic/core.',
+    )
+
+  console.log(`Built contract list with ${list.length} contracts from qubic/core.`)
+  return list
+}
+
+let allContracts: SmartContractEntry[]
+let contracts: SmartContractEntry[]
+
+async function initContracts(): Promise<void> {
+  allContracts = await loadContractList()
+
+  const filterNames = args.contracts
+    ?.split(',')
+    .map((s) => s.trim().toLowerCase())
+  contracts = filterNames
+    ? allContracts.filter(
+        (sc) =>
+          filterNames.includes(
+            sc.filename.replace(/\.h$/, '').toLowerCase(),
+          ) || filterNames.includes(sc.label.toLowerCase()),
+      )
+    : allContracts
+}
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -674,6 +811,8 @@ async function runCatchUp() {
 }
 
 // ── Dispatch ──────────────────────────────────────────────────────────────────
+
+await initContracts()
 
 if (args.local) {
   await runLocal()

@@ -2,18 +2,142 @@
 @import "fumadocs-ui/css/black.css";
 @import "fumadocs-ui/css/preset.css";
 
-html {
-  scrollbar-gutter: stable;
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  letter-spacing: 0.0060rem;
+/* ── Qubic brand tokens ──────────────────────────────────────────────────────
+   --color-fd-primary is the single Fumadocs token that drives active sidebar
+   items, active TOC links, focus rings, and interactive accents via built-in
+   data-[active=true]:text-fd-primary / ring-fd-primary utility classes.
+   Setting it here (via @theme, the Tailwind v4 way) removes the need to
+   manually target [data-active] selectors.                                    */
+@theme {
+  --color-fd-primary: #1adef5;
+  --color-fd-primary-foreground: #09090b;
+  --color-fd-ring: #1adef5;
 }
 
-code,
-kbd,
-samp,
-pre {
+/* ── Dark-mode surface palette ───────────────────────────────────────────────
+   #nd-sidebar and #nd-toc use bg-fd-card; #nd-nav uses bg-fd-background.
+   Set both so all chrome is consistent with docs.qubic.org.                  */
+.dark {
+  --color-fd-background: #1b1b1d;
+  --color-fd-card: #242526;
+  --color-fd-popover: #1f1f21;
+  --color-fd-muted: #2a2a2c;
+  --color-fd-secondary: #2a2a2c;
+  --color-fd-accent: #303032;
+  --color-fd-border: hsla(0, 0%, 60%, 0.18);
+  --color-fd-foreground: #bdbfc6;
+  --color-fd-muted-foreground: #bdbfc6;
+  --color-fd-primary: #1adef5;
+  --color-fd-primary-foreground: #09090b;
+  --color-fd-ring: #1adef5;
+}
+
+/* Callout accent colors — info uses Qubic cyan */
+:root {
+  --color-fd-info: #1adef5;
+  --color-fd-success: #2ecc71;
+  --color-fd-warning: #f59e0b;
+  --color-fd-error: #ef4444;
+}
+
+/* ── Nav background ──────────────────────────────────────────────────────────
+   The docs header uses bg-fd-background, but we want it to match the sidebar
+   (bg-fd-card). Override directly using the token so it stays in sync.       */
+.dark #nd-nav,
+.dark #nd-subnav {
+  background-color: var(--color-fd-card);
+}
+
+/* ── Typography ──────────────────────────────────────────────────────────────*/
+
+html {
+  scrollbar-gutter: stable;
+  font-family: var(--font-space-grotesk), sans-serif;
+  letter-spacing: 0.006rem;
+}
+
+body {
+  font-weight: 450;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 650;
+}
+
+code, kbd, samp, pre {
   font-family: var(--font-geist-mono), ui-monospace, "Cascadia Code", monospace;
 }
+
+/* ── Content headings ────────────────────────────────────────────────────────*/
+
+#nd-page :is(h1, h2, h3, h4, h5, h6),
+#nd-page :is(h1, h2, h3, h4, h5, h6) a {
+  color: #000;
+}
+.dark #nd-page :is(h1, h2, h3, h4, h5, h6),
+.dark #nd-page :is(h1, h2, h3, h4, h5, h6) a {
+  color: #fff;
+}
+
+#nd-page h1 { font-size: 2.5rem;   line-height: 1.15; }
+#nd-page h2 { font-size: 1.875rem; line-height: 1.25; }
+#nd-page h3 { font-size: 1.5rem;   line-height: 1.3;  }
+#nd-page h4 { font-size: 1.25rem; }
+
+/* DocsDescription paragraph — match body text size */
+#nd-page > p {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* Prose links — use brand primary instead of default fd-foreground */
+.prose :is(p, li, td, th) a:not(.no-underline) {
+  color: var(--color-fd-primary);
+}
+
+/* ── Callouts ────────────────────────────────────────────────────────────────*/
+
+[style*="--callout-color"] {
+  background-color: color-mix(in srgb, var(--callout-color, transparent) 10%, #fff);
+}
+.dark [style*="--callout-color"] {
+  background-color: color-mix(in srgb, var(--callout-color, transparent) 10%, #1f2937);
+}
+
+/* ── Prev / Next footer links ────────────────────────────────────────────────*/
+
+#nd-page > div.\@container > a {
+  color: var(--color-fd-primary);
+}
+#nd-page > div.\@container > a:hover {
+  border-color: var(--color-fd-primary);
+}
+#nd-page > div.\@container > a > p {
+  color: var(--color-fd-muted-foreground);
+}
+
+/* ── TOC ─────────────────────────────────────────────────────────────────────*/
+
+#nd-toc a {
+  font-size: 0.8rem;
+  line-height: 1.5;
+  padding-top: 0.35rem;
+  padding-bottom: 0.35rem;
+}
+
+/* Hide Fumadocs's animated range thumb — no equivalent on docs.qubic.org */
+#nd-toc div.absolute.bg-fd-primary,
+#nd-toc div.w-px.bg-fd-primary {
+  display: none;
+}
+
+/* Safety net: single=true on AnchorProvider should prevent this, but guard
+   against edge cases where multiple items get data-active="true" at once. */
+#nd-toc a[data-active="true"] ~ a[data-active="true"] {
+  color: var(--color-fd-muted-foreground) !important;
+}
+
+/* ── Scroll lock ─────────────────────────────────────────────────────────────*/
 
 html > body[data-scroll-locked] {
   /* biome-ignore lint/complexity/noImportantStyles: scroll-lock override requires !important to beat the library's inline styles */

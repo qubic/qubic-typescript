@@ -17,7 +17,7 @@ export const { useActiveAnchor, useActiveAnchors, useItems } = Primitive;
 export function TOCProvider({ toc, children, ...props }: TOCProviderProps) {
   return (
     <TOCContext value={toc}>
-      <Primitive.AnchorProvider toc={toc} {...props}>
+      <Primitive.AnchorProvider toc={toc} {...props} single>
         {children}
       </Primitive.AnchorProvider>
     </TOCContext>

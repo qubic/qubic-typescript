@@ -6,7 +6,6 @@ import type { MDXComponents } from "mdx/types";
 import { ChangelogContent } from "./changelog-content";
 import { ContractTable } from "./contract-table";
 import { PackageList } from "./package-list";
-import { PackageHeader, PackageSigil } from "./package-sigil";
 
 export function getMDXComponents(components?: MDXComponents) {
   return {
@@ -16,8 +15,6 @@ export function getMDXComponents(components?: MDXComponents) {
     Step,
     Steps,
     TypeTable,
-    PackageSigil,
-    PackageHeader,
     PackageList,
     ContractTable,
     ChangelogContent,

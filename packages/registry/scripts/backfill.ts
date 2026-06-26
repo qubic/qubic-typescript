@@ -92,9 +92,7 @@ async function loadContractList(): Promise<SmartContractEntry[]> {
     return smart_contracts
   }
 
-  console.log(
-    'smart_contracts.json not found locally — fetching contract list from qubic/core…',
-  )
+  console.log('smart_contracts.json not found locally — fetching contract list from qubic/core…')
 
   // 2. Fetch the src/contracts/ directory listing from qubic/core on GitHub
   const headers: Record<string, string> = args.token
@@ -105,9 +103,7 @@ async function loadContractList(): Promise<SmartContractEntry[]> {
     { headers },
   )
   if (!res.ok)
-    throw new Error(
-      `Failed to fetch contract list from GitHub: ${res.status} ${res.statusText}`,
-    )
+    throw new Error(`Failed to fetch contract list from GitHub: ${res.status} ${res.statusText}`)
   const entries = (await res.json()) as GithubContentEntry[]
   const contractFiles = entries
     .filter((e) => e.type === 'file' && e.name.endsWith('.h'))
@@ -162,13 +158,11 @@ async function loadContractList(): Promise<SmartContractEntry[]> {
       if (!d.isDirectory()) continue
       const epoch = Number(d.name)
       if (Number.isNaN(epoch)) continue
-      for (const file of readdirSync(join(EPOCHS_DIR, d.name)).filter((f) =>
-        f.endsWith('.json'),
-      )) {
+      for (const file of readdirSync(join(EPOCHS_DIR, d.name)).filter((f) => f.endsWith('.json'))) {
         try {
-          const snap = JSON.parse(
-            readFileSync(join(EPOCHS_DIR, d.name, file), 'utf-8'),
-          ) as { contractIndex?: number }
+          const snap = JSON.parse(readFileSync(join(EPOCHS_DIR, d.name, file), 'utf-8')) as {
+            contractIndex?: number
+          }
           if (snap.contractIndex !== undefined) {
             const prev = firstUseEpochByIndex.get(snap.contractIndex)
             if (prev === undefined || epoch < prev)
@@ -196,9 +190,7 @@ async function loadContractList(): Promise<SmartContractEntry[]> {
   }
 
   if (list.length === 0)
-    throw new Error(
-      'Could not build contract list — no known contracts found in qubic/core.',
-    )
+    throw new Error('Could not build contract list — no known contracts found in qubic/core.')
 
   console.log(`Built contract list with ${list.length} contracts from qubic/core.`)
   return list
@@ -210,15 +202,12 @@ let contracts: SmartContractEntry[]
 async function initContracts(): Promise<void> {
   allContracts = await loadContractList()
 
-  const filterNames = args.contracts
-    ?.split(',')
-    .map((s) => s.trim().toLowerCase())
+  const filterNames = args.contracts?.split(',').map((s) => s.trim().toLowerCase())
   contracts = filterNames
     ? allContracts.filter(
         (sc) =>
-          filterNames.includes(
-            sc.filename.replace(/\.h$/, '').toLowerCase(),
-          ) || filterNames.includes(sc.label.toLowerCase()),
+          filterNames.includes(sc.filename.replace(/\.h$/, '').toLowerCase()) ||
+          filterNames.includes(sc.label.toLowerCase()),
       )
     : allContracts
 }

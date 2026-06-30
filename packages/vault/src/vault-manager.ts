@@ -8,7 +8,7 @@ import { deriveKeyPBKDF2 } from './crypto/pbkdf2.js'
 import { DEFAULT_ARGON2_PARAMS } from './models/types.js'
 import type { AlgorithmParams } from './models/types.js'
 import type { VaultPayload } from './models/vault-payload.js'
-import { randomBytes } from './utils/encoding.js'
+import { fromBase64, randomBytes } from './utils/encoding.js'
 import { zeroize } from './utils/zeroize.js'
 
 const V1_PBKDF2_ITERATIONS = 100_000
@@ -90,9 +90,9 @@ export class VaultManager {
       plaintext = await decrypt(key, ciphertext.slice(0, -16), iv, ciphertext.slice(-16))
     } catch {
       throw new Error('Failed to decrypt v1 vault: wrong password or corrupted data')
+    } finally {
+      zeroize(key)
     }
-
-    zeroize(key)
 
     const v1Data = decodeV1Payload(plaintext)
 
@@ -138,13 +138,4 @@ export class VaultManager {
       zeroize(payload.keyPair.wrappedPrivateKey)
     }
   }
-}
-
-function fromBase64(base64: string): Uint8Array {
-  const binary = atob(base64)
-  const bytes = new Uint8Array(binary.length)
-  for (let i = 0; i < binary.length; i++) {
-    bytes[i] = binary.charCodeAt(i)
-  }
-  return bytes
 }

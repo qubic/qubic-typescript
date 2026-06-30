@@ -12,7 +12,7 @@ export function fromHex(hex: string): Uint8Array {
 }
 
 export function toBase64(bytes: Uint8Array): string {
-  return btoa(String.fromCharCode(...bytes))
+  return btoa(Array.from(bytes, (b) => String.fromCharCode(b)).join(''))
 }
 
 export function fromBase64(base64: string): Uint8Array {

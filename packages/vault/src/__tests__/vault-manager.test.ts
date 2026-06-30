@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'bun:test'
-import { VaultManager } from '../vault-manager.js'
+import { describe, expect, it } from 'bun:test'
 import { TaintStatus } from '../models/types.js'
+import { VaultManager } from '../vault-manager.js'
 
 describe('VaultManager', () => {
   const vault = new VaultManager()

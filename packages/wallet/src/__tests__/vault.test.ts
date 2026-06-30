@@ -1,6 +1,14 @@
 import { describe, expect, test } from 'bun:test'
 import type { Seed } from '@qubic.org/types'
-import { addToVault, createVault, exportVault, importVault, unlockVault, upgradeVault, getVaultVersion } from '../vault.js'
+import {
+  addToVault,
+  createVault,
+  exportVault,
+  getVaultVersion,
+  importVault,
+  unlockVault,
+  upgradeVault,
+} from '../vault.js'
 
 const SEED_A = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' as Seed
 const SEED_B = 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb' as Seed

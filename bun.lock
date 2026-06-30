@@ -45,7 +45,7 @@
       "version": "1.0.0",
       "dependencies": {
         "@noble/hashes": "^2.2.0",
-        "@qubic.org/types": "^0.2.1",
+        "@qubic.org/types": "^1.0.0",
       },
       "devDependencies": {
         "typescript": "*",
@@ -127,8 +127,8 @@
       "name": "@qubic.org/tx",
       "version": "1.0.0",
       "dependencies": {
-        "@qubic.org/crypto": "^0.2.1",
-        "@qubic.org/types": "^0.2.1",
+        "@qubic.org/crypto": "^1.0.0",
+        "@qubic.org/types": "^1.0.0",
       },
       "devDependencies": {
         "typescript": "*",
@@ -156,9 +156,10 @@
       "name": "@qubic.org/wallet",
       "version": "1.0.0",
       "dependencies": {
-        "@qubic.org/crypto": "^0.2.1",
-        "@qubic.org/tx": "^0.2.1",
-        "@qubic.org/types": "^0.2.1",
+        "@qubic.org/crypto": "^1.0.0",
+        "@qubic.org/tx": "^1.0.0",
+        "@qubic.org/types": "^1.0.0",
+        "@qubic.org/vault": "^1.0.0",
       },
       "devDependencies": {
         "typescript": "*",

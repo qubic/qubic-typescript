@@ -1,6 +1,6 @@
 import { toSeed } from '@qubic.org/types'
 import type { Seed } from '@qubic.org/types'
-import { VaultManager, TaintStatusEnum } from '@qubic.org/vault'
+import { TaintStatusEnum, VaultManager } from '@qubic.org/vault'
 import type { VaultPayload } from '@qubic.org/vault'
 
 const vaultManager = new VaultManager()

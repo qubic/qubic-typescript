@@ -10,12 +10,10 @@ export async function wrapPrivateKey(
     ['wrapKey'],
   )
   const iv = globalThis.crypto.getRandomValues(new Uint8Array(12))
-  const wrapped = await globalThis.crypto.subtle.wrapKey(
-    'pkcs8',
-    privateKey,
-    aesKey,
-    { name: 'AES-GCM', iv },
-  )
+  const wrapped = await globalThis.crypto.subtle.wrapKey('pkcs8', privateKey, aesKey, {
+    name: 'AES-GCM',
+    iv,
+  })
   // Combine IV and wrapped key
   const result = new Uint8Array(iv.length + wrapped.byteLength)
   result.set(iv)

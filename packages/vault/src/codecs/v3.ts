@@ -1,4 +1,4 @@
-import { VERSION_BYTE_V3, MIN_VAULT_LENGTH } from '../models/types.js'
+import { MIN_VAULT_LENGTH, VERSION_BYTE_V3 } from '../models/types.js'
 import type { VaultPayload } from '../models/vault-payload.js'
 
 export interface V3Envelope {

@@ -1,5 +1,3 @@
-import { fromBase64 } from '../utils/encoding.js'
-
 export interface V1Envelope {
   salt: string
   iv: string

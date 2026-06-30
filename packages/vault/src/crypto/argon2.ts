@@ -1,4 +1,4 @@
-import { argon2idAsync } from '@noble/hashes/argon2.js'
+import { argon2id } from 'hash-wasm'
 import type { AlgorithmParams } from '../models/types.js'
 
 export async function deriveKeyArgon2id(
@@ -6,10 +6,14 @@ export async function deriveKeyArgon2id(
   salt: Uint8Array,
   params: AlgorithmParams,
 ): Promise<Uint8Array> {
-  return argon2idAsync(password, salt, {
-    t: params.iterations,
-    m: params.memory,
-    p: params.parallelism,
-    dkLen: 32,
+  const result = await argon2id({
+    password,
+    salt,
+    parallelism: params.parallelism,
+    iterations: params.iterations,
+    memorySize: params.memory,
+    hashLength: 32,
+    outputType: 'binary',
   })
+  return new Uint8Array(result)
 }

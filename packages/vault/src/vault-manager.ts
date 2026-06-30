@@ -6,9 +6,12 @@ import { parseV3Envelope, createV3Envelope, encodeV3Payload, decodeV3Payload } f
 import { parseV1Envelope, decodeV1Payload } from './codecs/v1.js'
 import { deriveKeyArgon2id } from './crypto/argon2.js'
 import { deriveKeys } from './crypto/hkdf.js'
+import { deriveKeyPBKDF2 } from './crypto/pbkdf2.js'
 import { encrypt, decrypt } from './crypto/aes-gcm.js'
 import { randomBytes } from './utils/encoding.js'
 import { zeroize } from './utils/zeroize.js'
+
+const V1_PBKDF2_ITERATIONS = 100_000
 
 export interface VaultManagerOptions {
   argon2?: Partial<AlgorithmParams>
@@ -51,7 +54,7 @@ export class VaultManager {
     }
 
     if (version === 1) {
-      throw new Error('v1 vaults require upgrade. Use upgrade() instead.')
+      return this.unlockV1(data, password)
     }
 
     throw new Error(`Unsupported vault version: ${version}`)
@@ -68,10 +71,33 @@ export class VaultManager {
       throw new Error('Only v1 vaults can be upgraded')
     }
 
-    const v1Envelope = parseV1Envelope(data)
-    const v1Data = decodeV1Payload(fromBase64(v1Envelope.cipher))
+    const payload = await this.unlockV1(data, oldPassword)
 
-    const payload: Omit<VaultPayload, 'version'> = {
+    const { version: _, ...payloadWithoutVersion } = payload
+    return this.create(payloadWithoutVersion, newPassword ?? oldPassword)
+  }
+
+  private async unlockV1(data: Uint8Array, password: string): Promise<VaultPayload> {
+    const envelope = parseV1Envelope(data)
+    const salt = fromBase64(envelope.salt)
+    const iv = fromBase64(envelope.iv)
+    const ciphertext = fromBase64(envelope.cipher)
+
+    const key = await deriveKeyPBKDF2(password, salt, V1_PBKDF2_ITERATIONS)
+
+    let plaintext: Uint8Array
+    try {
+      plaintext = await decrypt(key, ciphertext.slice(0, -16), iv, ciphertext.slice(-16))
+    } catch {
+      throw new Error('Failed to decrypt v1 vault: wrong password or corrupted data')
+    }
+
+    zeroize(key)
+
+    const v1Data = decodeV1Payload(plaintext)
+
+    return {
+      version: 3,
       seeds: v1Data.configuration.seeds.map((seed) => ({
         publicId: seed.publicId,
         alias: seed.alias,
@@ -85,8 +111,6 @@ export class VaultManager {
         schemaVersion: 3,
       },
     }
-
-    return this.create(payload, newPassword ?? oldPassword)
   }
 
   private async unlockV3(data: Uint8Array, password: string): Promise<VaultPayload> {

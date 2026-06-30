@@ -91,7 +91,7 @@ describe('upgradeVault', () => {
     expect(getVaultVersion(vault)).toBe(3)
 
     // upgradeVault expects v1, so this should throw
-    await expect(upgradeVault(vault, PASSWORD)).rejects.toThrow('Only v1 vaults can be upgraded')
+    await expect(upgradeVault(vault, PASSWORD)).rejects.toThrow('only v1 vaults can be upgraded')
   })
 })
 

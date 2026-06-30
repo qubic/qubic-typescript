@@ -123,5 +123,6 @@ interface SeedEntry {
 
 ## Dependencies
 
-- [`@noble/hashes`](https://github.com/paulmillr/noble-hashes) -- Argon2id, HKDF, PBKDF2
+- [`hash-wasm`](https://github.com/nicolo-ribaudo/hash-wasm) -- Argon2id via WASM (~3-4x faster than pure JS)
+- [`@noble/hashes`](https://github.com/paulmillr/noble-hashes) -- HKDF, PBKDF2
 - [`@noble/ciphers`](https://github.com/paulmillr/noble-ciphers) -- AES-256-GCM

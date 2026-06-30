@@ -1,125 +1,18 @@
 import { toSeed } from '@qubic.org/types'
 import type { Seed } from '@qubic.org/types'
-import { InvalidVaultError, VaultDecryptionError } from './errors.js'
+import { VaultManager, TaintStatusEnum } from '@qubic.org/vault'
+import type { VaultPayload } from '@qubic.org/vault'
 
-const VAULT_VERSION = 1
-const PBKDF2_ITERATIONS = 600_000
-/** Minimum iterations accepted during decryption to prevent downgrade attacks. */
-const MIN_PBKDF2_ITERATIONS = 100_000
-const SALT_BYTES = 16
-const IV_BYTES = 12
-
-const textEncoder = new TextEncoder()
-const textDecoder = new TextDecoder()
-
-interface VaultPayload {
-  seeds: string[]
-}
+const vaultManager = new VaultManager()
 
 export interface VaultData {
-  version: number
-  iterations: number
-  salt: string
-  iv: string
-  ciphertext: string
-}
-
-function toHex(bytes: Uint8Array): string {
-  return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('')
-}
-
-function fromHex(hex: string): Uint8Array<ArrayBuffer> {
-  if (hex.length % 2 !== 0) throw new InvalidVaultError('odd-length hex string')
-  const out = new Uint8Array(hex.length / 2)
-  for (let i = 0; i < out.length; i++) {
-    out[i] = Number.parseInt(hex.slice(i * 2, i * 2 + 2), 16)
-  }
-  return out
-}
-
-async function deriveKey(
-  password: string,
-  salt: Uint8Array<ArrayBuffer>,
-  iterations: number,
-): Promise<CryptoKey> {
-  const baseKey = await globalThis.crypto.subtle.importKey(
-    'raw',
-    textEncoder.encode(password),
-    'PBKDF2',
-    false,
-    ['deriveKey'],
-  )
-  return globalThis.crypto.subtle.deriveKey(
-    { name: 'PBKDF2', salt, iterations, hash: 'SHA-256' },
-    baseKey,
-    { name: 'AES-GCM', length: 256 },
-    false,
-    ['encrypt', 'decrypt'],
-  )
-}
-
-async function encryptPayload(
-  seeds: Seed[],
-  password: string,
-): Promise<{ salt: Uint8Array<ArrayBuffer>; iv: Uint8Array<ArrayBuffer>; ciphertext: Uint8Array }> {
-  const salt = globalThis.crypto.getRandomValues(new Uint8Array(SALT_BYTES))
-  const iv = globalThis.crypto.getRandomValues(new Uint8Array(IV_BYTES))
-  const key = await deriveKey(password, salt, PBKDF2_ITERATIONS)
-
-  const payload: VaultPayload = { seeds: seeds as string[] }
-  const plaintext = textEncoder.encode(JSON.stringify(payload))
-  const ciphertext = new Uint8Array(
-    await globalThis.crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, plaintext),
-  )
-
-  return { salt, iv, ciphertext }
-}
-
-async function decryptPayload(vaultData: VaultData, password: string): Promise<Seed[]> {
-  let salt: Uint8Array<ArrayBuffer>
-  let iv: Uint8Array<ArrayBuffer>
-  let ciphertext: Uint8Array<ArrayBuffer>
-  try {
-    salt = fromHex(vaultData.salt)
-    iv = fromHex(vaultData.iv)
-    ciphertext = fromHex(vaultData.ciphertext)
-  } catch {
-    throw new InvalidVaultError('malformed hex fields')
-  }
-
-  if (salt.byteLength < SALT_BYTES)
-    throw new InvalidVaultError(`salt must be at least ${SALT_BYTES} bytes`)
-  if (iv.byteLength !== IV_BYTES)
-    throw new InvalidVaultError(`IV must be exactly ${IV_BYTES} bytes`)
-  if (vaultData.iterations < MIN_PBKDF2_ITERATIONS) {
-    throw new InvalidVaultError(`iterations must be at least ${MIN_PBKDF2_ITERATIONS}`)
-  }
-
-  const key = await deriveKey(password, salt, vaultData.iterations)
-
-  let plaintext: ArrayBuffer
-  try {
-    plaintext = await globalThis.crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ciphertext)
-  } catch (e) {
-    throw new VaultDecryptionError({ cause: e })
-  }
-
-  let payload: VaultPayload
-  try {
-    payload = JSON.parse(textDecoder.decode(plaintext)) as VaultPayload
-  } catch (e) {
-    throw new VaultDecryptionError({ cause: e })
-  }
-
-  if (!Array.isArray(payload.seeds) || !payload.seeds.every((s) => typeof s === 'string'))
-    throw new InvalidVaultError('seeds must be an array of strings')
-  return payload.seeds.map((s) => toSeed(s))
+  data: Uint8Array
 }
 
 /**
  * Creates an encrypted vault containing the given seeds.
  *
- * Uses PBKDF2-SHA256 (600k iterations) to derive an AES-256-GCM key from the password.
+ * Uses Argon2id + AES-256-GCM (v3 format).
  *
  * @example
  * ```ts
@@ -127,80 +20,96 @@ async function decryptPayload(vaultData: VaultData, password: string): Promise<S
  * ```
  */
 export async function createVault(password: string, seeds: Seed[]): Promise<VaultData> {
-  const { salt, iv, ciphertext } = await encryptPayload(seeds, password)
-  return {
-    version: VAULT_VERSION,
-    iterations: PBKDF2_ITERATIONS,
-    salt: toHex(salt),
-    iv: toHex(iv),
-    ciphertext: toHex(ciphertext),
-  }
+  const data = await vaultManager.create(
+    {
+      seeds: seeds.map((seed) => ({
+        publicId: seed as string,
+        taintStatus: TaintStatusEnum.UNTAINTED,
+      })),
+      metadata: {
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        appVersion: '1.0.0',
+        schemaVersion: 3,
+      },
+    },
+    password,
+  )
+  return { data }
 }
 
 /**
  * Decrypts the vault and returns all stored seeds.
  *
- * @throws {VaultDecryptionError} If the password is wrong or the ciphertext is corrupt.
- * @throws {InvalidVaultError} If the vault structure is malformed.
+ * Supports both v1 (legacy PBKDF2) and v3 (Argon2id) formats.
+ *
+ * @throws {Error} If the password is wrong or the ciphertext is corrupt.
  */
 export async function unlockVault(vaultData: VaultData, password: string): Promise<Seed[]> {
-  if (vaultData.version !== VAULT_VERSION) {
-    throw new InvalidVaultError(`unsupported version ${vaultData.version}`)
-  }
-  return decryptPayload(vaultData, password)
+  const payload = await vaultManager.unlock(vaultData.data, password)
+  return payload.seeds.map((entry) => toSeed(entry.publicId))
 }
 
 /**
  * Adds a seed to an existing vault and returns a new vault encrypted with the same password.
  *
- * @throws {VaultDecryptionError} If the password is wrong.
+ * @throws {Error} If the password is wrong.
  */
 export async function addToVault(
   vaultData: VaultData,
   password: string,
   seed: Seed,
 ): Promise<VaultData> {
-  const seeds = await unlockVault(vaultData, password)
-  return createVault(password, [...seeds, seed])
+  const payload = await vaultManager.unlock(vaultData.data, password)
+  const newPayload: Omit<VaultPayload, 'version'> = {
+    ...payload,
+    seeds: [
+      ...payload.seeds,
+      {
+        publicId: seed as string,
+        taintStatus: TaintStatusEnum.UNTAINTED,
+      },
+    ],
+    metadata: {
+      ...payload.metadata,
+      updatedAt: new Date().toISOString(),
+    },
+  }
+  const data = await vaultManager.create(newPayload, password)
+  return { data }
 }
 
 /**
- * Serialises vault data to a JSON string for storage or transfer.
+ * Serialises vault data to a Uint8Array for storage or transfer.
  */
-export function exportVault(vaultData: VaultData): string {
-  return JSON.stringify(vaultData, null, 2)
+export function exportVault(vaultData: VaultData): Uint8Array {
+  return vaultData.data
 }
 
 /**
- * Parses a JSON vault string back into `VaultData`.
+ * Parses a Uint8Array vault back into `VaultData`.
+ */
+export function importVault(data: Uint8Array): VaultData {
+  return { data }
+}
+
+/**
+ * Upgrades a legacy v1 vault to the new v3 format.
  *
- * @throws {InvalidVaultError} If the JSON is malformed or missing required fields.
+ * @throws {Error} If the password is wrong or the vault is not v1.
  */
-export function importVault(json: string): VaultData {
-  let parsed: unknown
-  try {
-    parsed = JSON.parse(json)
-  } catch {
-    throw new InvalidVaultError('invalid JSON')
-  }
-  type MaybeVault = {
-    version?: unknown
-    salt?: unknown
-    iv?: unknown
-    ciphertext?: unknown
-    iterations?: unknown
-  }
-  const r = parsed as MaybeVault
-  if (
-    typeof parsed !== 'object' ||
-    parsed === null ||
-    typeof r.version !== 'number' ||
-    typeof r.salt !== 'string' ||
-    typeof r.iv !== 'string' ||
-    typeof r.ciphertext !== 'string' ||
-    typeof r.iterations !== 'number'
-  ) {
-    throw new InvalidVaultError('missing required fields')
-  }
-  return parsed as VaultData
+export async function upgradeVault(
+  vaultData: VaultData,
+  oldPassword: string,
+  newPassword?: string,
+): Promise<VaultData> {
+  const data = await vaultManager.upgrade(vaultData.data, oldPassword, newPassword)
+  return { data }
+}
+
+/**
+ * Returns the vault format version without decrypting.
+ */
+export function getVaultVersion(vaultData: VaultData): number {
+  return vaultManager.getVersion(vaultData.data)
 }

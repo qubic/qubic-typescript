@@ -26,7 +26,8 @@
   "dependencies": {
     "@qubic.org/crypto": "^1.0.0",
     "@qubic.org/tx": "^1.0.0",
-    "@qubic.org/types": "^1.0.0"
+    "@qubic.org/types": "^1.0.0",
+    "@qubic.org/vault": "^1.0.0"
   },
   "devDependencies": {
     "typescript": "*"

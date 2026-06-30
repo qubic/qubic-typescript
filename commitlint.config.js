@@ -13,6 +13,7 @@ export default {
         'contracts',
         'events',
         'wallet',
+        'vault',
         'tcp',
         'registry',
         'registry-web',

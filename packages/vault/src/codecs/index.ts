@@ -1,0 +1,1 @@
+export { detectVersion } from './version-detect.js'

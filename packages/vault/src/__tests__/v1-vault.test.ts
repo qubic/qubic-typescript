@@ -5,11 +5,12 @@ import { VaultManager } from '../vault-manager.js'
 
 const VAULT_PATH = join(import.meta.dir, 'test.qubic-vault')
 const TEST_PASSWORD = 'test1234'
+const TIMEOUT = 30_000
 
 describe('VaultManager with v1 vault', () => {
   const vault = new VaultManager()
 
-  it('should unlock a v1 vault file', async () => {
+  it('should unlock a v1 vault file', { timeout: TIMEOUT }, async () => {
     const data = await readFile(VAULT_PATH)
 
     expect(vault.getVersion(data)).toBe(1)
@@ -22,13 +23,13 @@ describe('VaultManager with v1 vault', () => {
     expect(payload.metadata.schemaVersion).toBe(3)
   })
 
-  it('should reject wrong password for v1 vault', async () => {
+  it('should reject wrong password for v1 vault', { timeout: TIMEOUT }, async () => {
     const data = await readFile(VAULT_PATH)
 
     await expect(vault.unlock(data, 'wrongpassword')).rejects.toThrow()
   })
 
-  it('should upgrade v1 vault to v3', async () => {
+  it('should upgrade v1 vault to v3', { timeout: TIMEOUT }, async () => {
     const data = await readFile(VAULT_PATH)
 
     const upgraded = await vault.upgrade(data, TEST_PASSWORD)

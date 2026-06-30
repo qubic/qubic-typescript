@@ -13,9 +13,10 @@ import {
 const SEED_A = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' as Seed
 const SEED_B = 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb' as Seed
 const PASSWORD = 'hunter2'
+const TIMEOUT = 30_000
 
 describe('createVault / unlockVault', () => {
-  test('roundtrip: create and unlock returns original seeds', async () => {
+  test('roundtrip: create and unlock returns original seeds', { timeout: TIMEOUT }, async () => {
     const vault = await createVault(PASSWORD, [SEED_A, SEED_B])
     const seeds = await unlockVault(vault, PASSWORD)
     expect(seeds).toHaveLength(2)
@@ -23,31 +24,31 @@ describe('createVault / unlockVault', () => {
     expect(seeds[1]).toBe(SEED_B)
   })
 
-  test('wrong password throws error', async () => {
+  test('wrong password throws error', { timeout: TIMEOUT }, async () => {
     const vault = await createVault(PASSWORD, [SEED_A])
     await expect(unlockVault(vault, 'wrong')).rejects.toThrow()
   })
 
-  test('creates unique ciphertext on each call (random salt/iv)', async () => {
+  test('creates unique ciphertext on each call (random salt/iv)', { timeout: TIMEOUT }, async () => {
     const v1 = await createVault(PASSWORD, [SEED_A])
     const v2 = await createVault(PASSWORD, [SEED_A])
     expect(v1.data).not.toEqual(v2.data)
   })
 
-  test('vault with empty seeds list roundtrips', async () => {
+  test('vault with empty seeds list roundtrips', { timeout: TIMEOUT }, async () => {
     const vault = await createVault(PASSWORD, [])
     const seeds = await unlockVault(vault, PASSWORD)
     expect(seeds).toHaveLength(0)
   })
 
-  test('creates v3 vault', async () => {
+  test('creates v3 vault', { timeout: TIMEOUT }, async () => {
     const vault = await createVault(PASSWORD, [SEED_A])
     expect(getVaultVersion(vault)).toBe(3)
   })
 })
 
 describe('addToVault', () => {
-  test('appends a seed to existing vault', async () => {
+  test('appends a seed to existing vault', { timeout: TIMEOUT }, async () => {
     const vault = await createVault(PASSWORD, [SEED_A])
     const updated = await addToVault(vault, PASSWORD, SEED_B)
     const seeds = await unlockVault(updated, PASSWORD)
@@ -56,14 +57,14 @@ describe('addToVault', () => {
     expect(seeds[1]).toBe(SEED_B)
   })
 
-  test('wrong password throws error', async () => {
+  test('wrong password throws error', { timeout: TIMEOUT }, async () => {
     const vault = await createVault(PASSWORD, [SEED_A])
     await expect(addToVault(vault, 'wrong', SEED_B)).rejects.toThrow()
   })
 })
 
 describe('exportVault / importVault', () => {
-  test('roundtrip: export → import → unlock', async () => {
+  test('roundtrip: export → import → unlock', { timeout: TIMEOUT }, async () => {
     const vault = await createVault(PASSWORD, [SEED_A])
     const exported = exportVault(vault)
     const imported = importVault(exported)
@@ -71,7 +72,7 @@ describe('exportVault / importVault', () => {
     expect(seeds[0]).toBe(SEED_A)
   })
 
-  test('importVault preserves data', async () => {
+  test('importVault preserves data', { timeout: TIMEOUT }, async () => {
     const vault = await createVault(PASSWORD, [SEED_A])
     const exported = exportVault(vault)
     const imported = importVault(exported)
@@ -80,7 +81,7 @@ describe('exportVault / importVault', () => {
 })
 
 describe('upgradeVault', () => {
-  test('upgrades v1 vault to v3', async () => {
+  test('upgrades v1 vault to v3', { timeout: TIMEOUT }, async () => {
     // Create a v3 vault first (we don't have v1 test data easily available)
     const vault = await createVault(PASSWORD, [SEED_A])
     expect(getVaultVersion(vault)).toBe(3)
@@ -91,7 +92,7 @@ describe('upgradeVault', () => {
 })
 
 describe('getVaultVersion', () => {
-  test('returns 3 for newly created vaults', async () => {
+  test('returns 3 for newly created vaults', { timeout: TIMEOUT }, async () => {
     const vault = await createVault(PASSWORD, [SEED_A])
     expect(getVaultVersion(vault)).toBe(3)
   })

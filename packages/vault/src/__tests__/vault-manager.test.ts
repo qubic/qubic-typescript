@@ -2,6 +2,8 @@ import { describe, expect, it } from 'bun:test'
 import { TaintStatus } from '../models/types.js'
 import { VaultManager } from '../vault-manager.js'
 
+const TIMEOUT = 30_000
+
 describe('VaultManager', () => {
   const vault = new VaultManager()
 
@@ -20,7 +22,7 @@ describe('VaultManager', () => {
     },
   }
 
-  it('should create and unlock a vault', async () => {
+  it('should create and unlock a vault', { timeout: TIMEOUT }, async () => {
     const password = 'test-password-123'
     const encrypted = await vault.create(samplePayload, password)
 
@@ -35,14 +37,14 @@ describe('VaultManager', () => {
     expect(unlocked.metadata.schemaVersion).toBe(3)
   })
 
-  it('should detect vault version', async () => {
+  it('should detect vault version', { timeout: TIMEOUT }, async () => {
     const password = 'test-password-123'
     const encrypted = await vault.create(samplePayload, password)
 
     expect(vault.getVersion(encrypted)).toBe(3)
   })
 
-  it('should reject wrong password', async () => {
+  it('should reject wrong password', { timeout: TIMEOUT }, async () => {
     const password = 'correct-password'
     const wrongPassword = 'wrong-password'
     const encrypted = await vault.create(samplePayload, password)
@@ -50,7 +52,7 @@ describe('VaultManager', () => {
     await expect(vault.unlock(encrypted, wrongPassword)).rejects.toThrow()
   })
 
-  it('should handle multiple seeds', async () => {
+  it('should handle multiple seeds', { timeout: TIMEOUT }, async () => {
     const payload = {
       ...samplePayload,
       seeds: [

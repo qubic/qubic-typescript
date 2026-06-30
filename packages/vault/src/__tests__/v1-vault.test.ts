@@ -1,8 +1,9 @@
 import { describe, it, expect } from 'bun:test'
 import { readFile } from 'node:fs/promises'
+import { join } from 'node:path'
 import { VaultManager } from '../vault-manager.js'
 
-const VAULT_PATH = '/home/alez/github.com/qubic-vaults/test.qubic-vault'
+const VAULT_PATH = join(import.meta.dir, 'test.qubic-vault')
 const TEST_PASSWORD = 'test1234'
 
 describe('VaultManager with v1 vault', () => {

@@ -5,6 +5,7 @@ import { decrypt, encrypt } from './crypto/aes-gcm.js'
 import { deriveKeyArgon2id } from './crypto/argon2.js'
 import { deriveKeys } from './crypto/hkdf.js'
 import { deriveKeyPBKDF2 } from './crypto/pbkdf2.js'
+import { InvalidVaultError, VaultDecryptionError } from './errors.js'
 import { DEFAULT_ARGON2_PARAMS } from './models/types.js'
 import type { AlgorithmParams } from './models/types.js'
 import type { VaultPayload } from './models/vault-payload.js'
@@ -57,7 +58,7 @@ export class VaultManager {
       return this.unlockV1(data, password)
     }
 
-    throw new Error(`Unsupported vault version: ${version}`)
+    throw new InvalidVaultError(`unsupported version: ${version}`)
   }
 
   getVersion(data: Uint8Array): number {
@@ -68,7 +69,7 @@ export class VaultManager {
     const version = detectVersion(data)
 
     if (version !== 1) {
-      throw new Error('Only v1 vaults can be upgraded')
+      throw new InvalidVaultError('only v1 vaults can be upgraded')
     }
 
     const payload = await this.unlockV1(data, oldPassword)
@@ -88,8 +89,8 @@ export class VaultManager {
     let plaintext: Uint8Array
     try {
       plaintext = await decrypt(key, ciphertext.slice(0, -16), iv, ciphertext.slice(-16))
-    } catch {
-      throw new Error('Failed to decrypt v1 vault: wrong password or corrupted data')
+    } catch (e) {
+      throw new VaultDecryptionError({ cause: e })
     } finally {
       zeroize(key)
     }
@@ -120,10 +121,15 @@ export class VaultManager {
     const { encKey } = await deriveKeys(masterKey)
 
     const aad = new Uint8Array([0x03])
-    const plaintext = await decrypt(encKey, envelope.ciphertext, envelope.iv, envelope.tag, aad)
-
-    zeroize(encKey)
-    zeroize(masterKey)
+    let plaintext: Uint8Array
+    try {
+      plaintext = await decrypt(encKey, envelope.ciphertext, envelope.iv, envelope.tag, aad)
+    } catch (e) {
+      throw new VaultDecryptionError({ cause: e })
+    } finally {
+      zeroize(encKey)
+      zeroize(masterKey)
+    }
 
     return decodeV3Payload(plaintext)
   }

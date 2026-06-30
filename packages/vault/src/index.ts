@@ -1,4 +1,5 @@
 export { VaultManager } from './vault-manager.js'
+export { VaultError, VaultDecryptionError, InvalidVaultError } from './errors.js'
 export type {
   VaultPayload,
   SeedEntry,

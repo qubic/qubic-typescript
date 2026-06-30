@@ -1,5 +1,5 @@
 ---
-"@qubic.org/vault": minor
+"@qubic.org/vault": patch
 ---
 
 Add @qubic.org/vault package with Argon2id key derivation and binary envelope format.

@@ -18,6 +18,7 @@ TypeScript SDK for the [Qubic](https://qubic.org) network, split into focused pa
 | [`@qubic.org/contracts`](packages/contracts) | [![npm](https://img.shields.io/npm/v/@qubic.org/contracts)](https://www.npmjs.com/package/@qubic.org/contracts) | Generated typed wrappers for every deployed contract |
 | [`@qubic.org/events`](packages/events) | [![npm](https://img.shields.io/npm/v/@qubic.org/events)](https://www.npmjs.com/package/@qubic.org/events) | Binary event decoder, filter builder, and typed Bob subscription helpers |
 | [`@qubic.org/wallet`](packages/wallet) | [![npm](https://img.shields.io/npm/v/@qubic.org/wallet)](https://www.npmjs.com/package/@qubic.org/wallet) | Wallet, encrypted vault, and seed utilities |
+| [`@qubic.org/vault`](packages/vault) | [![npm](https://img.shields.io/npm/v/@qubic.org/vault)](https://www.npmjs.com/package/@qubic.org/vault) | Versioned vault library — Argon2id, binary envelope, v1 migration |
 | [`@qubic.org/tcp`](packages/tcp) | [![npm](https://img.shields.io/npm/v/@qubic.org/tcp)](https://www.npmjs.com/package/@qubic.org/tcp) | Direct TCP transport — framing, connection pool, typed request helpers |
 | [`@qubic.org/react`](packages/react) | [![npm](https://img.shields.io/npm/v/@qubic.org/react)](https://www.npmjs.com/package/@qubic.org/react) | React hooks and providers — TanStack Query, VaultProvider, WalletProvider (extension / WalletConnect / MetaMask Snap), contract queries, send mutations |
 
@@ -43,6 +44,7 @@ graph TD
   contracts["@qubic.org/contracts<br/><sub>generated contract wrappers</sub>"]
   bob["@qubic.org/bob<br/><sub>live node client</sub>"]
   wallet["@qubic.org/wallet<br/><sub>key management</sub>"]
+  vault["@qubic.org/vault<br/><sub>versioned vault library</sub>"]
   events["@qubic.org/events<br/><sub>typed event bus</sub>"]
   tcp["@qubic.org/tcp<br/><sub>raw TCP transport</sub>"]
   react["@qubic.org/react<br/><sub>React hooks</sub>"]
@@ -62,6 +64,7 @@ graph TD
   rpc --> contracts
   bob --> events
   wallet --> react
+  vault --> wallet
   events --> react
 ```
 
@@ -342,6 +345,7 @@ graph LR
     registry["registry/\n@qubic.org/registry"]
     contracts["contracts/\n@qubic.org/contracts"]
     wallet["wallet/\n@qubic.org/wallet"]
+    vault["vault/\n@qubic.org/vault"]
     events["events/\n@qubic.org/events"]
     tcp["tcp/\n@qubic.org/tcp (direct TCP)"]
     react["react/\n@qubic.org/react"]

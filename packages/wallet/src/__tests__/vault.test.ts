@@ -29,11 +29,15 @@ describe('createVault / unlockVault', () => {
     await expect(unlockVault(vault, 'wrong')).rejects.toThrow()
   })
 
-  test('creates unique ciphertext on each call (random salt/iv)', { timeout: TIMEOUT }, async () => {
-    const v1 = await createVault(PASSWORD, [SEED_A])
-    const v2 = await createVault(PASSWORD, [SEED_A])
-    expect(v1.data).not.toEqual(v2.data)
-  })
+  test(
+    'creates unique ciphertext on each call (random salt/iv)',
+    { timeout: TIMEOUT },
+    async () => {
+      const v1 = await createVault(PASSWORD, [SEED_A])
+      const v2 = await createVault(PASSWORD, [SEED_A])
+      expect(v1.data).not.toEqual(v2.data)
+    },
+  )
 
   test('vault with empty seeds list roundtrips', { timeout: TIMEOUT }, async () => {
     const vault = await createVault(PASSWORD, [])

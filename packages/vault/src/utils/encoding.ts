@@ -23,3 +23,21 @@ export function fromBase64(base64: string): Uint8Array {
   }
   return bytes
 }
+
+export function concatBytes(...arrays: Uint8Array[]): Uint8Array {
+  let totalLength = 0
+  for (const arr of arrays) {
+    totalLength += arr.length
+  }
+  const result = new Uint8Array(totalLength)
+  let offset = 0
+  for (const arr of arrays) {
+    result.set(arr, offset)
+    offset += arr.length
+  }
+  return result
+}
+
+export function randomBytes(length: number): Uint8Array {
+  return globalThis.crypto.getRandomValues(new Uint8Array(length))
+}

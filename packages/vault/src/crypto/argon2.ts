@@ -1,8 +1,15 @@
+import { argon2idAsync } from '@noble/hashes/argon2.js'
+import type { AlgorithmParams } from '../models/types.js'
+
 export async function deriveKeyArgon2id(
   password: string,
   salt: Uint8Array,
-  params: { memory: number; iterations: number; parallelism: number },
+  params: AlgorithmParams,
 ): Promise<Uint8Array> {
-  // TODO: Implement in Batch 4
-  throw new Error('Not implemented')
+  return argon2idAsync(password, salt, {
+    t: params.iterations,
+    m: params.memory,
+    p: params.parallelism,
+    dkLen: 32,
+  })
 }

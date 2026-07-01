@@ -1,5 +1,11 @@
 # @qubic.org/contracts
 
+## 1.0.1
+
+### Patch Changes
+
+- 7c72b05: Fix tree-sitter WASM path in backfill script and regenerate contract wrappers from epoch 218
+
 ## 1.0.0
 
 ### Major Changes

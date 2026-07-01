@@ -116,19 +116,13 @@ try {
 interface VaultPayload {
   version: 3
   seeds: SeedEntry[]
-  keyPair?: WrappedKeyPair
   metadata: VaultMetadata
   extensions?: Record<string, unknown>
 }
 
-interface WrappedKeyPair {
-  publicKey: JsonWebKey           // RSA-OAEP public key
-  wrappedPrivateKey: Uint8Array   // AES-256-GCM wrapped with wrap_key
-}
-
 interface SeedEntry {
   publicId: string              // 60-char Qubic identity
-  encryptedSeed?: Uint8Array    // RSA-OAEP encrypted with publicKey
+  encryptedSeed?: Uint8Array    // raw seed bytes (encrypted by vault)
   alias?: string
   taintStatus: TaintStatus      // 0 = untainted, 1 = tainted
   isOnlyWatch?: boolean
@@ -138,16 +132,7 @@ interface SeedEntry {
 
 ### Seed encryption flow
 
-When creating a vault:
-1. Generate RSA-OAEP 4096-bit key pair
-2. Encrypt each seed with RSA public key
-3. Wrap RSA private key with vault's `wrap_key` (derived from HKDF)
-4. Store wrapped private key and public key in `keyPair`
-
-When unlocking:
-1. Derive `wrap_key` from password
-2. Unwrap RSA private key
-3. Decrypt each seed with RSA private key
+Seeds are stored in the vault payload, which is encrypted with AES-256-GCM (Argon2id derived key). No additional encryption layer needed — the vault itself protects the seeds.
 
 ## Dependencies
 

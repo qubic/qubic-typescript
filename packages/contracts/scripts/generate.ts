@@ -188,7 +188,7 @@ for (const version of versions) {
           needsContractCallType
             ? "import { type ContractCall, type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'"
             : "import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'",
-          "import type { Result } from '../result.js'",
+          "import type { Result } from '@qubic.org/types'",
         ]
       : needsContractCallType
         ? ["import type { ContractCall } from '../call-contract.js'"]

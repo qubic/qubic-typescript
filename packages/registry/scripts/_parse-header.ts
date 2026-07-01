@@ -2,7 +2,6 @@
  * Core ABI extraction logic for Qubic C++ contract headers.
  * Used by extract-abi.ts (single contract) and backfill.ts (batch).
  */
-import { join } from 'node:path'
 import { contractIndexToIdentity } from '@qubic.org/crypto'
 import type { BinaryField, ContractAbiVersion, FieldType, NamedStruct } from '../src/types.js'
 
@@ -10,7 +9,7 @@ import type { BinaryField, ContractAbiVersion, FieldType, NamedStruct } from '..
 
 const { Parser, Language } = require('web-tree-sitter') as typeof import('web-tree-sitter')
 await Parser.init()
-const wasmPath = join(import.meta.dir, '../node_modules/tree-sitter-cpp/tree-sitter-cpp.wasm')
+const wasmPath = require.resolve('tree-sitter-cpp/tree-sitter-cpp.wasm')
 const Cpp = await Language.load(wasmPath)
 
 function makeParser() {

@@ -1,0 +1,5 @@
+export { detectVersion } from './version-detect.js'
+export { parseV1Envelope, decodeV1Payload } from './v1.js'
+export type { V1Envelope, V1VaultData } from './v1.js'
+export { parseV3Envelope, createV3Envelope, encodeV3Payload, decodeV3Payload } from './v3.js'
+export type { V3Envelope } from './v3.js'

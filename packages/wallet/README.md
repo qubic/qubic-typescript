@@ -88,7 +88,7 @@ toSeed(seed)                        // returns branded Seed
 
 ## Vault
 
-Encrypted storage for seeds using AES-256-GCM with PBKDF2-SHA256 key derivation (600k iterations).
+Encrypted storage for seeds using Argon2id + AES-256-GCM (v3 format) with automatic support for legacy v1 vaults.
 
 ```ts
 import {
@@ -98,6 +98,8 @@ import {
   addToVault,
   exportVault,
   importVault,
+  upgradeVault,
+  getVaultVersion,
 } from '@qubic.org/wallet'
 import type { VaultData } from '@qubic.org/wallet'
 import type { Seed } from '@qubic.org/types'
@@ -115,22 +117,29 @@ const seeds: Seed[] = await unlockVault(vault, 'strong-password')
 const updated: VaultData = await addToVault(vault, 'strong-password', anotherSeed)
 
 // Persist to disk / localStorage
-const json: string = exportVault(vault)
-const loaded: VaultData = importVault(json)
+const exported: Uint8Array = exportVault(vault)
+const loaded: VaultData = importVault(exported)
 const seeds2: Seed[] = await unlockVault(loaded, 'strong-password')
+
+// Check vault version without decrypting
+const version: number = getVaultVersion(vault) // 3
+
+// Upgrade legacy v1 vault to v3
+const upgraded: VaultData = await upgradeVault(v1Vault, 'old-password')
+const upgradedWithNewPw: VaultData = await upgradeVault(v1Vault, 'old-password', 'new-password')
 ```
 
 ### Vault security
 
-| Property | Value |
-|---|---|
-| Cipher | AES-256-GCM |
-| Key derivation | PBKDF2-SHA256 |
-| Iterations | 600,000 |
-| Salt | 16 bytes (random per vault) |
-| IV | 12 bytes (random per encryption) |
+| Property | v3 (current) | v1 (legacy) |
+|---|---|---|
+| Cipher | AES-256-GCM | AES-256-GCM |
+| Key derivation | Argon2id | PBKDF2-SHA256 |
+| Memory cost | 64 MB | — |
+| Iterations | 3 | 600,000 |
+| Salt | 32 bytes | 16 bytes |
 
-A wrong password or corrupted ciphertext throws `VaultDecryptionError`. A structurally malformed vault throws `InvalidVaultError`.
+Under the hood, `@qubic.org/wallet` delegates all vault operations to [`@qubic.org/vault`](../vault).
 
 ## Errors
 
@@ -149,3 +158,4 @@ import { WalletError, VaultDecryptionError, InvalidVaultError } from '@qubic.org
 - [`@qubic.org/crypto`](../crypto) -- key derivation and signing
 - [`@qubic.org/tx`](../tx) -- transaction building
 - [`@qubic.org/types`](../types) -- branded types and validators
+- [`@qubic.org/vault`](../vault) -- encrypted vault storage

@@ -15,7 +15,7 @@
   },
   "files": ["dist", "src"],
   "scripts": {
-    "build": "rm -rf dist && tsc",
+    "build": "tsc -p tsconfig.json",
     "typecheck": "tsc --noEmit",
     "test": "bun test"
   },

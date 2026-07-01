@@ -15,7 +15,7 @@
   },
   "files": ["dist", "src"],
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "rm -f tsconfig.tsbuildinfo && tsc -p tsconfig.json",
     "typecheck": "tsc --noEmit",
     "test": "bun test"
   },

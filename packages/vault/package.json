@@ -15,7 +15,7 @@
   },
   "files": ["dist", "src"],
   "scripts": {
-    "build": "tsc --outDir dist",
+    "build": "rm -rf dist && tsc",
     "typecheck": "tsc --noEmit",
     "test": "bun test"
   },

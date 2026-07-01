@@ -2,7 +2,6 @@ import { deriveIdentityFromSeed } from '@qubic.org/crypto'
 import { toSeed } from '@qubic.org/types'
 import type { Seed } from '@qubic.org/types'
 import { TaintStatusEnum, VaultManager } from '@qubic.org/vault'
-import type { VaultPayload } from '@qubic.org/vault'
 
 const vaultManager = new VaultManager()
 
@@ -69,22 +68,10 @@ export async function addToVault(
   password: string,
   seed: Seed,
 ): Promise<VaultData> {
-  const payload = await vaultManager.unlock(vaultData.data, password)
-  const newPayload: Omit<VaultPayload, 'version'> = {
-    ...payload,
-    seeds: [
-      ...payload.seeds,
-      {
-        publicId: seed as string,
-        taintStatus: TaintStatusEnum.UNTAINTED,
-      },
-    ],
-    metadata: {
-      ...payload.metadata,
-      updatedAt: new Date().toISOString(),
-    },
-  }
-  const data = await vaultManager.create(newPayload, password)
+  const data = await vaultManager.addSeed(vaultData.data, password, {
+    publicId: deriveIdentityFromSeed(seed),
+    encryptedSeed: new TextEncoder().encode(seed as string),
+  })
   return { data }
 }
 

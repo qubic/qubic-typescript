@@ -78,6 +78,32 @@ export class VaultManager {
     return this.create(payloadWithoutVersion, newPassword ?? oldPassword)
   }
 
+  async addSeed(
+    data: Uint8Array,
+    password: string,
+    seed: { publicId: string; encryptedSeed?: Uint8Array; alias?: string; taintStatus?: number },
+  ): Promise<Uint8Array> {
+    const payload = await this.unlock(data, password)
+
+    const entry = {
+      publicId: seed.publicId,
+      taintStatus: seed.taintStatus ?? 0,
+      ...(seed.encryptedSeed !== undefined && { encryptedSeed: seed.encryptedSeed }),
+      ...(seed.alias !== undefined && { alias: seed.alias }),
+    }
+
+    const updatedPayload: Omit<VaultPayload, 'version'> = {
+      ...payload,
+      seeds: [...payload.seeds, entry],
+      metadata: {
+        ...payload.metadata,
+        updatedAt: new Date().toISOString(),
+      },
+    }
+
+    return this.create(updatedPayload, password)
+  }
+
   private async unlockV1(data: Uint8Array, password: string): Promise<VaultPayload> {
     const envelope = parseV1Envelope(data)
     const salt = fromBase64(envelope.salt)

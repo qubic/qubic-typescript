@@ -121,15 +121,33 @@ interface VaultPayload {
   extensions?: Record<string, unknown>
 }
 
+interface WrappedKeyPair {
+  publicKey: JsonWebKey           // RSA-OAEP public key
+  wrappedPrivateKey: Uint8Array   // AES-256-GCM wrapped with wrap_key
+}
+
 interface SeedEntry {
   publicId: string              // 60-char Qubic identity
-  encryptedSeed?: Uint8Array    // raw seed bytes (or RSA-OAEP encrypted if using key pair)
+  encryptedSeed?: Uint8Array    // RSA-OAEP encrypted with publicKey
   alias?: string
   taintStatus: TaintStatus      // 0 = untainted, 1 = tainted
   isOnlyWatch?: boolean
   createdAt?: string            // ISO 8601
 }
 ```
+
+### Seed encryption flow
+
+When creating a vault:
+1. Generate RSA-OAEP 4096-bit key pair
+2. Encrypt each seed with RSA public key
+3. Wrap RSA private key with vault's `wrap_key` (derived from HKDF)
+4. Store wrapped private key and public key in `keyPair`
+
+When unlocking:
+1. Derive `wrap_key` from password
+2. Unwrap RSA private key
+3. Decrypt each seed with RSA private key
 
 ## Dependencies
 

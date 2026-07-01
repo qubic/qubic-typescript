@@ -44,3 +44,27 @@ export async function unwrapPrivateKey(
     ['decrypt'],
   )
 }
+
+export async function encryptSeed(
+  publicKey: CryptoKey,
+  seed: Uint8Array,
+): Promise<Uint8Array> {
+  const encrypted = await globalThis.crypto.subtle.encrypt(
+    { name: 'RSA-OAEP' },
+    publicKey,
+    seed as unknown as BufferSource,
+  )
+  return new Uint8Array(encrypted)
+}
+
+export async function decryptSeed(
+  privateKey: CryptoKey,
+  encryptedSeed: Uint8Array,
+): Promise<Uint8Array> {
+  const decrypted = await globalThis.crypto.subtle.decrypt(
+    { name: 'RSA-OAEP' },
+    privateKey,
+    encryptedSeed as unknown as BufferSource,
+  )
+  return new Uint8Array(decrypted)
+}

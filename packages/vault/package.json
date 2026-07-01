@@ -15,7 +15,7 @@
   },
   "files": ["dist", "src"],
   "scripts": {
-    "build": "tsc --emitDeclarationOnly && bun build src/index.ts --outdir dist --target browser --format esm --sourcemap",
+    "build": "rm -f tsconfig.tsbuildinfo && tsc -p tsconfig.json",
     "typecheck": "tsc --noEmit",
     "test": "bun test"
   },

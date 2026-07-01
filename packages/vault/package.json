@@ -15,7 +15,7 @@
   },
   "files": ["dist", "src"],
   "scripts": {
-    "build": "tsc --emitDeclarationOnly && bun build src/index.ts --outdir dist --target browser --format esm --sourcemap",
+    "build": "tsc --outDir dist",
     "typecheck": "tsc --noEmit",
     "test": "bun test"
   },

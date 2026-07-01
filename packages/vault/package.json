@@ -1,6 +1,6 @@
 {
   "name": "@qubic.org/vault",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "license": "Anti-Military",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

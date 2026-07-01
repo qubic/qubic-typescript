@@ -1,5 +1,6 @@
 import { toSeed } from '@qubic.org/types'
 import type { Seed } from '@qubic.org/types'
+import { deriveIdentityFromSeed } from '@qubic.org/crypto'
 import { TaintStatusEnum, VaultManager } from '@qubic.org/vault'
 import type { VaultPayload } from '@qubic.org/vault'
 
@@ -23,7 +24,8 @@ export async function createVault(password: string, seeds: Seed[]): Promise<Vaul
   const data = await vaultManager.create(
     {
       seeds: seeds.map((seed) => ({
-        publicId: seed as string,
+        publicId: deriveIdentityFromSeed(seed),
+        encryptedSeed: new TextEncoder().encode(seed as string),
         taintStatus: TaintStatusEnum.UNTAINTED,
       })),
       metadata: {
@@ -47,7 +49,14 @@ export async function createVault(password: string, seeds: Seed[]): Promise<Vaul
  */
 export async function unlockVault(vaultData: VaultData, password: string): Promise<Seed[]> {
   const payload = await vaultManager.unlock(vaultData.data, password)
-  return payload.seeds.map((entry) => toSeed(entry.publicId))
+  return payload.seeds.map((entry) => {
+    if (entry.encryptedSeed) {
+      const seed = new TextDecoder().decode(entry.encryptedSeed)
+      return toSeed(seed)
+    }
+    // Fallback for vaults without encryptedSeed (e.g., watch-only)
+    return toSeed(entry.publicId)
+  })
 }
 
 /**

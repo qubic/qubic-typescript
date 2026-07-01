@@ -56,5 +56,16 @@ export function decodeV3Payload(plaintext: Uint8Array): VaultPayload {
   if (json.version !== 3) {
     throw new Error('Invalid v3 payload: wrong version')
   }
+  // Restore Uint8Array fields that were serialized as plain objects
+  if (json.seeds) {
+    for (const seed of json.seeds) {
+      if (seed.encryptedSeed && !(seed.encryptedSeed instanceof Uint8Array)) {
+        seed.encryptedSeed = new Uint8Array(Object.values(seed.encryptedSeed))
+      }
+    }
+  }
+  if (json.keyPair?.wrappedPrivateKey && !(json.keyPair.wrappedPrivateKey instanceof Uint8Array)) {
+    json.keyPair.wrappedPrivateKey = new Uint8Array(Object.values(json.keyPair.wrappedPrivateKey))
+  }
   return json as VaultPayload
 }

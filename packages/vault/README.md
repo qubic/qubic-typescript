@@ -18,7 +18,8 @@ const vault = new VaultManager()
 // Create a new v3 vault
 const encrypted = await vault.create({
   seeds: [{
-    publicId: 'MZTVEQPHKLNDSYXBWUFAJGORCEIMVWHTFDCQNZALKBXSPJYUIDMVGOEXYZAB',
+    publicId: 'MZTVEQPHKLNDSYXBWUFAJGORCEIMVWHTFDCQNZALKBXSPJYUIDMVGOEXYZAB', // 60-char identity
+    encryptedSeed: new TextEncoder().encode('your-seed-here'), // raw seed bytes
     taintStatus: TaintStatusEnum.UNTAINTED,
   }],
   metadata: {
@@ -31,6 +32,15 @@ const encrypted = await vault.create({
 
 // Unlock any version (auto-detected)
 const payload = await vault.unlock(encrypted, 'strong-password')
+
+// Access stored seeds
+for (const entry of payload.seeds) {
+  console.log(entry.publicId) // 60-char identity
+  if (entry.encryptedSeed) {
+    const seed = new TextDecoder().decode(entry.encryptedSeed)
+    console.log(seed) // original seed
+  }
+}
 
 // Check format version without decryption
 const version = vault.getVersion(encrypted) // 1 or 3
@@ -106,20 +116,23 @@ try {
 interface VaultPayload {
   version: 3
   seeds: SeedEntry[]
-  keyPair?: WrappedKeyPair
   metadata: VaultMetadata
   extensions?: Record<string, unknown>
 }
 
 interface SeedEntry {
   publicId: string              // 60-char Qubic identity
-  encryptedSeed?: Uint8Array    // RSA-OAEP encrypted
+  encryptedSeed?: Uint8Array    // raw seed bytes (encrypted by vault)
   alias?: string
   taintStatus: TaintStatus      // 0 = untainted, 1 = tainted
   isOnlyWatch?: boolean
   createdAt?: string            // ISO 8601
 }
 ```
+
+### Seed encryption flow
+
+Seeds are stored in the vault payload, which is encrypted with AES-256-GCM (Argon2id derived key). No additional encryption layer needed — the vault itself protects the seeds.
 
 ## Dependencies
 

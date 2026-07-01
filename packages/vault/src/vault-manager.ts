@@ -140,8 +140,5 @@ export class VaultManager {
         zeroize(seed.encryptedSeed)
       }
     }
-    if (payload.keyPair?.wrappedPrivateKey) {
-      zeroize(payload.keyPair.wrappedPrivateKey)
-    }
   }
 }

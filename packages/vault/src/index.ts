@@ -3,7 +3,6 @@ export { VaultError, VaultDecryptionError, InvalidVaultError } from './errors.js
 export type {
   VaultPayload,
   SeedEntry,
-  WrappedKeyPair,
   VaultMetadata,
 } from './models/vault-payload.js'
 export type { TaintStatus, AlgorithmParams, AddressBookEntry } from './models/types.js'

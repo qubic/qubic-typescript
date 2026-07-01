@@ -1,5 +1,15 @@
 # @qubic.org/vault
 
+## 1.1.0
+
+### Minor Changes
+
+- d051086: Simplify vault by removing RSA-OAEP seed encryption
+
+  - Seeds stored directly in vault payload (encrypted by AES-256-GCM)
+  - Remove RSA key pair generation and wrapping
+  - Faster vault creation, simpler code
+
 ## 1.0.1
 
 ### Patch Changes

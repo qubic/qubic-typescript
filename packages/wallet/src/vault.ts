@@ -1,6 +1,6 @@
+import { deriveIdentityFromSeed } from '@qubic.org/crypto'
 import { toSeed } from '@qubic.org/types'
 import type { Seed } from '@qubic.org/types'
-import { deriveIdentityFromSeed } from '@qubic.org/crypto'
 import { TaintStatusEnum, VaultManager } from '@qubic.org/vault'
 import type { VaultPayload } from '@qubic.org/vault'
 

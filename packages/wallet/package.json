@@ -1,6 +1,6 @@
 {
   "name": "@qubic.org/wallet",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "license": "Anti-Military",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -27,7 +27,7 @@
     "@qubic.org/crypto": "^1.0.0",
     "@qubic.org/tx": "^1.0.0",
     "@qubic.org/types": "^1.0.0",
-    "@qubic.org/vault": "^1.0.0"
+    "@qubic.org/vault": "^1.1.0"
   },
   "devDependencies": {
     "typescript": "*"

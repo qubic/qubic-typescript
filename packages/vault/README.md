@@ -18,7 +18,8 @@ const vault = new VaultManager()
 // Create a new v3 vault
 const encrypted = await vault.create({
   seeds: [{
-    publicId: 'MZTVEQPHKLNDSYXBWUFAJGORCEIMVWHTFDCQNZALKBXSPJYUIDMVGOEXYZAB',
+    publicId: 'MZTVEQPHKLNDSYXBWUFAJGORCEIMVWHTFDCQNZALKBXSPJYUIDMVGOEXYZAB', // 60-char identity
+    encryptedSeed: new TextEncoder().encode('your-seed-here'), // raw seed bytes
     taintStatus: TaintStatusEnum.UNTAINTED,
   }],
   metadata: {
@@ -31,6 +32,15 @@ const encrypted = await vault.create({
 
 // Unlock any version (auto-detected)
 const payload = await vault.unlock(encrypted, 'strong-password')
+
+// Access stored seeds
+for (const entry of payload.seeds) {
+  console.log(entry.publicId) // 60-char identity
+  if (entry.encryptedSeed) {
+    const seed = new TextDecoder().decode(entry.encryptedSeed)
+    console.log(seed) // original seed
+  }
+}
 
 // Check format version without decryption
 const version = vault.getVersion(encrypted) // 1 or 3
@@ -113,7 +123,7 @@ interface VaultPayload {
 
 interface SeedEntry {
   publicId: string              // 60-char Qubic identity
-  encryptedSeed?: Uint8Array    // RSA-OAEP encrypted
+  encryptedSeed?: Uint8Array    // raw seed bytes (or RSA-OAEP encrypted if using key pair)
   alias?: string
   taintStatus: TaintStatus      // 0 = untainted, 1 = tainted
   isOnlyWatch?: boolean

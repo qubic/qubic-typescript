@@ -102,6 +102,55 @@ if (!result.ok) throw result.error
 console.log('peers:', result.value.peersBroadcastedTo)
 ```
 
+## End-to-end example: vault management
+
+```ts
+import { VaultManager, TaintStatusEnum } from '@qubic.org/vault'
+import { deriveIdentityFromSeed } from '@qubic.org/crypto'
+
+const vault = new VaultManager()
+
+// Create vault with multiple seeds
+const encrypted = await vault.create({
+  seeds: [
+    {
+      publicId: deriveIdentityFromSeed('seed-one'),
+      encryptedSeed: new TextEncoder().encode('seed-one'),
+      alias: 'Main account',
+      taintStatus: TaintStatusEnum.UNTAINTED,
+    },
+    {
+      publicId: deriveIdentityFromSeed('seed-two'),
+      encryptedSeed: new TextEncoder().encode('seed-two'),
+      alias: 'Secondary account',
+      taintStatus: TaintStatusEnum.UNTAINTED,
+    },
+  ],
+  metadata: {
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    appVersion: '1.0.0',
+    schemaVersion: 3,
+  },
+}, 'strong-password')
+
+// Add another seed
+const updated = await vault.addSeed(encrypted, 'strong-password', {
+  publicId: deriveIdentityFromSeed('seed-three'),
+  encryptedSeed: new TextEncoder().encode('seed-three'),
+  alias: 'Trading account',
+})
+
+// Unlock and access seeds
+const payload = await vault.unlock(updated, 'strong-password')
+for (const entry of payload.seeds) {
+  console.log(`${entry.alias}: ${entry.publicId}`)
+}
+
+// Upgrade legacy v1 vault
+const upgraded = await vault.upgrade(v1VaultData, 'old-password', 'new-password')
+```
+
 ## End-to-end example: build and broadcast a contract call
 
 ```ts

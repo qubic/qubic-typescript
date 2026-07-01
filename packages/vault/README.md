@@ -18,8 +18,8 @@ const vault = new VaultManager()
 // Create a new v3 vault
 const encrypted = await vault.create({
   seeds: [{
-    publicId: 'MZTVEQPHKLNDSYXBWUFAJGORCEIMVWHTFDCQNZALKBXSPJYUIDMVGOEXYZAB', // 60-char identity
-    encryptedSeed: new TextEncoder().encode('your-seed-here'), // raw seed bytes
+    publicId: 'MZTVEQPHKLNDSYXBWUFAJGORCEIMVWHTFDCQNZALKBXSPJYUIDMVGOEXYZAB',
+    encryptedSeed: new TextEncoder().encode('your-seed-here'),
     taintStatus: TaintStatusEnum.UNTAINTED,
   }],
   metadata: {
@@ -46,6 +46,40 @@ for (const entry of payload.seeds) {
 const version = vault.getVersion(encrypted) // 1 or 3
 ```
 
+## Add seeds to existing vault
+
+```ts
+import { VaultManager, TaintStatusEnum } from '@qubic.org/vault'
+
+const vault = new VaultManager()
+
+// Create vault with initial seed
+const encrypted = await vault.create({
+  seeds: [{
+    publicId: 'MZTVEQPHKLNDSYXBWUFAJGORCEIMVWHTFDCQNZALKBXSPJYUIDMVGOEXYZAB',
+    encryptedSeed: new TextEncoder().encode('first-seed'),
+    taintStatus: TaintStatusEnum.UNTAINTED,
+  }],
+  metadata: {
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    appVersion: '1.0.0',
+    schemaVersion: 3,
+  },
+}, 'password')
+
+// Add another seed
+const updated = await vault.addSeed(encrypted, 'password', {
+  publicId: 'QRGDSNMYHKVPXJEFBWZLOUAHTCEIMKRNVYCDSFBGXWPJZNITQVDALOXQXYZW',
+  encryptedSeed: new TextEncoder().encode('second-seed'),
+  alias: 'Secondary account',
+})
+
+// Unlock and verify both seeds exist
+const payload = await vault.unlock(updated, 'password')
+console.log(payload.seeds.length) // 2
+```
+
 ## Upgrade legacy vaults
 
 ```ts
@@ -58,6 +92,42 @@ const upgraded = await vault.upgrade(v1VaultData, 'old-password')
 
 // Optionally change password during upgrade
 const upgraded = await vault.upgrade(v1VaultData, 'old-password', 'new-password')
+```
+
+## Multiple seeds with aliases
+
+```ts
+import { VaultManager, TaintStatusEnum } from '@qubic.org/vault'
+
+const vault = new VaultManager()
+
+const encrypted = await vault.create({
+  seeds: [
+    {
+      publicId: 'MZTVEQPHKLNDSYXBWUFAJGORCEIMVWHTFDCQNZALKBXSPJYUIDMVGOEXYZAB',
+      encryptedSeed: new TextEncoder().encode('main-seed'),
+      alias: 'Main account',
+      taintStatus: TaintStatusEnum.UNTAINTED,
+    },
+    {
+      publicId: 'QRGDSNMYHKVPXJEFBWZLOUAHTCEIMKRNVYCDSFBGXWPJZNITQVDALOXQXYZW',
+      encryptedSeed: new TextEncoder().encode('secondary-seed'),
+      alias: 'Secondary account',
+      taintStatus: TaintStatusEnum.UNTAINTED,
+      isOnlyWatch: true,
+    },
+  ],
+  metadata: {
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    appVersion: '1.0.0',
+    schemaVersion: 3,
+  },
+}, 'password')
+
+// Access seeds by alias
+const payload = await vault.unlock(encrypted, 'password')
+const mainSeed = payload.seeds.find(s => s.alias === 'Main account')
 ```
 
 ## Custom Argon2 parameters
@@ -80,6 +150,24 @@ try {
   // use payload.seeds
 } finally {
   vault.zeroize(payload) // overwrite sensitive fields with zeros
+}
+```
+
+## Error handling
+
+```ts
+import { VaultManager, VaultDecryptionError, InvalidVaultError } from '@qubic.org/vault'
+
+const vault = new VaultManager()
+
+try {
+  const payload = await vault.unlock(encrypted, password)
+} catch (e) {
+  if (e instanceof VaultDecryptionError) {
+    console.error('Wrong password or corrupted data')
+  } else if (e instanceof InvalidVaultError) {
+    console.error('Invalid vault format:', e.message)
+  }
 }
 ```
 
@@ -128,11 +216,71 @@ interface SeedEntry {
   isOnlyWatch?: boolean
   createdAt?: string            // ISO 8601
 }
+
+interface VaultMetadata {
+  createdAt: string
+  updatedAt: string
+  appVersion: string
+  schemaVersion: 3
+}
 ```
 
-### Seed encryption flow
+## API reference
 
-Seeds are stored in the vault payload, which is encrypted with AES-256-GCM (Argon2id derived key). No additional encryption layer needed — the vault itself protects the seeds.
+### `VaultManager`
+
+#### `new VaultManager(options?)`
+
+Creates a new vault manager instance.
+
+- `options.argon2` — Custom Argon2 parameters (`memory`, `iterations`, `parallelism`)
+
+#### `vault.create(payload, password): Promise<Uint8Array>`
+
+Creates a new v3 vault encrypted with the given password.
+
+- `payload.seeds` — Array of seed entries to store
+- `payload.metadata` — Vault metadata (createdAt, updatedAt, appVersion, schemaVersion)
+- `password` — Encryption password
+
+Returns encrypted vault as `Uint8Array`.
+
+#### `vault.unlock(data, password): Promise<VaultPayload>`
+
+Decrypts a vault (auto-detects version v1 or v3).
+
+- `data` — Encrypted vault data
+- `password` — Decryption password
+
+Returns decrypted vault payload.
+
+#### `vault.addSeed(data, password, seed): Promise<Uint8Array>`
+
+Adds a seed to an existing vault.
+
+- `data` — Encrypted vault data
+- `password` — Decryption password
+- `seed` — Seed entry to add (`publicId`, `encryptedSeed?`, `alias?`, `taintStatus?`)
+
+Returns re-encrypted vault with the new seed.
+
+#### `vault.upgrade(data, oldPassword, newPassword?): Promise<Uint8Array>`
+
+Upgrades a v1 vault to v3 format.
+
+- `data` — v1 vault data
+- `oldPassword` — Current password
+- `newPassword` — Optional new password
+
+Returns upgraded v3 vault.
+
+#### `vault.getVersion(data): number`
+
+Returns the vault format version (1 or 3) without decrypting.
+
+#### `vault.zeroize(payload): void`
+
+Overwrites sensitive fields in the payload with zeros.
 
 ## Dependencies
 

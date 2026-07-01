@@ -3,9 +3,8 @@
 "@qubic.org/wallet": minor
 ---
 
-Add RSA-OAEP seed encryption in vault
+Simplify vault by removing RSA-OAEP seed encryption
 
-- Generate RSA-OAEP 4096-bit key pair per vault
-- Encrypt each seed with RSA public key
-- Wrap RSA private key with vault's wrap_key (HKDF derived)
-- Seeds are now double-encrypted: RSA-OAEP + AES-256-GCM
+- Seeds stored directly in vault payload (encrypted by AES-256-GCM)
+- Remove RSA key pair generation and wrapping
+- Faster vault creation, simpler code

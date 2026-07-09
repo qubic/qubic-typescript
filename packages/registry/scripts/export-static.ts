@@ -25,7 +25,6 @@ const { values: args } = parseArgs({
   options: {
     'data-dir': { type: 'string' },
     'out-dir': { type: 'string' },
-    clean: { type: 'boolean', default: true },
   },
 })
 
@@ -33,9 +32,7 @@ const DATA_DIR = args['data-dir'] ?? join(import.meta.dir, '../data')
 const OUT_DIR = args['out-dir']
 
 if (!OUT_DIR) {
-  console.error(
-    'Usage:\n' + '  bun scripts/export-static.ts --out-dir DIR [--data-dir DIR] [--clean=false]',
-  )
+  console.error('Usage:\n' + '  bun scripts/export-static.ts --out-dir DIR [--data-dir DIR]')
   process.exit(1)
 }
 
@@ -88,7 +85,7 @@ if (!existsSync(REGISTRY_PATH)) throw new Error(`${REGISTRY_PATH} does not exist
 if (!existsSync(EPOCH_REFS_PATH)) throw new Error(`${EPOCH_REFS_PATH} does not exist`)
 if (!existsSync(EPOCHS_DIR)) throw new Error(`${EPOCHS_DIR} does not exist`)
 
-if (args.clean) cleanGeneratedOutput()
+cleanGeneratedOutput()
 mkdirSync(OUT_DIR, { recursive: true })
 
 copyFile('registry.json')

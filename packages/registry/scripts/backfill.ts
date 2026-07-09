@@ -17,6 +17,9 @@
  *   --rpc-url URL        RPC endpoint for --catch-up (default: https://rpc.qubic.org/live/v1)
  *   --force              Overwrite existing snapshots (--from-epoch only)
  *   --dry-run            Print what would be written without writing anything
+ *   --data-dir DIR       Write registry data to DIR (default: packages/registry/data)
+ *   --smart-contracts-json FILE
+ *                        Read contract metadata from FILE when available
  *
  * Outputs:
  *   data/epoch-refs.json              — saved epoch→tag map (reused on next run)
@@ -45,6 +48,8 @@ const { values: args } = parseArgs({
     'rpc-url': { type: 'string' },
     contracts: { type: 'string' },
     token: { type: 'string' },
+    'data-dir': { type: 'string' },
+    'smart-contracts-json': { type: 'string' },
     force: { type: 'boolean', default: false },
     'dry-run': { type: 'boolean', default: false },
   },
@@ -53,11 +58,12 @@ const { values: args } = parseArgs({
 const CORE_DIR = join(import.meta.dir, '../../../resources/core')
 const CONTRACTS_DIR = join(CORE_DIR, 'src/contracts')
 const LOCAL_SETTINGS = join(CORE_DIR, 'src/public_settings.h')
-const SMART_CONTRACTS_JSON = join(
+const DEFAULT_SMART_CONTRACTS_JSON = join(
   import.meta.dir,
   '../../../resources/static/data/smart_contracts.json',
 )
-const DATA_DIR = join(import.meta.dir, '../data')
+const SMART_CONTRACTS_JSON = args['smart-contracts-json'] ?? DEFAULT_SMART_CONTRACTS_JSON
+const DATA_DIR = args['data-dir'] ?? join(import.meta.dir, '../data')
 const EPOCHS_DIR = join(DATA_DIR, 'epochs')
 const REGISTRY_PATH = join(DATA_DIR, 'registry.json')
 const EPOCH_REFS_PATH = join(DATA_DIR, 'epoch-refs.json')
@@ -378,6 +384,7 @@ async function buildEpochRefs(
 
   // Persist for future runs
   if (!args['dry-run']) {
+    mkdirSync(DATA_DIR, { recursive: true })
     const obj: Record<string, string> = {}
     for (const [epoch, tag] of [...epochToTag.entries()].sort((a, b) => a[0] - b[0]))
       obj[String(epoch)] = tag
@@ -621,6 +628,7 @@ function writeRegistry(registry: ContractRegistry) {
   if (args['dry-run']) {
     console.log(`Dry run — would write ${registry.versions.length} version entries.`)
   } else {
+    mkdirSync(DATA_DIR, { recursive: true })
     writeFileSync(REGISTRY_PATH, `${JSON.stringify(registry, null, 2)}\n`)
     console.log(`Wrote ${registry.versions.length} version(s) to ${REGISTRY_PATH}`)
   }
@@ -820,12 +828,12 @@ if (args.local) {
 } else {
   console.error(
     'Usage:\n' +
-      '  bun scripts/backfill.ts --local [--dry-run]\n' +
-      '  bun scripts/backfill.ts --catch-up [--rpc-url URL] [--contracts A,B] [--token GH_TOKEN] [--dry-run]\n' +
-      '  bun scripts/backfill.ts --rebuild-registry [--contracts A,B] [--dry-run]\n' +
-      '  bun scripts/backfill.ts --patch-addresses [--dry-run]\n' +
-      '  bun scripts/backfill.ts --migrate-snapshots [--dry-run]\n' +
-      '  bun scripts/backfill.ts --from-epoch <N> [--to-epoch <M>] [--contracts A,B] [--token GH_TOKEN] [--dry-run]',
+      '  bun scripts/backfill.ts --local [--data-dir DIR] [--smart-contracts-json FILE] [--dry-run]\n' +
+      '  bun scripts/backfill.ts --catch-up [--data-dir DIR] [--rpc-url URL] [--contracts A,B] [--token GH_TOKEN] [--dry-run]\n' +
+      '  bun scripts/backfill.ts --rebuild-registry [--data-dir DIR] [--contracts A,B] [--dry-run]\n' +
+      '  bun scripts/backfill.ts --patch-addresses [--data-dir DIR] [--dry-run]\n' +
+      '  bun scripts/backfill.ts --migrate-snapshots [--data-dir DIR] [--dry-run]\n' +
+      '  bun scripts/backfill.ts --from-epoch <N> [--data-dir DIR] [--to-epoch <M>] [--contracts A,B] [--token GH_TOKEN] [--dry-run]',
   )
   process.exit(1)
 }

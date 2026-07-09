@@ -1,0 +1,98 @@
+name: Sync Static Contract Registry
+
+on:
+  workflow_dispatch:
+    inputs:
+      static_ref:
+        description: 'Static branch or ref to sync from.'
+        required: false
+        default: main
+  repository_dispatch:
+    types: [static-contract-registry-updated]
+
+concurrency:
+  group: sync-static-contract-registry
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    name: Sync registry data and contract wrappers
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      STATIC_DIR: ${{ github.workspace }}/static-checkout
+
+    steps:
+      - name: Checkout qubic-typescript
+        uses: actions/checkout@v4
+
+      - name: Checkout static
+        uses: actions/checkout@v4
+        with:
+          repository: qubic/static
+          ref: ${{ github.event.client_payload.static_ref || github.event.inputs.static_ref || 'main' }}
+          path: static-checkout
+
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile --ignore-scripts
+
+      - name: Build packages needed by generators
+        run: |
+          bun run --filter '@qubic.org/types' build
+          bun run --filter '@qubic.org/crypto' build
+          bun run --filter '@qubic.org/registry' build
+
+      - name: Copy static registry data
+        run: |
+          test -f "$STATIC_DIR/data/contracts/registry.json"
+          test -d "$STATIC_DIR/data/contracts/epochs"
+          rm -rf packages/registry/data
+          mkdir -p packages/registry/data
+          cp -R "$STATIC_DIR/data/contracts/." packages/registry/data/
+          cp packages/registry/data/schemas/contract_registry.schema.json packages/registry/data/schema.json
+
+      - name: Regenerate contract wrappers
+        run: bun packages/contracts/scripts/generate.ts
+
+      - name: Check for changes
+        id: changes
+        run: |
+          git diff --quiet packages/registry/data packages/contracts/src/__generated__ \
+            && echo "changed=false" >> "$GITHUB_OUTPUT" \
+            || echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Open qubic-typescript PR
+        if: steps.changes.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          DATE=$(date -u +%Y%m%d-%H%M%S)
+          BRANCH="chore/sync-static-contract-registry-${DATE}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+
+          CHANGESET_FILE=".changeset/sync-static-contract-registry-${DATE}.md"
+          printf '%s\n' \
+            '---' \
+            '"@qubic.org/registry": patch' \
+            '"@qubic.org/contracts": patch' \
+            '---' \
+            '' \
+            'Sync contract registry data from static and regenerate contract wrappers.' \
+            > "$CHANGESET_FILE"
+
+          git add packages/registry/data packages/contracts/src/__generated__ "$CHANGESET_FILE"
+          git commit -m "chore(registry): sync contract data from static"
+          git push origin "$BRANCH"
+
+          gh pr create \
+            --base main \
+            --head "$BRANCH" \
+            --title "chore(registry): sync contract data from static" \
+            --body "Sync contract registry data from qubic/static and regenerate typed contract wrappers."

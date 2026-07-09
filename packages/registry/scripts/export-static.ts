@@ -17,7 +17,7 @@ import {
   statSync,
   writeFileSync,
 } from 'node:fs'
-import { join, relative } from 'node:path'
+import { dirname, join, relative } from 'node:path'
 import { parseArgs } from 'node:util'
 
 const { values: args } = parseArgs({
@@ -25,7 +25,7 @@ const { values: args } = parseArgs({
   options: {
     'data-dir': { type: 'string' },
     'out-dir': { type: 'string' },
-    clean: { type: 'boolean', default: false },
+    clean: { type: 'boolean', default: true },
   },
 })
 
@@ -34,8 +34,7 @@ const OUT_DIR = args['out-dir']
 
 if (!OUT_DIR) {
   console.error(
-    'Usage:\n' +
-      '  bun scripts/export-static.ts --out-dir DIR [--data-dir DIR] [--clean]',
+    'Usage:\n' + '  bun scripts/export-static.ts --out-dir DIR [--data-dir DIR] [--clean=false]',
   )
   process.exit(1)
 }
@@ -67,15 +66,29 @@ function copyFile(name: string) {
   const src = join(DATA_DIR, name)
   const dest = join(OUT_DIR, name)
   if (!existsSync(src)) throw new Error(`${src} does not exist`)
-  mkdirSync(join(dest, '..'), { recursive: true })
+  mkdirSync(dirname(dest), { recursive: true })
   cpSync(src, dest)
+}
+
+function schemaForFile(path: string): string {
+  if (path === 'registry.json') return 'contract_registry.schema.json'
+  if (path === 'epoch-refs.json') return 'epoch_refs.schema.json'
+  if (path.startsWith('epochs/')) return 'contract_snapshot.schema.json'
+  throw new Error(`No static contract schema mapping for ${path}`)
+}
+
+function cleanGeneratedOutput() {
+  for (const name of ['registry.json', 'epoch-refs.json', 'manifest.json']) {
+    rmSync(join(OUT_DIR, name), { force: true })
+  }
+  rmSync(join(OUT_DIR, 'epochs'), { recursive: true, force: true })
 }
 
 if (!existsSync(REGISTRY_PATH)) throw new Error(`${REGISTRY_PATH} does not exist`)
 if (!existsSync(EPOCH_REFS_PATH)) throw new Error(`${EPOCH_REFS_PATH} does not exist`)
 if (!existsSync(EPOCHS_DIR)) throw new Error(`${EPOCHS_DIR} does not exist`)
 
-if (args.clean) rmSync(OUT_DIR, { recursive: true, force: true })
+if (args.clean) cleanGeneratedOutput()
 mkdirSync(OUT_DIR, { recursive: true })
 
 copyFile('registry.json')
@@ -93,6 +106,7 @@ const latestCoreTag = latestEpoch > 0 ? epochRefs[String(latestEpoch)] : undefin
 
 const copiedFiles = filesUnder(OUT_DIR)
   .filter((path) => !path.endsWith('/manifest.json'))
+  .filter((path) => !relative(OUT_DIR, path).replaceAll('\\', '/').startsWith('schemas/'))
   .sort()
 const files: Record<string, { hash: string; schema: string; size: number }> = {}
 for (const path of copiedFiles) {
@@ -102,13 +116,6 @@ for (const path of copiedFiles) {
     schema: schemaForFile(rel),
     size: statSync(path).size,
   }
-}
-
-function schemaForFile(path: string): string {
-  if (path === 'registry.json') return 'contract_registry.schema.json'
-  if (path === 'epoch-refs.json') return 'epoch_refs.schema.json'
-  if (path.startsWith('epochs/')) return 'contract_snapshot.schema.json'
-  return 'contract_manifest.schema.json'
 }
 
 const manifest = {

@@ -27,6 +27,7 @@
     "test": "bun test",
     "validate": "bun scripts/validate.ts",
     "backfill": "bun scripts/backfill.ts",
+    "export-static": "bun scripts/export-static.ts",
     "extract-abi": "bun scripts/extract-abi.ts"
   },
   "dependencies": {

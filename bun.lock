@@ -29,12 +29,22 @@
     },
     "packages/contracts": {
       "name": "@qubic.org/contracts",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "dependencies": {
         "@qubic.org/crypto": "^0.2.1",
         "@qubic.org/registry": "^0.2.1",
         "@qubic.org/rpc": "^0.2.1",
         "@qubic.org/types": "^0.2.1",
+      },
+      "devDependencies": {
+        "typescript": "*",
+      },
+    },
+    "packages/create-qubic-app": {
+      "name": "@qubic.org/create-qubic-app",
+      "version": "0.1.0",
+      "bin": {
+        "create-qubic-app": "./dist/index.js",
       },
       "devDependencies": {
         "typescript": "*",
@@ -88,7 +98,7 @@
     },
     "packages/registry": {
       "name": "@qubic.org/registry",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "dependencies": {
         "@qubic.org/crypto": "^0.2.1",
         "@qubic.org/types": "^0.2.1",
@@ -143,7 +153,7 @@
     },
     "packages/vault": {
       "name": "@qubic.org/vault",
-      "version": "1.0.0",
+      "version": "1.2.0",
       "dependencies": {
         "@noble/ciphers": "^1.0.0",
         "@noble/hashes": "^2.2.0",
@@ -155,7 +165,7 @@
     },
     "packages/wallet": {
       "name": "@qubic.org/wallet",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "dependencies": {
         "@qubic.org/crypto": "^1.0.0",
         "@qubic.org/tx": "^1.0.0",
@@ -285,6 +295,8 @@
     "@qubic.org/bob": ["@qubic.org/bob@workspace:packages/bob"],
 
     "@qubic.org/contracts": ["@qubic.org/contracts@workspace:packages/contracts"],
+
+    "@qubic.org/create-qubic-app": ["@qubic.org/create-qubic-app@workspace:packages/create-qubic-app"],
 
     "@qubic.org/crypto": ["@qubic.org/crypto@workspace:packages/crypto"],
 

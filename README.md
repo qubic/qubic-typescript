@@ -21,7 +21,7 @@ TypeScript SDK for the [Qubic](https://qubic.org) network, split into focused pa
 | [`@qubic.org/vault`](packages/vault) | [![npm](https://img.shields.io/npm/v/@qubic.org/vault)](https://www.npmjs.com/package/@qubic.org/vault) | Versioned vault library — Argon2id, binary envelope, v1 migration |
 | [`@qubic.org/tcp`](packages/tcp) | [![npm](https://img.shields.io/npm/v/@qubic.org/tcp)](https://www.npmjs.com/package/@qubic.org/tcp) | Direct TCP transport — framing, connection pool, typed request helpers |
 | [`@qubic.org/react`](packages/react) | [![npm](https://img.shields.io/npm/v/@qubic.org/react)](https://www.npmjs.com/package/@qubic.org/react) | React hooks and providers — TanStack Query, VaultProvider, WalletProvider (extension / WalletConnect), contract queries, send mutations |
-| [`@qubic.org/create-qubic-app`](packages/create-qubic-app) | [![npm](https://img.shields.io/npm/v/@qubic.org/create-qubic-app)](https://www.npmjs.com/package/@qubic.org/create-qubic-app) | Interactive project scaffolder for Node/Bun scripts, Vite React dApps, and Next.js dApps |
+| [`@qubic.org/create-qubic-app`](packages/create-qubic-app) | [![npm](https://img.shields.io/npm/v/@qubic.org/create-qubic-app)](https://www.npmjs.com/package/@qubic.org/create-qubic-app) | Interactive project scaffolder for Node/Bun scripts, Vite React dApps, Next.js dApps, and optional Biome/ESLint/Prettier setup |
 
 ## Quick start
 

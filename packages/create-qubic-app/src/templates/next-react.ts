@@ -1,10 +1,17 @@
 import type { ConnectorId, ScaffoldOptions, TemplateDefinition } from '../options.js'
+import { applyToolingToPackage, toolingFiles } from '../tooling.js'
 
 function hasConnector(options: ScaffoldOptions, connector: ConnectorId): boolean {
   return options.connectors.includes(connector)
 }
 
 function packageJson(options: ScaffoldOptions): string {
+  const scripts: Record<string, string> = {
+    dev: 'next dev',
+    build: 'next build',
+    start: 'next start',
+    typecheck: 'tsc --noEmit',
+  }
   const dependencies: Record<string, string> = {
     '@qubic.org/contracts': '^1.0.0',
     '@qubic.org/react': '^1.0.0',
@@ -20,25 +27,24 @@ function packageJson(options: ScaffoldOptions): string {
     dependencies['@walletconnect/sign-client'] = '^2.21.0'
   }
 
+  const devDependencies: Record<string, string> = {
+    '@types/node': '^22.0.0',
+    '@types/react': '^19.0.0',
+    '@types/react-dom': '^19.2.3',
+    typescript: '^5.7.0',
+  }
+
+  applyToolingToPackage('next-react', options.tooling, scripts, devDependencies)
+
   return `${JSON.stringify(
     {
       name: options.projectName,
       version: '0.1.0',
       private: true,
       type: 'module',
-      scripts: {
-        dev: 'next dev',
-        build: 'next build',
-        start: 'next start',
-        typecheck: 'tsc --noEmit',
-      },
+      scripts,
       dependencies,
-      devDependencies: {
-        '@types/node': '^22.0.0',
-        '@types/react': '^19.0.0',
-        '@types/react-dom': '^19.2.3',
-        typescript: '^5.7.0',
-      },
+      devDependencies,
     },
     null,
     2,
@@ -366,6 +372,7 @@ ${options.packageManager === 'npm' ? 'npm run dev' : `${options.packageManager} 
 - client-only Qubic providers
 - optional \`VaultProvider\` wiring for encrypted seed vaults saved as \`qubic-vault\` in localStorage
 - wallet connectors: ${options.connectors.join(', ')}
+- tooling: ${options.tooling.join(', ')}
 - live tick info query
 - wallet balance query
 - typed Qearn contract query
@@ -399,5 +406,6 @@ export const nextReactTemplate: TemplateDefinition = {
     { path: 'qubic/connectors.ts', content: connectorsTs(options) },
     { path: 'qubic/vault.ts', content: vaultTs },
     { path: 'README.md', content: readme(options) },
+    ...toolingFiles('next-react', options.tooling),
   ],
 }

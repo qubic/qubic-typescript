@@ -2,21 +2,25 @@ import { spawnSync } from 'node:child_process'
 import { existsSync, mkdirSync, readdirSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { parseArgs } from 'node:util'
-import { cancel, confirm, intro, isCancel, select, text } from '@clack/prompts'
+import { cancel, confirm, intro, isCancel, multiselect, select, text } from '@clack/prompts'
 import {
   type ConnectorId,
   type PackageManager,
   type TemplateId,
+  type ToolingId,
   connectorIds,
   installCommand,
   isConnectorId,
   isPackageManager,
   isTemplateId,
+  isToolingId,
   packageManagers,
   runCommand,
   templateIds,
+  toolingIds,
 } from './options.js'
 import { scaffold } from './scaffold.js'
+import { defaultTooling } from './tooling.js'
 
 export interface CliOptions {
   projectName: string
@@ -26,6 +30,7 @@ export interface CliOptions {
   force: boolean
   install: boolean
   connectors: ConnectorId[]
+  tooling: ToolingId[]
 }
 
 export type ConnectorPreset = 'extension' | 'extension-walletconnect' | 'walletconnect' | 'none'
@@ -45,6 +50,7 @@ export async function run(argv: string[]): Promise<void> {
       force: options.force,
       install: options.install,
       connectors: options.connectors,
+      tooling: options.tooling,
     })
 
     if (options.install) runInstall(options.packageManager, targetDir)
@@ -85,6 +91,7 @@ export function parseCli(argv: string[]): CliOptions {
       force: { type: 'boolean', default: false },
       install: { type: 'boolean', default: false },
       connectors: { type: 'string' },
+      tooling: { type: 'string' },
       help: { type: 'boolean', short: 'h', default: false },
     },
   })
@@ -110,6 +117,7 @@ export function parseCli(argv: string[]): CliOptions {
   }
 
   const connectors = parseConnectors(values.connectors)
+  const tooling = parseTooling(values.tooling)
 
   return {
     projectName,
@@ -119,6 +127,7 @@ export function parseCli(argv: string[]): CliOptions {
     force: values.force ?? false,
     install: values.install ?? false,
     connectors,
+    tooling,
   }
 }
 
@@ -176,6 +185,26 @@ async function promptCli(): Promise<CliOptions> {
           ),
         )
 
+  const tooling = unwrapPrompt(
+    await multiselect<ToolingId>({
+      message: 'Code quality tooling',
+      initialValues: defaultTooling(),
+      required: true,
+      options: [
+        { value: 'biome', label: 'Biome', hint: 'fast formatter + linter' },
+        { value: 'prettier', label: 'Prettier', hint: 'formatter' },
+        {
+          value: 'eslint',
+          label: eslintToolingLabel(template),
+          hint: 'template-aware lint config',
+        },
+        { value: 'none', label: 'No lint or format tooling' },
+      ],
+    }),
+  )
+
+  const normalizedTooling: ToolingId[] = tooling.includes('none') ? ['none'] : tooling
+
   const outDir = unwrapPrompt(
     await text({
       message: 'Create inside directory',
@@ -219,6 +248,7 @@ async function promptCli(): Promise<CliOptions> {
     force,
     install,
     connectors,
+    tooling: normalizedTooling,
   }
 }
 
@@ -258,6 +288,39 @@ function parseConnectors(value: string | undefined): ConnectorId[] {
   }
 
   return parsed as ConnectorId[]
+}
+
+function parseTooling(value: string | undefined): ToolingId[] {
+  if (!value || value.trim().length === 0) return defaultTooling()
+
+  const parsed = value
+    .split(',')
+    .map((item) => item.trim())
+    .filter((item) => item.length > 0)
+
+  if (parsed.length === 0) return defaultTooling()
+  if (parsed.includes('none') && parsed.length > 1) {
+    throw new Error('Tooling "none" cannot be combined with other tooling options.')
+  }
+
+  for (const tool of parsed) {
+    if (!isToolingId(tool)) {
+      throw new Error(`Unknown tooling "${tool}". Choose one of: ${toolingIds.join(', ')}`)
+    }
+  }
+
+  return parsed as ToolingId[]
+}
+
+function eslintToolingLabel(template: TemplateId): string {
+  switch (template) {
+    case 'node':
+      return 'ESLint for Node/TypeScript'
+    case 'vite-react':
+      return 'ESLint for Vite React'
+    case 'next-react':
+      return 'ESLint for Next.js'
+  }
 }
 
 function runInstall(packageManager: PackageManager, cwd: string) {
@@ -303,6 +366,7 @@ Options:
       --pm <name>         Package manager: ${packageManagers.join(', ')}
       --out <dir>         Directory to create the project in
       --connectors <list> Connector list for web templates: ${connectorIds.join(', ')}
+      --tooling <list>    Tooling list: ${toolingIds.join(', ')}
       --force             Overwrite a non-empty target directory
       --install           Install dependencies after scaffolding
   -h, --help              Show help
@@ -312,5 +376,6 @@ Examples:
   create-qubic-app my-app --template node --pm bun
   create-qubic-app my-app --template node --pm npm --out ./examples
   create-qubic-app my-dapp --template vite-react --connectors extension,walletconnect
+  create-qubic-app my-next-app --template next-react --tooling biome,eslint
 `
 }

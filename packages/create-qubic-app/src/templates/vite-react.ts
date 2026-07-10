@@ -1,10 +1,17 @@
 import type { ConnectorId, ScaffoldOptions, TemplateDefinition } from '../options.js'
+import { applyToolingToPackage, toolingFiles } from '../tooling.js'
 
 function hasConnector(options: ScaffoldOptions, connector: ConnectorId): boolean {
   return options.connectors.includes(connector)
 }
 
 function packageJson(options: ScaffoldOptions): string {
+  const scripts: Record<string, string> = {
+    dev: 'vite',
+    build: 'tsc -b && vite build',
+    preview: 'vite preview',
+    typecheck: 'tsc --noEmit',
+  }
   const dependencies: Record<string, string> = {
     '@qubic.org/contracts': '^1.0.0',
     '@qubic.org/react': '^1.0.0',
@@ -19,26 +26,25 @@ function packageJson(options: ScaffoldOptions): string {
     dependencies['@walletconnect/sign-client'] = '^2.21.0'
   }
 
+  const devDependencies: Record<string, string> = {
+    '@types/react': '^19.0.0',
+    '@types/react-dom': '^19.2.3',
+    '@vitejs/plugin-react': '^4.6.0',
+    typescript: '^5.7.0',
+    vite: '^6.0.0',
+  }
+
+  applyToolingToPackage('vite-react', options.tooling, scripts, devDependencies)
+
   return `${JSON.stringify(
     {
       name: options.projectName,
       version: '0.1.0',
       private: true,
       type: 'module',
-      scripts: {
-        dev: 'vite',
-        build: 'tsc -b && vite build',
-        preview: 'vite preview',
-        typecheck: 'tsc --noEmit',
-      },
+      scripts,
       dependencies,
-      devDependencies: {
-        '@types/react': '^19.0.0',
-        '@types/react-dom': '^19.2.3',
-        '@vitejs/plugin-react': '^4.6.0',
-        typescript: '^5.7.0',
-        vite: '^6.0.0',
-      },
+      devDependencies,
     },
     null,
     2,
@@ -356,6 +362,7 @@ ${options.packageManager === 'npm' ? 'npm run dev' : `${options.packageManager} 
 - \`QubicProvider\` and \`WalletProvider\` from \`@qubic.org/react\`
 - optional \`VaultProvider\` wiring for encrypted seed vaults saved as \`qubic-vault\` in localStorage
 - wallet connectors: ${connectorList}
+- tooling: ${options.tooling.join(', ')}
 - live tick info query
 - wallet balance query
 - typed Qearn contract query
@@ -388,5 +395,6 @@ export const viteReactTemplate: TemplateDefinition = {
     { path: 'src/qubic/connectors.ts', content: connectorsTs(options) },
     { path: 'src/qubic/vault.ts', content: vaultTs },
     { path: 'README.md', content: readme(options) },
+    ...toolingFiles('vite-react', options.tooling),
   ],
 }

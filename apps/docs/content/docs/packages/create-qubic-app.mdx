@@ -36,13 +36,15 @@ bunx @qubic.org/create-qubic-app my-app --template node
 ```bash
 bunx @qubic.org/create-qubic-app my-dapp \
   --template vite-react \
-  --connectors extension,walletconnect
+  --connectors extension,walletconnect \
+  --tooling biome,eslint
 ```
 
 ```bash
 bunx @qubic.org/create-qubic-app my-next-app \
   --template next-react \
-  --connectors extension,walletconnect
+  --connectors extension,walletconnect \
+  --tooling eslint,prettier
 ```
 
 ## Templates
@@ -52,6 +54,27 @@ bunx @qubic.org/create-qubic-app my-next-app \
 | `node` | Node/Bun TypeScript script with RPC, wallet, safe transfer building, and contract query examples. |
 | `vite-react` | Vite React dApp with `QubicProvider`, optional `VaultProvider` wiring, `WalletProvider`, balance query, and contract query examples. |
 | `next-react` | Next.js app router dApp with client-only Qubic providers, optional vault wiring, and wallet connectors. |
+
+## Code quality tooling
+
+All templates can generate formatter and linter config. Biome is the default when `--tooling` is omitted.
+
+| Tooling | Generated files and scripts |
+|---|---|
+| `biome` | `biome.json`, `lint`, and `format` scripts. |
+| `prettier` | `.prettierrc.json`, `.prettierignore`, `format`, and `format:check` scripts. |
+| `eslint` | Template-aware `eslint.config.mjs` and `lint` script. Node uses TypeScript ESLint, Vite adds React hooks/refresh rules, and Next uses `eslint-config-next`. |
+| `none` | No lint or format tooling. Cannot be combined with other tooling options. |
+
+Use a comma-separated tooling list:
+
+```bash
+bunx @qubic.org/create-qubic-app my-app \
+  --template vite-react \
+  --tooling biome,eslint,prettier
+```
+
+In interactive mode, select the tooling you want after choosing the template.
 
 ## Wallet connectors
 

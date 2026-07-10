@@ -1,16 +1,25 @@
 import type { ScaffoldOptions, TemplateDefinition } from '../options.js'
+import { applyToolingToPackage, toolingFiles } from '../tooling.js'
 
 function packageJson(options: ScaffoldOptions): string {
+  const scripts: Record<string, string> = {
+    dev: 'tsx src/index.ts',
+    typecheck: 'tsc --noEmit',
+  }
+  const devDependencies: Record<string, string> = {
+    tsx: '^4.20.0',
+    typescript: '^5.7.0',
+  }
+
+  applyToolingToPackage('node', options.tooling, scripts, devDependencies)
+
   return `${JSON.stringify(
     {
       name: options.projectName,
       version: '0.1.0',
       private: true,
       type: 'module',
-      scripts: {
-        dev: 'tsx src/index.ts',
-        typecheck: 'tsc --noEmit',
-      },
+      scripts,
       dependencies: {
         '@qubic.org/contracts': '^1.0.0',
         '@qubic.org/crypto': '^1.0.0',
@@ -19,10 +28,7 @@ function packageJson(options: ScaffoldOptions): string {
         '@qubic.org/wallet': '^1.0.0',
         dotenv: '^16.4.7',
       },
-      devDependencies: {
-        tsx: '^4.20.0',
-        typescript: '^5.7.0',
-      },
+      devDependencies,
     },
     null,
     2,
@@ -156,6 +162,7 @@ ${options.packageManager === 'npm' ? 'npm run dev' : `${options.packageManager} 
 - optionally creates a wallet from \`QUBIC_SEED\`
 - builds a transfer transaction when \`QUBIC_DESTINATION\` is set
 - never broadcasts unless you explicitly pass \`--broadcast\`
+- tooling: ${options.tooling.join(', ')}
 
 ## Broadcast safety
 
@@ -179,5 +186,6 @@ export const nodeTemplate: TemplateDefinition = {
     { path: '.gitignore', content: 'node_modules\n.env\ndist\n' },
     { path: 'src/index.ts', content: indexTs },
     { path: 'README.md', content: readme(options) },
+    ...toolingFiles('node', options.tooling),
   ],
 }

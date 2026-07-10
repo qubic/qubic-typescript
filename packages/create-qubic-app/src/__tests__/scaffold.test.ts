@@ -26,6 +26,22 @@ describe('create-qubic-app', () => {
     expect(options.packageManager).toBe('npm')
     expect(options.outDir).toBe('/tmp')
     expect(options.connectors).toEqual(['extension'])
+    expect(options.tooling).toEqual(['biome'])
+  })
+
+  test('parses explicit tooling options', () => {
+    const options = parseCli([
+      'demo',
+      '--template',
+      'vite-react',
+      '--tooling',
+      'biome,eslint,prettier',
+    ])
+
+    expect(options.tooling).toEqual(['biome', 'eslint', 'prettier'])
+    expect(() => parseCli(['demo', '--tooling', 'none,biome'])).toThrow(
+      'Tooling "none" cannot be combined',
+    )
   })
 
   test('rejects removed MetaMask Snap connector option', () => {
@@ -47,10 +63,12 @@ describe('create-qubic-app', () => {
         force: false,
         install: false,
         connectors: ['extension'],
+        tooling: ['biome'],
       })
 
       expect(written).toContain('package.json')
       expect(written).toContain('src/index.ts')
+      expect(written).toContain('biome.json')
 
       const packageJson = JSON.parse(readFileSync(join(targetDir, 'package.json'), 'utf-8')) as {
         name?: string
@@ -60,6 +78,15 @@ describe('create-qubic-app', () => {
       const source = readFileSync(join(targetDir, 'src/index.ts'), 'utf-8')
       expect(source).not.toContain('{{')
       expect(source).toContain('--broadcast')
+
+      const packageJsonFull = JSON.parse(
+        readFileSync(join(targetDir, 'package.json'), 'utf-8'),
+      ) as {
+        scripts?: Record<string, string>
+        devDependencies?: Record<string, string>
+      }
+      expect(packageJsonFull.scripts?.lint).toBe('biome check .')
+      expect(packageJsonFull.devDependencies?.['@biomejs/biome']).toBeTruthy()
     } finally {
       rmSync(root, { recursive: true, force: true })
     }
@@ -78,11 +105,14 @@ describe('create-qubic-app', () => {
         force: false,
         install: false,
         connectors: ['extension', 'walletconnect'],
+        tooling: ['eslint', 'prettier'],
       })
 
       expect(written).toContain('src/qubic/connectors.ts')
       expect(written).toContain('src/qubic/vault.ts')
       expect(written).toContain('src/App.tsx')
+      expect(written).toContain('eslint.config.mjs')
+      expect(written).toContain('.prettierrc.json')
 
       const connectors = readFileSync(join(targetDir, 'src/qubic/connectors.ts'), 'utf-8')
       expect(connectors).toContain('extensionConnector')
@@ -96,6 +126,17 @@ describe('create-qubic-app', () => {
 
       const vault = readFileSync(join(targetDir, 'src/qubic/vault.ts'), 'utf-8')
       expect(vault).toContain('qubic-vault')
+
+      const eslintConfig = readFileSync(join(targetDir, 'eslint.config.mjs'), 'utf-8')
+      expect(eslintConfig).toContain('eslint-plugin-react-hooks')
+
+      const packageJson = JSON.parse(readFileSync(join(targetDir, 'package.json'), 'utf-8')) as {
+        scripts?: Record<string, string>
+        devDependencies?: Record<string, string>
+      }
+      expect(packageJson.scripts?.lint).toBe('eslint .')
+      expect(packageJson.scripts?.format).toBe('prettier --write .')
+      expect(packageJson.devDependencies?.['eslint-plugin-react-refresh']).toBeTruthy()
     } finally {
       rmSync(root, { recursive: true, force: true })
     }
@@ -114,11 +155,14 @@ describe('create-qubic-app', () => {
         force: false,
         install: false,
         connectors: ['extension', 'walletconnect'],
+        tooling: ['biome', 'eslint'],
       })
 
       expect(written).toContain('app/providers.tsx')
       expect(written).toContain('qubic/connectors.ts')
       expect(written).toContain('qubic/vault.ts')
+      expect(written).toContain('biome.json')
+      expect(written).toContain('eslint.config.mjs')
 
       const connectors = readFileSync(join(targetDir, 'qubic/connectors.ts'), 'utf-8')
       expect(connectors).toContain("'use client'")
@@ -131,6 +175,9 @@ describe('create-qubic-app', () => {
       expect(providers).toContain('VaultProvider')
       expect(connectors).not.toContain('SNAP')
       expect(connectors).not.toContain('MetaMask')
+
+      const eslintConfig = readFileSync(join(targetDir, 'eslint.config.mjs'), 'utf-8')
+      expect(eslintConfig).toContain('next/core-web-vitals')
     } finally {
       rmSync(root, { recursive: true, force: true })
     }

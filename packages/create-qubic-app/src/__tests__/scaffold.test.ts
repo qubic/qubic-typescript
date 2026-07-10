@@ -2,10 +2,23 @@ import { describe, expect, test } from 'bun:test'
 import { mkdtempSync, readFileSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { parseCli } from '../cli.js'
+import { connectorsFromPreset, parseCli, shouldRunInteractive } from '../cli.js'
 import { scaffold } from '../scaffold.js'
 
 describe('create-qubic-app', () => {
+  test('detects no-args interactive mode', () => {
+    expect(shouldRunInteractive([])).toBe(true)
+    expect(shouldRunInteractive(['demo'])).toBe(false)
+    expect(shouldRunInteractive(['--help'])).toBe(false)
+  })
+
+  test('maps interactive connector presets', () => {
+    expect(connectorsFromPreset('extension')).toEqual(['extension'])
+    expect(connectorsFromPreset('extension-walletconnect')).toEqual(['extension', 'walletconnect'])
+    expect(connectorsFromPreset('walletconnect')).toEqual(['walletconnect'])
+    expect(connectorsFromPreset('none')).toEqual(['none'])
+  })
+
   test('parses node scaffold options', () => {
     const options = parseCli(['demo', '--template', 'node', '--pm', 'npm', '--out', '/tmp'])
     expect(options.projectName).toBe('demo')

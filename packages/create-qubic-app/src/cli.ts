@@ -1,7 +1,8 @@
 import { spawnSync } from 'node:child_process'
-import { mkdirSync } from 'node:fs'
+import { existsSync, mkdirSync, readdirSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { parseArgs } from 'node:util'
+import { cancel, confirm, intro, isCancel, select, text } from '@clack/prompts'
 import {
   type ConnectorId,
   type PackageManager,
@@ -17,7 +18,7 @@ import {
 } from './options.js'
 import { scaffold } from './scaffold.js'
 
-interface CliOptions {
+export interface CliOptions {
   projectName: string
   template: TemplateId
   packageManager: PackageManager
@@ -27,9 +28,12 @@ interface CliOptions {
   connectors: ConnectorId[]
 }
 
+export type ConnectorPreset = 'extension' | 'extension-walletconnect' | 'walletconnect' | 'none'
+
 export async function run(argv: string[]): Promise<void> {
   try {
-    const options = parseCli(argv)
+    const options =
+      shouldRunInteractive(argv) && isInteractiveShell() ? await promptCli() : parseCli(argv)
     const targetDir = resolve(options.outDir, options.projectName)
     mkdirSync(options.outDir, { recursive: true })
 
@@ -50,6 +54,23 @@ export async function run(argv: string[]): Promise<void> {
     const message = error instanceof Error ? error.message : String(error)
     process.stderr.write(`${message}\n\n${usage()}`)
     process.exit(1)
+  }
+}
+
+export function shouldRunInteractive(argv: string[]): boolean {
+  return argv.length === 0
+}
+
+export function connectorsFromPreset(preset: ConnectorPreset): ConnectorId[] {
+  switch (preset) {
+    case 'extension':
+      return ['extension']
+    case 'extension-walletconnect':
+      return ['extension', 'walletconnect']
+    case 'walletconnect':
+      return ['walletconnect']
+    case 'none':
+      return ['none']
   }
 }
 
@@ -99,6 +120,122 @@ export function parseCli(argv: string[]): CliOptions {
     install: values.install ?? false,
     connectors,
   }
+}
+
+async function promptCli(): Promise<CliOptions> {
+  intro('create-qubic-app')
+
+  const projectName = unwrapPrompt(
+    await text({
+      message: 'Project name',
+      placeholder: 'my-qubic-app',
+      validate(value) {
+        const name = value?.trim() ?? ''
+        if (name.length === 0) return 'Project name is required.'
+        if (hasInvalidPathCharacter(name)) return 'Project name contains invalid path characters.'
+        return undefined
+      },
+    }),
+  ).trim()
+
+  const template = unwrapPrompt(
+    await select<TemplateId>({
+      message: 'Template',
+      initialValue: 'vite-react',
+      options: [
+        { value: 'node', label: 'Node/Bun script', hint: 'RPC, wallet, transfer, contracts' },
+        { value: 'vite-react', label: 'Vite React dApp', hint: 'Fast browser starter' },
+        { value: 'next-react', label: 'Next.js React dApp', hint: 'App router starter' },
+      ],
+    }),
+  )
+
+  const packageManager = unwrapPrompt(
+    await select<PackageManager>({
+      message: 'Package manager',
+      initialValue: 'bun',
+      options: packageManagers.map((value) => ({ value, label: value })),
+    }),
+  )
+
+  const connectors: ConnectorId[] =
+    template === 'node'
+      ? ['extension']
+      : connectorsFromPreset(
+          unwrapPrompt(
+            await select<ConnectorPreset>({
+              message: 'Wallet connectors',
+              initialValue: 'extension-walletconnect',
+              options: [
+                { value: 'extension', label: 'Wallet extension' },
+                { value: 'extension-walletconnect', label: 'Wallet extension + WalletConnect' },
+                { value: 'walletconnect', label: 'WalletConnect only' },
+                { value: 'none', label: 'No wallet connectors' },
+              ],
+            }),
+          ),
+        )
+
+  const outDir = unwrapPrompt(
+    await text({
+      message: 'Create inside directory',
+      defaultValue: process.cwd(),
+      placeholder: process.cwd(),
+      validate(value) {
+        if ((value?.trim() ?? '').length === 0) return 'Directory is required.'
+        return undefined
+      },
+    }),
+  ).trim()
+
+  const targetDir = resolve(outDir, projectName)
+  const force =
+    existsSync(targetDir) && readdirSync(targetDir).length > 0
+      ? unwrapPrompt(
+          await confirm({
+            message: `${targetDir} is not empty. Overwrite it?`,
+            initialValue: false,
+          }),
+        )
+      : false
+
+  if (!force && existsSync(targetDir) && readdirSync(targetDir).length > 0) {
+    cancel('Operation cancelled.')
+    process.exit(0)
+  }
+
+  const install = unwrapPrompt(
+    await confirm({
+      message: 'Install dependencies now?',
+      initialValue: false,
+    }),
+  )
+
+  return {
+    projectName,
+    template,
+    packageManager,
+    outDir,
+    force,
+    install,
+    connectors,
+  }
+}
+
+function unwrapPrompt<T>(value: T | symbol): T {
+  if (isCancel(value)) {
+    cancel('Operation cancelled.')
+    process.exit(0)
+  }
+  return value as T
+}
+
+function isInteractiveShell(): boolean {
+  return Boolean(process.stdin.isTTY && process.stdout.isTTY)
+}
+
+function hasInvalidPathCharacter(value: string): boolean {
+  return [...value].some((char) => char.charCodeAt(0) < 32 || '<>:"|?*'.includes(char))
 }
 
 function parseConnectors(value: string | undefined): ConnectorId[] {
@@ -158,7 +295,8 @@ function printSuccess(options: CliOptions, targetDir: string, written: string[])
 
 function usage(): string {
   return `Usage:
-  create-qubic-app <project-name> [options]
+  create-qubic-app [project-name] [options]
+  create-qubic-app
 
 Options:
   -t, --template <name>   Template to use: ${templateIds.join(', ')}
@@ -170,6 +308,7 @@ Options:
   -h, --help              Show help
 
 Examples:
+  create-qubic-app
   create-qubic-app my-app --template node --pm bun
   create-qubic-app my-app --template node --pm npm --out ./examples
   create-qubic-app my-dapp --template vite-react --connectors extension,walletconnect

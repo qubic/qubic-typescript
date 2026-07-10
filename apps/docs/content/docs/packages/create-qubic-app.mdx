@@ -5,7 +5,7 @@ description: Scaffold Qubic Node/Bun scripts, Vite React dApps, and Next.js dApp
 
 # create-qubic-app
 
-`@qubic.org/create-qubic-app` scaffolds starter projects for building on Qubic with JavaScript and TypeScript.
+`@qubic.org/create-qubic-app` scaffolds starter projects for building on Qubic with JavaScript and TypeScript. Run it without arguments for an interactive picker, or pass flags for reproducible scripts.
 
 It can generate:
 
@@ -14,6 +14,20 @@ It can generate:
 - Next.js app router dApps with client-safe Qubic providers, encrypted vault wiring, and wallet connectors
 
 ## Usage
+
+Interactive mode:
+
+```bash
+bunx @qubic.org/create-qubic-app
+```
+
+When linked locally, the bin can be run directly:
+
+```bash
+create-qubic-app
+```
+
+Scriptable mode:
 
 ```bash
 bunx @qubic.org/create-qubic-app my-app --template node
@@ -56,6 +70,8 @@ bunx @qubic.org/create-qubic-app my-dapp \
   --template vite-react \
   --connectors extension,walletconnect
 ```
+
+In interactive mode, choose one of the connector presets: wallet extension, wallet extension + WalletConnect, WalletConnect only, or no wallet connectors.
 
 ## Safety
 

@@ -9,6 +9,7 @@ function packageJson(options: ScaffoldOptions): string {
     '@qubic.org/contracts': '^1.0.0',
     '@qubic.org/react': '^1.0.0',
     '@qubic.org/rpc': '^1.0.0',
+    '@qubic.org/wallet': '^1.0.0',
     '@tanstack/react-query': '^5.100.10',
     react: '^19.0.0',
     'react-dom': '^19.2.7',
@@ -16,9 +17,6 @@ function packageJson(options: ScaffoldOptions): string {
 
   if (hasConnector(options, 'walletconnect')) {
     dependencies['@walletconnect/sign-client'] = '^2.21.0'
-  }
-  if (hasConnector(options, 'snap')) {
-    dependencies['@qubic.org/types'] = '^1.0.0'
   }
 
   return `${JSON.stringify(
@@ -136,12 +134,13 @@ code, pre {
 }
 `
 
-const mainTsx = `import { StrictMode } from 'react'
+const mainTsx = `import { type ReactNode, StrictMode, useMemo } from 'react'
 import { createRoot } from 'react-dom/client'
-import { QubicProvider, WalletProvider } from '@qubic.org/react'
+import { QubicProvider, VaultProvider, WalletProvider } from '@qubic.org/react'
 import { App } from './App'
 import { live } from './qubic/clients'
 import { connectors } from './qubic/connectors'
+import { loadVaultData } from './qubic/vault'
 import './style.css'
 
 const root = document.getElementById('root')
@@ -149,18 +148,50 @@ if (!root) throw new Error('Root element not found')
 
 createRoot(root).render(
   <StrictMode>
-    <QubicProvider liveClient={live}>
-      <WalletProvider connectors={connectors}>
-        <App />
-      </WalletProvider>
-    </QubicProvider>
+    <QubicProviders>
+      <App />
+    </QubicProviders>
   </StrictMode>,
 )
+
+function QubicProviders({ children }: { children: ReactNode }) {
+  const vaultData = useMemo(() => loadVaultData(), [])
+  const walletTree = <WalletProvider connectors={connectors}>{children}</WalletProvider>
+
+  return (
+    <QubicProvider liveClient={live}>
+      {vaultData ? (
+        <VaultProvider vaultData={vaultData} persistSession autoLockMs={15 * 60_000}>
+          {walletTree}
+        </VaultProvider>
+      ) : (
+        walletTree
+      )}
+    </QubicProvider>
+  )
+}
 `
 
 const clientsTs = `import { createLiveClient } from '@qubic.org/rpc'
 
 export const live = createLiveClient()
+`
+
+const vaultTs = `import { importVault, type VaultData } from '@qubic.org/wallet'
+
+export const VAULT_STORAGE_KEY = 'qubic-vault'
+
+export function loadVaultData(storage: Storage = window.localStorage): VaultData | undefined {
+  const serialized = storage.getItem(VAULT_STORAGE_KEY)
+  if (!serialized) return undefined
+
+  try {
+    return importVault(serialized)
+  } catch (error) {
+    console.warn('Failed to load Qubic vault from localStorage.', error)
+    return undefined
+  }
+}
 `
 
 function connectorsTs(options: ScaffoldOptions): string {
@@ -177,22 +208,6 @@ export const connectors: WalletConnector[] = []
   if (hasConnector(options, 'extension')) {
     imports.add('extensionConnector')
     lines.push('  extensionConnector,')
-  }
-
-  if (hasConnector(options, 'snap')) {
-    imports.add('createMetaMaskSnapConnector')
-    lines.push(`  createMetaMaskSnapConnector({
-    snapId: import.meta.env.VITE_QUBIC_SNAP_ID || undefined,
-    accountIndex: Number(import.meta.env.VITE_QUBIC_SNAP_ACCOUNT_INDEX ?? '0'),
-    broadcast: async (base64) => {
-      const result = await live.broadcastTransaction(base64 as Base64)
-      if (!result.ok) throw result.error
-      return {
-        networkTxId: result.value.transactionId,
-        broadcast: result.value,
-      }
-    },
-  }),`)
   }
 
   if (hasConnector(options, 'walletconnect')) {
@@ -215,12 +230,9 @@ export const connectors: WalletConnector[] = []
   const signClientImport = hasConnector(options, 'walletconnect')
     ? "import SignClient from '@walletconnect/sign-client'\n"
     : ''
-  const base64Import = hasConnector(options, 'snap')
-    ? "import type { Base64 } from '@qubic.org/types'\n"
-    : ''
 
   return `import { ${[...imports].join(', ')} } from '@qubic.org/react'
-${signClientImport}${base64Import}import { live } from './clients'
+${signClientImport}
 
 export const connectors: WalletConnector[] = [
 ${lines.join('\n')}
@@ -319,9 +331,6 @@ function WalletCard() {
 
 function envExample(options: ScaffoldOptions): string {
   const lines = [`VITE_APP_NAME=${options.projectName}`]
-  if (hasConnector(options, 'snap')) {
-    lines.push('VITE_QUBIC_SNAP_ID=', 'VITE_QUBIC_SNAP_ACCOUNT_INDEX=0')
-  }
   if (hasConnector(options, 'walletconnect')) {
     lines.push('VITE_WALLETCONNECT_PROJECT_ID=')
   }
@@ -345,6 +354,7 @@ ${options.packageManager === 'npm' ? 'npm run dev' : `${options.packageManager} 
 ## Included
 
 - \`QubicProvider\` and \`WalletProvider\` from \`@qubic.org/react\`
+- optional \`VaultProvider\` wiring for encrypted seed vaults saved as \`qubic-vault\` in localStorage
 - wallet connectors: ${connectorList}
 - live tick info query
 - wallet balance query
@@ -353,7 +363,7 @@ ${options.packageManager === 'npm' ? 'npm run dev' : `${options.packageManager} 
 ## Connector notes
 
 - Qubic extension uses \`window.qubic\`.
-- MetaMask Snap requires MetaMask Flask and the Qubic Snap.
+- Vault signing uses encrypted vault data from \`@qubic.org/wallet\`.
 - WalletConnect requires \`VITE_WALLETCONNECT_PROJECT_ID\`.
 
 Never put secrets or real seeds in frontend environment variables.
@@ -376,6 +386,7 @@ export const viteReactTemplate: TemplateDefinition = {
     { path: 'src/style.css', content: styleCss },
     { path: 'src/qubic/clients.ts', content: clientsTs },
     { path: 'src/qubic/connectors.ts', content: connectorsTs(options) },
+    { path: 'src/qubic/vault.ts', content: vaultTs },
     { path: 'README.md', content: readme(options) },
   ],
 }

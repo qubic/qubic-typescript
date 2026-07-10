@@ -172,6 +172,6 @@ Options:
 Examples:
   create-qubic-app my-app --template node --pm bun
   create-qubic-app my-app --template node --pm npm --out ./examples
-  create-qubic-app my-dapp --template vite-react --connectors extension,snap,walletconnect
+  create-qubic-app my-dapp --template vite-react --connectors extension,walletconnect
 `
 }

@@ -10,8 +10,8 @@ description: Scaffold Qubic Node/Bun scripts, Vite React dApps, and Next.js dApp
 It can generate:
 
 - Node/Bun scripts for RPC, wallet, transfer, and contract examples
-- Vite React dApps with Qubic providers and wallet connectors
-- Next.js app router dApps with client-safe Qubic providers and wallet connectors
+- Vite React dApps with Qubic providers, encrypted vault wiring, and wallet connectors
+- Next.js app router dApps with client-safe Qubic providers, encrypted vault wiring, and wallet connectors
 
 ## Usage
 
@@ -22,7 +22,7 @@ bunx @qubic.org/create-qubic-app my-app --template node
 ```bash
 bunx @qubic.org/create-qubic-app my-dapp \
   --template vite-react \
-  --connectors extension,snap,walletconnect
+  --connectors extension,walletconnect
 ```
 
 ```bash
@@ -36,17 +36,16 @@ bunx @qubic.org/create-qubic-app my-next-app \
 | Template | Description |
 |---|---|
 | `node` | Node/Bun TypeScript script with RPC, wallet, safe transfer building, and contract query examples. |
-| `vite-react` | Vite React dApp with `QubicProvider`, `WalletProvider`, balance query, and contract query examples. |
-| `next-react` | Next.js app router dApp with client-only Qubic providers and wallet connectors. |
+| `vite-react` | Vite React dApp with `QubicProvider`, optional `VaultProvider` wiring, `WalletProvider`, balance query, and contract query examples. |
+| `next-react` | Next.js app router dApp with client-only Qubic providers, optional vault wiring, and wallet connectors. |
 
 ## Wallet connectors
 
-Web templates support these connector options:
+Web templates support extension and WalletConnect connectors. They also include optional encrypted vault wiring through `@qubic.org/wallet`:
 
 | Connector | Description |
 |---|---|
 | `extension` | Qubic browser extension connector using `window.qubic`. |
-| `snap` | MetaMask Snap connector. Requires MetaMask Flask and the Qubic Snap. |
 | `walletconnect` | WalletConnect v2 connector. Requires a WalletConnect project ID. |
 | `none` | Generate the app without wallet connectors. |
 
@@ -55,7 +54,7 @@ Use a comma-separated connector list:
 ```bash
 bunx @qubic.org/create-qubic-app my-dapp \
   --template vite-react \
-  --connectors extension,snap
+  --connectors extension,walletconnect
 ```
 
 ## Safety

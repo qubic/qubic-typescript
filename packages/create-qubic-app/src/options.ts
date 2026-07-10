@@ -1,6 +1,6 @@
 export type TemplateId = 'node' | 'vite-react' | 'next-react'
 export type PackageManager = 'bun' | 'npm' | 'pnpm' | 'yarn'
-export type ConnectorId = 'extension' | 'snap' | 'walletconnect' | 'none'
+export type ConnectorId = 'extension' | 'walletconnect' | 'none'
 
 export interface ScaffoldOptions {
   projectName: string
@@ -25,7 +25,7 @@ export interface TemplateDefinition {
 
 export const templateIds: TemplateId[] = ['node', 'vite-react', 'next-react']
 export const packageManagers: PackageManager[] = ['bun', 'npm', 'pnpm', 'yarn']
-export const connectorIds: ConnectorId[] = ['extension', 'snap', 'walletconnect', 'none']
+export const connectorIds: ConnectorId[] = ['extension', 'walletconnect', 'none']
 
 export function isTemplateId(value: string): value is TemplateId {
   return (templateIds as string[]).includes(value)

@@ -15,6 +15,12 @@ describe('create-qubic-app', () => {
     expect(options.connectors).toEqual(['extension'])
   })
 
+  test('rejects removed MetaMask Snap connector option', () => {
+    expect(() => parseCli(['demo', '--template', 'vite-react', '--connectors', 'snap'])).toThrow(
+      'Unknown connector "snap"',
+    )
+  })
+
   test('writes the node template', () => {
     const root = mkdtempSync(join(tmpdir(), 'create-qubic-app-'))
     const targetDir = join(root, 'demo')
@@ -58,21 +64,25 @@ describe('create-qubic-app', () => {
         packageManager: 'bun',
         force: false,
         install: false,
-        connectors: ['extension', 'snap', 'walletconnect'],
+        connectors: ['extension', 'walletconnect'],
       })
 
       expect(written).toContain('src/qubic/connectors.ts')
+      expect(written).toContain('src/qubic/vault.ts')
       expect(written).toContain('src/App.tsx')
 
       const connectors = readFileSync(join(targetDir, 'src/qubic/connectors.ts'), 'utf-8')
       expect(connectors).toContain('extensionConnector')
-      expect(connectors).toContain('createMetaMaskSnapConnector')
       expect(connectors).toContain('createWalletConnectConnector')
       expect(connectors).toContain('@walletconnect/sign-client')
       expect(connectors).not.toContain('{{')
 
       const env = readFileSync(join(targetDir, '.env.example'), 'utf-8')
       expect(env).toContain('VITE_WALLETCONNECT_PROJECT_ID')
+      expect(env).not.toContain('SNAP')
+
+      const vault = readFileSync(join(targetDir, 'src/qubic/vault.ts'), 'utf-8')
+      expect(vault).toContain('qubic-vault')
     } finally {
       rmSync(root, { recursive: true, force: true })
     }
@@ -90,20 +100,24 @@ describe('create-qubic-app', () => {
         packageManager: 'pnpm',
         force: false,
         install: false,
-        connectors: ['snap', 'walletconnect'],
+        connectors: ['extension', 'walletconnect'],
       })
 
       expect(written).toContain('app/providers.tsx')
       expect(written).toContain('qubic/connectors.ts')
+      expect(written).toContain('qubic/vault.ts')
 
       const connectors = readFileSync(join(targetDir, 'qubic/connectors.ts'), 'utf-8')
       expect(connectors).toContain("'use client'")
       expect(connectors).toContain('NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID')
-      expect(connectors).toContain('NEXT_PUBLIC_QUBIC_SNAP_ACCOUNT_INDEX')
+      expect(connectors).toContain('extensionConnector')
       expect(connectors).not.toContain('{{')
 
       const providers = readFileSync(join(targetDir, 'app/providers.tsx'), 'utf-8')
       expect(providers).toContain("'use client'")
+      expect(providers).toContain('VaultProvider')
+      expect(connectors).not.toContain('SNAP')
+      expect(connectors).not.toContain('MetaMask')
     } finally {
       rmSync(root, { recursive: true, force: true })
     }

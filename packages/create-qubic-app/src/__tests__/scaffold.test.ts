@@ -27,6 +27,25 @@ describe('create-qubic-app', () => {
     expect(options.outDir).toBe('/tmp')
     expect(options.connectors).toEqual(['extension'])
     expect(options.tooling).toEqual(['biome'])
+    expect(options.styling).toBe('css')
+    expect(options.animation).toBe('none')
+  })
+
+  test('parses web styling and animation options', () => {
+    const options = parseCli([
+      'demo',
+      '--template',
+      'vite-react',
+      '--styling',
+      'tailwind',
+      '--animation',
+      'motion',
+    ])
+
+    expect(options.styling).toBe('tailwind')
+    expect(options.animation).toBe('motion')
+    expect(() => parseCli(['demo', '--styling', 'sass'])).toThrow('Unknown styling "sass"')
+    expect(() => parseCli(['demo', '--animation', 'spring'])).toThrow('Unknown animation "spring"')
   })
 
   test('parses exactly one tooling option', () => {
@@ -58,6 +77,8 @@ describe('create-qubic-app', () => {
         install: false,
         connectors: ['extension'],
         tooling: ['biome'],
+        styling: 'css',
+        animation: 'none',
       })
 
       expect(written).toContain('package.json')
@@ -100,12 +121,17 @@ describe('create-qubic-app', () => {
         install: false,
         connectors: ['extension', 'walletconnect'],
         tooling: ['eslint'],
+        styling: 'tailwind',
+        animation: 'motion',
       })
 
       expect(written).toContain('src/qubic/connectors.ts')
       expect(written).toContain('src/qubic/vault.ts')
+      expect(written).toContain('src/qubic/icons.tsx')
       expect(written).toContain('src/App.tsx')
       expect(written).toContain('eslint.config.mjs')
+      expect(written).not.toContain('tailwind.config.ts')
+      expect(written).toContain('postcss.config.mjs')
 
       const connectors = readFileSync(join(targetDir, 'src/qubic/connectors.ts'), 'utf-8')
       expect(connectors).toContain('extensionConnector')
@@ -124,18 +150,36 @@ describe('create-qubic-app', () => {
       const style = readFileSync(join(targetDir, 'src/style.css'), 'utf-8')
       expect(app).toContain('Build with Qubic.')
       expect(app).toContain('Next actions')
+      expect(app).toContain('motion/react')
+      expect(app).toContain('<motion.main')
+      expect(app).toContain('SolarIcon')
+      expect(app).toContain('spinner')
       expect(style).toContain('background: #fff')
+      expect(style).toContain('@import "tailwindcss"')
+      expect(style).not.toContain('@tailwind base')
       expect(style).not.toContain('#080a12')
+
+      const icons = readFileSync(join(targetDir, 'src/qubic/icons.tsx'), 'utf-8')
+      expect(icons).toContain('@solar-icons/react')
+
+      const postcssConfig = readFileSync(join(targetDir, 'postcss.config.mjs'), 'utf-8')
+      expect(postcssConfig).toContain('@tailwindcss/postcss')
 
       const eslintConfig = readFileSync(join(targetDir, 'eslint.config.mjs'), 'utf-8')
       expect(eslintConfig).toContain('eslint-plugin-react-hooks')
 
       const packageJson = JSON.parse(readFileSync(join(targetDir, 'package.json'), 'utf-8')) as {
         scripts?: Record<string, string>
+        dependencies?: Record<string, string>
         devDependencies?: Record<string, string>
       }
       expect(packageJson.scripts?.lint).toBe('eslint .')
       expect(packageJson.scripts?.format).toBeUndefined()
+      expect(packageJson.dependencies?.['@solar-icons/react']).toBeTruthy()
+      expect(packageJson.dependencies?.motion).toBeTruthy()
+      expect(packageJson.devDependencies?.tailwindcss).toBeTruthy()
+      expect(packageJson.devDependencies?.['@tailwindcss/postcss']).toBeTruthy()
+      expect(packageJson.devDependencies?.autoprefixer).toBeUndefined()
       expect(packageJson.devDependencies?.['eslint-plugin-react-refresh']).toBeTruthy()
     } finally {
       rmSync(root, { recursive: true, force: true })
@@ -156,10 +200,13 @@ describe('create-qubic-app', () => {
         install: false,
         connectors: ['extension', 'walletconnect'],
         tooling: ['eslint'],
+        styling: 'css',
+        animation: 'none',
       })
 
       expect(written).toContain('app/providers.tsx')
       expect(written).toContain('qubic/connectors.ts')
+      expect(written).toContain('qubic/icons.tsx')
       expect(written).toContain('qubic/vault.ts')
       expect(written).toContain('eslint.config.mjs')
       expect(written).not.toContain('biome.json')
@@ -181,8 +228,18 @@ describe('create-qubic-app', () => {
       expect(page).toContain("'use client'")
       expect(page).toContain('Build with Qubic.')
       expect(page).toContain('Next actions')
+      expect(page).toContain('SolarIcon')
+      expect(page).toContain('skeleton')
       expect(globals).toContain('background: #fff')
       expect(globals).not.toContain('#080a12')
+
+      const icons = readFileSync(join(targetDir, 'qubic/icons.tsx'), 'utf-8')
+      expect(icons).toContain('@solar-icons/react')
+
+      const packageJson = JSON.parse(readFileSync(join(targetDir, 'package.json'), 'utf-8')) as {
+        dependencies?: Record<string, string>
+      }
+      expect(packageJson.dependencies?.['@solar-icons/react']).toBeTruthy()
 
       const eslintConfig = readFileSync(join(targetDir, 'eslint.config.mjs'), 'utf-8')
       expect(eslintConfig).toContain('next/core-web-vitals')

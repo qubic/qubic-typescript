@@ -2,6 +2,8 @@ export type TemplateId = 'node' | 'vite-react' | 'next-react'
 export type PackageManager = 'bun' | 'npm' | 'pnpm' | 'yarn'
 export type ConnectorId = 'extension' | 'walletconnect' | 'none'
 export type ToolingId = 'biome' | 'prettier' | 'eslint' | 'none'
+export type StylingId = 'css' | 'tailwind'
+export type AnimationId = 'none' | 'motion'
 
 export interface ScaffoldOptions {
   projectName: string
@@ -12,6 +14,8 @@ export interface ScaffoldOptions {
   install: boolean
   connectors: ConnectorId[]
   tooling: ToolingId[]
+  styling: StylingId
+  animation: AnimationId
 }
 
 export interface TemplateFile {
@@ -29,6 +33,8 @@ export const templateIds: TemplateId[] = ['node', 'vite-react', 'next-react']
 export const packageManagers: PackageManager[] = ['bun', 'npm', 'pnpm', 'yarn']
 export const connectorIds: ConnectorId[] = ['extension', 'walletconnect', 'none']
 export const toolingIds: ToolingId[] = ['biome', 'prettier', 'eslint', 'none']
+export const stylingIds: StylingId[] = ['css', 'tailwind']
+export const animationIds: AnimationId[] = ['none', 'motion']
 
 export function isTemplateId(value: string): value is TemplateId {
   return (templateIds as string[]).includes(value)
@@ -44,6 +50,14 @@ export function isConnectorId(value: string): value is ConnectorId {
 
 export function isToolingId(value: string): value is ToolingId {
   return (toolingIds as string[]).includes(value)
+}
+
+export function isStylingId(value: string): value is StylingId {
+  return (stylingIds as string[]).includes(value)
+}
+
+export function isAnimationId(value: string): value is AnimationId {
+  return (animationIds as string[]).includes(value)
 }
 
 export function installCommand(packageManager: PackageManager): string {

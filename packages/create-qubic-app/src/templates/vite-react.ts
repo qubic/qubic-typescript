@@ -1,5 +1,6 @@
 import type { ConnectorId, ScaffoldOptions, TemplateDefinition } from '../options.js'
 import { applyToolingToPackage, toolingFiles } from '../tooling.js'
+import { applyWebAddonsToPackage, webAddonFiles } from '../web-addons.js'
 
 function hasConnector(options: ScaffoldOptions, connector: ConnectorId): boolean {
   return options.connectors.includes(connector)
@@ -34,6 +35,7 @@ function packageJson(options: ScaffoldOptions): string {
     vite: '^6.0.0',
   }
 
+  applyWebAddonsToPackage(options, dependencies, devDependencies)
   applyToolingToPackage('vite-react', options.tooling, scripts, devDependencies)
 
   return `${JSON.stringify(
@@ -85,7 +87,7 @@ const indexHtml = `<div id="root"></div>
 <script type="module" src="/src/main.tsx"></script>
 `
 
-const styleCss = `:root {
+const plainStyleCss = `:root {
   color: #111;
   background: #fff;
   font-family:
@@ -192,6 +194,7 @@ button,
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   min-height: 38px;
   border: 1px solid #111;
   border-radius: 999px;
@@ -213,6 +216,55 @@ button:disabled {
   border-color: #ddd;
   background: #fff;
   cursor: not-allowed;
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+}
+
+.loading-row {
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  color: #666;
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 1px solid #d4d4d4;
+  border-top-color: #111;
+  border-radius: 999px;
+  animation: spin 760ms linear infinite;
+}
+
+.skeleton {
+  display: block;
+  width: 96px;
+  height: 16px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #eee 25%, #f8f8f8 37%, #eee 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+
+  100% {
+    background-position: -100% 0;
+  }
 }
 
 code,
@@ -240,6 +292,137 @@ pre {
   }
 }
 `
+
+const tailwindStyleCss = `@import "tailwindcss";
+
+@layer base {
+  :root {
+    color: #111;
+    background: #fff;
+    font-family:
+      Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    min-width: 320px;
+    margin: 0;
+  }
+
+  button {
+    font: inherit;
+  }
+}
+
+@layer components {
+  .app {
+    @apply mx-auto min-h-screen w-full max-w-[760px] px-6 py-[72px];
+  }
+
+  .hero {
+    @apply mb-10 text-center;
+  }
+
+  .eyebrow {
+    @apply m-0 mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500;
+  }
+
+  .muted {
+    @apply text-neutral-500;
+  }
+
+  .stack {
+    @apply grid gap-4;
+  }
+
+  .card {
+    @apply rounded-xl border border-neutral-200 bg-white p-5;
+  }
+
+  .row {
+    @apply flex flex-wrap items-center gap-2;
+  }
+
+  .stat-grid {
+    @apply grid grid-cols-1 gap-3 sm:grid-cols-2;
+  }
+
+  .stat {
+    @apply rounded-lg border border-neutral-200 p-3.5;
+  }
+
+  .stat span {
+    @apply mb-1.5 block text-xs text-neutral-500;
+  }
+
+  .button-link,
+  button {
+    @apply inline-flex min-h-[38px] cursor-pointer items-center justify-center gap-2 rounded-full border border-neutral-950 bg-white px-3.5 py-2 text-neutral-950 no-underline;
+  }
+
+  .button-link:hover,
+  button:hover {
+    @apply bg-neutral-950 text-white;
+  }
+
+  button:disabled {
+    @apply cursor-not-allowed border-neutral-200 bg-white text-neutral-400;
+  }
+
+  .icon {
+    @apply size-4 shrink-0;
+  }
+
+  .loading-row {
+    @apply inline-flex items-center gap-2.5 text-neutral-500;
+  }
+
+  .spinner {
+    @apply size-3.5 rounded-full border border-neutral-300 border-t-neutral-950;
+    animation: spin 760ms linear infinite;
+  }
+
+  .skeleton {
+    @apply block h-4 w-24 overflow-hidden rounded-full;
+    background: linear-gradient(90deg, #eee 25%, #f8f8f8 37%, #eee 63%);
+    background-size: 400% 100%;
+    animation: shimmer 1.4s ease infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: 100% 0;
+    }
+
+    100% {
+      background-position: -100% 0;
+    }
+  }
+
+  code,
+  pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  pre {
+    @apply max-h-80 overflow-auto rounded-lg border border-neutral-200 bg-neutral-50 p-3.5;
+  }
+}
+`
+
+function styleCss(options: ScaffoldOptions): string {
+  return options.styling === 'tailwind' ? tailwindStyleCss : plainStyleCss
+}
 
 const mainTsx = `import { type ReactNode, StrictMode, useMemo } from 'react'
 import { createRoot } from 'react-dom/client'
@@ -301,6 +484,22 @@ export function loadVaultData(storage: Storage = window.localStorage): VaultData
 }
 `
 
+const solarIconsTsx = `import type { ComponentType, SVGProps } from 'react'
+import * as SolarIcons from '@solar-icons/react'
+
+type SolarIconProps = SVGProps<SVGSVGElement> & {
+  name: string
+}
+
+const iconRegistry = SolarIcons as Record<string, ComponentType<SVGProps<SVGSVGElement>> | undefined>
+
+export function SolarIcon({ name, className = 'icon', ...props }: SolarIconProps) {
+  const Icon = iconRegistry[name]
+  if (!Icon) return <span aria-hidden="true" className={className} />
+  return <Icon aria-hidden="true" className={className} {...props} />
+}
+`
+
 function connectorsTs(options: ScaffoldOptions): string {
   if (hasConnector(options, 'none')) {
     return `import type { WalletConnector } from '@qubic.org/react'
@@ -347,9 +546,19 @@ ${lines.join('\n')}
 `
 }
 
-const appTsx = `import { useMemo, useState } from 'react'
-import { qearnGetStateOfRound } from '@qubic.org/contracts'
+function appTsx(options: ScaffoldOptions): string {
+  const motionImport =
+    options.animation === 'motion' ? "import { motion } from 'motion/react'\n" : ''
+  const mainOpen =
+    options.animation === 'motion'
+      ? '<motion.main className="app" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>'
+      : '<main className="app">'
+  const mainClose = options.animation === 'motion' ? '</motion.main>' : '</main>'
+
+  return `import { useMemo, useState } from 'react'
+${motionImport}import { qearnGetStateOfRound } from '@qubic.org/contracts'
 import { useBalance, useContractQuery, useTickInfo, useWallet } from '@qubic.org/react'
+import { SolarIcon } from './qubic/icons'
 
 export function App() {
   const tickInfo = useTickInfo()
@@ -360,7 +569,7 @@ export function App() {
   const qearnState = useContractQuery(qearnGetStateOfRound, roundInput)
 
   return (
-    <main className="app">
+    ${mainOpen}
       <header className="hero">
         <p className="eyebrow">Qubic starter</p>
         <h1>Build with Qubic.</h1>
@@ -375,18 +584,23 @@ export function App() {
           <div className="stat-grid">
             <p className="stat">
               <span>Epoch</span>
-              {tickInfo.data?.epoch ?? 'loading...'}
+              {tickInfo.data ? tickInfo.data.epoch : <span className="skeleton" aria-label="Loading epoch" />}
             </p>
             <p className="stat">
               <span>Tick</span>
-              {tickInfo.data?.tick ?? 'loading...'}
+              {tickInfo.data ? tickInfo.data.tick : <span className="skeleton" aria-label="Loading tick" />}
             </p>
           </div>
         </section>
 
         <section className="card">
           <h2>Qearn contract query</h2>
-          {qearnState.isLoading ? <p className="muted">Loading contract state...</p> : null}
+          {qearnState.isLoading ? (
+            <p className="loading-row">
+              <span className="spinner" aria-hidden="true" />
+              Loading contract state...
+            </p>
+          ) : null}
           {qearnState.error ? <p>Error: {String(qearnState.error)}</p> : null}
           {qearnState.data ? <pre>{JSON.stringify(qearnState.data, null, 2)}</pre> : null}
         </section>
@@ -395,15 +609,17 @@ export function App() {
           <h2>Next actions</h2>
           <div className="row">
             <a className="button-link" href="https://github.com/1jehuang/qubic-typescript" target="_blank" rel="noreferrer">
+              <SolarIcon name="Code" />
               View SDK
             </a>
             <a className="button-link" href="https://docs.qubic.org" target="_blank" rel="noreferrer">
+              <SolarIcon name="Book" />
               Qubic docs
             </a>
           </div>
         </section>
       </div>
-    </main>
+    ${mainClose}
   )
 }
 
@@ -420,8 +636,12 @@ function WalletCard() {
         <>
           <p className="muted">Connected identity</p>
           <code>{account.identity}</code>
-          <p>Balance: {balance.data?.balance?.toString() ?? 'loading...'}</p>
+          <p>
+            Balance:{' '}
+            {balance.data ? balance.data.balance?.toString() : <span className="skeleton" aria-label="Loading balance" />}
+          </p>
           <button type="button" onClick={() => void disconnect()}>
+            <SolarIcon name="Logout" />
             Disconnect
           </button>
         </>
@@ -441,6 +661,7 @@ function WalletCard() {
                   )
                 }
               >
+                <SolarIcon name={connector.id === 'walletconnect' ? 'LinkCircle' : 'Wallet'} />
                 Connect {connector.id}
               </button>
             ))}
@@ -460,6 +681,7 @@ function WalletCard() {
   )
 }
 `
+}
 
 function envExample(options: ScaffoldOptions): string {
   const lines = [`VITE_APP_NAME=${options.projectName}`]
@@ -488,6 +710,8 @@ ${options.packageManager === 'npm' ? 'npm run dev' : `${options.packageManager} 
 - \`QubicProvider\` and \`WalletProvider\` from \`@qubic.org/react\`
 - optional \`VaultProvider\` wiring for encrypted seed vaults saved as \`qubic-vault\` in localStorage
 - wallet connectors: ${connectorList}
+- styling: ${options.styling}
+- animation: ${options.animation}
 - tooling: ${options.tooling.join(', ')}
 - live tick info query
 - wallet balance query
@@ -515,12 +739,14 @@ export const viteReactTemplate: TemplateDefinition = {
     { path: '.gitignore', content: 'node_modules\n.env\ndist\n' },
     { path: 'src/vite-env.d.ts', content: '/// <reference types="vite/client" />\n' },
     { path: 'src/main.tsx', content: mainTsx },
-    { path: 'src/App.tsx', content: appTsx },
-    { path: 'src/style.css', content: styleCss },
+    { path: 'src/App.tsx', content: appTsx(options) },
+    { path: 'src/style.css', content: styleCss(options) },
     { path: 'src/qubic/clients.ts', content: clientsTs },
     { path: 'src/qubic/connectors.ts', content: connectorsTs(options) },
+    { path: 'src/qubic/icons.tsx', content: solarIconsTsx },
     { path: 'src/qubic/vault.ts', content: vaultTs },
     { path: 'README.md', content: readme(options) },
+    ...webAddonFiles('vite-react', options),
     ...toolingFiles('vite-react', options.tooling),
   ],
 }

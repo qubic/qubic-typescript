@@ -4,23 +4,30 @@ import { resolve } from 'node:path'
 import { parseArgs } from 'node:util'
 import { cancel, confirm, intro, isCancel, select, text } from '@clack/prompts'
 import {
+  type AnimationId,
   type ConnectorId,
   type PackageManager,
+  type StylingId,
   type TemplateId,
   type ToolingId,
+  animationIds,
   connectorIds,
   installCommand,
+  isAnimationId,
   isConnectorId,
   isPackageManager,
+  isStylingId,
   isTemplateId,
   isToolingId,
   packageManagers,
   runCommand,
+  stylingIds,
   templateIds,
   toolingIds,
 } from './options.js'
 import { scaffold } from './scaffold.js'
 import { defaultTooling } from './tooling.js'
+import { defaultAnimation, defaultStyling } from './web-addons.js'
 
 export interface CliOptions {
   projectName: string
@@ -31,6 +38,8 @@ export interface CliOptions {
   install: boolean
   connectors: ConnectorId[]
   tooling: ToolingId[]
+  styling: StylingId
+  animation: AnimationId
 }
 
 export type ConnectorPreset = 'extension' | 'extension-walletconnect' | 'walletconnect' | 'none'
@@ -51,6 +60,8 @@ export async function run(argv: string[]): Promise<void> {
       install: options.install,
       connectors: options.connectors,
       tooling: options.tooling,
+      styling: options.styling,
+      animation: options.animation,
     })
 
     if (options.install) runInstall(options.packageManager, targetDir)
@@ -92,6 +103,8 @@ export function parseCli(argv: string[]): CliOptions {
       install: { type: 'boolean', default: false },
       connectors: { type: 'string' },
       tooling: { type: 'string' },
+      styling: { type: 'string' },
+      animation: { type: 'string' },
       help: { type: 'boolean', short: 'h', default: false },
     },
   })
@@ -118,6 +131,8 @@ export function parseCli(argv: string[]): CliOptions {
 
   const connectors = parseConnectors(values.connectors)
   const tooling = parseTooling(values.tooling)
+  const styling = parseStyling(values.styling)
+  const animation = parseAnimation(values.animation)
 
   return {
     projectName,
@@ -128,6 +143,8 @@ export function parseCli(argv: string[]): CliOptions {
     install: values.install ?? false,
     connectors,
     tooling,
+    styling,
+    animation,
   }
 }
 
@@ -202,6 +219,32 @@ async function promptCli(): Promise<CliOptions> {
     }),
   )
   const normalizedTooling: ToolingId[] = [tooling]
+  const styling =
+    template === 'node'
+      ? defaultStyling()
+      : unwrapPrompt(
+          await select<StylingId>({
+            message: 'Styling',
+            initialValue: defaultStyling(),
+            options: [
+              { value: 'css', label: 'Plain CSS', hint: 'small generated stylesheet' },
+              { value: 'tailwind', label: 'Tailwind CSS', hint: 'utility classes + config files' },
+            ],
+          }),
+        )
+  const animation =
+    template === 'node'
+      ? defaultAnimation()
+      : unwrapPrompt(
+          await select<AnimationId>({
+            message: 'Animations',
+            initialValue: defaultAnimation(),
+            options: [
+              { value: 'none', label: 'No animations' },
+              { value: 'motion', label: 'Motion', hint: 'adds the motion package' },
+            ],
+          }),
+        )
   const outDir = process.cwd()
 
   const targetDir = resolve(outDir, projectName)
@@ -236,6 +279,8 @@ async function promptCli(): Promise<CliOptions> {
     install,
     connectors,
     tooling: normalizedTooling,
+    styling,
+    animation,
   }
 }
 
@@ -293,6 +338,24 @@ function parseTooling(value: string | undefined): ToolingId[] {
   return [parsed]
 }
 
+function parseStyling(value: string | undefined): StylingId {
+  if (!value || value.trim().length === 0) return defaultStyling()
+  const parsed = value.trim()
+  if (!isStylingId(parsed)) {
+    throw new Error(`Unknown styling "${parsed}". Choose one of: ${stylingIds.join(', ')}`)
+  }
+  return parsed
+}
+
+function parseAnimation(value: string | undefined): AnimationId {
+  if (!value || value.trim().length === 0) return defaultAnimation()
+  const parsed = value.trim()
+  if (!isAnimationId(parsed)) {
+    throw new Error(`Unknown animation "${parsed}". Choose one of: ${animationIds.join(', ')}`)
+  }
+  return parsed
+}
+
 function eslintToolingLabel(template: TemplateId): string {
   switch (template) {
     case 'node':
@@ -348,6 +411,8 @@ Options:
       --out <dir>         Directory to create the project in
       --connectors <list> Connector list for web templates: ${connectorIds.join(', ')}
       --tooling <name>    Tooling to generate: ${toolingIds.join(', ')}
+      --styling <name>    Web styling: ${stylingIds.join(', ')}
+      --animation <name>  Web animation library: ${animationIds.join(', ')}
       --force             Overwrite a non-empty target directory
       --install           Install dependencies after scaffolding
   -h, --help              Show help
@@ -358,5 +423,6 @@ Examples:
   create-qubic-app my-app --template node --pm npm --out ./examples
   create-qubic-app my-dapp --template vite-react --connectors extension,walletconnect
   create-qubic-app my-next-app --template next-react --tooling eslint
+  create-qubic-app my-dapp --template vite-react --styling tailwind --animation motion
 `
 }

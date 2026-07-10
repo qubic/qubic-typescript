@@ -37,7 +37,9 @@ bunx @qubic.org/create-qubic-app my-app --template node
 bunx @qubic.org/create-qubic-app my-dapp \
   --template vite-react \
   --connectors extension,walletconnect \
-  --tooling eslint
+  --tooling eslint \
+  --styling tailwind \
+  --animation motion
 ```
 
 ```bash
@@ -75,6 +77,28 @@ bunx @qubic.org/create-qubic-app my-app \
 ```
 
 In interactive mode, choose one tooling option after choosing the template.
+
+## Web styling and animation
+
+Web templates can generate a plain CSS starter or a Tailwind CSS v4 starter. They also include `@solar-icons/react` for button icons and data-loading UI states by default.
+
+| Option | Description |
+|---|---|
+| `--styling css` | Plain generated CSS. This is the default. |
+| `--styling tailwind` | Tailwind CSS v4 with `@import "tailwindcss"` and the `@tailwindcss/postcss` plugin. |
+| `--animation none` | No animation dependency. This is the default. |
+| `--animation motion` | Adds Motion and wraps the main app shell with a small entry animation. |
+
+Example:
+
+```bash
+bunx @qubic.org/create-qubic-app my-dapp \
+  --template vite-react \
+  --styling tailwind \
+  --animation motion
+```
+
+In interactive mode, styling and animation prompts appear for Vite and Next templates.
 
 ## Wallet connectors
 

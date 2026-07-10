@@ -1,4 +1,4 @@
-export type TemplateId = 'node' | 'vite-react'
+export type TemplateId = 'node' | 'vite-react' | 'next-react'
 export type PackageManager = 'bun' | 'npm' | 'pnpm' | 'yarn'
 export type ConnectorId = 'extension' | 'snap' | 'walletconnect' | 'none'
 
@@ -23,7 +23,7 @@ export interface TemplateDefinition {
   files: (options: ScaffoldOptions) => TemplateFile[]
 }
 
-export const templateIds: TemplateId[] = ['node', 'vite-react']
+export const templateIds: TemplateId[] = ['node', 'vite-react', 'next-react']
 export const packageManagers: PackageManager[] = ['bun', 'npm', 'pnpm', 'yarn']
 export const connectorIds: ConnectorId[] = ['extension', 'snap', 'walletconnect', 'none']
 

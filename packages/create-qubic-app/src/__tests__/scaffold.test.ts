@@ -77,4 +77,35 @@ describe('create-qubic-app', () => {
       rmSync(root, { recursive: true, force: true })
     }
   })
+
+  test('writes the next react template with client connectors', () => {
+    const root = mkdtempSync(join(tmpdir(), 'create-qubic-app-'))
+    const targetDir = join(root, 'demo-next')
+
+    try {
+      const written = scaffold({
+        projectName: 'demo-next',
+        targetDir,
+        template: 'next-react',
+        packageManager: 'pnpm',
+        force: false,
+        install: false,
+        connectors: ['snap', 'walletconnect'],
+      })
+
+      expect(written).toContain('app/providers.tsx')
+      expect(written).toContain('qubic/connectors.ts')
+
+      const connectors = readFileSync(join(targetDir, 'qubic/connectors.ts'), 'utf-8')
+      expect(connectors).toContain("'use client'")
+      expect(connectors).toContain('NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID')
+      expect(connectors).toContain('NEXT_PUBLIC_QUBIC_SNAP_ACCOUNT_INDEX')
+      expect(connectors).not.toContain('{{')
+
+      const providers = readFileSync(join(targetDir, 'app/providers.tsx'), 'utf-8')
+      expect(providers).toContain("'use client'")
+    } finally {
+      rmSync(root, { recursive: true, force: true })
+    }
+  })
 })

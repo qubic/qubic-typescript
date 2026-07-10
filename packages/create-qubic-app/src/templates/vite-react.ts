@@ -17,6 +17,9 @@ function packageJson(options: ScaffoldOptions): string {
   if (hasConnector(options, 'walletconnect')) {
     dependencies['@walletconnect/sign-client'] = '^2.21.0'
   }
+  if (hasConnector(options, 'snap')) {
+    dependencies['@qubic.org/types'] = '^1.0.0'
+  }
 
   return `${JSON.stringify(
     {

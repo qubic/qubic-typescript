@@ -373,7 +373,7 @@ const tailwindStyleCss = `@import "tailwindcss";
   }
 
   .icon {
-    @apply size-4 shrink-0;
+    @apply block size-4 shrink-0;
   }
 
   .loading-row {
@@ -571,7 +571,7 @@ export function App() {
   return (
     ${mainOpen}
       <header className="hero">
-        <p className="eyebrow">Qubic starter</p>
+        <p className="eyebrow">create-qubic-app</p>
         <h1>Build with Qubic.</h1>
         <p className="muted">A minimal Vite + React app with wallet actions and live network data.</p>
       </header>

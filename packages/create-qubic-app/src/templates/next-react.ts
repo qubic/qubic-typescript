@@ -219,6 +219,7 @@ button:disabled {
 }
 
 .icon {
+  display: block;
   width: 16px;
   height: 16px;
   flex: 0 0 auto;
@@ -586,7 +587,7 @@ export default function Page() {
   return (
     ${mainOpen}
       <header className="hero">
-        <p className="eyebrow">Qubic starter</p>
+        <p className="eyebrow">create-qubic-app</p>
         <h1>Build with Qubic.</h1>
         <p className="muted">A minimal Next.js app with wallet actions and live network data.</p>
       </header>

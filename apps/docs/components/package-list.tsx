@@ -12,6 +12,7 @@ const packages = [
   { name: "@qubic.org/contracts", href: "/packages/contracts", desc: "Generated typed wrappers for every deployed contract",           color: "6366f1" },
   { name: "@qubic.org/tcp",       href: "/packages/tcp",       desc: "Direct TCP transport — framing, connection pool, typed requests", color: "14b8a6" },
   { name: "@qubic.org/react",     href: "/packages/react",     desc: "React hooks and providers — TanStack Query, VaultProvider",      color: "38bdf8" },
+  { name: "@qubic.org/create-qubic-app", href: "/packages/create-qubic-app", desc: "Scaffold Node, Vite React, and Next.js Qubic apps",             color: "84cc16" },
 ];
 
 export function PackageList() {

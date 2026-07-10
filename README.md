@@ -21,6 +21,7 @@ TypeScript SDK for the [Qubic](https://qubic.org) network, split into focused pa
 | [`@qubic.org/vault`](packages/vault) | [![npm](https://img.shields.io/npm/v/@qubic.org/vault)](https://www.npmjs.com/package/@qubic.org/vault) | Versioned vault library — Argon2id, binary envelope, v1 migration |
 | [`@qubic.org/tcp`](packages/tcp) | [![npm](https://img.shields.io/npm/v/@qubic.org/tcp)](https://www.npmjs.com/package/@qubic.org/tcp) | Direct TCP transport — framing, connection pool, typed request helpers |
 | [`@qubic.org/react`](packages/react) | [![npm](https://img.shields.io/npm/v/@qubic.org/react)](https://www.npmjs.com/package/@qubic.org/react) | React hooks and providers — TanStack Query, VaultProvider, WalletProvider (extension / WalletConnect / MetaMask Snap), contract queries, send mutations |
+| [`@qubic.org/create-qubic-app`](packages/create-qubic-app) | [![npm](https://img.shields.io/npm/v/@qubic.org/create-qubic-app)](https://www.npmjs.com/package/@qubic.org/create-qubic-app) | Project scaffolder for Node/Bun scripts, Vite React dApps, and Next.js dApps |
 
 ## Quick start
 
@@ -398,6 +399,7 @@ graph LR
     events["events/\n@qubic.org/events"]
     tcp["tcp/\n@qubic.org/tcp (direct TCP)"]
     react["react/\n@qubic.org/react"]
+    createApp["create-qubic-app/\n@qubic.org/create-qubic-app"]
   end
   subgraph apps
     api["registry-api/\nElysiaJS API"]

@@ -11,6 +11,7 @@
     "registry",
     "contracts",
     "tcp",
-    "react"
+    "react",
+    "create-qubic-app"
   ]
 }

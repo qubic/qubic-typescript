@@ -1,0 +1,68 @@
+---
+title: create-qubic-app
+description: Scaffold Qubic Node/Bun scripts, Vite React dApps, and Next.js dApps.
+---
+
+# create-qubic-app
+
+`@qubic.org/create-qubic-app` scaffolds starter projects for building on Qubic with JavaScript and TypeScript.
+
+It can generate:
+
+- Node/Bun scripts for RPC, wallet, transfer, and contract examples
+- Vite React dApps with Qubic providers and wallet connectors
+- Next.js app router dApps with client-safe Qubic providers and wallet connectors
+
+## Usage
+
+```bash
+bunx @qubic.org/create-qubic-app my-app --template node
+```
+
+```bash
+bunx @qubic.org/create-qubic-app my-dapp \
+  --template vite-react \
+  --connectors extension,snap,walletconnect
+```
+
+```bash
+bunx @qubic.org/create-qubic-app my-next-app \
+  --template next-react \
+  --connectors extension,walletconnect
+```
+
+## Templates
+
+| Template | Description |
+|---|---|
+| `node` | Node/Bun TypeScript script with RPC, wallet, safe transfer building, and contract query examples. |
+| `vite-react` | Vite React dApp with `QubicProvider`, `WalletProvider`, balance query, and contract query examples. |
+| `next-react` | Next.js app router dApp with client-only Qubic providers and wallet connectors. |
+
+## Wallet connectors
+
+Web templates support these connector options:
+
+| Connector | Description |
+|---|---|
+| `extension` | Qubic browser extension connector using `window.qubic`. |
+| `snap` | MetaMask Snap connector. Requires MetaMask Flask and the Qubic Snap. |
+| `walletconnect` | WalletConnect v2 connector. Requires a WalletConnect project ID. |
+| `none` | Generate the app without wallet connectors. |
+
+Use a comma-separated connector list:
+
+```bash
+bunx @qubic.org/create-qubic-app my-dapp \
+  --template vite-react \
+  --connectors extension,snap
+```
+
+## Safety
+
+Generated wallet and transaction examples are safe by default:
+
+- no real seeds are included
+- `.env.example` is generated instead of `.env`
+- the Node transfer example does not broadcast unless you pass `--broadcast`
+- frontend environment variables are only for public connector configuration

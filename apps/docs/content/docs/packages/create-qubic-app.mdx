@@ -37,14 +37,14 @@ bunx @qubic.org/create-qubic-app my-app --template node
 bunx @qubic.org/create-qubic-app my-dapp \
   --template vite-react \
   --connectors extension,walletconnect \
-  --tooling biome,eslint
+  --tooling eslint
 ```
 
 ```bash
 bunx @qubic.org/create-qubic-app my-next-app \
   --template next-react \
   --connectors extension,walletconnect \
-  --tooling eslint,prettier
+  --tooling prettier
 ```
 
 ## Templates
@@ -57,24 +57,24 @@ bunx @qubic.org/create-qubic-app my-next-app \
 
 ## Code quality tooling
 
-All templates can generate formatter and linter config. Biome is the default when `--tooling` is omitted.
+All templates can generate one formatter or linter setup. Biome is the default when `--tooling` is omitted.
 
 | Tooling | Generated files and scripts |
 |---|---|
 | `biome` | `biome.json`, `lint`, and `format` scripts. |
 | `prettier` | `.prettierrc.json`, `.prettierignore`, `format`, and `format:check` scripts. |
 | `eslint` | Template-aware `eslint.config.mjs` and `lint` script. Node uses TypeScript ESLint, Vite adds React hooks/refresh rules, and Next uses `eslint-config-next`. |
-| `none` | No lint or format tooling. Cannot be combined with other tooling options. |
+| `none` | No lint or format tooling. |
 
-Use a comma-separated tooling list:
+Choose one tooling option:
 
 ```bash
 bunx @qubic.org/create-qubic-app my-app \
   --template vite-react \
-  --tooling biome,eslint,prettier
+  --tooling prettier
 ```
 
-In interactive mode, select the tooling you want after choosing the template.
+In interactive mode, choose one tooling option after choosing the template.
 
 ## Wallet connectors
 

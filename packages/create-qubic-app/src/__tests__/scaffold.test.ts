@@ -29,18 +29,12 @@ describe('create-qubic-app', () => {
     expect(options.tooling).toEqual(['biome'])
   })
 
-  test('parses explicit tooling options', () => {
-    const options = parseCli([
-      'demo',
-      '--template',
-      'vite-react',
-      '--tooling',
-      'biome,eslint,prettier',
-    ])
+  test('parses exactly one tooling option', () => {
+    const options = parseCli(['demo', '--template', 'vite-react', '--tooling', 'eslint'])
 
-    expect(options.tooling).toEqual(['biome', 'eslint', 'prettier'])
-    expect(() => parseCli(['demo', '--tooling', 'none,biome'])).toThrow(
-      'Tooling "none" cannot be combined',
+    expect(options.tooling).toEqual(['eslint'])
+    expect(() => parseCli(['demo', '--tooling', 'biome,eslint'])).toThrow(
+      'Choose exactly one tooling option',
     )
   })
 
@@ -105,14 +99,13 @@ describe('create-qubic-app', () => {
         force: false,
         install: false,
         connectors: ['extension', 'walletconnect'],
-        tooling: ['eslint', 'prettier'],
+        tooling: ['eslint'],
       })
 
       expect(written).toContain('src/qubic/connectors.ts')
       expect(written).toContain('src/qubic/vault.ts')
       expect(written).toContain('src/App.tsx')
       expect(written).toContain('eslint.config.mjs')
-      expect(written).toContain('.prettierrc.json')
 
       const connectors = readFileSync(join(targetDir, 'src/qubic/connectors.ts'), 'utf-8')
       expect(connectors).toContain('extensionConnector')
@@ -142,7 +135,7 @@ describe('create-qubic-app', () => {
         devDependencies?: Record<string, string>
       }
       expect(packageJson.scripts?.lint).toBe('eslint .')
-      expect(packageJson.scripts?.format).toBe('prettier --write .')
+      expect(packageJson.scripts?.format).toBeUndefined()
       expect(packageJson.devDependencies?.['eslint-plugin-react-refresh']).toBeTruthy()
     } finally {
       rmSync(root, { recursive: true, force: true })
@@ -162,14 +155,14 @@ describe('create-qubic-app', () => {
         force: false,
         install: false,
         connectors: ['extension', 'walletconnect'],
-        tooling: ['biome', 'eslint'],
+        tooling: ['eslint'],
       })
 
       expect(written).toContain('app/providers.tsx')
       expect(written).toContain('qubic/connectors.ts')
       expect(written).toContain('qubic/vault.ts')
-      expect(written).toContain('biome.json')
       expect(written).toContain('eslint.config.mjs')
+      expect(written).not.toContain('biome.json')
 
       const connectors = readFileSync(join(targetDir, 'qubic/connectors.ts'), 'utf-8')
       expect(connectors).toContain("'use client'")

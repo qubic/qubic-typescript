@@ -2,7 +2,7 @@ import { spawnSync } from 'node:child_process'
 import { existsSync, mkdirSync, readdirSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { parseArgs } from 'node:util'
-import { cancel, confirm, intro, isCancel, multiselect, select, text } from '@clack/prompts'
+import { cancel, confirm, intro, isCancel, select, text } from '@clack/prompts'
 import {
   type ConnectorId,
   type PackageManager,
@@ -186,10 +186,9 @@ async function promptCli(): Promise<CliOptions> {
         )
 
   const tooling = unwrapPrompt(
-    await multiselect<ToolingId>({
+    await select<ToolingId>({
       message: 'Code quality tooling',
-      initialValues: defaultTooling(),
-      required: true,
+      initialValue: 'biome',
       options: [
         { value: 'biome', label: 'Biome', hint: 'fast formatter + linter' },
         { value: 'prettier', label: 'Prettier', hint: 'formatter' },
@@ -202,8 +201,7 @@ async function promptCli(): Promise<CliOptions> {
       ],
     }),
   )
-
-  const normalizedTooling: ToolingId[] = tooling.includes('none') ? ['none'] : tooling
+  const normalizedTooling: ToolingId[] = [tooling]
   const outDir = process.cwd()
 
   const targetDir = resolve(outDir, projectName)
@@ -282,23 +280,17 @@ function parseConnectors(value: string | undefined): ConnectorId[] {
 function parseTooling(value: string | undefined): ToolingId[] {
   if (!value || value.trim().length === 0) return defaultTooling()
 
-  const parsed = value
-    .split(',')
-    .map((item) => item.trim())
-    .filter((item) => item.length > 0)
-
+  const parsed = value.trim()
   if (parsed.length === 0) return defaultTooling()
-  if (parsed.includes('none') && parsed.length > 1) {
-    throw new Error('Tooling "none" cannot be combined with other tooling options.')
+  if (parsed.includes(',')) {
+    throw new Error(`Choose exactly one tooling option: ${toolingIds.join(', ')}`)
   }
 
-  for (const tool of parsed) {
-    if (!isToolingId(tool)) {
-      throw new Error(`Unknown tooling "${tool}". Choose one of: ${toolingIds.join(', ')}`)
-    }
+  if (!isToolingId(parsed)) {
+    throw new Error(`Unknown tooling "${parsed}". Choose one of: ${toolingIds.join(', ')}`)
   }
 
-  return parsed as ToolingId[]
+  return [parsed]
 }
 
 function eslintToolingLabel(template: TemplateId): string {
@@ -355,7 +347,7 @@ Options:
       --pm <name>         Package manager: ${packageManagers.join(', ')}
       --out <dir>         Directory to create the project in
       --connectors <list> Connector list for web templates: ${connectorIds.join(', ')}
-      --tooling <list>    Tooling list: ${toolingIds.join(', ')}
+      --tooling <name>    Tooling to generate: ${toolingIds.join(', ')}
       --force             Overwrite a non-empty target directory
       --install           Install dependencies after scaffolding
   -h, --help              Show help
@@ -365,6 +357,6 @@ Examples:
   create-qubic-app my-app --template node --pm bun
   create-qubic-app my-app --template node --pm npm --out ./examples
   create-qubic-app my-dapp --template vite-react --connectors extension,walletconnect
-  create-qubic-app my-next-app --template next-react --tooling biome,eslint
+  create-qubic-app my-next-app --template next-react --tooling eslint
 `
 }

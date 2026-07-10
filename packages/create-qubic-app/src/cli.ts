@@ -204,18 +204,7 @@ async function promptCli(): Promise<CliOptions> {
   )
 
   const normalizedTooling: ToolingId[] = tooling.includes('none') ? ['none'] : tooling
-
-  const outDir = unwrapPrompt(
-    await text({
-      message: 'Create inside directory',
-      defaultValue: process.cwd(),
-      placeholder: process.cwd(),
-      validate(value) {
-        if ((value?.trim() ?? '').length === 0) return 'Directory is required.'
-        return undefined
-      },
-    }),
-  ).trim()
+  const outDir = process.cwd()
 
   const targetDir = resolve(outDir, projectName)
   const force =

@@ -86,53 +86,158 @@ const nextEnv = `/// <reference types="next" />
 `
 
 const globalsCss = `:root {
-  color: #f7f7fb;
-  background: #080a12;
-  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  color: #111;
+  background: #fff;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
+  min-width: 320px;
   margin: 0;
 }
 
 button {
-  border: 0;
-  border-radius: 999px;
-  padding: 10px 14px;
-  color: #080a12;
-  background: #7dd3fc;
-  cursor: pointer;
-}
-
-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
+  font: inherit;
 }
 
 .app {
-  max-width: 960px;
+  width: min(100%, 760px);
+  min-height: 100vh;
   margin: 0 auto;
-  padding: 48px 20px;
+  padding: 72px 24px;
+}
+
+.hero {
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.eyebrow {
+  margin: 0 0 12px;
+  color: #666;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 12px;
+  font-size: clamp(2.25rem, 8vw, 4.5rem);
+  font-weight: 650;
+  letter-spacing: -0.06em;
+  line-height: 0.95;
+}
+
+h2 {
+  margin-bottom: 16px;
+  font-size: 1rem;
+}
+
+.muted {
+  color: #666;
+}
+
+.stack {
+  display: grid;
+  gap: 16px;
 }
 
 .card {
-  border: 1px solid #2b3148;
-  border-radius: 16px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
   padding: 20px;
-  margin-top: 16px;
-  background: #101525;
+  background: #fff;
 }
 
 .row {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 8px;
   align-items: center;
 }
 
-code, pre {
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.stat {
+  border: 1px solid #e6e6e6;
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.stat span {
+  display: block;
+  margin-bottom: 6px;
+  color: #666;
+  font-size: 0.78rem;
+}
+
+button,
+.button-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  border: 1px solid #111;
+  border-radius: 999px;
+  padding: 8px 14px;
+  color: #111;
+  background: #fff;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+button:hover,
+.button-link:hover {
+  color: #fff;
+  background: #111;
+}
+
+button:disabled {
+  color: #999;
+  border-color: #ddd;
+  background: #fff;
+  cursor: not-allowed;
+}
+
+code,
+pre {
   white-space: pre-wrap;
   word-break: break-word;
+}
+
+pre {
+  max-height: 320px;
+  overflow: auto;
+  border: 1px solid #e6e6e6;
+  border-radius: 10px;
+  padding: 14px;
+  background: #fafafa;
+}
+
+@media (max-width: 640px) {
+  .app {
+    padding: 48px 16px;
+  }
+
+  .stat-grid {
+    grid-template-columns: 1fr;
+  }
 }
 `
 
@@ -271,23 +376,48 @@ export default function Page() {
 
   return (
     <main className="app">
-      <h1>Qubic app</h1>
-      <p>Next.js starter generated with create-qubic-app.</p>
+      <header className="hero">
+        <p className="eyebrow">Qubic starter</p>
+        <h1>Build with Qubic.</h1>
+        <p className="muted">A minimal Next.js app with wallet actions and live network data.</p>
+      </header>
 
-      <WalletCard />
+      <div className="stack">
+        <WalletCard />
 
-      <section className="card">
-        <h2>Network</h2>
-        <p>Epoch: {tickInfo.data?.epoch ?? 'loading...'}</p>
-        <p>Tick: {tickInfo.data?.tick ?? 'loading...'}</p>
-      </section>
+        <section className="card">
+          <h2>Network</h2>
+          <div className="stat-grid">
+            <p className="stat">
+              <span>Epoch</span>
+              {tickInfo.data?.epoch ?? 'loading...'}
+            </p>
+            <p className="stat">
+              <span>Tick</span>
+              {tickInfo.data?.tick ?? 'loading...'}
+            </p>
+          </div>
+        </section>
 
-      <section className="card">
-        <h2>Qearn contract query</h2>
-        {qearnState.isLoading ? <p>Loading...</p> : null}
-        {qearnState.error ? <p>Error: {String(qearnState.error)}</p> : null}
-        {qearnState.data ? <pre>{JSON.stringify(qearnState.data, null, 2)}</pre> : null}
-      </section>
+        <section className="card">
+          <h2>Qearn contract query</h2>
+          {qearnState.isLoading ? <p className="muted">Loading contract state...</p> : null}
+          {qearnState.error ? <p>Error: {String(qearnState.error)}</p> : null}
+          {qearnState.data ? <pre>{JSON.stringify(qearnState.data, null, 2)}</pre> : null}
+        </section>
+
+        <section className="card">
+          <h2>Next actions</h2>
+          <div className="row">
+            <a className="button-link" href="https://github.com/1jehuang/qubic-typescript" target="_blank" rel="noreferrer">
+              View SDK
+            </a>
+            <a className="button-link" href="https://docs.qubic.org" target="_blank" rel="noreferrer">
+              Qubic docs
+            </a>
+          </div>
+        </section>
+      </div>
     </main>
   )
 }
@@ -300,9 +430,10 @@ function WalletCard() {
   return (
     <section className="card">
       <h2>Wallet</h2>
+
       {account ? (
         <>
-          <p>Connected identity:</p>
+          <p className="muted">Connected identity</p>
           <code>{account.identity}</code>
           <p>Balance: {balance.data?.balance?.toString() ?? 'loading...'}</p>
           <button type="button" onClick={() => void disconnect()}>
@@ -311,7 +442,7 @@ function WalletCard() {
         </>
       ) : (
         <>
-          <p>Select a wallet connector:</p>
+          <p className="muted">Choose a connector to start signing with a wallet.</p>
           <div className="row">
             {connectors.map((connector) => (
               <button
@@ -325,7 +456,7 @@ function WalletCard() {
                   )
                 }
               >
-                {connector.id}
+                Connect {connector.id}
               </button>
             ))}
             {connectors.length === 0 ? <p>No connectors configured.</p> : null}

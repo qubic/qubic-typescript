@@ -127,6 +127,13 @@ describe('create-qubic-app', () => {
       const vault = readFileSync(join(targetDir, 'src/qubic/vault.ts'), 'utf-8')
       expect(vault).toContain('qubic-vault')
 
+      const app = readFileSync(join(targetDir, 'src/App.tsx'), 'utf-8')
+      const style = readFileSync(join(targetDir, 'src/style.css'), 'utf-8')
+      expect(app).toContain('Build with Qubic.')
+      expect(app).toContain('Next actions')
+      expect(style).toContain('background: #fff')
+      expect(style).not.toContain('#080a12')
+
       const eslintConfig = readFileSync(join(targetDir, 'eslint.config.mjs'), 'utf-8')
       expect(eslintConfig).toContain('eslint-plugin-react-hooks')
 
@@ -175,6 +182,14 @@ describe('create-qubic-app', () => {
       expect(providers).toContain('VaultProvider')
       expect(connectors).not.toContain('SNAP')
       expect(connectors).not.toContain('MetaMask')
+
+      const page = readFileSync(join(targetDir, 'app/page.tsx'), 'utf-8')
+      const globals = readFileSync(join(targetDir, 'app/globals.css'), 'utf-8')
+      expect(page).toContain("'use client'")
+      expect(page).toContain('Build with Qubic.')
+      expect(page).toContain('Next actions')
+      expect(globals).toContain('background: #fff')
+      expect(globals).not.toContain('#080a12')
 
       const eslintConfig = readFileSync(join(targetDir, 'eslint.config.mjs'), 'utf-8')
       expect(eslintConfig).toContain('next/core-web-vitals')

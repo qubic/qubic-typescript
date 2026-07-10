@@ -2,9 +2,12 @@ import { mkdirSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { parseArgs } from 'node:util'
 import {
+  type ConnectorId,
   type PackageManager,
   type TemplateId,
+  connectorIds,
   installCommand,
+  isConnectorId,
   isPackageManager,
   isTemplateId,
   packageManagers,
@@ -20,6 +23,7 @@ interface CliOptions {
   outDir: string
   force: boolean
   install: boolean
+  connectors: ConnectorId[]
 }
 
 export async function run(argv: string[]): Promise<void> {
@@ -35,6 +39,7 @@ export async function run(argv: string[]): Promise<void> {
       packageManager: options.packageManager,
       force: options.force,
       install: options.install,
+      connectors: options.connectors,
     })
 
     printSuccess(options, targetDir, written)
@@ -55,6 +60,7 @@ export function parseCli(argv: string[]): CliOptions {
       out: { type: 'string' },
       force: { type: 'boolean', default: false },
       install: { type: 'boolean', default: false },
+      connectors: { type: 'string' },
       help: { type: 'boolean', short: 'h', default: false },
     },
   })
@@ -79,6 +85,8 @@ export function parseCli(argv: string[]): CliOptions {
     )
   }
 
+  const connectors = parseConnectors(values.connectors)
+
   return {
     projectName,
     template: templateValue,
@@ -86,7 +94,30 @@ export function parseCli(argv: string[]): CliOptions {
     outDir: values.out ?? process.cwd(),
     force: values.force ?? false,
     install: values.install ?? false,
+    connectors,
   }
+}
+
+function parseConnectors(value: string | undefined): ConnectorId[] {
+  if (!value || value.trim().length === 0) return ['extension']
+
+  const parsed = value
+    .split(',')
+    .map((item) => item.trim())
+    .filter((item) => item.length > 0)
+
+  if (parsed.length === 0) return ['extension']
+  if (parsed.includes('none') && parsed.length > 1) {
+    throw new Error('Connector "none" cannot be combined with other connectors.')
+  }
+
+  for (const connector of parsed) {
+    if (!isConnectorId(connector)) {
+      throw new Error(`Unknown connector "${connector}". Choose one of: ${connectorIds.join(', ')}`)
+    }
+  }
+
+  return parsed as ConnectorId[]
 }
 
 function printSuccess(options: CliOptions, targetDir: string, written: string[]) {
@@ -117,6 +148,7 @@ Options:
   -t, --template <name>   Template to use: ${templateIds.join(', ')}
       --pm <name>         Package manager: ${packageManagers.join(', ')}
       --out <dir>         Directory to create the project in
+      --connectors <list> Connector list for web templates: ${connectorIds.join(', ')}
       --force             Overwrite a non-empty target directory
       --install           Reserved for future automatic install support
   -h, --help              Show help
@@ -124,5 +156,6 @@ Options:
 Examples:
   create-qubic-app my-app --template node --pm bun
   create-qubic-app my-app --template node --pm npm --out ./examples
+  create-qubic-app my-dapp --template vite-react --connectors extension,snap,walletconnect
 `
 }

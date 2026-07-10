@@ -1,5 +1,6 @@
-export type TemplateId = 'node'
+export type TemplateId = 'node' | 'vite-react'
 export type PackageManager = 'bun' | 'npm' | 'pnpm' | 'yarn'
+export type ConnectorId = 'extension' | 'snap' | 'walletconnect' | 'none'
 
 export interface ScaffoldOptions {
   projectName: string
@@ -8,6 +9,7 @@ export interface ScaffoldOptions {
   packageManager: PackageManager
   force: boolean
   install: boolean
+  connectors: ConnectorId[]
 }
 
 export interface TemplateFile {
@@ -21,8 +23,9 @@ export interface TemplateDefinition {
   files: (options: ScaffoldOptions) => TemplateFile[]
 }
 
-export const templateIds: TemplateId[] = ['node']
+export const templateIds: TemplateId[] = ['node', 'vite-react']
 export const packageManagers: PackageManager[] = ['bun', 'npm', 'pnpm', 'yarn']
+export const connectorIds: ConnectorId[] = ['extension', 'snap', 'walletconnect', 'none']
 
 export function isTemplateId(value: string): value is TemplateId {
   return (templateIds as string[]).includes(value)
@@ -30,6 +33,10 @@ export function isTemplateId(value: string): value is TemplateId {
 
 export function isPackageManager(value: string): value is PackageManager {
   return (packageManagers as string[]).includes(value)
+}
+
+export function isConnectorId(value: string): value is ConnectorId {
+  return (connectorIds as string[]).includes(value)
 }
 
 export function installCommand(packageManager: PackageManager): string {

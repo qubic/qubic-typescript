@@ -1,3 +1,4 @@
+import { spawnSync } from 'node:child_process'
 import { mkdirSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { parseArgs } from 'node:util'
@@ -41,6 +42,8 @@ export async function run(argv: string[]): Promise<void> {
       install: options.install,
       connectors: options.connectors,
     })
+
+    if (options.install) runInstall(options.packageManager, targetDir)
 
     printSuccess(options, targetDir, written)
   } catch (error) {
@@ -120,22 +123,35 @@ function parseConnectors(value: string | undefined): ConnectorId[] {
   return parsed as ConnectorId[]
 }
 
+function runInstall(packageManager: PackageManager, cwd: string) {
+  const command = packageManager
+  const args = packageManager === 'yarn' ? ['install'] : ['install']
+  const result = spawnSync(command, args, { cwd, stdio: 'inherit' })
+  if (result.error) throw result.error
+  if (result.status !== 0) throw new Error(`${installCommand(packageManager)} failed`)
+}
+
 function printSuccess(options: CliOptions, targetDir: string, written: string[]) {
   const lines = [
     `Created ${options.projectName} in ${targetDir}`,
     '',
     `Files: ${written.length}`,
     '',
-    'Next steps:',
-    `  cd ${options.projectName}`,
-    `  ${installCommand(options.packageManager)}`,
-    `  ${runCommand(options.packageManager, 'dev')}`,
-    '',
   ]
 
-  if (!options.install) {
-    lines.splice(4, 0, 'Dependencies were not installed automatically.', '')
+  if (options.install) {
+    lines.push('Dependencies installed.', '')
+  } else {
+    lines.push('Dependencies were not installed automatically.', '')
   }
+
+  lines.push(
+    'Next steps:',
+    `  cd ${options.projectName}`,
+    ...(options.install ? [] : [`  ${installCommand(options.packageManager)}`]),
+    `  ${runCommand(options.packageManager, 'dev')}`,
+    '',
+  )
 
   process.stdout.write(`${lines.join('\n')}\n`)
 }
@@ -150,7 +166,7 @@ Options:
       --out <dir>         Directory to create the project in
       --connectors <list> Connector list for web templates: ${connectorIds.join(', ')}
       --force             Overwrite a non-empty target directory
-      --install           Reserved for future automatic install support
+      --install           Install dependencies after scaffolding
   -h, --help              Show help
 
 Examples:

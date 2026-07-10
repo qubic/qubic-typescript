@@ -1,0 +1,30 @@
+{
+  "name": "@qubic.org/create-qubic-app",
+  "version": "0.1.0",
+  "license": "Anti-Military",
+  "type": "module",
+  "sideEffects": false,
+  "bin": {
+    "create-qubic-app": "./dist/index.js"
+  },
+  "exports": {
+    ".": {
+      "bun": "./src/index.ts",
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": ["dist", "src"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json && chmod +x dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "devDependencies": {
+    "typescript": "*"
+  }
+}

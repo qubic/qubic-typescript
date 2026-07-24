@@ -5,9 +5,9 @@
 # provide functional review via a separate CODEOWNERS entry per repo.
 
 # Workflow files and composite actions — mandatory review by workflow-security.
-/.github/workflows/         @qubic/workflow-security
-/.github/actions/           @qubic/workflow-security
-/.github/CODEOWNERS         @qubic/workflow-security
+/.github/workflows/         @qubic/workflow-security @alez04 @sallymoc
+/.github/actions/           @qubic/workflow-security @alez04 @sallymoc
+/.github/CODEOWNERS         @qubic/workflow-security @alez04 @sallymoc
 
 # Repository-level automation config — mandatory review by workflow-security.
-/.github/dependabot.yml     @qubic/workflow-security
+/.github/dependabot.yml     @qubic/workflow-security @alez04 @sallymoc

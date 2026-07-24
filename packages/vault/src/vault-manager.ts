@@ -79,7 +79,11 @@ export class VaultManager {
     return this.create(payloadWithoutVersion, newPassword ?? oldPassword)
   }
 
-  async addSeed(data: Uint8Array, password: string, seed: Omit<SeedEntry, 'taintStatus'> & Partial<Pick<SeedEntry, 'taintStatus'>>): Promise<Uint8Array> {
+  async addSeed(
+    data: Uint8Array,
+    password: string,
+    seed: Omit<SeedEntry, 'taintStatus'> & Partial<Pick<SeedEntry, 'taintStatus'>>,
+  ): Promise<Uint8Array> {
     const payload = await this.unlock(data, password)
     const now = new Date().toISOString()
 
@@ -142,7 +146,10 @@ export class VaultManager {
     }
   }
 
-  private async importV1PrivateKey(wrappedPrivateKey: string, password: string): Promise<CryptoKey> {
+  private async importV1PrivateKey(
+    wrappedPrivateKey: string,
+    password: string,
+  ): Promise<CryptoKey> {
     const passwordKey = await globalThis.crypto.subtle.importKey(
       'raw',
       new TextEncoder().encode(password) as unknown as BufferSource,

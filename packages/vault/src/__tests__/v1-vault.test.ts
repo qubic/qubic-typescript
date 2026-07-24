@@ -2,10 +2,12 @@ import { describe, expect, it } from 'bun:test'
 import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { InvalidVaultError, VaultDecryptionError } from '../errors.js'
+import { TaintStatus } from '../models/types.js'
 import { VaultManager } from '../vault-manager.js'
 
 const VAULT_PATH = join(import.meta.dir, 'test.qubic-vault')
 const TEST_PASSWORD = 'test1234'
+const TEST_SEED = 'yfvrbbecrwhowzvklnsdlyykdmccdpakeffktxujlltwecbyhaehmis'
 const TIMEOUT = 30_000
 
 describe('VaultManager with v1 vault', () => {
@@ -21,6 +23,11 @@ describe('VaultManager with v1 vault', () => {
     expect(payload.version).toBe(3)
     expect(payload.seeds).toBeDefined()
     expect(Array.isArray(payload.seeds)).toBe(true)
+    expect(payload.seeds).toHaveLength(1)
+    expect(payload.seeds[0].alias).toBe('Account 1')
+    expect(payload.seeds[0].encryptedSeed).toBeDefined()
+    expect(payload.seeds[0].encryptedSeed).toBeInstanceOf(Uint8Array)
+    expect(new TextDecoder().decode(payload.seeds[0].encryptedSeed)).toBe(TEST_SEED)
     expect(payload.metadata.schemaVersion).toBe(3)
   })
 
@@ -41,6 +48,32 @@ describe('VaultManager with v1 vault', () => {
     const payload = await vault.unlock(upgraded, TEST_PASSWORD)
     expect(payload.version).toBe(3)
     expect(payload.seeds).toBeDefined()
+    expect(payload.seeds).toHaveLength(1)
+    expect(payload.seeds[0].encryptedSeed).toBeDefined()
+    expect(new TextDecoder().decode(payload.seeds[0].encryptedSeed)).toBe(TEST_SEED)
+  })
+
+  it('should add a seed to a v1 vault after unlocking it', { timeout: TIMEOUT }, async () => {
+    const data = await readFile(VAULT_PATH)
+    const addedSeed = new TextEncoder().encode('second-seed')
+
+    const updated = await vault.addSeed(data, TEST_PASSWORD, {
+      publicId: 'QRGDSNMYHKVPXJEFBWZLOUAHTCEIMKRNVYCDSFBGXWPJZNITQVDALOXQXYZW',
+      encryptedSeed: addedSeed,
+      alias: 'Second account',
+    })
+
+    expect(vault.getVersion(updated)).toBe(3)
+
+    const payload = await vault.unlock(updated, TEST_PASSWORD)
+    expect(payload.seeds).toHaveLength(2)
+    expect(new TextDecoder().decode(payload.seeds[0].encryptedSeed)).toBe(TEST_SEED)
+    expect(payload.seeds[1]).toMatchObject({
+      publicId: 'QRGDSNMYHKVPXJEFBWZLOUAHTCEIMKRNVYCDSFBGXWPJZNITQVDALOXQXYZW',
+      alias: 'Second account',
+      taintStatus: TaintStatus.UNTAINTED,
+    })
+    expect(payload.seeds[1].encryptedSeed).toEqual(addedSeed)
   })
 
   it('should detect old wallet vault format with ciphertext field', () => {

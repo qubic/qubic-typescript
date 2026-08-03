@@ -131,7 +131,9 @@ export class VaultManager {
       seeds: await Promise.all(
         v1Data.configuration.seeds.map(async (seed) => ({
           publicId: seed.publicId,
-          encryptedSeed: await decryptSeed(privateKey, fromBase64(seed.encryptedSeed)),
+          ...(seed.encryptedSeed
+            ? { encryptedSeed: await decryptSeed(privateKey, fromBase64(seed.encryptedSeed)) }
+            : {}),
           alias: seed.alias,
           taintStatus: TaintStatus.UNTAINTED,
           ...(seed.isOnlyWatch !== undefined && { isOnlyWatch: seed.isOnlyWatch }),

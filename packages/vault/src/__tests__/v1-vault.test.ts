@@ -6,8 +6,12 @@ import { TaintStatus } from '../models/types.js'
 import { VaultManager } from '../vault-manager.js'
 
 const VAULT_PATH = join(import.meta.dir, 'test.qubic-vault')
+const WATCH_ONLY_VAULT_PATH = join(import.meta.dir, 'test-watchonly.qubic-vault')
 const TEST_PASSWORD = 'test1234'
 const TEST_SEED = 'yfvrbbecrwhowzvklnsdlyykdmccdpakeffktxujlltwecbyhaehmis'
+// test-watchonly.qubic-vault holds two accounts: a normal one and a watch-only one
+// (watch-only accounts are stored by the wallets with an empty `encryptedSeed`).
+const WATCH_ONLY_TEST_SEED = 'wjqhtfhmkxbjqzvxrpkdlnvsgqbxmwtdyfnrqcplhjzvkxsdmwbgrtn'
 const TIMEOUT = 30_000
 
 describe('VaultManager with v1 vault', () => {
@@ -74,6 +78,36 @@ describe('VaultManager with v1 vault', () => {
       taintStatus: TaintStatus.UNTAINTED,
     })
     expect(payload.seeds[1].encryptedSeed).toEqual(addedSeed)
+  })
+
+  it('should unlock a v1 vault containing a watch-only account', { timeout: TIMEOUT }, async () => {
+    const data = await readFile(WATCH_ONLY_VAULT_PATH)
+
+    const payload = await vault.unlock(data, TEST_PASSWORD)
+
+    expect(payload.seeds).toHaveLength(2)
+
+    const normal = payload.seeds.find((seed) => seed.alias === 'Account 1')
+    expect(normal).toBeDefined()
+    expect(new TextDecoder().decode(normal?.encryptedSeed)).toBe(WATCH_ONLY_TEST_SEED)
+
+    // Watch-only accounts carry no seed material, so there is nothing to decrypt.
+    const watchOnly = payload.seeds.find((seed) => seed.alias === 'Watch only')
+    expect(watchOnly).toBeDefined()
+    expect(watchOnly?.isOnlyWatch).toBe(true)
+    expect(watchOnly?.encryptedSeed).toBeUndefined()
+  })
+
+  it('should upgrade a v1 vault containing a watch-only account', { timeout: TIMEOUT }, async () => {
+    const data = await readFile(WATCH_ONLY_VAULT_PATH)
+
+    const upgraded = await vault.upgrade(data, TEST_PASSWORD)
+    const payload = await vault.unlock(upgraded, TEST_PASSWORD)
+
+    expect(payload.seeds).toHaveLength(2)
+    const normal = payload.seeds.find((seed) => seed.alias === 'Account 1')
+    expect(new TextDecoder().decode(normal?.encryptedSeed)).toBe(WATCH_ONLY_TEST_SEED)
+    expect(payload.seeds.find((seed) => seed.alias === 'Watch only')?.isOnlyWatch).toBe(true)
   })
 
   it('should detect old wallet vault format with ciphertext field', () => {

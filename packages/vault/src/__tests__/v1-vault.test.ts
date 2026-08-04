@@ -98,17 +98,21 @@ describe('VaultManager with v1 vault', () => {
     expect(watchOnly?.encryptedSeed).toBeUndefined()
   })
 
-  it('should upgrade a v1 vault containing a watch-only account', { timeout: TIMEOUT }, async () => {
-    const data = await readFile(WATCH_ONLY_VAULT_PATH)
+  it(
+    'should upgrade a v1 vault containing a watch-only account',
+    { timeout: TIMEOUT },
+    async () => {
+      const data = await readFile(WATCH_ONLY_VAULT_PATH)
 
-    const upgraded = await vault.upgrade(data, TEST_PASSWORD)
-    const payload = await vault.unlock(upgraded, TEST_PASSWORD)
+      const upgraded = await vault.upgrade(data, TEST_PASSWORD)
+      const payload = await vault.unlock(upgraded, TEST_PASSWORD)
 
-    expect(payload.seeds).toHaveLength(2)
-    const normal = payload.seeds.find((seed) => seed.alias === 'Account 1')
-    expect(new TextDecoder().decode(normal?.encryptedSeed)).toBe(WATCH_ONLY_TEST_SEED)
-    expect(payload.seeds.find((seed) => seed.alias === 'Watch only')?.isOnlyWatch).toBe(true)
-  })
+      expect(payload.seeds).toHaveLength(2)
+      const normal = payload.seeds.find((seed) => seed.alias === 'Account 1')
+      expect(new TextDecoder().decode(normal?.encryptedSeed)).toBe(WATCH_ONLY_TEST_SEED)
+      expect(payload.seeds.find((seed) => seed.alias === 'Watch only')?.isOnlyWatch).toBe(true)
+    },
+  )
 
   it('should detect old wallet vault format with ciphertext field', () => {
     // Old wallet format uses "ciphertext" instead of "cipher"

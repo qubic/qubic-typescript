@@ -5,10 +5,11 @@ import { decrypt, encrypt } from './crypto/aes-gcm.js'
 import { deriveKeyArgon2id } from './crypto/argon2.js'
 import { deriveKeys } from './crypto/hkdf.js'
 import { deriveKeyPBKDF2 } from './crypto/pbkdf2.js'
+import { decryptSeed } from './crypto/rsa-oaep.js'
 import { InvalidVaultError, VaultDecryptionError } from './errors.js'
-import { DEFAULT_ARGON2_PARAMS } from './models/types.js'
+import { DEFAULT_ARGON2_PARAMS, TaintStatus } from './models/types.js'
 import type { AlgorithmParams } from './models/types.js'
-import type { VaultPayload } from './models/vault-payload.js'
+import type { SeedEntry, VaultPayload } from './models/vault-payload.js'
 import { fromBase64, randomBytes } from './utils/encoding.js'
 import { zeroize } from './utils/zeroize.js'
 
@@ -78,6 +79,33 @@ export class VaultManager {
     return this.create(payloadWithoutVersion, newPassword ?? oldPassword)
   }
 
+  async addSeed(
+    data: Uint8Array,
+    password: string,
+    seed: Omit<SeedEntry, 'taintStatus'> & Partial<Pick<SeedEntry, 'taintStatus'>>,
+  ): Promise<Uint8Array> {
+    const payload = await this.unlock(data, password)
+    const now = new Date().toISOString()
+
+    const nextPayload: Omit<VaultPayload, 'version'> = {
+      ...payload,
+      seeds: [
+        ...payload.seeds,
+        {
+          ...seed,
+          taintStatus: seed.taintStatus ?? TaintStatus.UNTAINTED,
+          createdAt: seed.createdAt ?? now,
+        },
+      ],
+      metadata: {
+        ...payload.metadata,
+        updatedAt: now,
+      },
+    }
+
+    return this.create(nextPayload, password)
+  }
+
   private async unlockV1(data: Uint8Array, password: string): Promise<VaultPayload> {
     const envelope = parseV1Envelope(data)
     const salt = fromBase64(envelope.salt)
@@ -96,21 +124,67 @@ export class VaultManager {
     }
 
     const v1Data = decodeV1Payload(plaintext)
+    const privateKey = await this.importV1PrivateKey(v1Data.privateKey, password)
 
     return {
       version: 3,
-      seeds: v1Data.configuration.seeds.map((seed) => ({
-        publicId: seed.publicId,
-        alias: seed.alias,
-        taintStatus: 0 as const,
-        ...(seed.isOnlyWatch !== undefined && { isOnlyWatch: seed.isOnlyWatch }),
-      })),
+      seeds: await Promise.all(
+        v1Data.configuration.seeds.map(async (seed) => ({
+          publicId: seed.publicId,
+          ...(seed.encryptedSeed
+            ? { encryptedSeed: await decryptSeed(privateKey, fromBase64(seed.encryptedSeed)) }
+            : {}),
+          alias: seed.alias,
+          taintStatus: TaintStatus.UNTAINTED,
+          ...(seed.isOnlyWatch !== undefined && { isOnlyWatch: seed.isOnlyWatch }),
+        })),
+      ),
       metadata: {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         appVersion: '1.0.0',
         schemaVersion: 3,
       },
+    }
+  }
+
+  private async importV1PrivateKey(
+    wrappedPrivateKey: string,
+    password: string,
+  ): Promise<CryptoKey> {
+    const passwordKey = await globalThis.crypto.subtle.importKey(
+      'raw',
+      new TextEncoder().encode(password) as unknown as BufferSource,
+      { name: 'PBKDF2' },
+      false,
+      ['deriveKey'],
+    )
+
+    const wrappingKey = await globalThis.crypto.subtle.deriveKey(
+      {
+        name: 'PBKDF2',
+        salt: new Uint8Array(16),
+        iterations: V1_PBKDF2_ITERATIONS,
+        hash: 'SHA-256',
+      },
+      passwordKey,
+      { name: 'AES-GCM', length: 256 },
+      false,
+      ['unwrapKey'],
+    )
+
+    try {
+      return await globalThis.crypto.subtle.unwrapKey(
+        'jwk',
+        fromBase64(wrappedPrivateKey) as unknown as BufferSource,
+        wrappingKey,
+        { name: 'AES-GCM', iv: new Uint8Array(12) },
+        { name: 'RSA-OAEP', hash: 'SHA-256' },
+        false,
+        ['decrypt'],
+      )
+    } catch (e) {
+      throw new VaultDecryptionError({ cause: e })
     }
   }
 

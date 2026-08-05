@@ -1,0 +1,159 @@
+name: Update Static Contract Registry
+
+on:
+  schedule:
+    # Wednesdays after the epoch transition and after core tags are expected to be available.
+    - cron: '30 14 * * 3'
+  workflow_dispatch:
+    inputs:
+      from_epoch:
+        description: 'Start epoch. Defaults to catch-up from the generated registry data.'
+        required: false
+      to_epoch:
+        description: 'End epoch. Defaults to the current live epoch.'
+        required: false
+      static_ref:
+        description: 'Static branch or ref to update.'
+        required: false
+        default: main
+
+concurrency:
+  group: static-contract-registry
+  cancel-in-progress: true
+
+jobs:
+  update-static:
+    name: Update static contract registry data
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      STATIC_DIR: ${{ github.workspace }}/static-checkout
+      GENERATED_DIR: ${{ github.workspace }}/generated-contracts
+
+    steps:
+      - name: Checkout qubic-typescript
+        uses: actions/checkout@v4
+
+      - name: Checkout static
+        uses: actions/checkout@v4
+        with:
+          repository: qubic/static
+          ref: ${{ github.event.inputs.static_ref || 'main' }}
+          path: static-checkout
+          token: ${{ secrets.STATIC_REPO_TOKEN }}
+
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile --ignore-scripts
+
+      - name: Build packages needed by registry tools
+        run: |
+          bun run --filter '@qubic.org/types' build
+          bun run --filter '@qubic.org/crypto' build
+          bun run --filter '@qubic.org/registry' build
+
+      - name: Seed generated registry data
+        run: |
+          rm -rf "$GENERATED_DIR"
+          mkdir -p "$GENERATED_DIR"
+          cp -R packages/registry/data/. "$GENERATED_DIR/"
+
+      - name: Determine epoch range
+        id: epochs
+        env:
+          FROM_EPOCH_INPUT: ${{ github.event.inputs.from_epoch }}
+          TO_EPOCH_INPUT: ${{ github.event.inputs.to_epoch }}
+        run: |
+          if [ -n "$FROM_EPOCH_INPUT" ]; then
+            FROM=$FROM_EPOCH_INPUT
+          else
+            FROM=$(bun -e "
+              import { existsSync, readdirSync, readFileSync } from 'node:fs';
+              const refsPath = process.env.GENERATED_DIR + '/epoch-refs.json';
+              if (existsSync(refsPath)) {
+                const refs = JSON.parse(readFileSync(refsPath, 'utf8'));
+                const epochs = Object.keys(refs).map(Number).filter(n => !Number.isNaN(n));
+                if (epochs.length > 0) console.log(Math.max(...epochs) + 1);
+                else console.log(0);
+              } else {
+                const epochsDir = process.env.GENERATED_DIR + '/epochs';
+                const epochs = existsSync(epochsDir)
+                  ? readdirSync(epochsDir).map(Number).filter(n => !Number.isNaN(n))
+                  : [];
+                console.log(epochs.length > 0 ? Math.max(...epochs) + 1 : 0);
+              }
+            ")
+          fi
+
+          if [ -n "$TO_EPOCH_INPUT" ]; then
+            TO=$TO_EPOCH_INPUT
+          else
+            TO=$(curl -sf https://rpc.qubic.org/live/v1/tick-info \
+              | bun -e "const d = await Bun.stdin.json(); console.log(d?.tickInfo?.epoch ?? '')")
+            [ -z "$TO" ] && { echo 'Failed to determine current epoch from RPC'; exit 1; }
+          fi
+
+          echo "from=$FROM" >> "$GITHUB_OUTPUT"
+          echo "to=$TO" >> "$GITHUB_OUTPUT"
+          echo "Epoch range: $FROM → $TO"
+
+      - name: Backfill registry data
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ -n "${{ github.event.inputs.from_epoch }}" ] || [ -n "${{ github.event.inputs.to_epoch }}" ]; then
+            bun packages/registry/scripts/backfill.ts \
+              --from-epoch "${{ steps.epochs.outputs.from }}" \
+              --to-epoch "${{ steps.epochs.outputs.to }}" \
+              --data-dir "$GENERATED_DIR" \
+              --smart-contracts-json "$STATIC_DIR/data/smart_contracts.json" \
+              --token "$GITHUB_TOKEN"
+          else
+            bun packages/registry/scripts/backfill.ts \
+              --catch-up \
+              --data-dir "$GENERATED_DIR" \
+              --smart-contracts-json "$STATIC_DIR/data/smart_contracts.json" \
+              --token "$GITHUB_TOKEN"
+          fi
+
+      - name: Export registry data to static
+        run: |
+          bun packages/registry/scripts/export-static.ts \
+            --data-dir "$GENERATED_DIR" \
+            --out-dir "$STATIC_DIR/data/contracts"
+
+      - name: Validate static contract data
+        run: python3 "$STATIC_DIR/scripts/validate_contract_data.py" --base-dir "$STATIC_DIR"
+
+      - name: Check for static changes
+        id: changes
+        working-directory: ${{ env.STATIC_DIR }}
+        run: |
+          git diff --quiet data/contracts \
+            && echo "changed=false" >> "$GITHUB_OUTPUT" \
+            || echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Open static PR
+        if: steps.changes.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.STATIC_REPO_TOKEN }}
+        working-directory: ${{ env.STATIC_DIR }}
+        run: |
+          DATE=$(date -u +%Y%m%d-%H%M%S)
+          BRANCH="feat/smart-contract-registry-${DATE}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add data/contracts
+          git commit -m "feat(smart_contracts): update contract registry data"
+          git push origin "$BRANCH"
+
+          gh pr create \
+            --repo qubic/static \
+            --base "${{ github.event.inputs.static_ref || 'main' }}" \
+            --head "$BRANCH" \
+            --title "feat(smart_contracts): update contract registry data" \
+            --body "Automated contract registry data update from qubic-typescript for epochs ${{ steps.epochs.outputs.from }}-${{ steps.epochs.outputs.to }}."

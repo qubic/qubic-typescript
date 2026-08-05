@@ -1,5 +1,11 @@
 # @qubic.org/vault
 
+## 1.2.1
+
+### Patch Changes
+
+- d97c418: fix v1 vault migration so legacy encrypted seeds are decrypted and preserved during unlock and upgrade, and restore adding seeds to existing vaults. watch-only accounts, which are stored without seed material, no longer fail to unlock.
+
 ## 1.2.0
 
 ### Minor Changes

@@ -244,8 +244,9 @@ const QIP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQIPTransferShareManagementRightsInput(
   input: QIPTransferShareManagementRightsInput,
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): ContractCall {
-  return { contractIndex: QIP_CONTRACT_INDEX, inputType: QIP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE, payload: buildPayload(QIP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
+  return { contractIndex: QIP_CONTRACT_INDEX, inputType: QIP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE, payload: buildPayload(QIP_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QIPTransferShareManagementRightsOutput {

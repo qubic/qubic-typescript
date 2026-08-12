@@ -1247,8 +1247,9 @@ const QVAULT_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQVAULTTransferShareManagementRightsInput(
   input: QVAULTTransferShareManagementRightsInput,
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): ContractCall {
-  return { contractIndex: QVAULT_CONTRACT_INDEX, inputType: QVAULT_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE, payload: buildPayload(QVAULT_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
+  return { contractIndex: QVAULT_CONTRACT_INDEX, inputType: QVAULT_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE, payload: buildPayload(QVAULT_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QVAULTTransferShareManagementRightsOutput {
@@ -1652,8 +1653,9 @@ const QVAULT_GET_GP_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQVAULTGetGPOutput(
   data: Uint8Array,
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): QVAULTGetGPOutput {
-  return decodePayload(data, QVAULT_GET_GP_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTGetGPOutput
+  return decodePayload(data, QVAULT_GET_GP_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetGPOutput
 }
 
 export async function qVAULTGetGP(
@@ -1719,8 +1721,9 @@ const QVAULT_GET_QCP_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQVAULTGetQCPOutput(
   data: Uint8Array,
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): QVAULTGetQCPOutput {
-  return decodePayload(data, QVAULT_GET_QCP_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTGetQCPOutput
+  return decodePayload(data, QVAULT_GET_QCP_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetQCPOutput
 }
 
 export async function qVAULTGetQCP(
@@ -1786,8 +1789,9 @@ const QVAULT_GET_IPOP_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQVAULTGetIPOPOutput(
   data: Uint8Array,
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): QVAULTGetIPOPOutput {
-  return decodePayload(data, QVAULT_GET_IPOP_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTGetIPOPOutput
+  return decodePayload(data, QVAULT_GET_IPOP_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetIPOPOutput
 }
 
 export async function qVAULTGetIPOP(
@@ -1853,8 +1857,9 @@ const QVAULT_GET_Q_EARN_P_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQVAULTGetQEarnPOutput(
   data: Uint8Array,
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): QVAULTGetQEarnPOutput {
-  return decodePayload(data, QVAULT_GET_Q_EARN_P_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTGetQEarnPOutput
+  return decodePayload(data, QVAULT_GET_Q_EARN_P_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetQEarnPOutput
 }
 
 export async function qVAULTGetQEarnP(
@@ -1920,8 +1925,9 @@ const QVAULT_GET_FUND_P_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQVAULTGetFundPOutput(
   data: Uint8Array,
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): QVAULTGetFundPOutput {
-  return decodePayload(data, QVAULT_GET_FUND_P_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTGetFundPOutput
+  return decodePayload(data, QVAULT_GET_FUND_P_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetFundPOutput
 }
 
 export async function qVAULTGetFundP(
@@ -1987,8 +1993,9 @@ const QVAULT_GET_MKTP_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQVAULTGetMKTPOutput(
   data: Uint8Array,
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): QVAULTGetMKTPOutput {
-  return decodePayload(data, QVAULT_GET_MKTP_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTGetMKTPOutput
+  return decodePayload(data, QVAULT_GET_MKTP_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetMKTPOutput
 }
 
 export async function qVAULTGetMKTP(
@@ -2054,8 +2061,9 @@ const QVAULT_GET_ALLO_P_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQVAULTGetAlloPOutput(
   data: Uint8Array,
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): QVAULTGetAlloPOutput {
-  return decodePayload(data, QVAULT_GET_ALLO_P_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QVAULTGetAlloPOutput
+  return decodePayload(data, QVAULT_GET_ALLO_P_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QVAULTGetAlloPOutput
 }
 
 export async function qVAULTGetAlloP(
@@ -2552,8 +2560,9 @@ const QVAULT_GET_AMOUNT_OF_SHARE_QVAULT_HOLD_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQVAULTGetAmountOfShareQvaultHoldInput(
   input: QVAULTGetAmountOfShareQvaultHoldInput,
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): Uint8Array {
-  return buildPayload(QVAULT_GET_AMOUNT_OF_SHARE_QVAULT_HOLD_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
+  return buildPayload(QVAULT_GET_AMOUNT_OF_SHARE_QVAULT_HOLD_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
 
 export interface QVAULTGetAmountOfShareQvaultHoldOutput {

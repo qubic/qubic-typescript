@@ -335,18 +335,29 @@ describe('qx struct payload encoding', () => {
     expect(output.issuedNumberOfShares).toBe(5000n)
   })
 
-  test('buildQxTransferShareManagementRightsInput encodes struct field', async () => {
+  test('buildQxTransferShareManagementRightsInput encodes nested Asset.issuer via identityToPublicKey', async () => {
     const { buildQxTransferShareManagementRightsInput } = (await getContractModule(
       'qx.js',
     )) as typeof import('../__generated__/qx.js')
-    const call = buildQxTransferShareManagementRightsInput({
-      asset: { issuer: 'A'.repeat(55), assetName: 42n },
-      numberOfShares: 100n,
-      newManagingContractIndex: 13,
-    })
+    const issuerPk = new Uint8Array(32)
+    issuerPk[0] = 0xab
+    issuerPk[31] = 0xcd
+    const call = buildQxTransferShareManagementRightsInput(
+      {
+        asset: { issuer: 'ISSUER_PLACEHOLDER', assetName: 42n },
+        numberOfShares: 100n,
+        newManagingContractIndex: 13,
+      },
+      (identity) => {
+        expect(identity).toBe('ISSUER_PLACEHOLDER')
+        return issuerPk
+      },
+    )
     // struct(40) + sint64(8) + uint32(4) = 52 bytes
     expect(call.payload.byteLength).toBe(52)
     expect(call.contractIndex).toBe(1)
+    expect(call.payload.slice(0, 32)).toEqual(issuerPk)
+    expect(call.payload[0]).not.toBe(0)
   })
 })
 

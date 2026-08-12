@@ -499,8 +499,9 @@ const Q_UTIL_DISTRIBUTE_QU_TO_SHAREHOLDERS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQUtilDistributeQuToShareholdersInput(
   input: QUtilDistributeQuToShareholdersInput,
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): ContractCall {
-  return { contractIndex: Q_UTIL_CONTRACT_INDEX, inputType: Q_UTIL_DISTRIBUTE_QU_TO_SHAREHOLDERS_INPUT_TYPE, payload: buildPayload(Q_UTIL_DISTRIBUTE_QU_TO_SHAREHOLDERS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
+  return { contractIndex: Q_UTIL_CONTRACT_INDEX, inputType: Q_UTIL_DISTRIBUTE_QU_TO_SHAREHOLDERS_INPUT_TYPE, payload: buildPayload(Q_UTIL_DISTRIBUTE_QU_TO_SHAREHOLDERS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QUtilDistributeQuToShareholdersOutput {
@@ -677,8 +678,9 @@ const Q_UTIL_TRANSFER_SHARES_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQUtilTransferSharesManagementRightsInput(
   input: QUtilTransferSharesManagementRightsInput,
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): ContractCall {
-  return { contractIndex: Q_UTIL_CONTRACT_INDEX, inputType: Q_UTIL_TRANSFER_SHARES_MANAGEMENT_RIGHTS_INPUT_TYPE, payload: buildPayload(Q_UTIL_TRANSFER_SHARES_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
+  return { contractIndex: Q_UTIL_CONTRACT_INDEX, inputType: Q_UTIL_TRANSFER_SHARES_MANAGEMENT_RIGHTS_INPUT_TYPE, payload: buildPayload(Q_UTIL_TRANSFER_SHARES_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QUtilTransferSharesManagementRightsOutput {
@@ -725,8 +727,9 @@ const Q_UTIL_QUERY_PRICE_ORACLE_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQUtilQueryPriceOracleInput(
   input: QUtilQueryPriceOracleInput,
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): ContractCall {
-  return { contractIndex: Q_UTIL_CONTRACT_INDEX, inputType: Q_UTIL_QUERY_PRICE_ORACLE_INPUT_TYPE, payload: buildPayload(Q_UTIL_QUERY_PRICE_ORACLE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
+  return { contractIndex: Q_UTIL_CONTRACT_INDEX, inputType: Q_UTIL_QUERY_PRICE_ORACLE_INPUT_TYPE, payload: buildPayload(Q_UTIL_QUERY_PRICE_ORACLE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QUtilQueryPriceOracleOutput {
@@ -780,8 +783,9 @@ const Q_UTIL_SUBSCRIBE_PRICE_ORACLE_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQUtilSubscribePriceOracleInput(
   input: QUtilSubscribePriceOracleInput,
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): ContractCall {
-  return { contractIndex: Q_UTIL_CONTRACT_INDEX, inputType: Q_UTIL_SUBSCRIBE_PRICE_ORACLE_INPUT_TYPE, payload: buildPayload(Q_UTIL_SUBSCRIBE_PRICE_ORACLE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
+  return { contractIndex: Q_UTIL_CONTRACT_INDEX, inputType: Q_UTIL_SUBSCRIBE_PRICE_ORACLE_INPUT_TYPE, payload: buildPayload(Q_UTIL_SUBSCRIBE_PRICE_ORACLE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QUtilSubscribePriceOracleOutput {
@@ -1209,8 +1213,9 @@ const Q_UTIL_GET_POLL_INFO_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQUtilGetPollInfoOutput(
   data: Uint8Array,
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): QUtilGetPollInfoOutput {
-  return decodePayload(data, Q_UTIL_GET_POLL_INFO_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QUtilGetPollInfoOutput
+  return decodePayload(data, Q_UTIL_GET_POLL_INFO_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QUtilGetPollInfoOutput
 }
 
 export async function qUtilGetPollInfo(

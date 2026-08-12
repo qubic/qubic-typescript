@@ -259,8 +259,9 @@ const Q_RWA_VOTE_GOV_PARAMS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQRWAVoteGovParamsInput(
   input: QRWAVoteGovParamsInput,
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): ContractCall {
-  return { contractIndex: Q_RWA_CONTRACT_INDEX, inputType: Q_RWA_VOTE_GOV_PARAMS_INPUT_TYPE, payload: buildPayload(Q_RWA_VOTE_GOV_PARAMS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
+  return { contractIndex: Q_RWA_CONTRACT_INDEX, inputType: Q_RWA_VOTE_GOV_PARAMS_INPUT_TYPE, payload: buildPayload(Q_RWA_VOTE_GOV_PARAMS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QRWAVoteGovParamsOutput {
@@ -307,8 +308,9 @@ const Q_RWA_DEPOSIT_GENERAL_ASSET_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQRWADepositGeneralAssetInput(
   input: QRWADepositGeneralAssetInput,
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): ContractCall {
-  return { contractIndex: Q_RWA_CONTRACT_INDEX, inputType: Q_RWA_DEPOSIT_GENERAL_ASSET_INPUT_TYPE, payload: buildPayload(Q_RWA_DEPOSIT_GENERAL_ASSET_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
+  return { contractIndex: Q_RWA_CONTRACT_INDEX, inputType: Q_RWA_DEPOSIT_GENERAL_ASSET_INPUT_TYPE, payload: buildPayload(Q_RWA_DEPOSIT_GENERAL_ASSET_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QRWADepositGeneralAssetOutput {
@@ -355,8 +357,9 @@ const Q_RWA_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQRWARevokeAssetManagementRightsInput(
   input: QRWARevokeAssetManagementRightsInput,
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): ContractCall {
-  return { contractIndex: Q_RWA_CONTRACT_INDEX, inputType: Q_RWA_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_TYPE, payload: buildPayload(Q_RWA_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
+  return { contractIndex: Q_RWA_CONTRACT_INDEX, inputType: Q_RWA_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_TYPE, payload: buildPayload(Q_RWA_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface QRWARevokeAssetManagementRightsOutput {
@@ -486,8 +489,9 @@ const Q_RWA_GET_GOV_PARAMS_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQRWAGetGovParamsOutput(
   data: Uint8Array,
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): QRWAGetGovParamsOutput {
-  return decodePayload(data, Q_RWA_GET_GOV_PARAMS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QRWAGetGovParamsOutput
+  return decodePayload(data, Q_RWA_GET_GOV_PARAMS_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRWAGetGovParamsOutput
 }
 
 export async function qRWAGetGovParams(
@@ -552,8 +556,9 @@ const Q_RWA_GET_GOV_POLL_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeQRWAGetGovPollOutput(
   data: Uint8Array,
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): QRWAGetGovPollOutput {
-  return decodePayload(data, Q_RWA_GET_GOV_POLL_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QRWAGetGovPollOutput
+  return decodePayload(data, Q_RWA_GET_GOV_POLL_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRWAGetGovPollOutput
 }
 
 export async function qRWAGetGovPoll(
@@ -864,8 +869,9 @@ const Q_RWA_GET_GENERAL_ASSET_BALANCE_INPUT_FIELDS: BinaryField[] = [
 
 export function buildQRWAGetGeneralAssetBalanceInput(
   input: QRWAGetGeneralAssetBalanceInput,
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): Uint8Array {
-  return buildPayload(Q_RWA_GET_GENERAL_ASSET_BALANCE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
+  return buildPayload(Q_RWA_GET_GENERAL_ASSET_BALANCE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
 }
 
 export interface QRWAGetGeneralAssetBalanceOutput {

@@ -891,8 +891,9 @@ const NOSTROMO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildNostromoTransferShareManagementRightsInput(
   input: NostromoTransferShareManagementRightsInput,
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): ContractCall {
-  return { contractIndex: NOSTROMO_CONTRACT_INDEX, inputType: NOSTROMO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE, payload: buildPayload(NOSTROMO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
+  return { contractIndex: NOSTROMO_CONTRACT_INDEX, inputType: NOSTROMO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_TYPE, payload: buildPayload(NOSTROMO_TRANSFER_SHARE_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface NostromoTransferShareManagementRightsOutput {
@@ -1247,8 +1248,9 @@ const NOSTROMO_GET_PROJECT_BY_INDEX_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeNostromoGetProjectByIndexOutput(
   data: Uint8Array,
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): NostromoGetProjectByIndexOutput {
-  return decodePayload(data, NOSTROMO_GET_PROJECT_BY_INDEX_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as NostromoGetProjectByIndexOutput
+  return decodePayload(data, NOSTROMO_GET_PROJECT_BY_INDEX_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as NostromoGetProjectByIndexOutput
 }
 
 export async function nostromoGetProjectByIndex(

@@ -118,8 +118,29 @@ function tsType(field: BinaryField, contractPascal: string): string {
   }
 }
 
-function hasIdFields(fields: BinaryField[]): boolean {
-  return fields.some((f) => f.type === 'id' || (f.type === 'array' && f.arrayItemType === 'id'))
+
+function hasIdFields(
+  fields: BinaryField[],
+  structs: Record<string, NamedStruct>,
+  seenStructs: Set<string> = new Set(),
+): boolean {
+  for (const f of fields) {
+    if (f.type === 'id') return true
+    if (f.type === 'array' && f.arrayItemType === 'id') return true
+    if (f.type === 'struct' && f.structRef) {
+      if (seenStructs.has(f.structRef)) continue
+      seenStructs.add(f.structRef)
+      const nested = structs[f.structRef]
+      if (nested && hasIdFields(nested.fields, structs, seenStructs)) return true
+    }
+    if (f.type === 'array' && f.arrayItemType === 'struct' && f.arrayItemStructRef) {
+      if (seenStructs.has(f.arrayItemStructRef)) continue
+      seenStructs.add(f.arrayItemStructRef)
+      const nested = structs[f.arrayItemStructRef]
+      if (nested && hasIdFields(nested.fields, structs, seenStructs)) return true
+    }
+  }
+  return false
 }
 
 function fieldsLiteral(fields: BinaryField[], indent = '  '): string {
@@ -185,10 +206,10 @@ for (const version of versions) {
     ...(needsCallRuntime
       ? [
           "import type { QubicRpcError } from '@qubic.org/rpc'",
+          "import type { Result } from '@qubic.org/types'",
           needsContractCallType
             ? "import { type ContractCall, type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'"
             : "import { type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'",
-          "import type { Result } from '@qubic.org/types'",
         ]
       : needsContractCallType
         ? ["import type { ContractCall } from '../call-contract.js'"]
@@ -227,7 +248,7 @@ for (const version of versions) {
     lines.push(`export const ${cSnake}_${callSnake}_INPUT_TYPE = ${call.inputType}`, '')
 
     if (call.inputFields.length > 0) {
-      const needsIdToPk = hasIdFields(call.inputFields)
+      const needsIdToPk = hasIdFields(call.inputFields, version.structs)
       lines.push(
         `export interface ${cPascal}${callPascal}Input {`,
         interfaceFields(call.inputFields, cPascal),
@@ -246,7 +267,7 @@ for (const version of versions) {
     }
 
     if (call.outputFields.length > 0) {
-      const needsPkToId = hasIdFields(call.outputFields)
+      const needsPkToId = hasIdFields(call.outputFields, version.structs)
       lines.push(
         `export interface ${cPascal}${callPascal}Output {`,
         interfaceFields(call.outputFields, cPascal),
@@ -279,7 +300,7 @@ for (const version of versions) {
     )
 
     if (hasInput) {
-      const needsIdToPk = hasIdFields(call.inputFields)
+      const needsIdToPk = hasIdFields(call.inputFields, version.structs)
       lines.push(
         `export interface ${cPascal}${callPascal}Input {`,
         interfaceFields(call.inputFields, cPascal),
@@ -298,7 +319,7 @@ for (const version of versions) {
     }
 
     if (call.outputFields.length > 0) {
-      const needsPkToId = hasIdFields(call.outputFields)
+      const needsPkToId = hasIdFields(call.outputFields, version.structs)
       lines.push(
         `export interface ${cPascal}${callPascal}Output {`,
         interfaceFields(call.outputFields, cPascal),

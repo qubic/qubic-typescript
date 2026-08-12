@@ -683,8 +683,9 @@ const VOTTUN_BRIDGE_GET_ORDER_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeVottunBridgeGetOrderOutput(
   data: Uint8Array,
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): VottunBridgeGetOrderOutput {
-  return decodePayload(data, VOTTUN_BRIDGE_GET_ORDER_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as VottunBridgeGetOrderOutput
+  return decodePayload(data, VOTTUN_BRIDGE_GET_ORDER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as VottunBridgeGetOrderOutput
 }
 
 export async function vottunBridgeGetOrder(
@@ -1112,8 +1113,9 @@ const VOTTUN_BRIDGE_GET_PROPOSAL_OUTPUT_FIELDS: BinaryField[] = [
 
 export function decodeVottunBridgeGetProposalOutput(
   data: Uint8Array,
+  publicKeyToIdentity: (pk: Uint8Array) => string,
 ): VottunBridgeGetProposalOutput {
-  return decodePayload(data, VOTTUN_BRIDGE_GET_PROPOSAL_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as VottunBridgeGetProposalOutput
+  return decodePayload(data, VOTTUN_BRIDGE_GET_PROPOSAL_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as VottunBridgeGetProposalOutput
 }
 
 export async function vottunBridgeGetProposal(

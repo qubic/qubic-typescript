@@ -118,7 +118,6 @@ function tsType(field: BinaryField, contractPascal: string): string {
   }
 }
 
-
 function hasIdFields(
   fields: BinaryField[],
   structs: Record<string, NamedStruct>,

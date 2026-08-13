@@ -408,8 +408,9 @@ const MS_VAULT_DEPOSIT_ASSET_INPUT_FIELDS: BinaryField[] = [
 
 export function buildMsVaultDepositAssetInput(
   input: MsVaultDepositAssetInput,
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): ContractCall {
-  return { contractIndex: MS_VAULT_CONTRACT_INDEX, inputType: MS_VAULT_DEPOSIT_ASSET_INPUT_TYPE, payload: buildPayload(MS_VAULT_DEPOSIT_ASSET_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
+  return { contractIndex: MS_VAULT_CONTRACT_INDEX, inputType: MS_VAULT_DEPOSIT_ASSET_INPUT_TYPE, payload: buildPayload(MS_VAULT_DEPOSIT_ASSET_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface MsVaultDepositAssetOutput {
@@ -559,8 +560,9 @@ const MS_VAULT_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_FIELDS: BinaryField[] = [
 
 export function buildMsVaultRevokeAssetManagementRightsInput(
   input: MsVaultRevokeAssetManagementRightsInput,
+  identityToPublicKey: (identity: string) => Uint8Array,
 ): ContractCall {
-  return { contractIndex: MS_VAULT_CONTRACT_INDEX, inputType: MS_VAULT_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_TYPE, payload: buildPayload(MS_VAULT_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
+  return { contractIndex: MS_VAULT_CONTRACT_INDEX, inputType: MS_VAULT_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_TYPE, payload: buildPayload(MS_VAULT_REVOKE_ASSET_MANAGEMENT_RIGHTS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
 }
 
 export interface MsVaultRevokeAssetManagementRightsOutput {

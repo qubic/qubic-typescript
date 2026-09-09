@@ -2,8 +2,8 @@
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.org/registry'
 import { buildPayload, decodePayload } from '@qubic.org/registry'
 import type { QubicRpcError } from '@qubic.org/rpc'
-import type { Result } from '@qubic.org/types'
 import { type ContractCall, type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import type { Result } from '@qubic.org/types'
 
 export const Q_UTIL_CONTRACT_INDEX = 4
 
@@ -843,6 +843,46 @@ export function decodeQUtilUnsubscribeOracleOutput(
   return decodePayload(data, Q_UTIL_UNSUBSCRIBE_ORACLE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QUtilUnsubscribeOracleOutput
 }
 
+export const Q_UTIL_TRIGGER_OC_INPUT_TYPE = 103
+
+export interface QUtilTriggerOCInput {
+  value: bigint
+}
+
+const Q_UTIL_TRIGGER_OC_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'value',
+    type: 'uint64',
+    offset: 0,
+    byteLength: 8,
+  },
+]
+
+export function buildQUtilTriggerOCInput(
+  input: QUtilTriggerOCInput,
+): ContractCall {
+  return { contractIndex: Q_UTIL_CONTRACT_INDEX, inputType: Q_UTIL_TRIGGER_OC_INPUT_TYPE, payload: buildPayload(Q_UTIL_TRIGGER_OC_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
+}
+
+export interface QUtilTriggerOCOutput {
+  invocationId: bigint
+}
+
+const Q_UTIL_TRIGGER_OC_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'invocationId',
+    type: 'sint64',
+    offset: 0,
+    byteLength: 8,
+  },
+]
+
+export function decodeQUtilTriggerOCOutput(
+  data: Uint8Array,
+): QUtilTriggerOCOutput {
+  return decodePayload(data, Q_UTIL_TRIGGER_OC_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QUtilTriggerOCOutput
+}
+
 export const Q_UTIL_GET_SEND_TO_MANY_V1FEE_INPUT_TYPE = 1
 export const Q_UTIL_GET_SEND_TO_MANY_V1FEE_INPUT_SIZE = 0
 
@@ -1502,5 +1542,7 @@ export const qUtil = {
   decodeSubscribePriceOracleOutput: decodeQUtilSubscribePriceOracleOutput,
   buildUnsubscribeOracleInput: buildQUtilUnsubscribeOracleInput,
   decodeUnsubscribeOracleOutput: decodeQUtilUnsubscribeOracleOutput,
+  buildTriggerOCInput: buildQUtilTriggerOCInput,
+  decodeTriggerOCOutput: decodeQUtilTriggerOCOutput,
 }
 

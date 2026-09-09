@@ -1,0 +1,2045 @@
+{
+  "contractIndex": 14,
+  "contractName": "Nostromo",
+  "contractAddress": "OAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAZTPD",
+  "epoch": 230,
+  "coreVersion": "v1.304.0",
+  "structs": {
+    "AuctionAssetEntry": {
+      "name": "AuctionAssetEntry",
+      "fields": [
+        {
+          "name": "asset",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 40,
+          "structRef": "Asset"
+        },
+        {
+          "name": "quantity",
+          "type": "sint64",
+          "offset": 40,
+          "byteLength": 8
+        }
+      ],
+      "byteLength": 48
+    },
+    "Asset": {
+      "name": "Asset",
+      "byteLength": 40,
+      "fields": [
+        {
+          "name": "issuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        }
+      ]
+    },
+    "AuctionView": {
+      "name": "AuctionView",
+      "fields": [
+        {
+          "name": "core",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 464,
+          "structRef": "AuctionCore"
+        },
+        {
+          "name": "allowedBidderWallets",
+          "type": "array",
+          "offset": 464,
+          "byteLength": 512,
+          "arrayLength": 16,
+          "arrayItemType": "id",
+          "arrayItemByteLength": 32
+        },
+        {
+          "name": "requiredAccessAssets",
+          "type": "array",
+          "offset": 976,
+          "byteLength": 192,
+          "arrayLength": 4,
+          "arrayItemStructRef": "AuctionAssetEntry",
+          "arrayItemByteLength": 48
+        },
+        {
+          "name": "requiredAccessAssetCount",
+          "type": "uint64",
+          "offset": 1168,
+          "byteLength": 8
+        },
+        {
+          "name": "allowedBidderWalletCount",
+          "type": "uint64",
+          "offset": 1176,
+          "byteLength": 8
+        }
+      ],
+      "byteLength": 1184
+    },
+    "AuctionParticipantData": {
+      "name": "AuctionParticipantData",
+      "fields": [
+        {
+          "name": "auctionIndex",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "bidIndex",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "escrowedAmount",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "requestedQuantity",
+          "type": "uint64",
+          "offset": 24,
+          "byteLength": 8
+        },
+        {
+          "name": "allocatedQuantity",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "bidAmount",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "participant",
+          "type": "id",
+          "offset": 48,
+          "byteLength": 32
+        },
+        {
+          "name": "lastBidTime",
+          "type": "struct",
+          "offset": 80,
+          "byteLength": 8,
+          "structRef": "DateAndTime"
+        },
+        {
+          "name": "isUsed",
+          "type": "uint8",
+          "offset": 88,
+          "byteLength": 1
+        },
+        {
+          "name": "isActive",
+          "type": "uint8",
+          "offset": 89,
+          "byteLength": 1
+        },
+        {
+          "name": "isWinningBid",
+          "type": "uint8",
+          "offset": 90,
+          "byteLength": 1
+        }
+      ],
+      "byteLength": 91
+    },
+    "NostromoFeePool": {
+      "name": "NostromoFeePool",
+      "fields": [
+        {
+          "name": "shareholderDividendTier1Amount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "shareholderDividendTier2Amount",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "shareholderDividendTier3Amount",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "shareholderDividendTier4Amount",
+          "type": "uint64",
+          "offset": 24,
+          "byteLength": 8
+        },
+        {
+          "name": "commonServiceFeeAmount",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "shareholderDividendAmount",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "managementAmount",
+          "type": "uint64",
+          "offset": 48,
+          "byteLength": 8
+        },
+        {
+          "name": "developmentAmount",
+          "type": "uint64",
+          "offset": 56,
+          "byteLength": 8
+        },
+        {
+          "name": "takeoverCoordinatorAmount",
+          "type": "uint64",
+          "offset": 64,
+          "byteLength": 8
+        }
+      ],
+      "byteLength": 72
+    },
+    "DateAndTime": {
+      "name": "DateAndTime",
+      "byteLength": 8,
+      "fields": [
+        {
+          "name": "value",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ]
+    },
+    "ContractStats": {
+      "name": "ContractStats",
+      "fields": [
+        {
+          "name": "totalAuctionsCreated",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "activeAuctionCount",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "pendingSellerDecisionAuctionCount",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "finalizedAuctionCount",
+          "type": "uint64",
+          "offset": 24,
+          "byteLength": 8
+        },
+        {
+          "name": "cancelledAuctionCount",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "participantCount",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "closedAuctionHistoryCounter",
+          "type": "uint64",
+          "offset": 48,
+          "byteLength": 8
+        },
+        {
+          "name": "auctionShareholderDividendPool",
+          "type": "uint64",
+          "offset": 56,
+          "byteLength": 8
+        },
+        {
+          "name": "pendingServiceFeePool",
+          "type": "uint64",
+          "offset": 64,
+          "byteLength": 8
+        },
+        {
+          "name": "totalPendingQuPayouts",
+          "type": "uint64",
+          "offset": 72,
+          "byteLength": 8
+        },
+        {
+          "name": "retainedClosedAuctionCount",
+          "type": "uint64",
+          "offset": 80,
+          "byteLength": 8
+        },
+        {
+          "name": "retainedParticipantHistoryCount",
+          "type": "uint64",
+          "offset": 88,
+          "byteLength": 8
+        },
+        {
+          "name": "qxTransferFee",
+          "type": "uint32",
+          "offset": 96,
+          "byteLength": 4
+        },
+        {
+          "name": "routeAllFeesToDevelopment",
+          "type": "uint8",
+          "offset": 100,
+          "byteLength": 1
+        },
+        {
+          "name": "isAuctionTimerPaused",
+          "type": "uint8",
+          "offset": 101,
+          "byteLength": 1
+        },
+        {
+          "name": "isPostBeginEpochPauseArmed",
+          "type": "uint8",
+          "offset": 102,
+          "byteLength": 1
+        },
+        {
+          "name": "isEmergencyPaused",
+          "type": "uint8",
+          "offset": 103,
+          "byteLength": 1
+        }
+      ],
+      "byteLength": 104
+    },
+    "AuctionSummary": {
+      "name": "AuctionSummary",
+      "fields": [
+        {
+          "name": "metadataIpfsCid",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 64,
+          "arrayLength": 64,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        },
+        {
+          "name": "seller",
+          "type": "id",
+          "offset": 64,
+          "byteLength": 32
+        },
+        {
+          "name": "highestBidder",
+          "type": "id",
+          "offset": 96,
+          "byteLength": 32
+        },
+        {
+          "name": "createdAt",
+          "type": "struct",
+          "offset": 128,
+          "byteLength": 8,
+          "structRef": "DateAndTime"
+        },
+        {
+          "name": "settledAt",
+          "type": "struct",
+          "offset": 136,
+          "byteLength": 8,
+          "structRef": "DateAndTime"
+        },
+        {
+          "name": "auctionIndex",
+          "type": "uint64",
+          "offset": 144,
+          "byteLength": 8
+        },
+        {
+          "name": "quantityForSale",
+          "type": "uint64",
+          "offset": 152,
+          "byteLength": 8
+        },
+        {
+          "name": "allocatedQuantity",
+          "type": "uint64",
+          "offset": 160,
+          "byteLength": 8
+        },
+        {
+          "name": "initialPrice",
+          "type": "uint64",
+          "offset": 168,
+          "byteLength": 8
+        },
+        {
+          "name": "salePrice",
+          "type": "uint64",
+          "offset": 176,
+          "byteLength": 8
+        },
+        {
+          "name": "buyNowPrice",
+          "type": "uint64",
+          "offset": 184,
+          "byteLength": 8
+        },
+        {
+          "name": "highestBidPrice",
+          "type": "uint64",
+          "offset": 192,
+          "byteLength": 8
+        },
+        {
+          "name": "highestBidQuantity",
+          "type": "uint64",
+          "offset": 200,
+          "byteLength": 8
+        },
+        {
+          "name": "highestBidAmount",
+          "type": "uint64",
+          "offset": 208,
+          "byteLength": 8
+        },
+        {
+          "name": "type",
+          "type": "uint8",
+          "offset": 216,
+          "byteLength": 1
+        },
+        {
+          "name": "visibility",
+          "type": "uint8",
+          "offset": 217,
+          "byteLength": 1
+        },
+        {
+          "name": "status",
+          "type": "uint8",
+          "offset": 218,
+          "byteLength": 1
+        }
+      ],
+      "byteLength": 219
+    },
+    "ParticipantSummary": {
+      "name": "ParticipantSummary",
+      "fields": [
+        {
+          "name": "participant",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "lastBidTime",
+          "type": "struct",
+          "offset": 32,
+          "byteLength": 8,
+          "structRef": "DateAndTime"
+        },
+        {
+          "name": "bidAmount",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "escrowedAmount",
+          "type": "uint64",
+          "offset": 48,
+          "byteLength": 8
+        },
+        {
+          "name": "requestedQuantity",
+          "type": "uint64",
+          "offset": 56,
+          "byteLength": 8
+        },
+        {
+          "name": "allocatedQuantity",
+          "type": "uint64",
+          "offset": 64,
+          "byteLength": 8
+        },
+        {
+          "name": "isWinningBid",
+          "type": "uint8",
+          "offset": 72,
+          "byteLength": 1
+        }
+      ],
+      "byteLength": 73
+    },
+    "UserParticipationSummary": {
+      "name": "UserParticipationSummary",
+      "fields": [
+        {
+          "name": "participant",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "lastBidTime",
+          "type": "struct",
+          "offset": 32,
+          "byteLength": 8,
+          "structRef": "DateAndTime"
+        },
+        {
+          "name": "auctionIndex",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "bidAmount",
+          "type": "uint64",
+          "offset": 48,
+          "byteLength": 8
+        },
+        {
+          "name": "escrowedAmount",
+          "type": "uint64",
+          "offset": 56,
+          "byteLength": 8
+        },
+        {
+          "name": "requestedQuantity",
+          "type": "uint64",
+          "offset": 64,
+          "byteLength": 8
+        },
+        {
+          "name": "allocatedQuantity",
+          "type": "uint64",
+          "offset": 72,
+          "byteLength": 8
+        },
+        {
+          "name": "isWinningBid",
+          "type": "uint8",
+          "offset": 80,
+          "byteLength": 1
+        }
+      ],
+      "byteLength": 81
+    },
+    "AuctionCore": {
+      "name": "AuctionCore",
+      "fields": [
+        {
+          "name": "auctionLotItems",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 192,
+          "arrayLength": 4,
+          "arrayItemStructRef": "AuctionAssetEntry",
+          "arrayItemByteLength": 48
+        },
+        {
+          "name": "metadataIpfsCid",
+          "type": "array",
+          "offset": 192,
+          "byteLength": 64,
+          "arrayLength": 64,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        },
+        {
+          "name": "seller",
+          "type": "id",
+          "offset": 256,
+          "byteLength": 32
+        },
+        {
+          "name": "highestBidder",
+          "type": "id",
+          "offset": 288,
+          "byteLength": 32
+        },
+        {
+          "name": "createdAt",
+          "type": "struct",
+          "offset": 320,
+          "byteLength": 8,
+          "structRef": "DateAndTime"
+        },
+        {
+          "name": "lastBidAt",
+          "type": "struct",
+          "offset": 328,
+          "byteLength": 8,
+          "structRef": "DateAndTime"
+        },
+        {
+          "name": "sellerDecisionDeadline",
+          "type": "struct",
+          "offset": 336,
+          "byteLength": 8,
+          "structRef": "DateAndTime"
+        },
+        {
+          "name": "settledAt",
+          "type": "struct",
+          "offset": 344,
+          "byteLength": 8,
+          "structRef": "DateAndTime"
+        },
+        {
+          "name": "quantityForSale",
+          "type": "uint64",
+          "offset": 352,
+          "byteLength": 8
+        },
+        {
+          "name": "allocatedQuantity",
+          "type": "uint64",
+          "offset": 360,
+          "byteLength": 8
+        },
+        {
+          "name": "minimumPurchaseQuantity",
+          "type": "uint64",
+          "offset": 368,
+          "byteLength": 8
+        },
+        {
+          "name": "initialPrice",
+          "type": "uint64",
+          "offset": 376,
+          "byteLength": 8
+        },
+        {
+          "name": "salePrice",
+          "type": "uint64",
+          "offset": 384,
+          "byteLength": 8
+        },
+        {
+          "name": "minimumBidIncrement",
+          "type": "uint64",
+          "offset": 392,
+          "byteLength": 8
+        },
+        {
+          "name": "buyNowPrice",
+          "type": "uint64",
+          "offset": 400,
+          "byteLength": 8
+        },
+        {
+          "name": "highestBidPrice",
+          "type": "uint64",
+          "offset": 408,
+          "byteLength": 8
+        },
+        {
+          "name": "highestBidQuantity",
+          "type": "uint64",
+          "offset": 416,
+          "byteLength": 8
+        },
+        {
+          "name": "highestBidAmount",
+          "type": "uint64",
+          "offset": 424,
+          "byteLength": 8
+        },
+        {
+          "name": "auctionDurationSeconds",
+          "type": "uint64",
+          "offset": 432,
+          "byteLength": 8
+        },
+        {
+          "name": "auctionIndex",
+          "type": "uint64",
+          "offset": 440,
+          "byteLength": 8
+        },
+        {
+          "name": "nextBidIndex",
+          "type": "uint64",
+          "offset": 448,
+          "byteLength": 8
+        },
+        {
+          "name": "highestBidSlotIndex",
+          "type": "uint64",
+          "offset": 456,
+          "byteLength": 8
+        }
+      ],
+      "byteLength": 464
+    }
+  },
+  "procedures": [
+    {
+      "kind": "procedure",
+      "inputType": 0,
+      "name": "CreateAuction",
+      "inputFields": [
+        {
+          "name": "metadataIpfsCid",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 64,
+          "arrayLength": 64,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        },
+        {
+          "name": "auctionLotItems",
+          "type": "array",
+          "offset": 64,
+          "byteLength": 192,
+          "arrayLength": 4,
+          "arrayItemStructRef": "AuctionAssetEntry",
+          "arrayItemByteLength": 48
+        },
+        {
+          "name": "requiredAccessAssets",
+          "type": "array",
+          "offset": 256,
+          "byteLength": 192,
+          "arrayLength": 4,
+          "arrayItemStructRef": "AuctionAssetEntry",
+          "arrayItemByteLength": 48
+        },
+        {
+          "name": "allowedBidderWallets",
+          "type": "array",
+          "offset": 448,
+          "byteLength": 512,
+          "arrayLength": 16,
+          "arrayItemType": "id",
+          "arrayItemByteLength": 32
+        },
+        {
+          "name": "minimumPurchaseQuantity",
+          "type": "uint64",
+          "offset": 960,
+          "byteLength": 8
+        },
+        {
+          "name": "initialPrice",
+          "type": "uint64",
+          "offset": 968,
+          "byteLength": 8
+        },
+        {
+          "name": "salePrice",
+          "type": "uint64",
+          "offset": 976,
+          "byteLength": 8
+        },
+        {
+          "name": "minimumBidIncrement",
+          "type": "uint64",
+          "offset": 984,
+          "byteLength": 8
+        },
+        {
+          "name": "buyNowPrice",
+          "type": "uint64",
+          "offset": 992,
+          "byteLength": 8
+        },
+        {
+          "name": "durationDays",
+          "type": "uint32",
+          "offset": 1000,
+          "byteLength": 4
+        },
+        {
+          "name": "auctionType",
+          "type": "uint8",
+          "offset": 1004,
+          "byteLength": 1
+        },
+        {
+          "name": "auctionVisibility",
+          "type": "uint8",
+          "offset": 1005,
+          "byteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "auctionIndex",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 1006,
+      "outputSize": 8
+    },
+    {
+      "kind": "procedure",
+      "inputType": 0,
+      "name": "PlaceBid",
+      "inputFields": [
+        {
+          "name": "auctionIndex",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "quantity",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "bidAmount",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "escrowedAmount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "refundedAmount",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 24,
+      "outputSize": 16
+    },
+    {
+      "kind": "procedure",
+      "inputType": 0,
+      "name": "CancelAuction",
+      "inputFields": [
+        {
+          "name": "auctionIndex",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "refundedAmount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "cancellationFee",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 16
+    },
+    {
+      "kind": "procedure",
+      "inputType": 0,
+      "name": "ResolvePendingStandardAuction",
+      "inputFields": [
+        {
+          "name": "auctionIndex",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "acceptSale",
+          "type": "uint8",
+          "offset": 8,
+          "byteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "refundedAmount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 9,
+      "outputSize": 8
+    },
+    {
+      "kind": "procedure",
+      "inputType": 0,
+      "name": "SetAuctionFees",
+      "inputFields": [
+        {
+          "name": "privateAuctionFee",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "publicAuctionCreationFee",
+          "type": "sint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "auctionCancellationFeeBasisPoints",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "managementFeeBasisPoints",
+          "type": "uint64",
+          "offset": 24,
+          "byteLength": 8
+        },
+        {
+          "name": "developmentFeeBasisPoints",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "takeoverCoordinatorFeeBasisPoints",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "shareholderDividendBasisPoints",
+          "type": "uint64",
+          "offset": 48,
+          "byteLength": 8
+        },
+        {
+          "name": "shareholderFeeBasisPointsTier1",
+          "type": "uint64",
+          "offset": 56,
+          "byteLength": 8
+        },
+        {
+          "name": "shareholderFeeBasisPointsTier2",
+          "type": "uint64",
+          "offset": 64,
+          "byteLength": 8
+        },
+        {
+          "name": "shareholderFeeBasisPointsTier3",
+          "type": "uint64",
+          "offset": 72,
+          "byteLength": 8
+        },
+        {
+          "name": "shareholderFeeBasisPointsTier4",
+          "type": "uint64",
+          "offset": 80,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [],
+      "inputSize": 88,
+      "outputSize": 0
+    },
+    {
+      "kind": "procedure",
+      "inputType": 0,
+      "name": "SetAuctionFeesByManagement",
+      "inputFields": [
+        {
+          "name": "privateAuctionFee",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "publicAuctionCreationFee",
+          "type": "sint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "auctionCancellationFeeBasisPoints",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "managementFeeBasisPoints",
+          "type": "uint64",
+          "offset": 24,
+          "byteLength": 8
+        },
+        {
+          "name": "developmentFeeBasisPoints",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "shareholderFeeBasisPointsTier1",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "shareholderFeeBasisPointsTier2",
+          "type": "uint64",
+          "offset": 48,
+          "byteLength": 8
+        },
+        {
+          "name": "shareholderFeeBasisPointsTier3",
+          "type": "uint64",
+          "offset": 56,
+          "byteLength": 8
+        },
+        {
+          "name": "shareholderFeeBasisPointsTier4",
+          "type": "uint64",
+          "offset": 64,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [],
+      "inputSize": 72,
+      "outputSize": 0
+    },
+    {
+      "kind": "procedure",
+      "inputType": 0,
+      "name": "SetManagement",
+      "inputFields": [
+        {
+          "name": "management",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [],
+      "inputSize": 32,
+      "outputSize": 0
+    },
+    {
+      "kind": "procedure",
+      "inputType": 0,
+      "name": "SetFeeReserveGuardConfig",
+      "inputFields": [
+        {
+          "name": "dropBasisPoints",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "windowSeconds",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [],
+      "inputSize": 16,
+      "outputSize": 0
+    },
+    {
+      "kind": "procedure",
+      "inputType": 0,
+      "name": "SetEmergencyPause",
+      "inputFields": [
+        {
+          "name": "paused",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "outputFields": [],
+      "inputSize": 1,
+      "outputSize": 0
+    },
+    {
+      "kind": "procedure",
+      "inputType": 0,
+      "name": "TransferShareManagementRights",
+      "inputFields": [
+        {
+          "name": "asset",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 40,
+          "structRef": "Asset"
+        },
+        {
+          "name": "numberOfShares",
+          "type": "sint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "newManagingContractIndex",
+          "type": "uint32",
+          "offset": 48,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "transferredNumberOfShares",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 52,
+      "outputSize": 8
+    }
+  ],
+  "functions": [
+    {
+      "kind": "function",
+      "inputType": 0,
+      "name": "GetAuctionByIndex",
+      "inputFields": [
+        {
+          "name": "auctionIndex",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "auction",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 1184,
+          "structRef": "AuctionView"
+        },
+        {
+          "name": "found",
+          "type": "uint8",
+          "offset": 1184,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 1185
+    },
+    {
+      "kind": "function",
+      "inputType": 0,
+      "name": "GetAuctionParticipant",
+      "inputFields": [
+        {
+          "name": "auctionIndex",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "participant",
+          "type": "id",
+          "offset": 8,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "participantData",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 91,
+          "structRef": "AuctionParticipantData"
+        },
+        {
+          "name": "found",
+          "type": "uint8",
+          "offset": 91,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 40,
+      "outputSize": 92
+    },
+    {
+      "kind": "function",
+      "inputType": 0,
+      "name": "GetTicksBeforeAuctionLaunch",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "ticks",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 4
+    },
+    {
+      "kind": "function",
+      "inputType": 0,
+      "name": "GetAuctionFees",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "privateAuctionFee",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "publicAuctionCreationFee",
+          "type": "sint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "auctionCancellationFeeBasisPoints",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "managementFeeBasisPoints",
+          "type": "uint64",
+          "offset": 24,
+          "byteLength": 8
+        },
+        {
+          "name": "developmentFeeBasisPoints",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "takeoverCoordinatorFeeBasisPoints",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "shareholderDividendBasisPoints",
+          "type": "uint64",
+          "offset": 48,
+          "byteLength": 8
+        },
+        {
+          "name": "shareholderFeeBasisPointsTier1",
+          "type": "uint64",
+          "offset": 56,
+          "byteLength": 8
+        },
+        {
+          "name": "shareholderFeeBasisPointsTier2",
+          "type": "uint64",
+          "offset": 64,
+          "byteLength": 8
+        },
+        {
+          "name": "shareholderFeeBasisPointsTier3",
+          "type": "uint64",
+          "offset": 72,
+          "byteLength": 8
+        },
+        {
+          "name": "shareholderFeeBasisPointsTier4",
+          "type": "uint64",
+          "offset": 80,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 88
+    },
+    {
+      "kind": "function",
+      "inputType": 0,
+      "name": "CalculateBatchAuctionBidFee",
+      "inputFields": [
+        {
+          "name": "bidQuantity",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "bidAmount",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "escrowAmount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "fee",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "requiredReward",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 16,
+      "outputSize": 24
+    },
+    {
+      "kind": "function",
+      "inputType": 0,
+      "name": "GetFeeRecipients",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "management",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "development",
+          "type": "id",
+          "offset": 32,
+          "byteLength": 32
+        },
+        {
+          "name": "takeoverCoordinator",
+          "type": "id",
+          "offset": 64,
+          "byteLength": 32
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 96
+    },
+    {
+      "kind": "function",
+      "inputType": 0,
+      "name": "GetClosedAuctionHistory",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "auctionIndices",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 8192,
+          "arrayLength": 1024,
+          "arrayItemType": "uint64",
+          "arrayItemByteLength": 8
+        },
+        {
+          "name": "totalEntries",
+          "type": "uint64",
+          "offset": 8192,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 8200
+    },
+    {
+      "kind": "function",
+      "inputType": 0,
+      "name": "GetRouteAllFeesToDevelopment",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "enabled",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 1
+    },
+    {
+      "kind": "function",
+      "inputType": 0,
+      "name": "GetPendingServiceFeePool",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "pendingServiceFeePool",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 8
+    },
+    {
+      "kind": "function",
+      "inputType": 0,
+      "name": "GetNostromoFeePool",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "feePool",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 72,
+          "structRef": "NostromoFeePool"
+        },
+        {
+          "name": "totalAmount",
+          "type": "uint64",
+          "offset": 72,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 80
+    },
+    {
+      "kind": "function",
+      "inputType": 0,
+      "name": "GetPendingPayout",
+      "inputFields": [
+        {
+          "name": "account",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "amount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 32,
+      "outputSize": 8
+    },
+    {
+      "kind": "function",
+      "inputType": 0,
+      "name": "GetFeeReserveGuardState",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "currentFeeReserve",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "feeReserveBaseline",
+          "type": "sint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "feeReserveBaselineAt",
+          "type": "struct",
+          "offset": 16,
+          "byteLength": 8,
+          "structRef": "DateAndTime"
+        },
+        {
+          "name": "emergencyPausedAt",
+          "type": "struct",
+          "offset": 24,
+          "byteLength": 8,
+          "structRef": "DateAndTime"
+        },
+        {
+          "name": "dropBasisPoints",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "windowSeconds",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "isEmergencyPaused",
+          "type": "uint8",
+          "offset": 48,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 49
+    },
+    {
+      "kind": "function",
+      "inputType": 0,
+      "name": "GetContractStats",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "stats",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 104,
+          "structRef": "ContractStats"
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 104
+    },
+    {
+      "kind": "function",
+      "inputType": 0,
+      "name": "GetAuctionSummaries",
+      "inputFields": [
+        {
+          "name": "offset",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "limit",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "auctions",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 14016,
+          "arrayLength": 64,
+          "arrayItemStructRef": "AuctionSummary",
+          "arrayItemByteLength": 219
+        },
+        {
+          "name": "totalCount",
+          "type": "uint64",
+          "offset": 14016,
+          "byteLength": 8
+        },
+        {
+          "name": "returnedCount",
+          "type": "uint64",
+          "offset": 14024,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 16,
+      "outputSize": 14032
+    },
+    {
+      "kind": "function",
+      "inputType": 0,
+      "name": "GetActiveAuctionIndices",
+      "inputFields": [
+        {
+          "name": "offset",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "limit",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "auctionIndices",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 512,
+          "arrayLength": 64,
+          "arrayItemType": "uint64",
+          "arrayItemByteLength": 8
+        },
+        {
+          "name": "totalCount",
+          "type": "uint64",
+          "offset": 512,
+          "byteLength": 8
+        },
+        {
+          "name": "returnedCount",
+          "type": "uint64",
+          "offset": 520,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 16,
+      "outputSize": 528
+    },
+    {
+      "kind": "function",
+      "inputType": 0,
+      "name": "GetAuctionsBySeller",
+      "inputFields": [
+        {
+          "name": "seller",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "offset",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "limit",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "auctions",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 14016,
+          "arrayLength": 64,
+          "arrayItemStructRef": "AuctionSummary",
+          "arrayItemByteLength": 219
+        },
+        {
+          "name": "totalCount",
+          "type": "uint64",
+          "offset": 14016,
+          "byteLength": 8
+        },
+        {
+          "name": "returnedCount",
+          "type": "uint64",
+          "offset": 14024,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 48,
+      "outputSize": 14032
+    },
+    {
+      "kind": "function",
+      "inputType": 0,
+      "name": "GetAuctionByMetadataCid",
+      "inputFields": [
+        {
+          "name": "metadataIpfsCid",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 64,
+          "arrayLength": 64,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "auction",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 219,
+          "structRef": "AuctionSummary"
+        },
+        {
+          "name": "auctionIndex",
+          "type": "uint64",
+          "offset": 219,
+          "byteLength": 8
+        },
+        {
+          "name": "found",
+          "type": "uint8",
+          "offset": 227,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 64,
+      "outputSize": 228
+    },
+    {
+      "kind": "function",
+      "inputType": 0,
+      "name": "GetAuctionSummariesByIndexBatch",
+      "inputFields": [
+        {
+          "name": "auctionIndices",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 512,
+          "arrayLength": 64,
+          "arrayItemType": "uint64",
+          "arrayItemByteLength": 8
+        },
+        {
+          "name": "count",
+          "type": "uint64",
+          "offset": 512,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "auctions",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 14016,
+          "arrayLength": 64,
+          "arrayItemStructRef": "AuctionSummary",
+          "arrayItemByteLength": 219
+        },
+        {
+          "name": "found",
+          "type": "array",
+          "offset": 14016,
+          "byteLength": 64,
+          "arrayLength": 64,
+          "arrayItemType": "uint8",
+          "arrayItemByteLength": 1
+        },
+        {
+          "name": "returnedCount",
+          "type": "uint64",
+          "offset": 14080,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 520,
+      "outputSize": 14088
+    },
+    {
+      "kind": "function",
+      "inputType": 0,
+      "name": "GetAuctionParticipants",
+      "inputFields": [
+        {
+          "name": "auctionIndex",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "offset",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "limit",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "participants",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 4672,
+          "arrayLength": 64,
+          "arrayItemStructRef": "ParticipantSummary",
+          "arrayItemByteLength": 73
+        },
+        {
+          "name": "totalCount",
+          "type": "uint64",
+          "offset": 4672,
+          "byteLength": 8
+        },
+        {
+          "name": "returnedCount",
+          "type": "uint64",
+          "offset": 4680,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 24,
+      "outputSize": 4688
+    },
+    {
+      "kind": "function",
+      "inputType": 0,
+      "name": "GetUserParticipations",
+      "inputFields": [
+        {
+          "name": "participant",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "offset",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "limit",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "participations",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 5184,
+          "arrayLength": 64,
+          "arrayItemStructRef": "UserParticipationSummary",
+          "arrayItemByteLength": 81
+        },
+        {
+          "name": "totalCount",
+          "type": "uint64",
+          "offset": 5184,
+          "byteLength": 8
+        },
+        {
+          "name": "returnedCount",
+          "type": "uint64",
+          "offset": 5192,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 48,
+      "outputSize": 5200
+    },
+    {
+      "kind": "function",
+      "inputType": 0,
+      "name": "GetLatestAuctionIndex",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "auctionIndex",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "found",
+          "type": "uint8",
+          "offset": 8,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 9
+    },
+    {
+      "kind": "function",
+      "inputType": 0,
+      "name": "GetAuctionCountBySeller",
+      "inputFields": [
+        {
+          "name": "seller",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "count",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 32,
+      "outputSize": 8
+    },
+    {
+      "kind": "function",
+      "inputType": 0,
+      "name": "GetAuctionAtCreationSnapshot",
+      "inputFields": [
+        {
+          "name": "auctionIndex",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "seller",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "createdAt",
+          "type": "struct",
+          "offset": 32,
+          "byteLength": 8,
+          "structRef": "DateAndTime"
+        },
+        {
+          "name": "auctionIndex",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "quantityForSale",
+          "type": "uint64",
+          "offset": 48,
+          "byteLength": 8
+        },
+        {
+          "name": "initialPrice",
+          "type": "uint64",
+          "offset": 56,
+          "byteLength": 8
+        },
+        {
+          "name": "salePrice",
+          "type": "uint64",
+          "offset": 64,
+          "byteLength": 8
+        },
+        {
+          "name": "minimumBidIncrement",
+          "type": "uint64",
+          "offset": 72,
+          "byteLength": 8
+        },
+        {
+          "name": "buyNowPrice",
+          "type": "uint64",
+          "offset": 80,
+          "byteLength": 8
+        },
+        {
+          "name": "auctionDurationSeconds",
+          "type": "uint64",
+          "offset": 88,
+          "byteLength": 8
+        },
+        {
+          "name": "type",
+          "type": "uint8",
+          "offset": 96,
+          "byteLength": 1
+        },
+        {
+          "name": "visibility",
+          "type": "uint8",
+          "offset": 97,
+          "byteLength": 1
+        },
+        {
+          "name": "found",
+          "type": "uint8",
+          "offset": 98,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 99
+    },
+    {
+      "kind": "function",
+      "inputType": 0,
+      "name": "GetBatchAuctionBidAvailability",
+      "inputFields": [
+        {
+          "name": "auctionIndex",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "minimumBidPrice",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "availableQuantity",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "found",
+          "type": "uint8",
+          "offset": 16,
+          "byteLength": 1
+        },
+        {
+          "name": "isAcceptingBids",
+          "type": "uint8",
+          "offset": 17,
+          "byteLength": 1
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 18
+    }
+  ]
+}

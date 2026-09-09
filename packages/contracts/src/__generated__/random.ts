@@ -2,8 +2,8 @@
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.org/registry'
 import { buildPayload, decodePayload } from '@qubic.org/registry'
 import type { QubicRpcError } from '@qubic.org/rpc'
-import type { Result } from '@qubic.org/types'
 import { type ContractCall, type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import type { Result } from '@qubic.org/types'
 
 export const RANDOM_CONTRACT_INDEX = 3
 
@@ -135,9 +135,120 @@ export async function randomFees(
   })
 }
 
+export const RANDOM_GET_PROVIDER_STATUS_INPUT_TYPE = 2
+export const RANDOM_GET_PROVIDER_STATUS_INPUT_SIZE = 32
+
+export interface RandomGetProviderStatusInput {
+  provider: string
+}
+
+const RANDOM_GET_PROVIDER_STATUS_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'provider',
+    type: 'id',
+    offset: 0,
+    byteLength: 32,
+  },
+]
+
+export function buildRandomGetProviderStatusInput(
+  input: RandomGetProviderStatusInput,
+  identityToPublicKey: (identity: string) => Uint8Array,
+): Uint8Array {
+  return buildPayload(RANDOM_GET_PROVIDER_STATUS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+}
+
+export interface RandomGetProviderStatusOutput {
+  count: number
+  stream: number[]
+  collateralTier: number[]
+  lockedCollateral: bigint[]
+  contributedToEntropy: number[]
+  lastUpdateTick: number[]
+}
+
+const RANDOM_GET_PROVIDER_STATUS_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'count',
+    type: 'uint32',
+    offset: 0,
+    byteLength: 4,
+  },
+  {
+    name: 'stream',
+    type: 'array',
+    offset: 4,
+    byteLength: 128,
+    arrayLength: 32,
+    arrayItemType: 'uint32',
+    arrayItemByteLength: 4,
+  },
+  {
+    name: 'collateralTier',
+    type: 'array',
+    offset: 132,
+    byteLength: 128,
+    arrayLength: 32,
+    arrayItemType: 'uint32',
+    arrayItemByteLength: 4,
+  },
+  {
+    name: 'lockedCollateral',
+    type: 'array',
+    offset: 260,
+    byteLength: 256,
+    arrayLength: 32,
+    arrayItemType: 'uint64',
+    arrayItemByteLength: 8,
+  },
+  {
+    name: 'contributedToEntropy',
+    type: 'array',
+    offset: 516,
+    byteLength: 32,
+    arrayLength: 32,
+    arrayItemType: 'uint8',
+    arrayItemByteLength: 1,
+  },
+  {
+    name: 'lastUpdateTick',
+    type: 'array',
+    offset: 548,
+    byteLength: 128,
+    arrayLength: 32,
+    arrayItemType: 'uint32',
+    arrayItemByteLength: 4,
+  },
+]
+
+export function decodeRandomGetProviderStatusOutput(
+  data: Uint8Array,
+): RandomGetProviderStatusOutput {
+  return decodePayload(data, RANDOM_GET_PROVIDER_STATUS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as RandomGetProviderStatusOutput
+}
+
+export async function randomGetProviderStatus(
+  live: SmartContractCaller,
+  input: RandomGetProviderStatusInput,
+  options?: ContractCallOptions,
+): Promise<Result<RandomGetProviderStatusOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: RANDOM_CONTRACT_INDEX,
+    inputType: RANDOM_GET_PROVIDER_STATUS_INPUT_TYPE,
+    inputSize: RANDOM_GET_PROVIDER_STATUS_INPUT_SIZE,
+    inputFields: RANDOM_GET_PROVIDER_STATUS_INPUT_FIELDS,
+    outputFields: RANDOM_GET_PROVIDER_STATUS_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
+}
+
 export const random = {
   contractIndex: RANDOM_CONTRACT_INDEX,
   Fees: randomFees,
+  GetProviderStatus: randomGetProviderStatus,
   buildRevealAndCommitInput: buildRandomRevealAndCommitInput,
   buildBuyEntropyInput: buildRandomBuyEntropyInput,
   decodeBuyEntropyOutput: decodeRandomBuyEntropyOutput,

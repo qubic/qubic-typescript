@@ -1,0 +1,979 @@
+{
+  "contractIndex": 2,
+  "contractName": "Quottery",
+  "contractAddress": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACNKL",
+  "epoch": 232,
+  "coreVersion": "v1.305.0",
+  "structs": {
+    "QtryEventInfo": {
+      "name": "QtryEventInfo",
+      "fields": [
+        {
+          "name": "eid",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "openDate",
+          "type": "struct",
+          "offset": 8,
+          "byteLength": 8,
+          "structRef": "DateAndTime"
+        },
+        {
+          "name": "endDate",
+          "type": "struct",
+          "offset": 16,
+          "byteLength": 8,
+          "structRef": "DateAndTime"
+        },
+        {
+          "name": "desc",
+          "type": "array",
+          "offset": 24,
+          "byteLength": 128,
+          "arrayLength": 4,
+          "arrayItemType": "id",
+          "arrayItemByteLength": 32
+        },
+        {
+          "name": "option0Desc",
+          "type": "array",
+          "offset": 152,
+          "byteLength": 64,
+          "arrayLength": 2,
+          "arrayItemType": "id",
+          "arrayItemByteLength": 32
+        },
+        {
+          "name": "option1Desc",
+          "type": "array",
+          "offset": 216,
+          "byteLength": 64,
+          "arrayLength": 2,
+          "arrayItemType": "id",
+          "arrayItemByteLength": 32
+        }
+      ],
+      "byteLength": 280
+    },
+    "QtryGOV": {
+      "name": "QtryGOV",
+      "fields": [
+        {
+          "name": "mShareHolderFee",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "mBurnFee",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "mOperationFee",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "mFeePerDay",
+          "type": "sint64",
+          "offset": 24,
+          "byteLength": 8
+        },
+        {
+          "name": "mDepositAmountForDispute",
+          "type": "sint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "mOperationId",
+          "type": "id",
+          "offset": 40,
+          "byteLength": 32
+        }
+      ],
+      "byteLength": 72
+    },
+    "Asset": {
+      "name": "Asset",
+      "byteLength": 40,
+      "fields": [
+        {
+          "name": "issuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        }
+      ]
+    },
+    "DepositInfo": {
+      "name": "DepositInfo",
+      "fields": [
+        {
+          "name": "pubkey",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "amount",
+          "type": "sint64",
+          "offset": 32,
+          "byteLength": 8
+        }
+      ],
+      "byteLength": 40
+    },
+    "PositionInfo": {
+      "name": "PositionInfo",
+      "fields": [
+        {
+          "name": "eo",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "amount",
+          "type": "sint64",
+          "offset": 8,
+          "byteLength": 8
+        }
+      ],
+      "byteLength": 16
+    },
+    "QtryOrderWithPrice": {
+      "name": "QtryOrderWithPrice",
+      "fields": [
+        {
+          "name": "qo",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 40,
+          "structRef": "QtryOrder"
+        },
+        {
+          "name": "price",
+          "type": "sint64",
+          "offset": 40,
+          "byteLength": 8
+        }
+      ],
+      "byteLength": 48
+    },
+    "ProposalInfo": {
+      "name": "ProposalInfo",
+      "fields": [
+        {
+          "name": "proposed",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 72,
+          "structRef": "QtryGOV"
+        },
+        {
+          "name": "totalVotes",
+          "type": "sint64",
+          "offset": 72,
+          "byteLength": 8
+        }
+      ],
+      "byteLength": 80
+    },
+    "DateAndTime": {
+      "name": "DateAndTime",
+      "byteLength": 8,
+      "fields": [
+        {
+          "name": "value",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ]
+    },
+    "QtryOrder": {
+      "name": "QtryOrder",
+      "fields": [
+        {
+          "name": "entity",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "amount",
+          "type": "sint64",
+          "offset": 32,
+          "byteLength": 8
+        }
+      ],
+      "byteLength": 40
+    }
+  },
+  "procedures": [
+    {
+      "kind": "procedure",
+      "inputType": 1,
+      "name": "CreateEvent",
+      "inputFields": [
+        {
+          "name": "qei",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 280,
+          "structRef": "QtryEventInfo"
+        }
+      ],
+      "outputFields": [],
+      "inputSize": 280,
+      "outputSize": 0
+    },
+    {
+      "kind": "procedure",
+      "inputType": 2,
+      "name": "AddToAskOrder",
+      "inputFields": [
+        {
+          "name": "eventId",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "option",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "amount",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "price",
+          "type": "sint64",
+          "offset": 24,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "status",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 32,
+      "outputSize": 8
+    },
+    {
+      "kind": "procedure",
+      "inputType": 3,
+      "name": "RemoveAskOrder",
+      "inputFields": [
+        {
+          "name": "eventId",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "option",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "amount",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "price",
+          "type": "sint64",
+          "offset": 24,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "status",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 32,
+      "outputSize": 8
+    },
+    {
+      "kind": "procedure",
+      "inputType": 4,
+      "name": "AddToBidOrder",
+      "inputFields": [
+        {
+          "name": "eventId",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "option",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "amount",
+          "type": "sint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "price",
+          "type": "sint64",
+          "offset": 24,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "status",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 32,
+      "outputSize": 8
+    },
+    {
+      "kind": "procedure",
+      "inputType": 5,
+      "name": "RemoveBidOrder",
+      "inputFields": [
+        {
+          "name": "eventId",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "option",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "amount",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "price",
+          "type": "sint64",
+          "offset": 24,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "status",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 32,
+      "outputSize": 8
+    },
+    {
+      "kind": "procedure",
+      "inputType": 6,
+      "name": "PublishResult",
+      "inputFields": [
+        {
+          "name": "eventId",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "option",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [],
+      "inputSize": 16,
+      "outputSize": 0
+    },
+    {
+      "kind": "procedure",
+      "inputType": 7,
+      "name": "TryFinalizeEvent",
+      "inputFields": [
+        {
+          "name": "eventId",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [],
+      "inputSize": 8,
+      "outputSize": 0
+    },
+    {
+      "kind": "procedure",
+      "inputType": 8,
+      "name": "Dispute",
+      "inputFields": [
+        {
+          "name": "eventId",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [],
+      "inputSize": 8,
+      "outputSize": 0
+    },
+    {
+      "kind": "procedure",
+      "inputType": 9,
+      "name": "ResolveDispute",
+      "inputFields": [
+        {
+          "name": "eventId",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "vote",
+          "type": "sint64",
+          "offset": 8,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [],
+      "inputSize": 16,
+      "outputSize": 0
+    },
+    {
+      "kind": "procedure",
+      "inputType": 10,
+      "name": "UserClaimReward",
+      "inputFields": [
+        {
+          "name": "eventId",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [],
+      "inputSize": 8,
+      "outputSize": 0
+    },
+    {
+      "kind": "procedure",
+      "inputType": 11,
+      "name": "GOForceClaimReward",
+      "inputFields": [
+        {
+          "name": "eventId",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "pubkeys",
+          "type": "array",
+          "offset": 8,
+          "byteLength": 512,
+          "arrayLength": 16,
+          "arrayItemType": "id",
+          "arrayItemByteLength": 32
+        }
+      ],
+      "outputFields": [],
+      "inputSize": 520,
+      "outputSize": 0
+    },
+    {
+      "kind": "procedure",
+      "inputType": 12,
+      "name": "TransferQUSD",
+      "inputFields": [
+        {
+          "name": "receiver",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "amount",
+          "type": "sint64",
+          "offset": 32,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "amount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 40,
+      "outputSize": 8
+    },
+    {
+      "kind": "procedure",
+      "inputType": 13,
+      "name": "TransferShareManagementRights",
+      "inputFields": [
+        {
+          "name": "asset",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 40,
+          "structRef": "Asset"
+        },
+        {
+          "name": "numberOfShares",
+          "type": "sint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "newManagingContractIndex",
+          "type": "uint32",
+          "offset": 48,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "transferredNumberOfShares",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 52,
+      "outputSize": 8
+    },
+    {
+      "kind": "procedure",
+      "inputType": 14,
+      "name": "CleanMemoryAndDistributeReward",
+      "inputFields": [],
+      "outputFields": [],
+      "inputSize": 0,
+      "outputSize": 0
+    },
+    {
+      "kind": "procedure",
+      "inputType": 15,
+      "name": "TransferQTRYGOV",
+      "inputFields": [
+        {
+          "name": "receiver",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "amount",
+          "type": "sint64",
+          "offset": 32,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "amount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 40,
+      "outputSize": 8
+    },
+    {
+      "kind": "procedure",
+      "inputType": 20,
+      "name": "UpdateFeeDiscountList",
+      "inputFields": [
+        {
+          "name": "userId",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "newFeeRate",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "ops",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [],
+      "inputSize": 48,
+      "outputSize": 0
+    },
+    {
+      "kind": "procedure",
+      "inputType": 100,
+      "name": "ProposalVote",
+      "inputFields": [
+        {
+          "name": "proposed",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 72,
+          "structRef": "QtryGOV"
+        }
+      ],
+      "outputFields": [],
+      "inputSize": 72,
+      "outputSize": 0
+    }
+  ],
+  "functions": [
+    {
+      "kind": "function",
+      "inputType": 1,
+      "name": "BasicInfo",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "operationFee",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "shareholderFee",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "burnFee",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "nIssuedEvent",
+          "type": "uint64",
+          "offset": 24,
+          "byteLength": 8
+        },
+        {
+          "name": "shareholdersRevenue",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "operationRevenue",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "burnedAmount",
+          "type": "uint64",
+          "offset": 48,
+          "byteLength": 8
+        },
+        {
+          "name": "mFeePerDay",
+          "type": "uint64",
+          "offset": 56,
+          "byteLength": 8
+        },
+        {
+          "name": "antiSpamAmount",
+          "type": "uint64",
+          "offset": 64,
+          "byteLength": 8
+        },
+        {
+          "name": "depositAmountForDispute",
+          "type": "uint64",
+          "offset": 72,
+          "byteLength": 8
+        },
+        {
+          "name": "gameOperator",
+          "type": "id",
+          "offset": 80,
+          "byteLength": 32
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 112
+    },
+    {
+      "kind": "function",
+      "inputType": 2,
+      "name": "GetEventInfo",
+      "inputFields": [
+        {
+          "name": "eventId",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "qei",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 280,
+          "structRef": "QtryEventInfo"
+        },
+        {
+          "name": "resultByGO",
+          "type": "sint32",
+          "offset": 280,
+          "byteLength": 4
+        },
+        {
+          "name": "publishTickTime",
+          "type": "uint32",
+          "offset": 284,
+          "byteLength": 4
+        },
+        {
+          "name": "disputerInfo",
+          "type": "struct",
+          "offset": 288,
+          "byteLength": 40,
+          "structRef": "DepositInfo"
+        },
+        {
+          "name": "computorsVote0",
+          "type": "uint32",
+          "offset": 328,
+          "byteLength": 4
+        },
+        {
+          "name": "computorsVote1",
+          "type": "uint32",
+          "offset": 332,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 336
+    },
+    {
+      "kind": "function",
+      "inputType": 3,
+      "name": "GetOrders",
+      "inputFields": [
+        {
+          "name": "eventId",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "option",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "isBid",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "offset",
+          "type": "uint64",
+          "offset": 24,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "orders",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 12288,
+          "arrayLength": 256,
+          "arrayItemStructRef": "QtryOrderWithPrice",
+          "arrayItemByteLength": 48
+        }
+      ],
+      "inputSize": 32,
+      "outputSize": 12288
+    },
+    {
+      "kind": "function",
+      "inputType": 4,
+      "name": "GetActiveEvent",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "recentActiveEvent",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 0,
+          "arrayLength": 0,
+          "arrayItemType": "uint64",
+          "arrayItemByteLength": 8
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 0
+    },
+    {
+      "kind": "function",
+      "inputType": 5,
+      "name": "GetEventInfoBatch",
+      "inputFields": [
+        {
+          "name": "eventIds",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 512,
+          "arrayLength": 64,
+          "arrayItemType": "uint64",
+          "arrayItemByteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "aqei",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 17920,
+          "arrayLength": 64,
+          "arrayItemStructRef": "QtryEventInfo",
+          "arrayItemByteLength": 280
+        }
+      ],
+      "inputSize": 512,
+      "outputSize": 17920
+    },
+    {
+      "kind": "function",
+      "inputType": 6,
+      "name": "GetUserPosition",
+      "inputFields": [
+        {
+          "name": "uid",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "count",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "p",
+          "type": "array",
+          "offset": 8,
+          "byteLength": 16384,
+          "arrayLength": 1024,
+          "arrayItemStructRef": "PositionInfo",
+          "arrayItemByteLength": 16
+        }
+      ],
+      "inputSize": 32,
+      "outputSize": 16392
+    },
+    {
+      "kind": "function",
+      "inputType": 7,
+      "name": "GetApprovedAmount",
+      "inputFields": [
+        {
+          "name": "pk",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "amount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 32,
+      "outputSize": 8
+    },
+    {
+      "kind": "function",
+      "inputType": 8,
+      "name": "GetTopProposals",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "top",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 320,
+          "arrayLength": 4,
+          "arrayItemStructRef": "ProposalInfo",
+          "arrayItemByteLength": 80
+        },
+        {
+          "name": "uniqueCount",
+          "type": "sint32",
+          "offset": 320,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 324
+    }
+  ]
+}

@@ -2,8 +2,8 @@
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.org/registry'
 import { buildPayload, decodePayload } from '@qubic.org/registry'
 import type { QubicRpcError } from '@qubic.org/rpc'
-import type { Result } from '@qubic.org/types'
 import { type ContractCall, type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import type { Result } from '@qubic.org/types'
 
 export const QUOTTERY_CONTRACT_INDEX = 2
 
@@ -799,7 +799,7 @@ export function decodeQuotteryTransferShareManagementRightsOutput(
   return decodePayload(data, QUOTTERY_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QuotteryTransferShareManagementRightsOutput
 }
 
-export const QUOTTERY_CLEAN_MEMORY_INPUT_TYPE = 14
+export const QUOTTERY_CLEAN_MEMORY_AND_DISTRIBUTE_REWARD_INPUT_TYPE = 14
 
 export const QUOTTERY_TRANSFER_QTRYGOV_INPUT_TYPE = 15
 

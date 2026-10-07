@@ -2,12 +2,60 @@
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.org/registry'
 import { buildPayload, decodePayload } from '@qubic.org/registry'
 import type { QubicRpcError } from '@qubic.org/rpc'
-import type { Result } from '@qubic.org/types'
 import { type ContractCall, type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import type { Result } from '@qubic.org/types'
 
 export const Q_RAFFLE_CONTRACT_INDEX = 19
 
-const STRUCTS: Record<string, NamedStruct> = {}
+export interface QRaffleAssetRaffleItemStruct {
+  asset: QRaffleAssetStruct
+  numberOfShares: bigint
+}
+
+export interface QRaffleAssetStruct {
+  issuer: string
+  assetName: bigint
+}
+
+const STRUCTS: Record<string, NamedStruct> = {
+  'AssetRaffleItem': {
+  name: 'AssetRaffleItem',
+  byteLength: 48,
+  fields: [
+    {
+      name: 'asset',
+      type: 'struct',
+      offset: 0,
+      byteLength: 40,
+      structRef: 'Asset',
+    },
+    {
+      name: 'numberOfShares',
+      type: 'sint64',
+      offset: 40,
+      byteLength: 8,
+    },
+],
+},
+  'Asset': {
+  name: 'Asset',
+  byteLength: 40,
+  fields: [
+    {
+      name: 'issuer',
+      type: 'id',
+      offset: 0,
+      byteLength: 32,
+    },
+    {
+      name: 'assetName',
+      type: 'uint64',
+      offset: 32,
+      byteLength: 8,
+    },
+],
+},
+}
 
 export const Q_RAFFLE_REGISTER_IN_SYSTEM_INPUT_TYPE = 1
 
@@ -333,6 +381,171 @@ export function decodeQRaffleTransferShareManagementRightsOutput(
   data: Uint8Array,
 ): QRaffleTransferShareManagementRightsOutput {
   return decodePayload(data, Q_RAFFLE_TRANSFER_SHARE_MANAGEMENT_RIGHTS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QRaffleTransferShareManagementRightsOutput
+}
+
+export const Q_RAFFLE_CREATE_ASSET_RAFFLE_INPUT_TYPE = 9
+
+export interface QRaffleCreateAssetRaffleInput {
+  bundleItems: number[]
+  bundleSize: number
+  reservePriceQu: bigint
+  entryTicketQu: bigint
+}
+
+const Q_RAFFLE_CREATE_ASSET_RAFFLE_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'bundleItems',
+    type: 'array',
+    offset: 0,
+    byteLength: 192,
+    arrayLength: 4,
+    arrayItemByteLength: 48,
+    arrayItemStructRef: 'AssetRaffleItem',
+  },
+  {
+    name: 'bundleSize',
+    type: 'uint32',
+    offset: 192,
+    byteLength: 4,
+  },
+  {
+    name: 'reservePriceQu',
+    type: 'uint64',
+    offset: 196,
+    byteLength: 8,
+  },
+  {
+    name: 'entryTicketQu',
+    type: 'uint64',
+    offset: 204,
+    byteLength: 8,
+  },
+]
+
+export function buildQRaffleCreateAssetRaffleInput(
+  input: QRaffleCreateAssetRaffleInput,
+): ContractCall {
+  return { contractIndex: Q_RAFFLE_CONTRACT_INDEX, inputType: Q_RAFFLE_CREATE_ASSET_RAFFLE_INPUT_TYPE, payload: buildPayload(Q_RAFFLE_CREATE_ASSET_RAFFLE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
+}
+
+export interface QRaffleCreateAssetRaffleOutput {
+  raffleIndex: number
+  returnCode: number
+}
+
+const Q_RAFFLE_CREATE_ASSET_RAFFLE_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'raffleIndex',
+    type: 'uint32',
+    offset: 0,
+    byteLength: 4,
+  },
+  {
+    name: 'returnCode',
+    type: 'sint32',
+    offset: 4,
+    byteLength: 4,
+  },
+]
+
+export function decodeQRaffleCreateAssetRaffleOutput(
+  data: Uint8Array,
+): QRaffleCreateAssetRaffleOutput {
+  return decodePayload(data, Q_RAFFLE_CREATE_ASSET_RAFFLE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QRaffleCreateAssetRaffleOutput
+}
+
+export const Q_RAFFLE_BUY_ASSET_RAFFLE_TICKET_INPUT_TYPE = 10
+
+export interface QRaffleBuyAssetRaffleTicketInput {
+  indexOfAssetRaffle: number
+  numberOfTickets: number
+}
+
+const Q_RAFFLE_BUY_ASSET_RAFFLE_TICKET_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'indexOfAssetRaffle',
+    type: 'uint32',
+    offset: 0,
+    byteLength: 4,
+  },
+  {
+    name: 'numberOfTickets',
+    type: 'uint32',
+    offset: 4,
+    byteLength: 4,
+  },
+]
+
+export function buildQRaffleBuyAssetRaffleTicketInput(
+  input: QRaffleBuyAssetRaffleTicketInput,
+): ContractCall {
+  return { contractIndex: Q_RAFFLE_CONTRACT_INDEX, inputType: Q_RAFFLE_BUY_ASSET_RAFFLE_TICKET_INPUT_TYPE, payload: buildPayload(Q_RAFFLE_BUY_ASSET_RAFFLE_TICKET_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
+}
+
+export interface QRaffleBuyAssetRaffleTicketOutput {
+  ticketsBought: number
+  returnCode: number
+}
+
+const Q_RAFFLE_BUY_ASSET_RAFFLE_TICKET_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'ticketsBought',
+    type: 'uint32',
+    offset: 0,
+    byteLength: 4,
+  },
+  {
+    name: 'returnCode',
+    type: 'sint32',
+    offset: 4,
+    byteLength: 4,
+  },
+]
+
+export function decodeQRaffleBuyAssetRaffleTicketOutput(
+  data: Uint8Array,
+): QRaffleBuyAssetRaffleTicketOutput {
+  return decodePayload(data, Q_RAFFLE_BUY_ASSET_RAFFLE_TICKET_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QRaffleBuyAssetRaffleTicketOutput
+}
+
+export const Q_RAFFLE_CANCEL_ASSET_RAFFLE_INPUT_TYPE = 11
+
+export interface QRaffleCancelAssetRaffleInput {
+  indexOfAssetRaffle: number
+}
+
+const Q_RAFFLE_CANCEL_ASSET_RAFFLE_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'indexOfAssetRaffle',
+    type: 'uint32',
+    offset: 0,
+    byteLength: 4,
+  },
+]
+
+export function buildQRaffleCancelAssetRaffleInput(
+  input: QRaffleCancelAssetRaffleInput,
+): ContractCall {
+  return { contractIndex: Q_RAFFLE_CONTRACT_INDEX, inputType: Q_RAFFLE_CANCEL_ASSET_RAFFLE_INPUT_TYPE, payload: buildPayload(Q_RAFFLE_CANCEL_ASSET_RAFFLE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
+}
+
+export interface QRaffleCancelAssetRaffleOutput {
+  returnCode: number
+}
+
+const Q_RAFFLE_CANCEL_ASSET_RAFFLE_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'returnCode',
+    type: 'sint32',
+    offset: 0,
+    byteLength: 4,
+  },
+]
+
+export function decodeQRaffleCancelAssetRaffleOutput(
+  data: Uint8Array,
+): QRaffleCancelAssetRaffleOutput {
+  return decodePayload(data, Q_RAFFLE_CANCEL_ASSET_RAFFLE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QRaffleCancelAssetRaffleOutput
 }
 
 export const Q_RAFFLE_GET_REGISTERS_INPUT_TYPE = 1
@@ -1133,6 +1346,523 @@ export async function qRaffleGetQuRaffleEntryAverageAmount(
   })
 }
 
+export const Q_RAFFLE_GET_ACTIVE_ASSET_RAFFLE_INPUT_TYPE = 10
+export const Q_RAFFLE_GET_ACTIVE_ASSET_RAFFLE_INPUT_SIZE = 4
+
+export interface QRaffleGetActiveAssetRaffleInput {
+  indexOfAssetRaffle: number
+}
+
+const Q_RAFFLE_GET_ACTIVE_ASSET_RAFFLE_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'indexOfAssetRaffle',
+    type: 'uint32',
+    offset: 0,
+    byteLength: 4,
+  },
+]
+
+export function buildQRaffleGetActiveAssetRaffleInput(
+  input: QRaffleGetActiveAssetRaffleInput,
+): Uint8Array {
+  return buildPayload(Q_RAFFLE_GET_ACTIVE_ASSET_RAFFLE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
+}
+
+export interface QRaffleGetActiveAssetRaffleOutput {
+  creator: string
+  reservePriceQu: bigint
+  entryTicketQu: bigint
+  totalTicketsPaidQu: bigint
+  numberOfBuyers: number
+  totalTickets: number
+  bundleSize: number
+  epoch: number
+  returnCode: number
+}
+
+const Q_RAFFLE_GET_ACTIVE_ASSET_RAFFLE_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'creator',
+    type: 'id',
+    offset: 0,
+    byteLength: 32,
+  },
+  {
+    name: 'reservePriceQu',
+    type: 'uint64',
+    offset: 32,
+    byteLength: 8,
+  },
+  {
+    name: 'entryTicketQu',
+    type: 'uint64',
+    offset: 40,
+    byteLength: 8,
+  },
+  {
+    name: 'totalTicketsPaidQu',
+    type: 'uint64',
+    offset: 48,
+    byteLength: 8,
+  },
+  {
+    name: 'numberOfBuyers',
+    type: 'uint32',
+    offset: 56,
+    byteLength: 4,
+  },
+  {
+    name: 'totalTickets',
+    type: 'uint32',
+    offset: 60,
+    byteLength: 4,
+  },
+  {
+    name: 'bundleSize',
+    type: 'uint32',
+    offset: 64,
+    byteLength: 4,
+  },
+  {
+    name: 'epoch',
+    type: 'uint32',
+    offset: 68,
+    byteLength: 4,
+  },
+  {
+    name: 'returnCode',
+    type: 'sint32',
+    offset: 72,
+    byteLength: 4,
+  },
+]
+
+export function decodeQRaffleGetActiveAssetRaffleOutput(
+  data: Uint8Array,
+  publicKeyToIdentity: (pk: Uint8Array) => string,
+): QRaffleGetActiveAssetRaffleOutput {
+  return decodePayload(data, Q_RAFFLE_GET_ACTIVE_ASSET_RAFFLE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleGetActiveAssetRaffleOutput
+}
+
+export async function qRaffleGetActiveAssetRaffle(
+  live: SmartContractCaller,
+  input: QRaffleGetActiveAssetRaffleInput,
+  options?: ContractCallOptions,
+): Promise<Result<QRaffleGetActiveAssetRaffleOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: Q_RAFFLE_CONTRACT_INDEX,
+    inputType: Q_RAFFLE_GET_ACTIVE_ASSET_RAFFLE_INPUT_TYPE,
+    inputSize: Q_RAFFLE_GET_ACTIVE_ASSET_RAFFLE_INPUT_SIZE,
+    inputFields: Q_RAFFLE_GET_ACTIVE_ASSET_RAFFLE_INPUT_FIELDS,
+    outputFields: Q_RAFFLE_GET_ACTIVE_ASSET_RAFFLE_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
+}
+
+export const Q_RAFFLE_GET_ACTIVE_ASSET_RAFFLE_BUNDLE_ITEM_INPUT_TYPE = 11
+export const Q_RAFFLE_GET_ACTIVE_ASSET_RAFFLE_BUNDLE_ITEM_INPUT_SIZE = 8
+
+export interface QRaffleGetActiveAssetRaffleBundleItemInput {
+  indexOfAssetRaffle: number
+  itemIndex: number
+}
+
+const Q_RAFFLE_GET_ACTIVE_ASSET_RAFFLE_BUNDLE_ITEM_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'indexOfAssetRaffle',
+    type: 'uint32',
+    offset: 0,
+    byteLength: 4,
+  },
+  {
+    name: 'itemIndex',
+    type: 'uint32',
+    offset: 4,
+    byteLength: 4,
+  },
+]
+
+export function buildQRaffleGetActiveAssetRaffleBundleItemInput(
+  input: QRaffleGetActiveAssetRaffleBundleItemInput,
+): Uint8Array {
+  return buildPayload(Q_RAFFLE_GET_ACTIVE_ASSET_RAFFLE_BUNDLE_ITEM_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
+}
+
+export interface QRaffleGetActiveAssetRaffleBundleItemOutput {
+  assetIssuer: string
+  assetName: bigint
+  numberOfShares: bigint
+  returnCode: number
+}
+
+const Q_RAFFLE_GET_ACTIVE_ASSET_RAFFLE_BUNDLE_ITEM_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'assetIssuer',
+    type: 'id',
+    offset: 0,
+    byteLength: 32,
+  },
+  {
+    name: 'assetName',
+    type: 'uint64',
+    offset: 32,
+    byteLength: 8,
+  },
+  {
+    name: 'numberOfShares',
+    type: 'sint64',
+    offset: 40,
+    byteLength: 8,
+  },
+  {
+    name: 'returnCode',
+    type: 'sint32',
+    offset: 48,
+    byteLength: 4,
+  },
+]
+
+export function decodeQRaffleGetActiveAssetRaffleBundleItemOutput(
+  data: Uint8Array,
+  publicKeyToIdentity: (pk: Uint8Array) => string,
+): QRaffleGetActiveAssetRaffleBundleItemOutput {
+  return decodePayload(data, Q_RAFFLE_GET_ACTIVE_ASSET_RAFFLE_BUNDLE_ITEM_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleGetActiveAssetRaffleBundleItemOutput
+}
+
+export async function qRaffleGetActiveAssetRaffleBundleItem(
+  live: SmartContractCaller,
+  input: QRaffleGetActiveAssetRaffleBundleItemInput,
+  options?: ContractCallOptions,
+): Promise<Result<QRaffleGetActiveAssetRaffleBundleItemOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: Q_RAFFLE_CONTRACT_INDEX,
+    inputType: Q_RAFFLE_GET_ACTIVE_ASSET_RAFFLE_BUNDLE_ITEM_INPUT_TYPE,
+    inputSize: Q_RAFFLE_GET_ACTIVE_ASSET_RAFFLE_BUNDLE_ITEM_INPUT_SIZE,
+    inputFields: Q_RAFFLE_GET_ACTIVE_ASSET_RAFFLE_BUNDLE_ITEM_INPUT_FIELDS,
+    outputFields: Q_RAFFLE_GET_ACTIVE_ASSET_RAFFLE_BUNDLE_ITEM_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
+}
+
+export const Q_RAFFLE_GET_ACTIVE_ASSET_RAFFLE_BUYER_INPUT_TYPE = 12
+export const Q_RAFFLE_GET_ACTIVE_ASSET_RAFFLE_BUYER_INPUT_SIZE = 8
+
+export interface QRaffleGetActiveAssetRaffleBuyerInput {
+  indexOfAssetRaffle: number
+  buyerIndex: number
+}
+
+const Q_RAFFLE_GET_ACTIVE_ASSET_RAFFLE_BUYER_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'indexOfAssetRaffle',
+    type: 'uint32',
+    offset: 0,
+    byteLength: 4,
+  },
+  {
+    name: 'buyerIndex',
+    type: 'uint32',
+    offset: 4,
+    byteLength: 4,
+  },
+]
+
+export function buildQRaffleGetActiveAssetRaffleBuyerInput(
+  input: QRaffleGetActiveAssetRaffleBuyerInput,
+): Uint8Array {
+  return buildPayload(Q_RAFFLE_GET_ACTIVE_ASSET_RAFFLE_BUYER_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
+}
+
+export interface QRaffleGetActiveAssetRaffleBuyerOutput {
+  buyer: string
+  ticketCount: number
+  returnCode: number
+}
+
+const Q_RAFFLE_GET_ACTIVE_ASSET_RAFFLE_BUYER_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'buyer',
+    type: 'id',
+    offset: 0,
+    byteLength: 32,
+  },
+  {
+    name: 'ticketCount',
+    type: 'uint32',
+    offset: 32,
+    byteLength: 4,
+  },
+  {
+    name: 'returnCode',
+    type: 'sint32',
+    offset: 36,
+    byteLength: 4,
+  },
+]
+
+export function decodeQRaffleGetActiveAssetRaffleBuyerOutput(
+  data: Uint8Array,
+  publicKeyToIdentity: (pk: Uint8Array) => string,
+): QRaffleGetActiveAssetRaffleBuyerOutput {
+  return decodePayload(data, Q_RAFFLE_GET_ACTIVE_ASSET_RAFFLE_BUYER_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleGetActiveAssetRaffleBuyerOutput
+}
+
+export async function qRaffleGetActiveAssetRaffleBuyer(
+  live: SmartContractCaller,
+  input: QRaffleGetActiveAssetRaffleBuyerInput,
+  options?: ContractCallOptions,
+): Promise<Result<QRaffleGetActiveAssetRaffleBuyerOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: Q_RAFFLE_CONTRACT_INDEX,
+    inputType: Q_RAFFLE_GET_ACTIVE_ASSET_RAFFLE_BUYER_INPUT_TYPE,
+    inputSize: Q_RAFFLE_GET_ACTIVE_ASSET_RAFFLE_BUYER_INPUT_SIZE,
+    inputFields: Q_RAFFLE_GET_ACTIVE_ASSET_RAFFLE_BUYER_INPUT_FIELDS,
+    outputFields: Q_RAFFLE_GET_ACTIVE_ASSET_RAFFLE_BUYER_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
+}
+
+export const Q_RAFFLE_GET_ENDED_ASSET_RAFFLE_INPUT_TYPE = 13
+export const Q_RAFFLE_GET_ENDED_ASSET_RAFFLE_INPUT_SIZE = 4
+
+export interface QRaffleGetEndedAssetRaffleInput {
+  indexOfRaffle: number
+}
+
+const Q_RAFFLE_GET_ENDED_ASSET_RAFFLE_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'indexOfRaffle',
+    type: 'uint32',
+    offset: 0,
+    byteLength: 4,
+  },
+]
+
+export function buildQRaffleGetEndedAssetRaffleInput(
+  input: QRaffleGetEndedAssetRaffleInput,
+): Uint8Array {
+  return buildPayload(Q_RAFFLE_GET_ENDED_ASSET_RAFFLE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
+}
+
+export interface QRaffleGetEndedAssetRaffleOutput {
+  creator: string
+  epochWinner: string
+  reservePriceQu: bigint
+  entryTicketQu: bigint
+  grossPoolQu: bigint
+  creatorPaidQu: bigint
+  totalTickets: number
+  numberOfBuyers: number
+  bundleSize: number
+  epoch: number
+  reserveMet: number
+  returnCode: number
+}
+
+const Q_RAFFLE_GET_ENDED_ASSET_RAFFLE_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'creator',
+    type: 'id',
+    offset: 0,
+    byteLength: 32,
+  },
+  {
+    name: 'epochWinner',
+    type: 'id',
+    offset: 32,
+    byteLength: 32,
+  },
+  {
+    name: 'reservePriceQu',
+    type: 'uint64',
+    offset: 64,
+    byteLength: 8,
+  },
+  {
+    name: 'entryTicketQu',
+    type: 'uint64',
+    offset: 72,
+    byteLength: 8,
+  },
+  {
+    name: 'grossPoolQu',
+    type: 'uint64',
+    offset: 80,
+    byteLength: 8,
+  },
+  {
+    name: 'creatorPaidQu',
+    type: 'uint64',
+    offset: 88,
+    byteLength: 8,
+  },
+  {
+    name: 'totalTickets',
+    type: 'uint32',
+    offset: 96,
+    byteLength: 4,
+  },
+  {
+    name: 'numberOfBuyers',
+    type: 'uint32',
+    offset: 100,
+    byteLength: 4,
+  },
+  {
+    name: 'bundleSize',
+    type: 'uint32',
+    offset: 104,
+    byteLength: 4,
+  },
+  {
+    name: 'epoch',
+    type: 'uint32',
+    offset: 108,
+    byteLength: 4,
+  },
+  {
+    name: 'reserveMet',
+    type: 'uint8',
+    offset: 112,
+    byteLength: 1,
+  },
+  {
+    name: 'returnCode',
+    type: 'sint32',
+    offset: 113,
+    byteLength: 4,
+  },
+]
+
+export function decodeQRaffleGetEndedAssetRaffleOutput(
+  data: Uint8Array,
+  publicKeyToIdentity: (pk: Uint8Array) => string,
+): QRaffleGetEndedAssetRaffleOutput {
+  return decodePayload(data, Q_RAFFLE_GET_ENDED_ASSET_RAFFLE_OUTPUT_FIELDS, STRUCTS, publicKeyToIdentity) as unknown as QRaffleGetEndedAssetRaffleOutput
+}
+
+export async function qRaffleGetEndedAssetRaffle(
+  live: SmartContractCaller,
+  input: QRaffleGetEndedAssetRaffleInput,
+  options?: ContractCallOptions,
+): Promise<Result<QRaffleGetEndedAssetRaffleOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: Q_RAFFLE_CONTRACT_INDEX,
+    inputType: Q_RAFFLE_GET_ENDED_ASSET_RAFFLE_INPUT_TYPE,
+    inputSize: Q_RAFFLE_GET_ENDED_ASSET_RAFFLE_INPUT_SIZE,
+    inputFields: Q_RAFFLE_GET_ENDED_ASSET_RAFFLE_INPUT_FIELDS,
+    outputFields: Q_RAFFLE_GET_ENDED_ASSET_RAFFLE_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
+}
+
+export const Q_RAFFLE_GET_ASSET_RAFFLE_ANALYTICS_INPUT_TYPE = 14
+export const Q_RAFFLE_GET_ASSET_RAFFLE_ANALYTICS_INPUT_SIZE = 0
+
+export interface QRaffleGetAssetRaffleAnalyticsOutput {
+  totalAssetRaffleProposalFees: bigint
+  totalAssetRaffleCreatorPaid: bigint
+  totalAssetRaffleRefunded: bigint
+  numberOfActiveAssetRaffles: number
+  numberOfEndedAssetRaffles: number
+  totalAssetRafflesCreated: number
+  totalAssetRafflesSucceeded: number
+  totalAssetRafflesFailed: number
+  returnCode: number
+}
+
+const Q_RAFFLE_GET_ASSET_RAFFLE_ANALYTICS_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'totalAssetRaffleProposalFees',
+    type: 'uint64',
+    offset: 0,
+    byteLength: 8,
+  },
+  {
+    name: 'totalAssetRaffleCreatorPaid',
+    type: 'uint64',
+    offset: 8,
+    byteLength: 8,
+  },
+  {
+    name: 'totalAssetRaffleRefunded',
+    type: 'uint64',
+    offset: 16,
+    byteLength: 8,
+  },
+  {
+    name: 'numberOfActiveAssetRaffles',
+    type: 'uint32',
+    offset: 24,
+    byteLength: 4,
+  },
+  {
+    name: 'numberOfEndedAssetRaffles',
+    type: 'uint32',
+    offset: 28,
+    byteLength: 4,
+  },
+  {
+    name: 'totalAssetRafflesCreated',
+    type: 'uint32',
+    offset: 32,
+    byteLength: 4,
+  },
+  {
+    name: 'totalAssetRafflesSucceeded',
+    type: 'uint32',
+    offset: 36,
+    byteLength: 4,
+  },
+  {
+    name: 'totalAssetRafflesFailed',
+    type: 'uint32',
+    offset: 40,
+    byteLength: 4,
+  },
+  {
+    name: 'returnCode',
+    type: 'sint32',
+    offset: 44,
+    byteLength: 4,
+  },
+]
+
+export function decodeQRaffleGetAssetRaffleAnalyticsOutput(
+  data: Uint8Array,
+): QRaffleGetAssetRaffleAnalyticsOutput {
+  return decodePayload(data, Q_RAFFLE_GET_ASSET_RAFFLE_ANALYTICS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QRaffleGetAssetRaffleAnalyticsOutput
+}
+
+export async function qRaffleGetAssetRaffleAnalytics(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<QRaffleGetAssetRaffleAnalyticsOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: Q_RAFFLE_CONTRACT_INDEX,
+    inputType: Q_RAFFLE_GET_ASSET_RAFFLE_ANALYTICS_INPUT_TYPE,
+    inputSize: Q_RAFFLE_GET_ASSET_RAFFLE_ANALYTICS_INPUT_SIZE,
+    inputFields: [],
+    outputFields: Q_RAFFLE_GET_ASSET_RAFFLE_ANALYTICS_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
+}
+
 export const qRaffle = {
   contractIndex: Q_RAFFLE_CONTRACT_INDEX,
   getRegisters: qRaffleGetRegisters,
@@ -1144,6 +1874,11 @@ export const qRaffle = {
   getEpochRaffleIndexes: qRaffleGetEpochRaffleIndexes,
   getQuRaffleEntryAmountPerUser: qRaffleGetQuRaffleEntryAmountPerUser,
   getQuRaffleEntryAverageAmount: qRaffleGetQuRaffleEntryAverageAmount,
+  getActiveAssetRaffle: qRaffleGetActiveAssetRaffle,
+  getActiveAssetRaffleBundleItem: qRaffleGetActiveAssetRaffleBundleItem,
+  getActiveAssetRaffleBuyer: qRaffleGetActiveAssetRaffleBuyer,
+  getEndedAssetRaffle: qRaffleGetEndedAssetRaffle,
+  getAssetRaffleAnalytics: qRaffleGetAssetRaffleAnalytics,
   buildRegisterInSystemInput: buildQRaffleRegisterInSystemInput,
   decodeRegisterInSystemOutput: decodeQRaffleRegisterInSystemOutput,
   decodeLogoutInSystemOutput: decodeQRaffleLogoutInSystemOutput,
@@ -1158,5 +1893,11 @@ export const qRaffle = {
   decodeDepositInTokenRaffleOutput: decodeQRaffleDepositInTokenRaffleOutput,
   buildTransferShareManagementRightsInput: buildQRaffleTransferShareManagementRightsInput,
   decodeTransferShareManagementRightsOutput: decodeQRaffleTransferShareManagementRightsOutput,
+  buildCreateAssetRaffleInput: buildQRaffleCreateAssetRaffleInput,
+  decodeCreateAssetRaffleOutput: decodeQRaffleCreateAssetRaffleOutput,
+  buildBuyAssetRaffleTicketInput: buildQRaffleBuyAssetRaffleTicketInput,
+  decodeBuyAssetRaffleTicketOutput: decodeQRaffleBuyAssetRaffleTicketOutput,
+  buildCancelAssetRaffleInput: buildQRaffleCancelAssetRaffleInput,
+  decodeCancelAssetRaffleOutput: decodeQRaffleCancelAssetRaffleOutput,
 }
 

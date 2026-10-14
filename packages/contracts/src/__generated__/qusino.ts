@@ -2,8 +2,8 @@
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.org/registry'
 import { buildPayload, decodePayload } from '@qubic.org/registry'
 import type { QubicRpcError } from '@qubic.org/rpc'
-import type { Result } from '@qubic.org/types'
 import { type ContractCall, type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import type { Result } from '@qubic.org/types'
 
 export const QUSINO_CONTRACT_INDEX = 26
 
@@ -431,6 +431,109 @@ export function decodeQusinoRedemptionQSCToQubicOutput(
   return decodePayload(data, QUSINO_REDEMPTION_QSC_TO_QUBIC_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QusinoRedemptionQSCToQubicOutput
 }
 
+export const QUSINO_REFILL_RANDOM_BANK_INPUT_TYPE = 9
+
+export interface QusinoRefillRandomBankOutput {
+  returnCode: number
+  valuesAdded: number
+}
+
+const QUSINO_REFILL_RANDOM_BANK_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'returnCode',
+    type: 'sint32',
+    offset: 0,
+    byteLength: 4,
+  },
+  {
+    name: 'valuesAdded',
+    type: 'uint32',
+    offset: 4,
+    byteLength: 4,
+  },
+]
+
+export function decodeQusinoRefillRandomBankOutput(
+  data: Uint8Array,
+): QusinoRefillRandomBankOutput {
+  return decodePayload(data, QUSINO_REFILL_RANDOM_BANK_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QusinoRefillRandomBankOutput
+}
+
+export const QUSINO_COIN_FLIP_INPUT_TYPE = 10
+
+export interface QusinoCoinFlipInput {
+  guess: number
+  assetType: number
+  amount: bigint
+}
+
+const QUSINO_COIN_FLIP_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'guess',
+    type: 'uint8',
+    offset: 0,
+    byteLength: 1,
+  },
+  {
+    name: 'assetType',
+    type: 'uint8',
+    offset: 1,
+    byteLength: 1,
+  },
+  {
+    name: 'amount',
+    type: 'uint64',
+    offset: 2,
+    byteLength: 8,
+  },
+]
+
+export function buildQusinoCoinFlipInput(
+  input: QusinoCoinFlipInput,
+): ContractCall {
+  return { contractIndex: QUSINO_CONTRACT_INDEX, inputType: QUSINO_COIN_FLIP_INPUT_TYPE, payload: buildPayload(QUSINO_COIN_FLIP_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
+}
+
+export interface QusinoCoinFlipOutput {
+  returnCode: number
+  result: number
+  won: number
+  payout: bigint
+}
+
+const QUSINO_COIN_FLIP_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'returnCode',
+    type: 'sint32',
+    offset: 0,
+    byteLength: 4,
+  },
+  {
+    name: 'result',
+    type: 'uint8',
+    offset: 4,
+    byteLength: 1,
+  },
+  {
+    name: 'won',
+    type: 'uint8',
+    offset: 5,
+    byteLength: 1,
+  },
+  {
+    name: 'payout',
+    type: 'uint64',
+    offset: 6,
+    byteLength: 8,
+  },
+]
+
+export function decodeQusinoCoinFlipOutput(
+  data: Uint8Array,
+): QusinoCoinFlipOutput {
+  return decodePayload(data, QUSINO_COIN_FLIP_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QusinoCoinFlipOutput
+}
+
 export const QUSINO_GET_USER_ASSET_VOLUME_INPUT_TYPE = 1
 export const QUSINO_GET_USER_ASSET_VOLUME_INPUT_SIZE = 32
 
@@ -457,6 +560,10 @@ export function buildQusinoGetUserAssetVolumeInput(
 export interface QusinoGetUserAssetVolumeOutput {
   STARAmount: bigint
   QSCAmount: bigint
+  QSTAmount: bigint
+  betaActive: number
+  betaEligible: number
+  betaEpochsRemaining: number
 }
 
 const QUSINO_GET_USER_ASSET_VOLUME_OUTPUT_FIELDS: BinaryField[] = [
@@ -471,6 +578,30 @@ const QUSINO_GET_USER_ASSET_VOLUME_OUTPUT_FIELDS: BinaryField[] = [
     type: 'uint64',
     offset: 8,
     byteLength: 8,
+  },
+  {
+    name: 'QSTAmount',
+    type: 'uint64',
+    offset: 16,
+    byteLength: 8,
+  },
+  {
+    name: 'betaActive',
+    type: 'uint8',
+    offset: 24,
+    byteLength: 1,
+  },
+  {
+    name: 'betaEligible',
+    type: 'uint8',
+    offset: 25,
+    byteLength: 1,
+  },
+  {
+    name: 'betaEpochsRemaining',
+    type: 'uint32',
+    offset: 26,
+    byteLength: 4,
   },
 ]
 
@@ -706,67 +837,192 @@ export async function qusinoGetActiveGameList(
   })
 }
 
-export const QUSINO_GET_PROPOSER_EARNED_QSC_INFO_INPUT_TYPE = 5
-export const QUSINO_GET_PROPOSER_EARNED_QSC_INFO_INPUT_SIZE = 36
+export const QUSINO_GET_DAILY_CLAIM_STATUS_INPUT_TYPE = 5
+export const QUSINO_GET_DAILY_CLAIM_STATUS_INPUT_SIZE = 32
 
-export interface QusinoGetProposerEarnedQSCInfoInput {
-  proposer: string
-  epoch: number
+export interface QusinoGetDailyClaimStatusInput {
+  user: string
 }
 
-const QUSINO_GET_PROPOSER_EARNED_QSC_INFO_INPUT_FIELDS: BinaryField[] = [
+const QUSINO_GET_DAILY_CLAIM_STATUS_INPUT_FIELDS: BinaryField[] = [
   {
-    name: 'proposer',
+    name: 'user',
     type: 'id',
     offset: 0,
     byteLength: 32,
   },
+]
+
+export function buildQusinoGetDailyClaimStatusInput(
+  input: QusinoGetDailyClaimStatusInput,
+  identityToPublicKey: (identity: string) => Uint8Array,
+): Uint8Array {
+  return buildPayload(QUSINO_GET_DAILY_CLAIM_STATUS_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+}
+
+export interface QusinoGetDailyClaimStatusOutput {
+  canClaimNow: number
+  secondsUntilNextClaim: number
+}
+
+const QUSINO_GET_DAILY_CLAIM_STATUS_OUTPUT_FIELDS: BinaryField[] = [
   {
-    name: 'epoch',
+    name: 'canClaimNow',
+    type: 'uint8',
+    offset: 0,
+    byteLength: 1,
+  },
+  {
+    name: 'secondsUntilNextClaim',
     type: 'uint32',
-    offset: 32,
+    offset: 1,
     byteLength: 4,
   },
 ]
 
-export function buildQusinoGetProposerEarnedQSCInfoInput(
-  input: QusinoGetProposerEarnedQSCInfoInput,
-  identityToPublicKey: (identity: string) => Uint8Array,
-): Uint8Array {
-  return buildPayload(QUSINO_GET_PROPOSER_EARNED_QSC_INFO_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
-}
-
-export interface QusinoGetProposerEarnedQSCInfoOutput {
-  earnedQSC: bigint
-}
-
-const QUSINO_GET_PROPOSER_EARNED_QSC_INFO_OUTPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'earnedQSC',
-    type: 'uint64',
-    offset: 0,
-    byteLength: 8,
-  },
-]
-
-export function decodeQusinoGetProposerEarnedQSCInfoOutput(
+export function decodeQusinoGetDailyClaimStatusOutput(
   data: Uint8Array,
-): QusinoGetProposerEarnedQSCInfoOutput {
-  return decodePayload(data, QUSINO_GET_PROPOSER_EARNED_QSC_INFO_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QusinoGetProposerEarnedQSCInfoOutput
+): QusinoGetDailyClaimStatusOutput {
+  return decodePayload(data, QUSINO_GET_DAILY_CLAIM_STATUS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QusinoGetDailyClaimStatusOutput
 }
 
-export async function qusinoGetProposerEarnedQSCInfo(
+export async function qusinoGetDailyClaimStatus(
   live: SmartContractCaller,
-  input: QusinoGetProposerEarnedQSCInfoInput,
+  input: QusinoGetDailyClaimStatusInput,
   options?: ContractCallOptions,
-): Promise<Result<QusinoGetProposerEarnedQSCInfoOutput, QubicRpcError>> {
+): Promise<Result<QusinoGetDailyClaimStatusOutput, QubicRpcError>> {
   return callContractFunction({
     live,
     contractIndex: QUSINO_CONTRACT_INDEX,
-    inputType: QUSINO_GET_PROPOSER_EARNED_QSC_INFO_INPUT_TYPE,
-    inputSize: QUSINO_GET_PROPOSER_EARNED_QSC_INFO_INPUT_SIZE,
-    inputFields: QUSINO_GET_PROPOSER_EARNED_QSC_INFO_INPUT_FIELDS,
-    outputFields: QUSINO_GET_PROPOSER_EARNED_QSC_INFO_OUTPUT_FIELDS,
+    inputType: QUSINO_GET_DAILY_CLAIM_STATUS_INPUT_TYPE,
+    inputSize: QUSINO_GET_DAILY_CLAIM_STATUS_INPUT_SIZE,
+    inputFields: QUSINO_GET_DAILY_CLAIM_STATUS_INPUT_FIELDS,
+    outputFields: QUSINO_GET_DAILY_CLAIM_STATUS_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
+}
+
+export const QUSINO_GET_RANDOM_BANK_STATUS_INPUT_TYPE = 6
+export const QUSINO_GET_RANDOM_BANK_STATUS_INPUT_SIZE = 0
+
+export interface QusinoGetRandomBankStatusOutput {
+  poolInitialized: number
+  reserveFilled: number
+  lastRefillTick: number
+}
+
+const QUSINO_GET_RANDOM_BANK_STATUS_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'poolInitialized',
+    type: 'uint8',
+    offset: 0,
+    byteLength: 1,
+  },
+  {
+    name: 'reserveFilled',
+    type: 'uint32',
+    offset: 1,
+    byteLength: 4,
+  },
+  {
+    name: 'lastRefillTick',
+    type: 'uint32',
+    offset: 5,
+    byteLength: 4,
+  },
+]
+
+export function decodeQusinoGetRandomBankStatusOutput(
+  data: Uint8Array,
+): QusinoGetRandomBankStatusOutput {
+  return decodePayload(data, QUSINO_GET_RANDOM_BANK_STATUS_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QusinoGetRandomBankStatusOutput
+}
+
+export async function qusinoGetRandomBankStatus(
+  live: SmartContractCaller,
+  options?: ContractCallOptions,
+): Promise<Result<QusinoGetRandomBankStatusOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QUSINO_CONTRACT_INDEX,
+    inputType: QUSINO_GET_RANDOM_BANK_STATUS_INPUT_TYPE,
+    inputSize: QUSINO_GET_RANDOM_BANK_STATUS_INPUT_SIZE,
+    inputFields: [],
+    outputFields: QUSINO_GET_RANDOM_BANK_STATUS_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: {},
+    ...options,
+  })
+}
+
+export const QUSINO_GET_APPROVED_GAME_LIST_INPUT_TYPE = 7
+export const QUSINO_GET_APPROVED_GAME_LIST_INPUT_SIZE = 4
+
+export interface QusinoGetApprovedGameListInput {
+  offset: number
+}
+
+const QUSINO_GET_APPROVED_GAME_LIST_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'offset',
+    type: 'uint32',
+    offset: 0,
+    byteLength: 4,
+  },
+]
+
+export function buildQusinoGetApprovedGameListInput(
+  input: QusinoGetApprovedGameListInput,
+): Uint8Array {
+  return buildPayload(QUSINO_GET_APPROVED_GAME_LIST_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32))
+}
+
+export interface QusinoGetApprovedGameListOutput {
+  games: number[]
+  gameIndexes: bigint[]
+}
+
+const QUSINO_GET_APPROVED_GAME_LIST_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'games',
+    type: 'array',
+    offset: 0,
+    byteLength: 3456,
+    arrayLength: 32,
+    arrayItemByteLength: 108,
+    arrayItemStructRef: 'GameInfo',
+  },
+  {
+    name: 'gameIndexes',
+    type: 'array',
+    offset: 3456,
+    byteLength: 256,
+    arrayLength: 32,
+    arrayItemType: 'uint64',
+    arrayItemByteLength: 8,
+  },
+]
+
+export function decodeQusinoGetApprovedGameListOutput(
+  data: Uint8Array,
+): QusinoGetApprovedGameListOutput {
+  return decodePayload(data, QUSINO_GET_APPROVED_GAME_LIST_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QusinoGetApprovedGameListOutput
+}
+
+export async function qusinoGetApprovedGameList(
+  live: SmartContractCaller,
+  input: QusinoGetApprovedGameListInput,
+  options?: ContractCallOptions,
+): Promise<Result<QusinoGetApprovedGameListOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QUSINO_CONTRACT_INDEX,
+    inputType: QUSINO_GET_APPROVED_GAME_LIST_INPUT_TYPE,
+    inputSize: QUSINO_GET_APPROVED_GAME_LIST_INPUT_SIZE,
+    inputFields: QUSINO_GET_APPROVED_GAME_LIST_INPUT_FIELDS,
+    outputFields: QUSINO_GET_APPROVED_GAME_LIST_OUTPUT_FIELDS,
     structs: STRUCTS,
     input: (input as unknown as Record<string, unknown>),
     ...options,
@@ -779,7 +1035,9 @@ export const qusino = {
   getFailedGameList: qusinoGetFailedGameList,
   getSCInfo: qusinoGetSCInfo,
   getActiveGameList: qusinoGetActiveGameList,
-  getProposerEarnedQSCInfo: qusinoGetProposerEarnedQSCInfo,
+  getDailyClaimStatus: qusinoGetDailyClaimStatus,
+  getRandomBankStatus: qusinoGetRandomBankStatus,
+  getApprovedGameList: qusinoGetApprovedGameList,
   buildEarnSTARInput: buildQusinoEarnSTARInput,
   decodeEarnSTAROutput: decodeQusinoEarnSTAROutput,
   buildTransferSTAROrQSCInput: buildQusinoTransferSTAROrQSCInput,
@@ -795,5 +1053,8 @@ export const qusino = {
   decodeDailyClaimBonusOutput: decodeQusinoDailyClaimBonusOutput,
   buildRedemptionQSCToQubicInput: buildQusinoRedemptionQSCToQubicInput,
   decodeRedemptionQSCToQubicOutput: decodeQusinoRedemptionQSCToQubicOutput,
+  decodeRefillRandomBankOutput: decodeQusinoRefillRandomBankOutput,
+  buildCoinFlipInput: buildQusinoCoinFlipInput,
+  decodeCoinFlipOutput: decodeQusinoCoinFlipOutput,
 }
 

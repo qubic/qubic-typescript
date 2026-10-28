@@ -1,0 +1,1127 @@
+{
+  "contractIndex": 19,
+  "contractName": "QRaffle",
+  "contractAddress": "TAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAXRFC",
+  "epoch": 223,
+  "coreVersion": "v1.300.1",
+  "structs": {
+    "AssetRaffleItem": {
+      "name": "AssetRaffleItem",
+      "fields": [
+        {
+          "name": "asset",
+          "type": "struct",
+          "offset": 0,
+          "byteLength": 40,
+          "structRef": "Asset"
+        },
+        {
+          "name": "numberOfShares",
+          "type": "sint64",
+          "offset": 40,
+          "byteLength": 8
+        }
+      ],
+      "byteLength": 48
+    },
+    "Asset": {
+      "name": "Asset",
+      "byteLength": 40,
+      "fields": [
+        {
+          "name": "issuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        }
+      ]
+    }
+  },
+  "procedures": [
+    {
+      "kind": "procedure",
+      "inputType": 1,
+      "name": "registerInSystem",
+      "inputFields": [
+        {
+          "name": "useQXMR",
+          "type": "uint8",
+          "offset": 0,
+          "byteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 1,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 2,
+      "name": "logoutInSystem",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 3,
+      "name": "submitEntryAmount",
+      "inputFields": [
+        {
+          "name": "amount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 4,
+      "name": "submitProposal",
+      "inputFields": [
+        {
+          "name": "tokenIssuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "tokenName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "entryAmount",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 48,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 5,
+      "name": "voteInProposal",
+      "inputFields": [
+        {
+          "name": "indexOfProposal",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "yes",
+          "type": "uint8",
+          "offset": 4,
+          "byteLength": 1
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 5,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 6,
+      "name": "depositInQuRaffle",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 7,
+      "name": "depositInTokenRaffle",
+      "inputFields": [
+        {
+          "name": "indexOfTokenRaffle",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 4
+    },
+    {
+      "kind": "procedure",
+      "inputType": 8,
+      "name": "TransferShareManagementRights",
+      "inputFields": [
+        {
+          "name": "tokenIssuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "tokenName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "numberOfShares",
+          "type": "sint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "newManagingContractIndex",
+          "type": "uint32",
+          "offset": 48,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "transferredNumberOfShares",
+          "type": "sint64",
+          "offset": 0,
+          "byteLength": 8
+        }
+      ],
+      "inputSize": 52,
+      "outputSize": 8
+    },
+    {
+      "kind": "procedure",
+      "inputType": 9,
+      "name": "createAssetRaffle",
+      "inputFields": [
+        {
+          "name": "bundleItems",
+          "type": "array",
+          "offset": 0,
+          "byteLength": 192,
+          "arrayLength": 4,
+          "arrayItemStructRef": "AssetRaffleItem",
+          "arrayItemByteLength": 48
+        },
+        {
+          "name": "bundleSize",
+          "type": "uint32",
+          "offset": 192,
+          "byteLength": 4
+        },
+        {
+          "name": "reservePriceQu",
+          "type": "uint64",
+          "offset": 196,
+          "byteLength": 8
+        },
+        {
+          "name": "entryTicketQu",
+          "type": "uint64",
+          "offset": 204,
+          "byteLength": 8
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "raffleIndex",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 4,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 212,
+      "outputSize": 8
+    },
+    {
+      "kind": "procedure",
+      "inputType": 10,
+      "name": "buyAssetRaffleTicket",
+      "inputFields": [
+        {
+          "name": "indexOfAssetRaffle",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfTickets",
+          "type": "uint32",
+          "offset": 4,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "ticketsBought",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 4,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 8
+    },
+    {
+      "kind": "procedure",
+      "inputType": 11,
+      "name": "cancelAssetRaffle",
+      "inputFields": [
+        {
+          "name": "indexOfAssetRaffle",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 4
+    }
+  ],
+  "functions": [
+    {
+      "kind": "function",
+      "inputType": 1,
+      "name": "getRegisters",
+      "inputFields": [
+        {
+          "name": "offset",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "limit",
+          "type": "uint32",
+          "offset": 4,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "register1",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 32,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 36
+    },
+    {
+      "kind": "function",
+      "inputType": 2,
+      "name": "getAnalytics",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "currentQuRaffleAmount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "totalBurnAmount",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "totalCharityAmount",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "totalShareholderAmount",
+          "type": "uint64",
+          "offset": 24,
+          "byteLength": 8
+        },
+        {
+          "name": "totalRegisterAmount",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "totalFeeAmount",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "totalWinnerAmount",
+          "type": "uint64",
+          "offset": 48,
+          "byteLength": 8
+        },
+        {
+          "name": "largestWinnerAmount",
+          "type": "uint64",
+          "offset": 56,
+          "byteLength": 8
+        },
+        {
+          "name": "numberOfRegisters",
+          "type": "uint32",
+          "offset": 64,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfProposals",
+          "type": "uint32",
+          "offset": 68,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfQuRaffleMembers",
+          "type": "uint32",
+          "offset": 72,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfActiveTokenRaffle",
+          "type": "uint32",
+          "offset": 76,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfEndedTokenRaffle",
+          "type": "uint32",
+          "offset": 80,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfEntryAmountSubmitted",
+          "type": "uint32",
+          "offset": 84,
+          "byteLength": 4
+        },
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 88,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 92
+    },
+    {
+      "kind": "function",
+      "inputType": 3,
+      "name": "getActiveProposal",
+      "inputFields": [
+        {
+          "name": "indexOfProposal",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "tokenIssuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "proposer",
+          "type": "id",
+          "offset": 32,
+          "byteLength": 32
+        },
+        {
+          "name": "tokenName",
+          "type": "uint64",
+          "offset": 64,
+          "byteLength": 8
+        },
+        {
+          "name": "entryAmount",
+          "type": "uint64",
+          "offset": 72,
+          "byteLength": 8
+        },
+        {
+          "name": "nYes",
+          "type": "uint32",
+          "offset": 80,
+          "byteLength": 4
+        },
+        {
+          "name": "nNo",
+          "type": "uint32",
+          "offset": 84,
+          "byteLength": 4
+        },
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 88,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 92
+    },
+    {
+      "kind": "function",
+      "inputType": 4,
+      "name": "getEndedTokenRaffle",
+      "inputFields": [
+        {
+          "name": "indexOfRaffle",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "epochWinner",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "tokenIssuer",
+          "type": "id",
+          "offset": 32,
+          "byteLength": 32
+        },
+        {
+          "name": "tokenName",
+          "type": "uint64",
+          "offset": 64,
+          "byteLength": 8
+        },
+        {
+          "name": "entryAmount",
+          "type": "uint64",
+          "offset": 72,
+          "byteLength": 8
+        },
+        {
+          "name": "numberOfMembers",
+          "type": "uint32",
+          "offset": 80,
+          "byteLength": 4
+        },
+        {
+          "name": "winnerIndex",
+          "type": "uint32",
+          "offset": 84,
+          "byteLength": 4
+        },
+        {
+          "name": "epoch",
+          "type": "uint32",
+          "offset": 88,
+          "byteLength": 4
+        },
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 92,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 96
+    },
+    {
+      "kind": "function",
+      "inputType": 5,
+      "name": "getEndedQuRaffle",
+      "inputFields": [
+        {
+          "name": "epoch",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "epochWinner",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "receivedAmount",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "entryAmount",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "numberOfMembers",
+          "type": "uint32",
+          "offset": 48,
+          "byteLength": 4
+        },
+        {
+          "name": "winnerIndex",
+          "type": "uint32",
+          "offset": 52,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfDaoMembers",
+          "type": "uint32",
+          "offset": 56,
+          "byteLength": 4
+        },
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 60,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 64
+    },
+    {
+      "kind": "function",
+      "inputType": 6,
+      "name": "getActiveTokenRaffle",
+      "inputFields": [
+        {
+          "name": "indexOfTokenRaffle",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "tokenIssuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "tokenName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "entryAmount",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "numberOfMembers",
+          "type": "uint32",
+          "offset": 48,
+          "byteLength": 4
+        },
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 52,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 56
+    },
+    {
+      "kind": "function",
+      "inputType": 7,
+      "name": "getEpochRaffleIndexes",
+      "inputFields": [
+        {
+          "name": "epoch",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "StartIndex",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "EndIndex",
+          "type": "uint32",
+          "offset": 4,
+          "byteLength": 4
+        },
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 8,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 12
+    },
+    {
+      "kind": "function",
+      "inputType": 8,
+      "name": "getQuRaffleEntryAmountPerUser",
+      "inputFields": [
+        {
+          "name": "user",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "entryAmount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 8,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 32,
+      "outputSize": 12
+    },
+    {
+      "kind": "function",
+      "inputType": 9,
+      "name": "getQuRaffleEntryAverageAmount",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "entryAverageAmount",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 8,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 12
+    },
+    {
+      "kind": "function",
+      "inputType": 10,
+      "name": "getActiveAssetRaffle",
+      "inputFields": [
+        {
+          "name": "indexOfAssetRaffle",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "creator",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "reservePriceQu",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "entryTicketQu",
+          "type": "uint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "totalTicketsPaidQu",
+          "type": "uint64",
+          "offset": 48,
+          "byteLength": 8
+        },
+        {
+          "name": "numberOfBuyers",
+          "type": "uint32",
+          "offset": 56,
+          "byteLength": 4
+        },
+        {
+          "name": "totalTickets",
+          "type": "uint32",
+          "offset": 60,
+          "byteLength": 4
+        },
+        {
+          "name": "bundleSize",
+          "type": "uint32",
+          "offset": 64,
+          "byteLength": 4
+        },
+        {
+          "name": "epoch",
+          "type": "uint32",
+          "offset": 68,
+          "byteLength": 4
+        },
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 72,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 76
+    },
+    {
+      "kind": "function",
+      "inputType": 11,
+      "name": "getActiveAssetRaffleBundleItem",
+      "inputFields": [
+        {
+          "name": "indexOfAssetRaffle",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "itemIndex",
+          "type": "uint32",
+          "offset": 4,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "assetIssuer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "assetName",
+          "type": "uint64",
+          "offset": 32,
+          "byteLength": 8
+        },
+        {
+          "name": "numberOfShares",
+          "type": "sint64",
+          "offset": 40,
+          "byteLength": 8
+        },
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 48,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 52
+    },
+    {
+      "kind": "function",
+      "inputType": 12,
+      "name": "getActiveAssetRaffleBuyer",
+      "inputFields": [
+        {
+          "name": "indexOfAssetRaffle",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        },
+        {
+          "name": "buyerIndex",
+          "type": "uint32",
+          "offset": 4,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "buyer",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "ticketCount",
+          "type": "uint32",
+          "offset": 32,
+          "byteLength": 4
+        },
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 36,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 8,
+      "outputSize": 40
+    },
+    {
+      "kind": "function",
+      "inputType": 13,
+      "name": "getEndedAssetRaffle",
+      "inputFields": [
+        {
+          "name": "indexOfRaffle",
+          "type": "uint32",
+          "offset": 0,
+          "byteLength": 4
+        }
+      ],
+      "outputFields": [
+        {
+          "name": "creator",
+          "type": "id",
+          "offset": 0,
+          "byteLength": 32
+        },
+        {
+          "name": "epochWinner",
+          "type": "id",
+          "offset": 32,
+          "byteLength": 32
+        },
+        {
+          "name": "reservePriceQu",
+          "type": "uint64",
+          "offset": 64,
+          "byteLength": 8
+        },
+        {
+          "name": "entryTicketQu",
+          "type": "uint64",
+          "offset": 72,
+          "byteLength": 8
+        },
+        {
+          "name": "grossPoolQu",
+          "type": "uint64",
+          "offset": 80,
+          "byteLength": 8
+        },
+        {
+          "name": "creatorPaidQu",
+          "type": "uint64",
+          "offset": 88,
+          "byteLength": 8
+        },
+        {
+          "name": "totalTickets",
+          "type": "uint32",
+          "offset": 96,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfBuyers",
+          "type": "uint32",
+          "offset": 100,
+          "byteLength": 4
+        },
+        {
+          "name": "bundleSize",
+          "type": "uint32",
+          "offset": 104,
+          "byteLength": 4
+        },
+        {
+          "name": "epoch",
+          "type": "uint32",
+          "offset": 108,
+          "byteLength": 4
+        },
+        {
+          "name": "reserveMet",
+          "type": "uint8",
+          "offset": 112,
+          "byteLength": 1
+        },
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 113,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 4,
+      "outputSize": 117
+    },
+    {
+      "kind": "function",
+      "inputType": 14,
+      "name": "getAssetRaffleAnalytics",
+      "inputFields": [],
+      "outputFields": [
+        {
+          "name": "totalAssetRaffleProposalFees",
+          "type": "uint64",
+          "offset": 0,
+          "byteLength": 8
+        },
+        {
+          "name": "totalAssetRaffleCreatorPaid",
+          "type": "uint64",
+          "offset": 8,
+          "byteLength": 8
+        },
+        {
+          "name": "totalAssetRaffleRefunded",
+          "type": "uint64",
+          "offset": 16,
+          "byteLength": 8
+        },
+        {
+          "name": "numberOfActiveAssetRaffles",
+          "type": "uint32",
+          "offset": 24,
+          "byteLength": 4
+        },
+        {
+          "name": "numberOfEndedAssetRaffles",
+          "type": "uint32",
+          "offset": 28,
+          "byteLength": 4
+        },
+        {
+          "name": "totalAssetRafflesCreated",
+          "type": "uint32",
+          "offset": 32,
+          "byteLength": 4
+        },
+        {
+          "name": "totalAssetRafflesSucceeded",
+          "type": "uint32",
+          "offset": 36,
+          "byteLength": 4
+        },
+        {
+          "name": "totalAssetRafflesFailed",
+          "type": "uint32",
+          "offset": 40,
+          "byteLength": 4
+        },
+        {
+          "name": "returnCode",
+          "type": "sint32",
+          "offset": 44,
+          "byteLength": 4
+        }
+      ],
+      "inputSize": 0,
+      "outputSize": 48
+    }
+  ]
+}

@@ -2,8 +2,8 @@
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.org/registry'
 import { buildPayload, decodePayload } from '@qubic.org/registry'
 import type { QubicRpcError } from '@qubic.org/rpc'
-import type { Result } from '@qubic.org/types'
 import { type ContractCall, type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import type { Result } from '@qubic.org/types'
 
 export const QIP_CONTRACT_INDEX = 18
 
@@ -486,9 +486,112 @@ export async function qIPGetICOInfo(
   })
 }
 
+export const QIP_GET_BUYER_INFO_INPUT_TYPE = 2
+export const QIP_GET_BUYER_INFO_INPUT_SIZE = 36
+
+export interface QIPGetBuyerInfoInput {
+  buyer: string
+  indexOfICO: number
+}
+
+const QIP_GET_BUYER_INFO_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'buyer',
+    type: 'id',
+    offset: 0,
+    byteLength: 32,
+  },
+  {
+    name: 'indexOfICO',
+    type: 'uint32',
+    offset: 32,
+    byteLength: 4,
+  },
+]
+
+export function buildQIPGetBuyerInfoInput(
+  input: QIPGetBuyerInfoInput,
+  identityToPublicKey: (identity: string) => Uint8Array,
+): Uint8Array {
+  return buildPayload(QIP_GET_BUYER_INFO_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey)
+}
+
+export interface QIPGetBuyerInfoOutput {
+  tokensToReceive: bigint
+  receivedTokens: bigint
+  totalQuPayed: bigint
+  isReturned: number
+  isVested: number
+  remainingVestingPeriod: number
+}
+
+const QIP_GET_BUYER_INFO_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'tokensToReceive',
+    type: 'sint64',
+    offset: 0,
+    byteLength: 8,
+  },
+  {
+    name: 'receivedTokens',
+    type: 'sint64',
+    offset: 8,
+    byteLength: 8,
+  },
+  {
+    name: 'totalQuPayed',
+    type: 'sint64',
+    offset: 16,
+    byteLength: 8,
+  },
+  {
+    name: 'isReturned',
+    type: 'uint8',
+    offset: 24,
+    byteLength: 1,
+  },
+  {
+    name: 'isVested',
+    type: 'uint8',
+    offset: 25,
+    byteLength: 1,
+  },
+  {
+    name: 'remainingVestingPeriod',
+    type: 'uint32',
+    offset: 26,
+    byteLength: 4,
+  },
+]
+
+export function decodeQIPGetBuyerInfoOutput(
+  data: Uint8Array,
+): QIPGetBuyerInfoOutput {
+  return decodePayload(data, QIP_GET_BUYER_INFO_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QIPGetBuyerInfoOutput
+}
+
+export async function qIPGetBuyerInfo(
+  live: SmartContractCaller,
+  input: QIPGetBuyerInfoInput,
+  options?: ContractCallOptions,
+): Promise<Result<QIPGetBuyerInfoOutput, QubicRpcError>> {
+  return callContractFunction({
+    live,
+    contractIndex: QIP_CONTRACT_INDEX,
+    inputType: QIP_GET_BUYER_INFO_INPUT_TYPE,
+    inputSize: QIP_GET_BUYER_INFO_INPUT_SIZE,
+    inputFields: QIP_GET_BUYER_INFO_INPUT_FIELDS,
+    outputFields: QIP_GET_BUYER_INFO_OUTPUT_FIELDS,
+    structs: STRUCTS,
+    input: (input as unknown as Record<string, unknown>),
+    ...options,
+  })
+}
+
 export const qIP = {
   contractIndex: QIP_CONTRACT_INDEX,
   getICOInfo: qIPGetICOInfo,
+  getBuyerInfo: qIPGetBuyerInfo,
   buildCreateICOInput: buildQIPCreateICOInput,
   decodeCreateICOOutput: decodeQIPCreateICOOutput,
   buildBuyTokenInput: buildQIPBuyTokenInput,

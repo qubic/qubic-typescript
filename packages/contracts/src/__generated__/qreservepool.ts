@@ -2,8 +2,8 @@
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.org/registry'
 import { buildPayload, decodePayload } from '@qubic.org/registry'
 import type { QubicRpcError } from '@qubic.org/rpc'
-import type { Result } from '@qubic.org/types'
 import { type ContractCall, type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import type { Result } from '@qubic.org/types'
 
 export const Q_RESERVE_POOL_CONTRACT_INDEX = 21
 
@@ -32,7 +32,6 @@ export function buildQReservePoolWithdrawReserveInput(
 
 export interface QReservePoolWithdrawReserveOutput {
   allocatedRevenue: bigint
-  returnCode: number
 }
 
 const Q_RESERVE_POOL_WITHDRAW_RESERVE_OUTPUT_FIELDS: BinaryField[] = [
@@ -41,12 +40,6 @@ const Q_RESERVE_POOL_WITHDRAW_RESERVE_OUTPUT_FIELDS: BinaryField[] = [
     type: 'uint64',
     offset: 0,
     byteLength: 8,
-  },
-  {
-    name: 'returnCode',
-    type: 'uint8',
-    offset: 8,
-    byteLength: 1,
   },
 ]
 
@@ -77,25 +70,6 @@ export function buildQReservePoolAddAllowedSCInput(
   return { contractIndex: Q_RESERVE_POOL_CONTRACT_INDEX, inputType: Q_RESERVE_POOL_ADD_ALLOWED_SC_INPUT_TYPE, payload: buildPayload(Q_RESERVE_POOL_ADD_ALLOWED_SC_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
 }
 
-export interface QReservePoolAddAllowedSCOutput {
-  returnCode: number
-}
-
-const Q_RESERVE_POOL_ADD_ALLOWED_SC_OUTPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'returnCode',
-    type: 'uint8',
-    offset: 0,
-    byteLength: 1,
-  },
-]
-
-export function decodeQReservePoolAddAllowedSCOutput(
-  data: Uint8Array,
-): QReservePoolAddAllowedSCOutput {
-  return decodePayload(data, Q_RESERVE_POOL_ADD_ALLOWED_SC_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QReservePoolAddAllowedSCOutput
-}
-
 export const Q_RESERVE_POOL_REMOVE_ALLOWED_SC_INPUT_TYPE = 3
 
 export interface QReservePoolRemoveAllowedSCInput {
@@ -115,25 +89,6 @@ export function buildQReservePoolRemoveAllowedSCInput(
   input: QReservePoolRemoveAllowedSCInput,
 ): ContractCall {
   return { contractIndex: Q_RESERVE_POOL_CONTRACT_INDEX, inputType: Q_RESERVE_POOL_REMOVE_ALLOWED_SC_INPUT_TYPE, payload: buildPayload(Q_RESERVE_POOL_REMOVE_ALLOWED_SC_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
-}
-
-export interface QReservePoolRemoveAllowedSCOutput {
-  returnCode: number
-}
-
-const Q_RESERVE_POOL_REMOVE_ALLOWED_SC_OUTPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'returnCode',
-    type: 'uint8',
-    offset: 0,
-    byteLength: 1,
-  },
-]
-
-export function decodeQReservePoolRemoveAllowedSCOutput(
-  data: Uint8Array,
-): QReservePoolRemoveAllowedSCOutput {
-  return decodePayload(data, Q_RESERVE_POOL_REMOVE_ALLOWED_SC_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QReservePoolRemoveAllowedSCOutput
 }
 
 export const Q_RESERVE_POOL_SEND_RESERVE_INPUT_TYPE = 4
@@ -162,25 +117,6 @@ export function buildQReservePoolSendReserveInput(
   input: QReservePoolSendReserveInput,
 ): ContractCall {
   return { contractIndex: Q_RESERVE_POOL_CONTRACT_INDEX, inputType: Q_RESERVE_POOL_SEND_RESERVE_INPUT_TYPE, payload: buildPayload(Q_RESERVE_POOL_SEND_RESERVE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, (_: string) => new Uint8Array(32)) }
-}
-
-export interface QReservePoolSendReserveOutput {
-  returnCode: number
-}
-
-const Q_RESERVE_POOL_SEND_RESERVE_OUTPUT_FIELDS: BinaryField[] = [
-  {
-    name: 'returnCode',
-    type: 'uint8',
-    offset: 0,
-    byteLength: 1,
-  },
-]
-
-export function decodeQReservePoolSendReserveOutput(
-  data: Uint8Array,
-): QReservePoolSendReserveOutput {
-  return decodePayload(data, Q_RESERVE_POOL_SEND_RESERVE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as QReservePoolSendReserveOutput
 }
 
 export const Q_RESERVE_POOL_GET_AVAILABLE_RESERVE_INPUT_TYPE = 1
@@ -272,10 +208,7 @@ export const qReservePool = {
   buildWithdrawReserveInput: buildQReservePoolWithdrawReserveInput,
   decodeWithdrawReserveOutput: decodeQReservePoolWithdrawReserveOutput,
   buildAddAllowedSCInput: buildQReservePoolAddAllowedSCInput,
-  decodeAddAllowedSCOutput: decodeQReservePoolAddAllowedSCOutput,
   buildRemoveAllowedSCInput: buildQReservePoolRemoveAllowedSCInput,
-  decodeRemoveAllowedSCOutput: decodeQReservePoolRemoveAllowedSCOutput,
   buildSendReserveInput: buildQReservePoolSendReserveInput,
-  decodeSendReserveOutput: decodeQReservePoolSendReserveOutput,
 }
 

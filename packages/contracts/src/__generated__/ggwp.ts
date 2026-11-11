@@ -2,8 +2,8 @@
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.org/registry'
 import { buildPayload, decodePayload } from '@qubic.org/registry'
 import type { QubicRpcError } from '@qubic.org/rpc'
-import type { Result } from '@qubic.org/types'
 import { type ContractCall, type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import type { Result } from '@qubic.org/types'
 
 export const GGWP_CONTRACT_INDEX = 28
 
@@ -539,6 +539,54 @@ export function decodeGGWPVoteGovChangeOutput(
   data: Uint8Array,
 ): GGWPVoteGovChangeOutput {
   return decodePayload(data, GGWP_VOTE_GOV_CHANGE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as GGWPVoteGovChangeOutput
+}
+
+export const GGWP_ADMIN_RECONCILE_STAKE_INPUT_TYPE = 14
+
+export interface GGWPAdminReconcileStakeInput {
+  staker: string
+  correctAmount: bigint
+}
+
+const GGWP_ADMIN_RECONCILE_STAKE_INPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'staker',
+    type: 'id',
+    offset: 0,
+    byteLength: 32,
+  },
+  {
+    name: 'correctAmount',
+    type: 'uint64',
+    offset: 32,
+    byteLength: 8,
+  },
+]
+
+export function buildGGWPAdminReconcileStakeInput(
+  input: GGWPAdminReconcileStakeInput,
+  identityToPublicKey: (identity: string) => Uint8Array,
+): ContractCall {
+  return { contractIndex: GGWP_CONTRACT_INDEX, inputType: GGWP_ADMIN_RECONCILE_STAKE_INPUT_TYPE, payload: buildPayload(GGWP_ADMIN_RECONCILE_STAKE_INPUT_FIELDS, STRUCTS, input as unknown as Record<string, FieldValue | Uint8Array>, identityToPublicKey) }
+}
+
+export interface GGWPAdminReconcileStakeOutput {
+  returnCode: number
+}
+
+const GGWP_ADMIN_RECONCILE_STAKE_OUTPUT_FIELDS: BinaryField[] = [
+  {
+    name: 'returnCode',
+    type: 'uint32',
+    offset: 0,
+    byteLength: 4,
+  },
+]
+
+export function decodeGGWPAdminReconcileStakeOutput(
+  data: Uint8Array,
+): GGWPAdminReconcileStakeOutput {
+  return decodePayload(data, GGWP_ADMIN_RECONCILE_STAKE_OUTPUT_FIELDS, STRUCTS, (_: Uint8Array) => { throw new Error('unreachable') }) as unknown as GGWPAdminReconcileStakeOutput
 }
 
 export const GGWP_GET_STATUS_INPUT_TYPE = 1
@@ -1237,5 +1285,7 @@ export const gGWP = {
   decodeProposeGovChangeOutput: decodeGGWPProposeGovChangeOutput,
   buildVoteGovChangeInput: buildGGWPVoteGovChangeInput,
   decodeVoteGovChangeOutput: decodeGGWPVoteGovChangeOutput,
+  buildAdminReconcileStakeInput: buildGGWPAdminReconcileStakeInput,
+  decodeAdminReconcileStakeOutput: decodeGGWPAdminReconcileStakeOutput,
 }
 

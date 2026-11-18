@@ -2,8 +2,8 @@
 import type { BinaryField, FieldValue, NamedStruct } from '@qubic.org/registry'
 import { buildPayload, decodePayload } from '@qubic.org/registry'
 import type { QubicRpcError } from '@qubic.org/rpc'
-import type { Result } from '@qubic.org/types'
 import { type ContractCall, type ContractCallOptions, type SmartContractCaller, callContractFunction } from '../call-contract.js'
+import type { Result } from '@qubic.org/types'
 
 export const Q_BOND_CONTRACT_INDEX = 17
 
@@ -11,6 +11,7 @@ export interface QBondOrderStruct {
   owner: string
   epoch: bigint
   numberOfMBonds: bigint
+  feeDebt: bigint
 }
 
 export interface QBondTableEntryStruct {
@@ -29,7 +30,7 @@ export interface QBondMBondEntityStruct {
 const STRUCTS: Record<string, NamedStruct> = {
   'Order': {
   name: 'Order',
-  byteLength: 48,
+  byteLength: 56,
   fields: [
     {
       name: 'owner',
@@ -47,6 +48,12 @@ const STRUCTS: Record<string, NamedStruct> = {
       name: 'numberOfMBonds',
       type: 'sint64',
       offset: 40,
+      byteLength: 8,
+    },
+    {
+      name: 'feeDebt',
+      type: 'sint64',
+      offset: 48,
       byteLength: 8,
     },
 ],
@@ -705,18 +712,18 @@ const Q_BOND_GET_ORDERS_OUTPUT_FIELDS: BinaryField[] = [
     name: 'askOrders',
     type: 'array',
     offset: 0,
-    byteLength: 12288,
+    byteLength: 14336,
     arrayLength: 256,
-    arrayItemByteLength: 48,
+    arrayItemByteLength: 56,
     arrayItemStructRef: 'Order',
   },
   {
     name: 'bidOrders',
     type: 'array',
-    offset: 12288,
-    byteLength: 12288,
+    offset: 14336,
+    byteLength: 14336,
     arrayLength: 256,
-    arrayItemByteLength: 48,
+    arrayItemByteLength: 56,
     arrayItemStructRef: 'Order',
   },
 ]
@@ -792,18 +799,18 @@ const Q_BOND_GET_USER_ORDERS_OUTPUT_FIELDS: BinaryField[] = [
     name: 'askOrders',
     type: 'array',
     offset: 0,
-    byteLength: 12288,
+    byteLength: 14336,
     arrayLength: 256,
-    arrayItemByteLength: 48,
+    arrayItemByteLength: 56,
     arrayItemStructRef: 'Order',
   },
   {
     name: 'bidOrders',
     type: 'array',
-    offset: 12288,
-    byteLength: 12288,
+    offset: 14336,
+    byteLength: 14336,
     arrayLength: 256,
-    arrayItemByteLength: 48,
+    arrayItemByteLength: 56,
     arrayItemStructRef: 'Order',
   },
 ]
